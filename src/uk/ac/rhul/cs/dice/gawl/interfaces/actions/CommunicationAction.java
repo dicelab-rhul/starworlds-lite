@@ -1,9 +1,9 @@
 package uk.ac.rhul.cs.dice.gawl.interfaces.actions;
 
 /**
- * The generic class representing communication actions.<br/><br/>
+ * A subclass of {@link AbstractAction} representing communication actions.<br/><br/>
  * 
- * Known subclasses: //TODO
+ * Known direct subclasses: //TODO
  * 
  * @author cloudstrife9999 a.k.a. Emanuele Uliana
  * @author Kostas Stathis

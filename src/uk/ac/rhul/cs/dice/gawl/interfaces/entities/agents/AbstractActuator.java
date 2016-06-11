@@ -7,9 +7,13 @@ import uk.ac.rhul.cs.dice.gawl.interfaces.actions.Action;
 import uk.ac.rhul.cs.dice.gawl.interfaces.actions.Event;
 
 /**
+ * The most generic class implementing {@link Actuator}. It is also {@link Observable} and can become an {@link Observer}.
+ * It may contain an {@link Event} to perform and the corresponding {@link Action}.<br/><br/>
  * 
+ * Known direct subclasses: //TODO
  * 
- * @author cloudstrife9999
+ * @author cloudstrife9999 a.k.a. Emanuele Uliana
+ * @author Kostas Stathis
  *
  */
 public abstract class AbstractActuator extends Observable implements Actuator, Observer {

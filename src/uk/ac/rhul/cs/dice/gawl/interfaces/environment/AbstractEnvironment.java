@@ -9,9 +9,11 @@ import uk.ac.rhul.cs.dice.gawl.interfaces.entities.Body;
 import uk.ac.rhul.cs.dice.gawl.interfaces.environment.physics.Physics;
 
 /**
- * The most general class representing an environment.<br/><br/>
+ * The most general class representing an environment. It has an {@link EnvironmentalSpace}, a {@link Set} of admissible {@link Action}
+ * elements and one of {@link Body} elements. It also contains an instance of {@link Physics}, a {@link Boolean} indicating whether
+ * it is bounded or not, and an {@link Appearance}.<br/><br/>
  * 
- * Known subclasses: {@link SimpleEnvironment}, {@link ComplexEnvironment}.
+ * Known direct subclasses: {@link SimpleEnvironment}, {@link ComplexEnvironment}.
  * 
  * @author cloudstrife9999 a.k.a. Emanuele Uliana
  * @author Kostas Stathis

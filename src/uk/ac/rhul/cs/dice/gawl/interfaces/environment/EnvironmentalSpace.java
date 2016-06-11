@@ -11,15 +11,16 @@ import uk.ac.rhul.cs.dice.gawl.interfaces.environment.locations.LocationKey;
 import java.util.Set;
 
 /**
- * The generic class for spaces related to an {@link AbstractEnvironment}.<br/><br/>
+ * The generic class for spaces related to an {@link AbstractEnvironment}.
+ * It is a subclass of {@link Space} and maps a {@link LocationKey} to a {@link Location} through a {@link Map}.<br/><br/>
  * 
- * Known subclasses: //TODO
+ * Known direct subclasses: //TODO
  * 
  * @author cloudstrife9999 a.k.a. Emanuele Uliana
  * @author Kostas Stathis
  *
  */
-public abstract class EnvironmentalSpace {
+public abstract class EnvironmentalSpace extends Space {
 	private Map<LocationKey, Location> grid;
 	
 	public EnvironmentalSpace(){

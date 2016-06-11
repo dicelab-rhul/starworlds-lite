@@ -5,15 +5,15 @@ import java.util.List;
 import java.util.Set;
 
 import uk.ac.rhul.cs.dice.gawl.interfaces.actions.Action;
-import uk.ac.rhul.cs.dice.gawl.interfaces.common.Appearance;
+import uk.ac.rhul.cs.dice.gawl.interfaces.common.ComplexEnvironmentAppearance;
 import uk.ac.rhul.cs.dice.gawl.interfaces.entities.Body;
 import uk.ac.rhul.cs.dice.gawl.interfaces.environment.physics.Physics;
 
 /**
- * A subclass of {@link AbstractEnvironment} which can have an arbitrary number of {@link AbstractEnvironment} instances as sub-environments.
+ * A subclass of {@link AbstractEnvironment} which can contain an arbitrary number of {@link AbstractEnvironment} instances as sub-environments.
  * Thus, the method {@link #isSimple()} will always return false.<br/><br/>
  * 
- * Known subclasses: {@link Universe}.
+ * Known direct subclasses: {@link Universe}.
  * 
  * @author cloudstrife9999 a.k.a. Emanuele Uliana
  * @author Kostas Stathis
@@ -22,7 +22,7 @@ import uk.ac.rhul.cs.dice.gawl.interfaces.environment.physics.Physics;
 public abstract class ComplexEnvironment extends AbstractEnvironment {
 	private List<AbstractEnvironment> subEnvironments;
 	
-	public ComplexEnvironment(EnvironmentalSpace state, Set<Action> admissibleActions, Set<Body> bodies, Physics physics, boolean bounded, Appearance appearance) {
+	public ComplexEnvironment(EnvironmentalSpace state, Set<Action> admissibleActions, Set<Body> bodies, Physics physics, boolean bounded, ComplexEnvironmentAppearance appearance) {
 		super(state, admissibleActions, bodies, physics, bounded, appearance);
 		this.subEnvironments = new ArrayList<AbstractEnvironment>();
 	}

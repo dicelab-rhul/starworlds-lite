@@ -1,9 +1,9 @@
 package uk.ac.rhul.cs.dice.gawl.interfaces.entities;
 
 /**
- * The interface for body types.<br/><br/>
+ * The interface for body types. It extends {@link Entity}.<br/><br/>
  * 
- * Known classes implementing this: //TODO
+ * Known implementations: //TODO
  * 
  * @author cloudstrife9999 a.k.a. Emanuele Uliana
  * @author Kostas Stathis

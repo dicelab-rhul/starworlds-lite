@@ -10,7 +10,7 @@ import uk.ac.rhul.cs.dice.gawl.interfaces.environment.physics.Physics;
 /**
  * The most general interface exposing the essential methods all the environments need to implement.<br/><br/>
  * 
- * Known classes implementing this: {@link AbstractEnvironment}.
+ * Known implementations: {@link AbstractEnvironment}.
  * 
  * @author cloudstrife9999 a.k.a. Emanuele Uliana
  * @author Kostas Stathis
