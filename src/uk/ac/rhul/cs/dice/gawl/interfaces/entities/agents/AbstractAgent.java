@@ -16,8 +16,28 @@ import uk.ac.rhul.cs.dice.gawl.interfaces.entities.Agent;
  *
  */
 public abstract class AbstractAgent extends ActiveBody implements Agent {
-
-	public AbstractAgent(AbstractAgentAppearance appearance, Set<Sensor> sensors, Set<Actuator> actuators) {
+	private Brain brain;
+	private Mind mind;
+	
+	public AbstractAgent(AbstractAgentAppearance appearance, Set<Sensor> sensors, Set<Actuator> actuators, AbstractAgentMind mind, AbstractAgentBrain brain) {
 		super(appearance, sensors, actuators);
+		this.brain = brain;
+		this.mind = mind;
+	}
+
+	public Brain getBrain() {
+		return this.brain;
+	}
+
+	public void setBrain(Brain brain) {
+		this.brain = brain;
+	}
+
+	public Mind getMind() {
+		return this.mind;
+	}
+
+	public void setMind(Mind mind) {
+		this.mind = mind;
 	}
 }
