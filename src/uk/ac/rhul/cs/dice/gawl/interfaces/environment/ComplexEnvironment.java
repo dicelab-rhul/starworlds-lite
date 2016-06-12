@@ -24,7 +24,7 @@ public abstract class ComplexEnvironment extends AbstractEnvironment {
 	
 	public ComplexEnvironment(EnvironmentalSpace state, Set<Action> admissibleActions, Set<Body> bodies, Physics physics, boolean bounded, ComplexEnvironmentAppearance appearance) {
 		super(state, admissibleActions, bodies, physics, bounded, appearance);
-		this.subEnvironments = new ArrayList<AbstractEnvironment>();
+		this.subEnvironments = new ArrayList<>();
 	}
 	
 	public List<AbstractEnvironment> getSubEnvironments() {

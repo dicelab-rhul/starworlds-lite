@@ -26,8 +26,8 @@ public abstract class ActiveBody extends PhysicalBody implements Actor, Simulato
 	
 	public ActiveBody(BodyAppearance appearance, Set<Sensor> sensors, Set<Actuator> actuators) {
 		super(appearance);
-		this.sensors = sensors != null ? sensors : new HashSet<Sensor>();
-		this.actuators = actuators != null ? actuators : new HashSet<Actuator>();
+		this.sensors = sensors != null ? sensors : new HashSet<>();
+		this.actuators = actuators != null ? actuators : new HashSet<>();
 	}
 	
 	public Set<Sensor> getSensors() {

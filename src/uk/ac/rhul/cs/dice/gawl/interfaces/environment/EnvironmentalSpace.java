@@ -24,7 +24,7 @@ public abstract class EnvironmentalSpace extends Space {
 	private Map<LocationKey, Location> grid;
 	
 	public EnvironmentalSpace(){
-		this.grid = new HashMap<LocationKey, Location>();
+		this.grid = new HashMap<>();
 	}
 	
 	public EnvironmentalSpace(Map<LocationKey, Location> grid) {
@@ -32,7 +32,7 @@ public abstract class EnvironmentalSpace extends Space {
 	}
 	
 	public EnvironmentalSpace(LocationKey locationKey, Location location) {
-		this.grid = new HashMap<LocationKey, Location>();
+		this.grid = new HashMap<>();
 		this.grid.put(locationKey, location);
 	}
 	
