@@ -1,5 +1,5 @@
 autoEnabled=true
 eclipse.preferences.version=1
 extraProperties=
-moduleKey=GenericAgentsWorldLibrary
+moduleKey=java-sonar-runner-simple
 serverId=localhost
