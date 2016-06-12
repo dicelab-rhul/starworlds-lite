@@ -9,6 +9,7 @@ package uk.ac.rhul.cs.dice.gawl.interfaces.actions;
  * @author Kostas Stathis
  *
  */
+@FunctionalInterface
 public interface Event {
 	public String represent();
 }

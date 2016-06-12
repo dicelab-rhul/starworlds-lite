@@ -9,6 +9,7 @@ package uk.ac.rhul.cs.dice.gawl.interfaces.entities;
  * @author Kostas Stathis
  *
  */
+@FunctionalInterface
 public interface Simulator {
 	public Object simulate();
 }

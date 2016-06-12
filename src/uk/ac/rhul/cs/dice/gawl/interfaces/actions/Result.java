@@ -9,6 +9,7 @@ package uk.ac.rhul.cs.dice.gawl.interfaces.actions;
  * @author Kostas Stathis
  *
  */
+@FunctionalInterface
 public interface Result {
 	public ActionResult getActionResult();
 }

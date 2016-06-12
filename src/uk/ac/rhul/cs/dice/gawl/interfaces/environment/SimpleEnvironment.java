@@ -10,7 +10,7 @@ import uk.ac.rhul.cs.dice.gawl.interfaces.environment.physics.Physics;
 /**
  * A subclass of {@link AbstractEnvironment} which cannot have sub-environments. Thus the {@link #isSimple()} method will always return true.<br/><br/>
  * 
- * Known direct subclasses: //TODO
+ * Known direct subclasses: {@link ComplexEnvironment}.
  * 
  * @author cloudstrife9999 a.k.a. Emanuele Uliana
  * @author Kostas Stathis

@@ -10,7 +10,7 @@ import uk.ac.rhul.cs.dice.gawl.interfaces.entities.Body;
 import uk.ac.rhul.cs.dice.gawl.interfaces.environment.physics.Physics;
 
 /**
- * A subclass of {@link AbstractEnvironment} which can contain an arbitrary number of {@link AbstractEnvironment} instances as sub-environments.
+ * A subclass of {@link SimpleEnvironment} which can contain an arbitrary number of {@link AbstractEnvironment} instances as sub-environments.
  * Thus, the method {@link #isSimple()} will always return false.<br/><br/>
  * 
  * Known direct subclasses: {@link Universe}.
@@ -19,7 +19,7 @@ import uk.ac.rhul.cs.dice.gawl.interfaces.environment.physics.Physics;
  * @author Kostas Stathis
  *
  */
-public abstract class ComplexEnvironment extends AbstractEnvironment {
+public abstract class ComplexEnvironment extends SimpleEnvironment {
 	private List<AbstractEnvironment> subEnvironments;
 	
 	public ComplexEnvironment(EnvironmentalSpace state, Set<Action> admissibleActions, Set<Body> bodies, Physics physics, boolean bounded, ComplexEnvironmentAppearance appearance) {

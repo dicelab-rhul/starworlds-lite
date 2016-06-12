@@ -12,7 +12,7 @@ import java.util.Set;
 
 /**
  * The generic class for spaces related to an {@link AbstractEnvironment}.
- * It is a subclass of {@link Space} and maps a {@link LocationKey} to a {@link Location} through a {@link Map}.<br/><br/>
+ * It is an implementation of {@link Space} and maps a {@link LocationKey} to a {@link Location} through a {@link Map}.<br/><br/>
  * 
  * Known direct subclasses: //TODO
  * 
@@ -20,7 +20,7 @@ import java.util.Set;
  * @author Kostas Stathis
  *
  */
-public abstract class EnvironmentalSpace extends Space {
+public abstract class EnvironmentalSpace implements Space {
 	private Map<LocationKey, Location> grid;
 	
 	public EnvironmentalSpace(){

@@ -2,6 +2,7 @@ package uk.ac.rhul.cs.dice.gawl.interfaces.entities;
 
 import java.util.Set;
 
+import uk.ac.rhul.cs.dice.gawl.interfaces.common.DependentBodyAppearance;
 import uk.ac.rhul.cs.dice.gawl.interfaces.entities.agents.Actuator;
 import uk.ac.rhul.cs.dice.gawl.interfaces.entities.agents.Sensor;
 

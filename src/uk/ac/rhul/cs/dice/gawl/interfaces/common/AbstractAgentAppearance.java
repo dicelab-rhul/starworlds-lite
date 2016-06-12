@@ -13,4 +13,7 @@ import uk.ac.rhul.cs.dice.gawl.interfaces.entities.agents.AbstractAgent;
  */
 public abstract class AbstractAgentAppearance extends BodyAppearance {
 
+	public AbstractAgentAppearance(String name, double[] dimensions) {
+		super(name, dimensions);
+	}
 }

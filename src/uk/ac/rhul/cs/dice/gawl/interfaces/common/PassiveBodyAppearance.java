@@ -13,4 +13,7 @@ import uk.ac.rhul.cs.dice.gawl.interfaces.entities.PassiveBody;
  */
 public abstract class PassiveBodyAppearance extends BodyAppearance {
 
+	public PassiveBodyAppearance(String name, double[] dimensions) {
+		super(name, dimensions);
+	}
 }

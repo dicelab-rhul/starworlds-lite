@@ -1,6 +1,6 @@
-package uk.ac.rhul.cs.dice.gawl.interfaces.entities;
+package uk.ac.rhul.cs.dice.gawl.interfaces.common;
 
-import uk.ac.rhul.cs.dice.gawl.interfaces.common.BodyAppearance;
+import uk.ac.rhul.cs.dice.gawl.interfaces.entities.DependentBody;
 
 /**
  * A subclass of {@link BodyAppearance} contained in {@link DependentBody} objects.<br/><br/>
@@ -13,4 +13,7 @@ import uk.ac.rhul.cs.dice.gawl.interfaces.common.BodyAppearance;
  */
 public abstract class DependentBodyAppearance extends BodyAppearance {
 
+	public DependentBodyAppearance(String name, double[] dimensions) {
+		super(name, dimensions);
+	}
 }

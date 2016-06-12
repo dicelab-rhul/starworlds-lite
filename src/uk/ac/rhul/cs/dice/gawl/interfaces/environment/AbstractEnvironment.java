@@ -13,7 +13,7 @@ import uk.ac.rhul.cs.dice.gawl.interfaces.environment.physics.Physics;
  * elements and one of {@link Body} elements. It also contains an instance of {@link Physics}, a {@link Boolean} indicating whether
  * it is bounded or not, and an {@link Appearance}.<br/><br/>
  * 
- * Known direct subclasses: {@link SimpleEnvironment}, {@link ComplexEnvironment}.
+ * Known direct subclasses: {@link SimpleEnvironment}.
  * 
  * @author cloudstrife9999 a.k.a. Emanuele Uliana
  * @author Kostas Stathis
