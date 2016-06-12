@@ -29,8 +29,8 @@ public abstract class AbstractEnvironment implements Environment, Container {
 	
 	public AbstractEnvironment(EnvironmentalSpace state, Set<Action> admissibleActions, Set<Body> bodies, Physics physics, boolean bounded, Appearance appearance) {
 		this.state = state;
-		this.admissibleActions = admissibleActions != null ? admissibleActions : new HashSet<Action>();
-		this.bodies = bodies != null ? bodies : new HashSet<Body>();
+		this.admissibleActions = admissibleActions != null ? admissibleActions : new HashSet<>();
+		this.bodies = bodies != null ? bodies : new HashSet<>();
 		this.physics = physics;
 		this.bounded = bounded;
 		this.appearance = appearance;
