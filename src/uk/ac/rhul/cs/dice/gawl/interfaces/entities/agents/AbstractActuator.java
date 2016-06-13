@@ -1,13 +1,12 @@
 package uk.ac.rhul.cs.dice.gawl.interfaces.entities.agents;
 
 import java.util.Observable;
-import java.util.Observer;
 
 import uk.ac.rhul.cs.dice.gawl.interfaces.actions.Action;
 import uk.ac.rhul.cs.dice.gawl.interfaces.actions.Event;
 
 /**
- * The most generic class implementing {@link Actuator}. It is also {@link Observable} and can become an {@link Observer}.
+ * The most generic class implementing {@link Actuator}. It is also {@link Observable}.
  * It may contain an {@link Event} to perform and the corresponding {@link Action}.<br/><br/>
  * 
  * Known direct subclasses: //TODO
@@ -16,7 +15,7 @@ import uk.ac.rhul.cs.dice.gawl.interfaces.actions.Event;
  * @author Kostas Stathis
  *
  */
-public abstract class AbstractActuator extends Observable implements Actuator, Observer {
+public abstract class AbstractActuator extends Observable implements Actuator {
 	private Action actionToPerform;
 	private Event eventToPerform;
 	

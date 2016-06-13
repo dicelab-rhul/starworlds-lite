@@ -22,6 +22,13 @@ public abstract class AbstractAgent extends ActiveBody implements Agent {
 	
 	public AbstractAgent(AbstractAgentAppearance appearance, Set<Sensor> sensors, Set<Actuator> actuators, AbstractAgentMind mind, AbstractAgentBrain brain) {
 		super(appearance, sensors, actuators);
+		
+		brain.addObserver(mind);
+		mind.addObserver(brain);
+		
+		brain.addObserver(this);
+		this.addObserver(brain);
+		
 		this.brain = brain;
 		this.mind = mind;
 	}

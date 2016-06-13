@@ -13,6 +13,6 @@ import uk.ac.rhul.cs.dice.gawl.interfaces.environment.EnvironmentalSpace;
  * @author Kostas Stathis
  *
  */
-public abstract class EnviromentalPerception extends EnvironmentalSpace implements Perception {
+public abstract class EnvironmentalPerception extends EnvironmentalSpace implements Perception {
 
 }

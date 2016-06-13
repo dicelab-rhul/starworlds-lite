@@ -1,7 +1,9 @@
 package uk.ac.rhul.cs.dice.gawl.interfaces.entities.agents;
 
+import java.util.Observer;
+
 /**
- * The interface for sensor objects.<br/><br/>
+ * The interface for sensor objects. It extends {@link Observer}.<br/><br/>
  * 
  * Known implementations: {@link AbstractSensor}.
  * 
@@ -9,6 +11,6 @@ package uk.ac.rhul.cs.dice.gawl.interfaces.entities.agents;
  * @author Kostas Stathis
  *
  */
-public interface Sensor {
+public interface Sensor extends Observer {
 
 }

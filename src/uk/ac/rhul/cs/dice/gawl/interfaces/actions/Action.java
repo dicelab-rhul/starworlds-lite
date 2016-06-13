@@ -1,5 +1,6 @@
 package uk.ac.rhul.cs.dice.gawl.interfaces.actions;
 
+import uk.ac.rhul.cs.dice.gawl.interfaces.environment.EnvironmentalSpace;
 import uk.ac.rhul.cs.dice.gawl.interfaces.environment.physics.Physics;
 
 /**
@@ -12,9 +13,9 @@ import uk.ac.rhul.cs.dice.gawl.interfaces.environment.physics.Physics;
  *
  */
 public interface Action {
-	public boolean isPossible(Physics physics);
-	public boolean isNecessary(Physics physics);
-	public AbstractActionResult attempt(Physics physics);
-	public AbstractActionResult perform(Physics physics);
-	public boolean succeeded(Physics physics);
+	public boolean isPossible(Physics physics, EnvironmentalSpace context);
+	public boolean isNecessary(Physics physics, EnvironmentalSpace context);
+	public Result attempt(Physics physics, EnvironmentalSpace context);
+	public Result perform(Physics physics, EnvironmentalSpace context);
+	public boolean succeeded(Physics physics, EnvironmentalSpace context);
 }

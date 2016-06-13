@@ -6,7 +6,9 @@ import java.util.Set;
 import javax.swing.Action;
 
 import uk.ac.rhul.cs.dice.gawl.interfaces.common.BodyAppearance;
+import uk.ac.rhul.cs.dice.gawl.interfaces.entities.agents.AbstractActuator;
 import uk.ac.rhul.cs.dice.gawl.interfaces.entities.agents.AbstractAgent;
+import uk.ac.rhul.cs.dice.gawl.interfaces.entities.agents.AbstractSensor;
 import uk.ac.rhul.cs.dice.gawl.interfaces.entities.agents.Actuator;
 import uk.ac.rhul.cs.dice.gawl.interfaces.entities.agents.Sensor;
 
@@ -26,10 +28,35 @@ public abstract class ActiveBody extends PhysicalBody implements Actor, Simulato
 	
 	public ActiveBody(BodyAppearance appearance, Set<Sensor> sensors, Set<Actuator> actuators) {
 		super(appearance);
+		
 		this.sensors = sensors != null ? sensors : new HashSet<>();
 		this.actuators = actuators != null ? actuators : new HashSet<>();
+		
+		init();
 	}
-	
+
+	private void init() {
+		if(!this.sensors.isEmpty()){
+			initSensors();
+		}
+		
+		if(!this.actuators.isEmpty()) {
+			initActuators();
+		}
+	}
+
+	private void initActuators() {
+		for(Actuator a : this.actuators) {
+			registerActuator(a);
+		}
+	}
+
+	private void initSensors() {
+		for(Sensor s : this.sensors) {
+			registerSensor(s);
+		}
+	}
+
 	public Set<Sensor> getSensors() {
 		return this.sensors;
 	}
@@ -39,10 +66,28 @@ public abstract class ActiveBody extends PhysicalBody implements Actor, Simulato
 	}
 	
 	public void addSensor(Sensor sensor) {
+		registerSensor(sensor);
+		
 		this.sensors.add(sensor);
 	}
 	
 	public void addActuator(Actuator actuator) {
+		registerActuator(actuator);
+		
 		this.actuators.add(actuator);
+	}
+	
+	private void registerActuator(Actuator actuator) {
+		if(actuator instanceof AbstractActuator) {
+			((AbstractActuator) actuator).addObserver(this);
+			this.addObserver(actuator);
+		}
+	}
+	
+	private void registerSensor(Sensor sensor) {
+		if(sensor instanceof AbstractSensor) {
+			((AbstractSensor) sensor).addObserver(this);
+			this.addObserver(sensor);
+		}
 	}
 }
