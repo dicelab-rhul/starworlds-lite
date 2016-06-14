@@ -18,12 +18,7 @@ import uk.ac.rhul.cs.dice.gawl.interfaces.environment.physics.Physics;
  */
 public class Universe extends ComplexEnvironment {
 
-	public Universe(EnvironmentalSpace state, Set<Action> admissibleActions, Set<Body> bodies, Physics physics, boolean bounded, UniverseAppearance appearance) {
-		super(state, admissibleActions, bodies, physics, bounded, appearance);
-	}
-	
-	@Override
-	public boolean isBounded() {
-		return true;
+	public Universe(EnvironmentalSpace state, Set<Action> admissibleActions, Set<Body> bodies, Physics physics, UniverseAppearance appearance) {
+		super(state, admissibleActions, bodies, physics, true, appearance);
 	}
 }
