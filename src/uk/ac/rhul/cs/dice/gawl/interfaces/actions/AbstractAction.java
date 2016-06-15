@@ -8,6 +8,7 @@ import uk.ac.rhul.cs.dice.gawl.interfaces.entities.Actor;
  * Known direct subclasses: {@link PhysicalAction}, {@link CommunicationAction}, {@link SensingAction}.
  * 
  * @author cloudstrife9999 a.k.a. Emanuele Uliana
+ * @author Ben Wilkins
  * @author Kostas Stathis
  *
  */

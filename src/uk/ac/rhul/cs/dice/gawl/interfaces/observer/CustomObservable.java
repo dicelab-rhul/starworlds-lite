@@ -1,7 +1,17 @@
 package uk.ac.rhul.cs.dice.gawl.interfaces.observer;
 
 import java.util.List;
+import java.util.Observable;
 
+/**
+ * Custom implementation of the {@link Observable} class. It allows to select the recipients of a notification
+ * in a more specific way.
+ * 
+ * @author cloudstrife9999 a.k.a. Emanuele Uliana
+ * @author Ben Wilkins
+ * @author Kostas Stathis
+ *
+ */
 public class CustomObservable {
 	List<CustomObserver> observers;
 	private boolean changed;
@@ -28,7 +38,7 @@ public class CustomObservable {
 	
 	/**
 	 * Notifies all the registered {@link CustomObserver} elements with a <code>null</code> message, but
-	 * only if <code>setChanged()</code> has been called before.
+	 * only if {@link #setChanged()} has been called before.
 	 */
 	public void notifyObservers() {
 		if(this.changed) {
@@ -42,7 +52,7 @@ public class CustomObservable {
 	
 	/**
 	 * Notifies all the registered {@link CustomObserver} elements with a message, but
-	 * only if <code>setChanged()</code> has been called before.
+	 * only if {@link #setChanged()} has been called before.
 	 * 
 	 * @param arg : the {@link Object} message to send to the {@link CustomObserver} elements.
 	 */
@@ -58,7 +68,7 @@ public class CustomObservable {
 	
 	/**
 	 * Notifies all the registered {@link CustomObserver} elements of a specific class with a message, but
-	 * only if <code>setChanged()</code> has been called before.
+	 * only if {@link #setChanged()} has been called before.
 	 * 
 	 * @param arg : the {@link Object} message to send to the {@link CustomObserver} elements.
 	 * @param c : the class the {@link CustomObserver} elements must inherit from for them to be notified.

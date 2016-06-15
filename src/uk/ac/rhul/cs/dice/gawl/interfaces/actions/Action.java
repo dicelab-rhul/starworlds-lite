@@ -9,6 +9,7 @@ import uk.ac.rhul.cs.dice.gawl.interfaces.environment.physics.Physics;
  * Known implementations: {@link AbstractAction}.
  * 
  * @author cloudstrife9999 a.k.a. Emanuele Uliana
+ * @author Ben Wilkins
  * @author Kostas Stathis
  *
  */
@@ -32,8 +33,8 @@ public interface Action {
 	public boolean isNecessary(Physics physics, EnvironmentalSpace context);
 	
 	/**
-	 * Attempts to execute the action by calling {@link isPossible(physics, context)},
-	 * {@link perform(physics, context)} and {@link succeeded(physics, event)}.
+	 * Attempts to execute the action by calling {@link #isPossible(physics, context)},
+	 * {@link #perform(physics, context)} and {@link #succeeded(physics, event)}.
 	 * 
 	 * @param physics : the {@link Physics} of the context where the action is executed.
 	 * @param context : the {@link EnvironmentalSpace} where the action is executed.

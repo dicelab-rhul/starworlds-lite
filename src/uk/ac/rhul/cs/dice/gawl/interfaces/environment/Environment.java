@@ -3,7 +3,7 @@ package uk.ac.rhul.cs.dice.gawl.interfaces.environment;
 import java.util.Set;
 
 import uk.ac.rhul.cs.dice.gawl.interfaces.actions.Action;
-import uk.ac.rhul.cs.dice.gawl.interfaces.common.Appearance;
+import uk.ac.rhul.cs.dice.gawl.interfaces.appearances.Appearance;
 import uk.ac.rhul.cs.dice.gawl.interfaces.entities.Body;
 import uk.ac.rhul.cs.dice.gawl.interfaces.environment.physics.Physics;
 
@@ -13,6 +13,7 @@ import uk.ac.rhul.cs.dice.gawl.interfaces.environment.physics.Physics;
  * Known implementations: {@link AbstractEnvironment}.
  * 
  * @author cloudstrife9999 a.k.a. Emanuele Uliana
+ * @author Ben Wilkins
  * @author Kostas Stathis
  *
  */

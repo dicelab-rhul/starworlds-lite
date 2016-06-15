@@ -2,7 +2,7 @@ package uk.ac.rhul.cs.dice.gawl.interfaces.entities;
 
 import java.util.Set;
 
-import uk.ac.rhul.cs.dice.gawl.interfaces.common.DependentBodyAppearance;
+import uk.ac.rhul.cs.dice.gawl.interfaces.appearances.DependentBodyAppearance;
 import uk.ac.rhul.cs.dice.gawl.interfaces.entities.agents.Actuator;
 import uk.ac.rhul.cs.dice.gawl.interfaces.entities.agents.Sensor;
 
@@ -12,6 +12,7 @@ import uk.ac.rhul.cs.dice.gawl.interfaces.entities.agents.Sensor;
  * Known direct subclasses: none.
  * 
  * @author cloudstrife9999 a.k.a. Emanuele Uliana
+ * @author Ben Wilkins
  * @author Kostas Stathis
  *
  */

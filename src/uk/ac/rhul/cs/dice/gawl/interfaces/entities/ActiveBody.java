@@ -5,7 +5,7 @@ import java.util.Set;
 
 import javax.swing.Action;
 
-import uk.ac.rhul.cs.dice.gawl.interfaces.common.BodyAppearance;
+import uk.ac.rhul.cs.dice.gawl.interfaces.appearances.BodyAppearance;
 import uk.ac.rhul.cs.dice.gawl.interfaces.entities.agents.AbstractActuator;
 import uk.ac.rhul.cs.dice.gawl.interfaces.entities.agents.AbstractAgent;
 import uk.ac.rhul.cs.dice.gawl.interfaces.entities.agents.AbstractSensor;
@@ -19,6 +19,7 @@ import uk.ac.rhul.cs.dice.gawl.interfaces.entities.agents.Sensor;
  * Known direct subclasses: {@link AbstractAgent}, {@link DependentBody}.
  * 
  * @author cloudstrife9999 a.k.a. Emanuele Uliana
+ * @author Ben Wilkins
  * @author Kostas Stathis
  *
  */

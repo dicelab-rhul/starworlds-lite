@@ -6,6 +6,7 @@ package uk.ac.rhul.cs.dice.gawl.interfaces.actions;
  * Known implementations: {@link DefaultActionResult}.
  * 
  * @author cloudstrife9999 a.k.a. Emanuele Uliana
+ * @author Ben Wilkins
  * @author Kostas Stathis
  *
  */

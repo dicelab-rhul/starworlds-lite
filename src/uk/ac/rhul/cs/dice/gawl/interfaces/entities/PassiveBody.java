@@ -1,6 +1,6 @@
 package uk.ac.rhul.cs.dice.gawl.interfaces.entities;
 
-import uk.ac.rhul.cs.dice.gawl.interfaces.common.PassiveBodyAppearance;
+import uk.ac.rhul.cs.dice.gawl.interfaces.appearances.PassiveBodyAppearance;
 
 /**
  * A subclass of {@link PhysicalBody} which implements {@link ObjectInterface}.<br/><br/>
@@ -8,6 +8,7 @@ import uk.ac.rhul.cs.dice.gawl.interfaces.common.PassiveBodyAppearance;
  * Known direct subclasses: none.
  * 
  * @author cloudstrife9999 a.k.a. Emanuele Uliana
+ * @author Ben Wilkins
  * @author Kostas Stathis
  *
  */

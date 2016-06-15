@@ -8,6 +8,7 @@ import uk.ac.rhul.cs.dice.gawl.interfaces.actions.Result;
  * Known direct subclasses: none.
  * 
  * @author cloudstrife9999 a.k.a. Emanuele Uliana
+ * @author Ben Wilkins
  * @author Kostas Stathis
  *
  */

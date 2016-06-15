@@ -11,6 +11,7 @@ import uk.ac.rhul.cs.dice.gawl.interfaces.environment.EnvironmentalSpace;
  * Known implementations: {@link AbstractPhysics}.
  * 
  * @author cloudstrife9999 a.k.a. Emanuele Uliana
+ * @author Ben Wilkins
  * @author Kostas Stathis
  *
  */

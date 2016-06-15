@@ -6,6 +6,7 @@ package uk.ac.rhul.cs.dice.gawl.interfaces.environment.locations;
  * Known implementations: none.
  * 
  * @author cloudstrife9999 a.k.a. Emanuele Uliana
+ * @author Ben Wilkins
  * @author Kostas Stathis
  *
  */

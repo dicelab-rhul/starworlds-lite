@@ -4,7 +4,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import uk.ac.rhul.cs.dice.gawl.interfaces.actions.Action;
-import uk.ac.rhul.cs.dice.gawl.interfaces.common.Appearance;
+import uk.ac.rhul.cs.dice.gawl.interfaces.appearances.Appearance;
 import uk.ac.rhul.cs.dice.gawl.interfaces.entities.Body;
 import uk.ac.rhul.cs.dice.gawl.interfaces.environment.physics.Physics;
 
@@ -16,6 +16,7 @@ import uk.ac.rhul.cs.dice.gawl.interfaces.environment.physics.Physics;
  * Known direct subclasses: {@link SimpleEnvironment}.
  * 
  * @author cloudstrife9999 a.k.a. Emanuele Uliana
+ * @author Ben Wilkins
  * @author Kostas Stathis
  *
  */

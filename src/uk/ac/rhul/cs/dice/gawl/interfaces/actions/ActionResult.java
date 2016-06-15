@@ -4,6 +4,7 @@ package uk.ac.rhul.cs.dice.gawl.interfaces.actions;
  * A generic enumeration for action results.<br/><br/>
  * 
  * @author cloudstrife9999 a.k.a. Emanuele Uliana
+ * @author Ben Wilkins
  * @author Kostas Stathis
  *
  */

@@ -1,21 +1,22 @@
 package uk.ac.rhul.cs.dice.gawl.interfaces.entities;
 
-import java.util.Observable;
-import java.util.Observer;
-
-import uk.ac.rhul.cs.dice.gawl.interfaces.common.Appearance;
+import uk.ac.rhul.cs.dice.gawl.interfaces.appearances.Appearance;
+import uk.ac.rhul.cs.dice.gawl.interfaces.observer.CustomObservable;
+import uk.ac.rhul.cs.dice.gawl.interfaces.observer.CustomObserver;
 
 /**
- * The most generic class for physical bodies implementing {@link Body}. It is {@link Observable} and can become an {@link Observer}.
+ * The most generic class for physical bodies implementing {@link Body}. It extends {@link CustomObservable}
+ * and can become a {@link CustomObserver}.
  * It has a {@link String} id and an {@link Appearance}.<br/><br/>
  * 
  * Known direct subclasses: {@link ActiveBody}, {@link PassiveBody}.
  * 
  * @author cloudstrife9999 a.k.a. Emanuele Uliana
+ * @author Ben Wilkins
  * @author Kostas Stathis
  *
  */
-public abstract class PhysicalBody extends Observable implements Body, Observer {
+public abstract class PhysicalBody extends CustomObservable implements Body, CustomObserver {
 	private String id;
 	private Appearance externalAppearance;
 	

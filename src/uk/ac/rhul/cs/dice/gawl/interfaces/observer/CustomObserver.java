@@ -1,7 +1,17 @@
 package uk.ac.rhul.cs.dice.gawl.interfaces.observer;
 
 import java.util.Observable;
+import java.util.Observer;
 
+/**
+ * Custom implementation of the {@link Observer} interface. It substitutes the {@link Observable} with
+ * a {@link CustomObservable}.
+ * 
+ * @author cloudstrife9999 a.k.a. Emanuele Uliana
+ * @author Ben Wilkins
+ * @author Kostas Stathis
+ *
+ */
 @FunctionalInterface
 public interface CustomObserver {
 	

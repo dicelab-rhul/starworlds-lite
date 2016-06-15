@@ -6,6 +6,7 @@ package uk.ac.rhul.cs.dice.gawl.interfaces.entities;
  * Known implementations: {@link PhysicalBody}.
  * 
  * @author cloudstrife9999 a.k.a. Emanuele Uliana
+ * @author Ben Wilkins
  * @author Kostas Stathis
  *
  */

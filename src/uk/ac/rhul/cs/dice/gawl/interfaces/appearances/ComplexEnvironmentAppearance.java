@@ -1,4 +1,4 @@
-package uk.ac.rhul.cs.dice.gawl.interfaces.common;
+package uk.ac.rhul.cs.dice.gawl.interfaces.appearances;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,6 +11,7 @@ import uk.ac.rhul.cs.dice.gawl.interfaces.environment.ComplexEnvironment;
  * Known direct subclases: {@link UniverseAppearance}.
  * 
  * @author cloudstrife9999 a.k.a. Emanuele Uliana
+ * @author Ben Wilkins
  * @author Kostas Stathis
  *
  */

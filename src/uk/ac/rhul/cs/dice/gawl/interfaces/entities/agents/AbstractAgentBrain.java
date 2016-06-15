@@ -1,16 +1,17 @@
 package uk.ac.rhul.cs.dice.gawl.interfaces.entities.agents;
 
-import java.util.Observable;
+import uk.ac.rhul.cs.dice.gawl.interfaces.observer.CustomObservable;
 
 /**
- * A {@link Brain} implementation which is {@link Observable}.<br/><br/>
+ * A {@link Brain} implementation which is {@link CustomObservable}.<br/><br/>
  * 
- * Known direct subclasses: //TODO
+ * Known direct subclasses: none.
  * 
  * @author cloudstrife9999 a.k.a. Emanuele Uliana
+ * @author Ben Wilkins
  * @author Kostas Stathis
  *
  */
-public abstract class AbstractAgentBrain extends Observable implements Brain {
+public abstract class AbstractAgentBrain extends CustomObservable implements Brain {
 
 }

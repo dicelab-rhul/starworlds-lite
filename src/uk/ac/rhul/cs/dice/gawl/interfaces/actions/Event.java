@@ -10,6 +10,7 @@ import uk.ac.rhul.cs.dice.gawl.interfaces.environment.physics.Physics;
  * Known implementations {@link AbstractEvent}.
  * 
  * @author cloudstrife9999 a.k.a. Emanuele Uliana
+ * @author Ben Wilkins
  * @author Kostas Stathis
  *
  */
@@ -82,8 +83,8 @@ public interface Event {
 	public boolean isNecessary(Physics physics, EnvironmentalSpace context);
 	
 	/**
-	 * Attempts to execute the event by calling {@link isPossible(physics, context)},
-	 * {@link perform(physics, context)} and {@link succeeded(physics, event)}.
+	 * Attempts to execute the event by calling {@link #isPossible(physics, context)},
+	 * {@link #perform(physics, context)} and {@link #succeeded(physics, event)}.
 	 * 
 	 * @param physics : the {@link Physics} of the context where the event is executed.
 	 * @param context : the {@link EnvironmentalSpace} where the event is executed.

@@ -8,6 +8,7 @@ import uk.ac.rhul.cs.dice.gawl.interfaces.entities.agents.AbstractAgent;
  * Known implementations: {@link AbstractAgent}.
  * 
  * @author cloudstrife9999 a.k.a. Emanuele Uliana
+ * @author Ben Wilkins
  * @author Kostas Stathis
  *
  */

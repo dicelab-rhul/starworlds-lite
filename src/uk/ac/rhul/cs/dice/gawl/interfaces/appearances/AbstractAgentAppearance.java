@@ -1,4 +1,4 @@
-package uk.ac.rhul.cs.dice.gawl.interfaces.common;
+package uk.ac.rhul.cs.dice.gawl.interfaces.appearances;
 
 import uk.ac.rhul.cs.dice.gawl.interfaces.entities.agents.AbstractAgent;
 
@@ -8,6 +8,7 @@ import uk.ac.rhul.cs.dice.gawl.interfaces.entities.agents.AbstractAgent;
  * Known direct subclasses: none.
  * 
  * @author cloudstrife9999 a.k.a. Emanuele Uliana
+ * @author Ben Wilkins
  * @author Kostas Stathis
  *
  */
