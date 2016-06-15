@@ -18,6 +18,11 @@ import uk.ac.rhul.cs.dice.gawl.interfaces.environment.ComplexEnvironment;
 public abstract class ComplexEnvironmentAppearance extends SimpleEnvironmentAppearance {
 	private List<Appearance> subAppearances;
 	
+	/**
+	 * Constructor with a {@link String} name.
+	 * 
+	 * @param name : the {@link String} name of the {@link ComplexEnvironment}.
+	 */
 	public ComplexEnvironmentAppearance(String name) {
 		super(name);
 		this.subAppearances = new ArrayList<>();

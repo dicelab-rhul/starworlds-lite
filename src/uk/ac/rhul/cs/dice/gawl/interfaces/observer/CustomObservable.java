@@ -25,6 +25,11 @@ public class CustomObservable {
 		return this.observers;
 	}
 	
+	/**
+	 * Adds a {@link CustomObserver} to the {@link List} of observers.
+	 * 
+	 * @param observer : the {@link CustomObserver} to be added to the {@link List} of observers.
+	 */
 	public void addObserver(CustomObserver observer) {
 		this.observers.add(observer);
 	}
