@@ -1,5 +1,6 @@
 package uk.ac.rhul.cs.dice.gawl.interfaces.observer;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Observable;
 
@@ -16,6 +17,14 @@ public class CustomObservable {
 	List<CustomObserver> observers;
 	private boolean changed;
 	
+	/**
+	 * The default constructor.
+	 */
+	public CustomObservable() {
+		this.observers = new ArrayList<>();
+		this.changed = false;
+	}
+
 	/**
 	 * Returns the {@link List} of {@link CustomObserver} instances contained in this {@link CustomObservable}.
 	 * 
