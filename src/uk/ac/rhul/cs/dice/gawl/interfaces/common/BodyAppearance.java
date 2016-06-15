@@ -13,26 +13,44 @@ import uk.ac.rhul.cs.dice.gawl.interfaces.entities.Body;
  */
 public abstract class BodyAppearance implements Appearance {
 	private String bodyName;
-	private double[] dimensions;
+	private Double[] dimensions;
 	
-	public BodyAppearance(String name, double[] dimensions) {
+	/**
+	 * Constructor with a {@link String} name and a pair of {@link Double}.
+	 * 
+	 * @param name : the name of the {@link Body}.
+	 * @param dimensions : the size of the {@link Body} represented by a {@link Double} array.
+	 */
+	public BodyAppearance(String name, Double[] dimensions) {
 		this.bodyName = name;
 		this.dimensions = dimensions;
 	}
 
-	public String getBodyName() {
+	@Override
+	public String getName() {
 		return this.bodyName;
 	}
 
-	public void setBodyName(String bodyName) {
+	@Override
+	public void setName(String bodyName) {
 		this.bodyName = bodyName;
 	}
 
-	public double[] getDimensions() {
+	/**
+	 * Returns the dimensions of the {@link Body}.
+	 * 
+	 * @return the size of the {@link Body} represented by a {@link Double} array.
+	 */
+	public Double[] getDimensions() {
 		return this.dimensions;
 	}
 
-	public void setDimensions(double[] dimensions) {
+	/**
+	 * Sets the dimensions of the {@link Body}.
+	 * 
+	 * @param dimensions : the size of the {@link Body} represented by a {@link Double} array.
+	 */
+	public void setDimensions(Double[] dimensions) {
 		this.dimensions = dimensions;
 	}
 }

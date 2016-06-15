@@ -11,5 +11,11 @@ package uk.ac.rhul.cs.dice.gawl.interfaces.entities;
  */
 @FunctionalInterface
 public interface Simulator {
+	
+	/**
+	 * Performs a simulation.
+	 * 
+	 * @return the simulation return value as a generic {@link Object}.
+	 */
 	public Object simulate();
 }

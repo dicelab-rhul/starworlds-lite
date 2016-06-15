@@ -22,18 +22,39 @@ public abstract class ComplexEnvironmentAppearance extends SimpleEnvironmentAppe
 		this.subAppearances = new ArrayList<>();
 	}
 	
+	/**
+	 * Adds a {@link SimpleEnvironmentAppearance} to the list of sub-environments appearances.
+	 * 
+	 * @param appearance : the sub-environment {@link SimpleEnvironmentAppearance}.
+	 */
 	public void addSubEnvironmentAppearance(SimpleEnvironmentAppearance appearance) {
 		this.subAppearances.add(appearance);
 	}
 	
+	/**
+	 * Adds a {@link ComplexEnvironmentAppearance} to the list of sub-environments appearances.
+	 * 
+	 * @param appearance : the sub-environment {@link ComplexEnvironmentAppearance}.
+	 */
 	public void addSubEnvironmentAppearance(ComplexEnvironmentAppearance appearance) {
 		this.subAppearances.add(appearance);
 	}
 	
+	/**
+	 * Returns the {@link List} of sub-environments {@link Appearance} instances.
+	 * 
+	 * @return a {@link List} of sub-environments {@link Appearance} instances.
+	 */
 	public List<Appearance> getSubAppearances() {
 		return this.subAppearances;
 	}
 	
+	/**
+	 * Returns the {@link Appearance} of a specific sub-environment specified by the <code>index</code> parameter.
+	 * 
+	 * @param index : the index of the sub-environment whose {@link Appearance} is to e returned.
+	 * @return the {@link Appearance} of the sub-environment specified by <code>index</code>
+	 */
 	public Appearance getSpecificSubAppearance(int index) {
 		return this.subAppearances.get(index);
 	}

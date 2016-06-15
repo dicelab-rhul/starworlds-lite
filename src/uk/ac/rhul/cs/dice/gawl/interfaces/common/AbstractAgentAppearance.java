@@ -5,7 +5,7 @@ import uk.ac.rhul.cs.dice.gawl.interfaces.entities.agents.AbstractAgent;
 /**
  * The appearance of an {@link AbstractAgent}, subclass of {@link BodyAppearance}.<br/><br/>
  * 
- * Known direct subclasses: //TODO
+ * Known direct subclasses: none.
  * 
  * @author cloudstrife9999 a.k.a. Emanuele Uliana
  * @author Kostas Stathis
@@ -13,7 +13,13 @@ import uk.ac.rhul.cs.dice.gawl.interfaces.entities.agents.AbstractAgent;
  */
 public abstract class AbstractAgentAppearance extends BodyAppearance {
 
-	public AbstractAgentAppearance(String name, double[] dimensions) {
+	/**
+	 * Constructor with a {@link String} name and a pair of {@link Double}.
+	 * 
+	 * @param name : the name of the {@link AbstractAgent}.
+	 * @param dimensions : the size of the {@link AbstractAgent} represented by a {@link Double} array.
+	 */
+	public AbstractAgentAppearance(String name, Double[] dimensions) {
 		super(name, dimensions);
 	}
 }

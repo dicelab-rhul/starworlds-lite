@@ -10,7 +10,7 @@ import uk.ac.rhul.cs.dice.gawl.interfaces.entities.Agent;
  * A subclass of {@link ActiveBody} implementing the {@link Agent} interface. It contains a {@link Brain}
  * and a {@link Mind}.<br/><br/>
  * 
- * Known direct subclasses: //TODO
+ * Known direct subclasses: {@link AutonomousAgent}, {@link Avatar}.
  * 
  * @author cloudstrife9999 a.k.a. Emanuele Uliana
  * @author Kostas Stathis

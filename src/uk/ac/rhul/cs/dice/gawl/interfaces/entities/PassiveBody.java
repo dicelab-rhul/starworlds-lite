@@ -5,7 +5,7 @@ import uk.ac.rhul.cs.dice.gawl.interfaces.common.PassiveBodyAppearance;
 /**
  * A subclass of {@link PhysicalBody} which implements {@link ObjectInterface}.<br/><br/>
  * 
- * Known direct subclasses: //TODO
+ * Known direct subclasses: none.
  * 
  * @author cloudstrife9999 a.k.a. Emanuele Uliana
  * @author Kostas Stathis

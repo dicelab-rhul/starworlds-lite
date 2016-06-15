@@ -1,5 +1,6 @@
 package uk.ac.rhul.cs.dice.gawl.interfaces.entities.agents;
 
+import java.util.List;
 import java.util.Observer;
 
 import uk.ac.rhul.cs.dice.gawl.interfaces.actions.Action;
@@ -15,4 +16,6 @@ import uk.ac.rhul.cs.dice.gawl.interfaces.actions.Action;
  */
 public interface Mind extends Observer {
 	public Action decide(Object... parameters);
+	public List<Action> getAvailableActionsForThisCicle();
+	public void addAvailableActionForThisCicle(Action availableActionForThisCicle);
 }

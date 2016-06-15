@@ -15,10 +15,17 @@ import uk.ac.rhul.cs.dice.gawl.interfaces.environment.physics.Physics;
  */
 public abstract class AbstractEvent implements Event {
 	private Action action;
-	private long timestamp;
+	private Long timestamp;
 	private Actor actor;
 	
-	public AbstractEvent(Action action, long timestamp, Actor actor) {
+	/**
+	 * Constructor with an {@link Action}, a {@link Long} timestamp and an {@link Actor}.
+	 * 
+	 * @param action : the {@link Action} to be executed during the event.
+	 * @param timestamp : the timestamp of the event expressed as a {@link Long}.
+	 * @param actor : the {@link Actor} which executes the {@link Action}.
+	 */
+	public AbstractEvent(Action action, Long timestamp, Actor actor) {
 		this.action = action;
 		this.timestamp = timestamp;
 		this.actor = actor;
@@ -35,12 +42,12 @@ public abstract class AbstractEvent implements Event {
 	}
 
 	@Override
-	public long getTimestamp() {
+	public Long getTimestamp() {
 		return this.timestamp;
 	}
 
 	@Override
-	public void setTimestamp(long timestamp) {
+	public void setTimestamp(Long timestamp) {
 		this.timestamp = timestamp;
 	}
 
