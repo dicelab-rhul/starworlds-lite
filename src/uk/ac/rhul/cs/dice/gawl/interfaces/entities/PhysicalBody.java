@@ -19,14 +19,29 @@ public abstract class PhysicalBody extends Observable implements Body, Observer 
 	private String id;
 	private Appearance externalAppearance;
 	
+	/**
+	 * Constructor with an external {@link Appearance}.
+	 * 
+	 * @param externalAppearance : the external {@link Appearance} of the {@link PhysicalBody}.
+	 */
 	public PhysicalBody(Appearance externalAppearance) {
 		this.externalAppearance = externalAppearance;
 	}
 	
+	/**
+	 * Returns the external {@link Appearance} of the {@link PhysicalBody}.
+	 * 
+	 * @return the external {@link Appearance} of the {@link PhysicalBody}.
+	 */
 	public Appearance getExternalAppearance() {
 		return this.externalAppearance;
 	}
 	
+	/**
+	 * Sets the external {@link Appearance} of the {@link PhysicalBody}.
+	 * 
+	 * @param externalAppearance : the external {@link Appearance} of the {@link PhysicalBody}.
+	 */
 	public void setExternalAppearance(Appearance externalAppearance) {
 		this.externalAppearance = externalAppearance;
 	}

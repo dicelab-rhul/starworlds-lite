@@ -26,6 +26,14 @@ public abstract class ActiveBody extends PhysicalBody implements Actor, Simulato
 	private Set<Sensor> sensors;
 	private Set<Actuator> actuators;
 	
+	/**
+	 * Constructor with a {@link BodyAppearance}, a {@link Set} of {@link Sensor} instances and
+	 * one of {@link Actuator} instances.
+	 * 
+	 * @param appearance : the {@link BodyAppearance} of the {@link ActiveBody}.
+	 * @param sensors : a {@link Set} of {@link Sensor} instances.
+	 * @param actuators : a {@link Set} of {@link Actuator} instances.
+	 */
 	public ActiveBody(BodyAppearance appearance, Set<Sensor> sensors, Set<Actuator> actuators) {
 		super(appearance);
 		
@@ -57,20 +65,40 @@ public abstract class ActiveBody extends PhysicalBody implements Actor, Simulato
 		}
 	}
 
+	/**
+	 * Returns a {@link Set} of {@link Sensor} instances.
+	 * 
+	 * @return the {@link Set} of {@link Sensor} instances.
+	 */
 	public Set<Sensor> getSensors() {
 		return this.sensors;
 	}
 	
+	/**
+	 * Returns a {@link Set} of {@link Actuator} instances.
+	 * 
+	 * @return the {@link Set} of {@link Actuator} instances.
+	 */
 	public Set<Actuator> getActuators() {
 		return this.actuators;
 	}
 	
+	/**
+	 * Adds a {@link Sensor} to the {@link Set}.
+	 * 
+	 * @param sensor : the {@link Sensor} to be added to the {@link Set}.
+	 */
 	public void addSensor(Sensor sensor) {
 		registerSensor(sensor);
 		
 		this.sensors.add(sensor);
 	}
 	
+	/**
+	 * Adds an {@link Actuator} to the {@link Set}.
+	 * 
+	 * @param sensor : the {@link Actuator} to be added to the {@link Set}.
+	 */
 	public void addActuator(Actuator actuator) {
 		registerActuator(actuator);
 		

@@ -24,10 +24,20 @@ public abstract class AbstractEnvironment implements Environment, Container {
 	private Set<Action> admissibleActions;
 	private Set<Body> bodies;
 	private Physics physics;
-	private boolean bounded;
+	private Boolean bounded;
 	private Appearance appearance;
 	
-	public AbstractEnvironment(EnvironmentalSpace state, Set<Action> admissibleActions, Set<Body> bodies, Physics physics, boolean bounded, Appearance appearance) {
+	/**
+	 * The default class constructor.
+	 * 
+	 * @param state : an {@link EnvironmentalSpace} instance.
+	 * @param admissibleActions : the {@link Set} of performable {@link Action} instances.
+	 * @param bodies : a {@link Set} of {@link Body} elements.
+	 * @param physics : the {@link Physics} of the environment.
+	 * @param bounded : a {@link Boolean} value indicating whether the environment is bounded or not.
+	 * @param appearance : the {@link Appearance} of the environment.
+	 */
+	public AbstractEnvironment(EnvironmentalSpace state, Set<Action> admissibleActions, Set<Body> bodies, Physics physics, Boolean bounded, Appearance appearance) {
 		this.state = state;
 		this.admissibleActions = admissibleActions != null ? admissibleActions : new HashSet<>();
 		this.bodies = bodies != null ? bodies : new HashSet<>();
@@ -77,12 +87,12 @@ public abstract class AbstractEnvironment implements Environment, Container {
 	}
 
 	@Override
-	public boolean isBounded() {
+	public Boolean isBounded() {
 		return this.bounded;
 	}
 
 	@Override
-	public void setBounded(boolean bounded) {
+	public void setBounded(Boolean bounded) {
 		this.bounded = bounded;
 	}
 

@@ -13,6 +13,11 @@ import uk.ac.rhul.cs.dice.gawl.interfaces.common.PassiveBodyAppearance;
  */
 public abstract class PassiveBody extends PhysicalBody implements ObjectInterface {
 
+	/**
+	 * Constructor with a {@link PassiveBodyAppearance}.
+	 * 
+	 * @param externalAppearance : the {@link PassiveBodyAppearance}.
+	 */
 	public PassiveBody(PassiveBodyAppearance appearance) {
 		super(appearance);
 	}

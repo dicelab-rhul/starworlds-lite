@@ -14,10 +14,20 @@ import uk.ac.rhul.cs.dice.gawl.interfaces.actions.Result;
 public abstract class AbstractPhysics implements Physics {
 	private Result currentMoveResult;
 
+	/**
+	 * Returns the {@link Result} of the current execution attempt.
+	 * 
+	 * @return Returns the {@link Result} of the current execution attempt.
+	 */
 	public Result getCurrentMoveResult() {
 		return this.currentMoveResult;
 	}
 
+	/**
+	 * Sets the {@link Result} of the current execution attempt.
+	 * 
+	 * @param currentMoveResult : the {@link Result} of the current execution attempt.
+	 */
 	public void setCurrentMoveResult(Result currentMoveResult) {
 		this.currentMoveResult = currentMoveResult;
 	}

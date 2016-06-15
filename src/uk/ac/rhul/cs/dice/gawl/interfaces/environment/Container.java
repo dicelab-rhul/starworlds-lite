@@ -1,7 +1,7 @@
 package uk.ac.rhul.cs.dice.gawl.interfaces.environment;
 
 /**
- * An interface for classes which act as a container for specific containable objects. //TODO <br/><br/>
+ * An interface for classes which act as a container for specific containable objects.<br/><br/>
  * 
  * Known implementations: {@link AbstractEnvironment}.
  * 

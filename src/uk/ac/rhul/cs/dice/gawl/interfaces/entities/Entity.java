@@ -10,6 +10,18 @@ package uk.ac.rhul.cs.dice.gawl.interfaces.entities;
  *
  */
 public interface Entity {
+	
+	/**
+	 * Returns the unique ID of the entity.
+	 * 
+	 * @return a {@link String} representing the unique ID of the entity.
+	 */
 	public Object getId();
+	
+	/**
+	 * Sets a unique ID for the entity.
+	 * 
+	 * @param id : a {@link String} representing the unique ID.
+	 */
 	public void setId(Object id);
 }
