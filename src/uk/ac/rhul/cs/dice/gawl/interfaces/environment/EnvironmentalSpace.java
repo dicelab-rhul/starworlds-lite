@@ -7,12 +7,14 @@ import java.util.Map.Entry;
 
 import uk.ac.rhul.cs.dice.gawl.interfaces.environment.locations.Location;
 import uk.ac.rhul.cs.dice.gawl.interfaces.environment.locations.LocationKey;
+import uk.ac.rhul.cs.dice.gawl.interfaces.observer.CustomObservable;
+import uk.ac.rhul.cs.dice.gawl.interfaces.observer.CustomObserver;
 
 import java.util.Set;
 
 /**
- * The generic class for spaces related to an {@link AbstractEnvironment}.
- * It is an implementation of {@link Space} and maps a {@link LocationKey} to a {@link Location} through a {@link Map}.<br/><br/>
+ * The generic class for spaces related to an {@link AbstractEnvironment}. It extends {@link CustomObservable}, it is an implementation of
+ * {@link Space} and {@link CustomObserver}, and it maps a {@link LocationKey} to a {@link Location} through a {@link Map}.<br/><br/>
  * 
  * Known direct subclasses: none.
  * 
@@ -21,7 +23,7 @@ import java.util.Set;
  * @author Kostas Stathis
  *
  */
-public abstract class EnvironmentalSpace implements Space {
+public abstract class EnvironmentalSpace extends CustomObservable implements Space, CustomObserver {
 	private Map<LocationKey, Location> grid;
 	
 	/**

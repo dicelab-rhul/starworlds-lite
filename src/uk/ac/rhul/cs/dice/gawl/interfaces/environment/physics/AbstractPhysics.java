@@ -1,9 +1,12 @@
 package uk.ac.rhul.cs.dice.gawl.interfaces.environment.physics;
 
 import uk.ac.rhul.cs.dice.gawl.interfaces.actions.Result;
+import uk.ac.rhul.cs.dice.gawl.interfaces.observer.CustomObservable;
+import uk.ac.rhul.cs.dice.gawl.interfaces.observer.CustomObserver;
 
 /**
- * The most general class representing physics.<br/><br/>
+ * The most general class representing physics. It extends {@link CustomObservable} and it implements {@link Physics}
+ * and {@link CustomObserver}.<br/><br/>
  * 
  * Known direct subclasses: none.
  * 
@@ -12,7 +15,7 @@ import uk.ac.rhul.cs.dice.gawl.interfaces.actions.Result;
  * @author Kostas Stathis
  *
  */
-public abstract class AbstractPhysics implements Physics {
+public abstract class AbstractPhysics extends CustomObservable implements Physics, CustomObserver {
 	private Result currentMoveResult;
 
 	/**
