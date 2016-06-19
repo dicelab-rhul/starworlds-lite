@@ -4,6 +4,7 @@ import java.util.List;
 
 import uk.ac.rhul.cs.dice.gawl.interfaces.actions.Action;
 import uk.ac.rhul.cs.dice.gawl.interfaces.observer.CustomObserver;
+import uk.ac.rhul.cs.dice.gawl.interfaces.perception.Perception;
 
 /**
  * The interface for minds. it extends {@link CustomObserver}.<br/><br/>
@@ -17,12 +18,26 @@ import uk.ac.rhul.cs.dice.gawl.interfaces.observer.CustomObserver;
  */
 public interface Mind extends CustomObserver {
 	/**
+	 * Stores the received perception for reuse.
+	 * 
+	 * @param perceptionWrapper : a wrapper for a {@link Perception}.
+	 */
+	public void perceive(Object perceptionWrapper);
+	
+	/**
 	 * Selects an {@link Action} to be attempted after a computation involving <code>parameters</code>.
 	 * 
 	 * @param parameters : an array of {@link Object} elements used to select the {@link Action} to attempt.
 	 * @return the {@link Action} to attempt.
 	 */
 	public Action decide(Object... parameters);
+	
+	/**
+	 * Passes the {@link Action} to a manager which will decide when, how and who will execute it.
+	 * 
+	 * @param action
+	 */
+	public void execute(Action action);
 	
 	/**
 	 * Returns the {@link List} of all the {@link Action} instances which can be attempted.

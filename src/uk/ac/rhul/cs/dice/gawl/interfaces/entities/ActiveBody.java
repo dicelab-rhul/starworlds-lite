@@ -1,7 +1,7 @@
 package uk.ac.rhul.cs.dice.gawl.interfaces.entities;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.Action;
 
@@ -13,7 +13,7 @@ import uk.ac.rhul.cs.dice.gawl.interfaces.entities.agents.Actuator;
 import uk.ac.rhul.cs.dice.gawl.interfaces.entities.agents.Sensor;
 
 /**
- * A subclass of {@link PhysicalBody} capable to perform and/or simulate an {@link Action}, thus implementing {@link Actor} and {@link Simulator}. It has a {@link Set}
+ * A subclass of {@link PhysicalBody} capable to perform and/or simulate an {@link Action}, thus implementing {@link Actor} and {@link Simulator}. It has a {@link List}
  * of {@link Sensor} elements and one of {@link Actuator} elements.<br/><br/>
  * 
  * Known direct subclasses: {@link AbstractAgent}, {@link DependentBody}.
@@ -24,22 +24,22 @@ import uk.ac.rhul.cs.dice.gawl.interfaces.entities.agents.Sensor;
  *
  */
 public abstract class ActiveBody extends PhysicalBody implements Actor, Simulator {
-	private Set<Sensor> sensors;
-	private Set<Actuator> actuators;
+	private List<Sensor> sensors;
+	private List<Actuator> actuators;
 	
 	/**
-	 * Constructor with a {@link BodyAppearance}, a {@link Set} of {@link Sensor} instances and
+	 * Constructor with a {@link BodyAppearance}, a {@link List} of {@link Sensor} instances and
 	 * one of {@link Actuator} instances.
 	 * 
 	 * @param appearance : the {@link BodyAppearance} of the {@link ActiveBody}.
-	 * @param sensors : a {@link Set} of {@link Sensor} instances.
-	 * @param actuators : a {@link Set} of {@link Actuator} instances.
+	 * @param sensors : a {@link List} of {@link Sensor} instances.
+	 * @param actuators : a {@link List} of {@link Actuator} instances.
 	 */
-	public ActiveBody(BodyAppearance appearance, Set<Sensor> sensors, Set<Actuator> actuators) {
+	public ActiveBody(BodyAppearance appearance, List<Sensor> sensors, List<Actuator> actuators) {
 		super(appearance);
 		
-		this.sensors = sensors != null ? sensors : new HashSet<>();
-		this.actuators = actuators != null ? actuators : new HashSet<>();
+		this.sensors = sensors != null ? sensors : new ArrayList<>();
+		this.actuators = actuators != null ? actuators : new ArrayList<>();
 		
 		init();
 	}
@@ -67,27 +67,27 @@ public abstract class ActiveBody extends PhysicalBody implements Actor, Simulato
 	}
 
 	/**
-	 * Returns a {@link Set} of {@link Sensor} instances.
+	 * Returns a {@link List} of {@link Sensor} instances.
 	 * 
-	 * @return the {@link Set} of {@link Sensor} instances.
+	 * @return the {@link List} of {@link Sensor} instances.
 	 */
-	public Set<Sensor> getSensors() {
+	public List<Sensor> getSensors() {
 		return this.sensors;
 	}
 	
 	/**
-	 * Returns a {@link Set} of {@link Actuator} instances.
+	 * Returns a {@link List} of {@link Actuator} instances.
 	 * 
-	 * @return the {@link Set} of {@link Actuator} instances.
+	 * @return the {@link List} of {@link Actuator} instances.
 	 */
-	public Set<Actuator> getActuators() {
+	public List<Actuator> getActuators() {
 		return this.actuators;
 	}
 	
 	/**
-	 * Adds a {@link Sensor} to the {@link Set}.
+	 * Adds a {@link Sensor} to the {@link List}.
 	 * 
-	 * @param sensor : the {@link Sensor} to be added to the {@link Set}.
+	 * @param sensor : the {@link Sensor} to be added to the {@link List}.
 	 */
 	public void addSensor(Sensor sensor) {
 		registerSensor(sensor);
@@ -96,9 +96,9 @@ public abstract class ActiveBody extends PhysicalBody implements Actor, Simulato
 	}
 	
 	/**
-	 * Adds an {@link Actuator} to the {@link Set}.
+	 * Adds an {@link Actuator} to the {@link List}.
 	 * 
-	 * @param sensor : the {@link Actuator} to be added to the {@link Set}.
+	 * @param sensor : the {@link Actuator} to be added to the {@link List}.
 	 */
 	public void addActuator(Actuator actuator) {
 		registerActuator(actuator);

@@ -1,6 +1,6 @@
 package uk.ac.rhul.cs.dice.gawl.interfaces.entities;
 
-import java.util.Set;
+import java.util.List;
 
 import uk.ac.rhul.cs.dice.gawl.interfaces.appearances.DependentBodyAppearance;
 import uk.ac.rhul.cs.dice.gawl.interfaces.entities.agents.Actuator;
@@ -19,14 +19,14 @@ import uk.ac.rhul.cs.dice.gawl.interfaces.entities.agents.Sensor;
 public abstract class DependentBody extends ActiveBody implements ObjectInterface {
 
 	/**
-	 * Constructor with a {@link DependentBodyAppearance}, a {@link Set} of {@link Sensor} instances and
+	 * Constructor with a {@link DependentBodyAppearance}, a {@link List} of {@link Sensor} instances and
 	 * one of {@link Actuator} instances.
 	 * 
 	 * @param appearance : the {@link DependentBodyAppearance} of the {@link DependentBody}.
-	 * @param sensors : a {@link Set} of {@link Sensor} instances.
-	 * @param actuators : a {@link Set} of {@link Actuator} instances.
+	 * @param sensors : a {@link List} of {@link Sensor} instances.
+	 * @param actuators : a {@link List} of {@link Actuator} instances.
 	 */
-	public DependentBody(DependentBodyAppearance appearance, Set<Sensor> sensors, Set<Actuator> actuators) {
+	public DependentBody(DependentBodyAppearance appearance, List<Sensor> sensors, List<Actuator> actuators) {
 		super(appearance, sensors, actuators);
 	}
 }

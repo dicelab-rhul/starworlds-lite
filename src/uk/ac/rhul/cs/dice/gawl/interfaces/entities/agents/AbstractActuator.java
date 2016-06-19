@@ -1,5 +1,7 @@
 package uk.ac.rhul.cs.dice.gawl.interfaces.entities.agents;
 
+import java.util.UUID;
+
 import uk.ac.rhul.cs.dice.gawl.interfaces.actions.Action;
 import uk.ac.rhul.cs.dice.gawl.interfaces.actions.Event;
 import uk.ac.rhul.cs.dice.gawl.interfaces.observer.CustomObservable;
@@ -18,6 +20,15 @@ import uk.ac.rhul.cs.dice.gawl.interfaces.observer.CustomObservable;
 public abstract class AbstractActuator extends CustomObservable implements Actuator {
 	private Action actionToPerform;
 	private Event eventToPerform;
+	private String id;
+	
+	/**
+	 * Default constructor. A random uuid is generated and stored.
+	 */
+	public AbstractActuator() {
+		UUID uuid = UUID.randomUUID();
+		this.id = uuid.toString();
+	}
 	
 	/**
 	 * Return the {@link Action} to attempt.
@@ -53,5 +64,14 @@ public abstract class AbstractActuator extends CustomObservable implements Actua
 	 */
 	protected void setEventToPerform(Event event) {
 		this.eventToPerform = event;
+	}
+	
+	/**
+	 * Returns the actuator ID as a {@link String}.
+	 * 
+	 * @return the actuator ID as a {@link String}.
+	 */
+	public String getActuatorId() {
+		return this.id;
 	}
 }

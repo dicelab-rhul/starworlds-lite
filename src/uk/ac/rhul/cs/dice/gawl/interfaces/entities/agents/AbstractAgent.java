@@ -1,6 +1,6 @@
 package uk.ac.rhul.cs.dice.gawl.interfaces.entities.agents;
 
-import java.util.Set;
+import java.util.List;
 
 import uk.ac.rhul.cs.dice.gawl.interfaces.appearances.AbstractAgentAppearance;
 import uk.ac.rhul.cs.dice.gawl.interfaces.entities.ActiveBody;
@@ -25,12 +25,12 @@ public abstract class AbstractAgent extends ActiveBody implements Agent {
 	 * The class constructor.
 	 * 
 	 * @param appearance : the {@link AbstractAgentAppearance}.
-	 * @param sensors : a {@link Set} of {@link Sensor} instances.
-	 * @param actuators : a {@link Set} of {@link Actuator} instances.
+	 * @param sensors : a {@link List} of {@link Sensor} instances.
+	 * @param actuators : a {@link List} of {@link Actuator} instances.
 	 * @param mind : the {@link AbstractAgentMind}.
 	 * @param brain : the {@link AbstractAgentBrain}.
 	 */
-	public AbstractAgent(AbstractAgentAppearance appearance, Set<Sensor> sensors, Set<Actuator> actuators, AbstractAgentMind mind, AbstractAgentBrain brain) {
+	public AbstractAgent(AbstractAgentAppearance appearance, List<Sensor> sensors, List<Actuator> actuators, AbstractAgentMind mind, AbstractAgentBrain brain) {
 		super(appearance, sensors, actuators);
 		
 		brain.addObserver(mind);
