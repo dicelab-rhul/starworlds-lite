@@ -32,4 +32,30 @@ public abstract class AbstractAgentMind extends CustomObservable implements Mind
 		
 		this.availableActionsForThisCicle.add(availableActionForThisCicle);
 	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result
+				+ ((availableActionsForThisCicle == null) ? 0 : availableActionsForThisCicle.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (!super.equals(obj))
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		AbstractAgentMind other = (AbstractAgentMind) obj;
+		if (availableActionsForThisCicle == null) {
+			if (other.availableActionsForThisCicle != null)
+				return false;
+		} else if (!availableActionsForThisCicle.equals(other.availableActionsForThisCicle))
+			return false;
+		return true;
+	}
 }

@@ -35,4 +35,29 @@ public abstract class AbstractPhysics extends CustomObservable implements Physic
 	public void setCurrentMoveResult(Result currentMoveResult) {
 		this.currentMoveResult = currentMoveResult;
 	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result + ((currentMoveResult == null) ? 0 : currentMoveResult.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (!super.equals(obj))
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		AbstractPhysics other = (AbstractPhysics) obj;
+		if (currentMoveResult == null) {
+			if (other.currentMoveResult != null)
+				return false;
+		} else if (!currentMoveResult.equals(other.currentMoveResult))
+			return false;
+		return true;
+	}
 }

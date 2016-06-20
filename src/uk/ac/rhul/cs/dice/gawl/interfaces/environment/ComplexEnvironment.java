@@ -60,4 +60,29 @@ public abstract class ComplexEnvironment extends SimpleEnvironment {
 	public Boolean isSimple() {
 		return false;
 	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((subEnvironments == null) ? 0 : subEnvironments.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		ComplexEnvironment other = (ComplexEnvironment) obj;
+		if (subEnvironments == null) {
+			if (other.subEnvironments != null)
+				return false;
+		} else if (!subEnvironments.equals(other.subEnvironments))
+			return false;
+		return true;
+	}
 }

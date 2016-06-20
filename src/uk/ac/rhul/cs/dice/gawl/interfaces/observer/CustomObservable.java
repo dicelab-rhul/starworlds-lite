@@ -15,14 +15,12 @@ import java.util.Observable;
  */
 public class CustomObservable {
 	List<CustomObserver> observers;
-	private boolean changed;
 	
 	/**
 	 * The default constructor.
 	 */
 	public CustomObservable() {
 		this.observers = new ArrayList<>();
-		this.changed = false;
 	}
 
 	/**
@@ -44,58 +42,59 @@ public class CustomObservable {
 	}
 	
 	/**
-	 * Sets this {@link CustomObservable} as "changed" by switching an internal flag to <code>true</code>.
-	 */
-	public void setChanged() {
-		this.changed = true;
-	}
-	
-	/**
-	 * Notifies all the registered {@link CustomObserver} elements with a <code>null</code> message, but
-	 * only if {@link #setChanged()} has been called before.
+	 * Notifies all the registered {@link CustomObserver} elements with a <code>null</code> message.
 	 */
 	public void notifyObservers() {
-		if(this.changed) {
-			this.changed = false;
-			
-			for(CustomObserver observer : this.observers) {
-				observer.update(this, null);
-			}
-		}
+		notifyObservers(null);
 	}
 	
 	/**
-	 * Notifies all the registered {@link CustomObserver} elements with a message, but
-	 * only if {@link #setChanged()} has been called before.
+	 * Notifies all the registered {@link CustomObserver} elements with a message.
 	 * 
 	 * @param arg : the {@link Object} message to send to the {@link CustomObserver} elements.
 	 */
 	public void notifyObservers(Object arg) {
-		if(this.changed) {
-			this.changed = false;
-			
-			for(CustomObserver observer : this.observers) {
-				observer.update(this, arg);
-			}
+		for(CustomObserver observer : this.observers) {
+			observer.update(this, arg);
 		}
 	}
 	
 	/**
-	 * Notifies all the registered {@link CustomObserver} elements of a specific class with a message, but
-	 * only if {@link #setChanged()} has been called before.
+	 * Notifies all the registered {@link CustomObserver} elements of a specific class with a message.
 	 * 
 	 * @param arg : the {@link Object} message to send to the {@link CustomObserver} elements.
 	 * @param c : the class the {@link CustomObserver} elements must inherit from for them to be notified.
 	 */
 	public void notifyObservers(Object arg, Class<?> c) {
-		if(this.changed) {
-			this.changed = false;
-			
-			for(CustomObserver observer : this.observers) {
-				if(observer.getClass().equals(c.getClass())) {
-					observer.update(this, arg);
-				}
+		for(CustomObserver observer : this.observers) {
+			if(observer.getClass().isAssignableFrom(c)) {
+				observer.update(this, arg);
 			}
 		}
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((observers == null) ? 0 : observers.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		CustomObservable other = (CustomObservable) obj;
+		if (observers == null) {
+			if (other.observers != null)
+				return false;
+		} else if (!observers.equals(other.observers))
+			return false;
+		return true;
 	}
 }

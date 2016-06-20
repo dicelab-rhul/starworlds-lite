@@ -51,4 +51,32 @@ public class DefaultActionResult implements Result {
 	public Exception getFailureReason() {
 		return this.failureReason;
 	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((actionResult == null) ? 0 : actionResult.hashCode());
+		result = prime * result + ((failureReason == null) ? 0 : failureReason.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		DefaultActionResult other = (DefaultActionResult) obj;
+		if (actionResult != other.actionResult)
+			return false;
+		if (failureReason == null) {
+			if (other.failureReason != null)
+				return false;
+		} else if (!failureReason.equals(other.failureReason))
+			return false;
+		return true;
+	}
 }
