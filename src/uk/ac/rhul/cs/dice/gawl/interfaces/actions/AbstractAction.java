@@ -1,7 +1,7 @@
 package uk.ac.rhul.cs.dice.gawl.interfaces.actions;
 
 import uk.ac.rhul.cs.dice.gawl.interfaces.entities.Actor;
-import uk.ac.rhul.cs.dice.gawl.interfaces.environment.EnvironmentalSpace;
+import uk.ac.rhul.cs.dice.gawl.interfaces.environment.Space;
 import uk.ac.rhul.cs.dice.gawl.interfaces.environment.physics.Physics;
 
 /**
@@ -50,8 +50,8 @@ public abstract class AbstractAction implements Action {
 	}
 	
 	@Override
-	public Result attempt(Physics physics, EnvironmentalSpace context) {
-		Result result = new DefaultActionResult(ActionResult.ACTION_IMPOSSIBLE);
+	public Result attempt(Physics physics, Space context) {
+		Result result = new DefaultActionResult(ActionResult.ACTION_IMPOSSIBLE, null);
 		
 		if(isPossible(physics, context)) {
 			result = perform(physics, context);
@@ -61,7 +61,7 @@ public abstract class AbstractAction implements Action {
 		return result;
 	}
 	
-	private Result checkResultSoundness(Result result, Physics physics, EnvironmentalSpace context) {
+	private Result checkResultSoundness(Result result, Physics physics, Space context) {
 		if(result.getActionResult() == ActionResult.ACTION_FAILED) {
 			return result;
 		}
@@ -70,7 +70,7 @@ public abstract class AbstractAction implements Action {
 			return result;
 		}
 		else {
-			return new DefaultActionResult(ActionResult.ACTION_FAILED);
+			return new DefaultActionResult(ActionResult.ACTION_FAILED, null);
 		}
 	}
 

@@ -77,7 +77,7 @@ public class CustomObservable {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((observers == null) ? 0 : observers.hashCode());
+		result = prime * result + ((observers == null) ? 0 : observers.size());
 		return result;
 	}
 
@@ -90,10 +90,7 @@ public class CustomObservable {
 		if (getClass() != obj.getClass())
 			return false;
 		CustomObservable other = (CustomObservable) obj;
-		if (observers == null) {
-			if (other.observers != null)
-				return false;
-		} else if (!observers.equals(other.observers))
+		if (observers == null && other.observers != null)
 			return false;
 		return true;
 	}

@@ -3,7 +3,7 @@ package uk.ac.rhul.cs.dice.gawl.interfaces.environment.physics;
 import uk.ac.rhul.cs.dice.gawl.interfaces.actions.Action;
 import uk.ac.rhul.cs.dice.gawl.interfaces.actions.Event;
 import uk.ac.rhul.cs.dice.gawl.interfaces.actions.Result;
-import uk.ac.rhul.cs.dice.gawl.interfaces.environment.EnvironmentalSpace;
+import uk.ac.rhul.cs.dice.gawl.interfaces.environment.Space;
 
 /**
  * The general interface for all the physics.<br/><br/>
@@ -19,12 +19,12 @@ import uk.ac.rhul.cs.dice.gawl.interfaces.environment.EnvironmentalSpace;
 public interface Physics {
 	
 	/**
-	 * Attempts the execution of the {@link Action} wrapped by the event in the {@link EnvironmentalSpace}
+	 * Attempts the execution of the {@link Action} wrapped by the event in the {@link Space}
 	 * passed as a parameter.
 	 * 
 	 * @param event : the {@link Event} wrapping the {@link Action} to be attempted.
-	 * @param context : the {@link EnvironmentalSpace} where the {@link Action} is attempted.
+	 * @param context : the {@link Space} where the {@link Action} is attempted.
 	 * @return a {@link Result} instance which shows the result of the attempt.
 	 */
-	public Result attempt(Event event, EnvironmentalSpace context);
+	public Result attempt(Event event, Space context);
 }

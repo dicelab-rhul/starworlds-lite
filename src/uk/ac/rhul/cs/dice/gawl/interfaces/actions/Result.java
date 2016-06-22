@@ -27,4 +27,18 @@ public interface Result {
 	 * Returns the {@link Exception} wrapped by this object.
 	 */
 	public Exception getFailureReason();
+	
+	/**
+	 * Returns the {@link String} id of the object which will receive this {@link Result}.
+	 * 
+	 * @return the {@link String} id of the object which will receive this {@link Result}.
+	 */
+	public String getRecipientId();
+	
+	/**
+	 * Sets the recipientId for this {@link Result}.
+	 * 
+	 * @param recipientId : the recipientId for this {@link Result}.
+	 */
+	public void setRecipientId(String recipientId);
 }

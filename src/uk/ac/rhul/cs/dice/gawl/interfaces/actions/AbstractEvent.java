@@ -1,7 +1,7 @@
 package uk.ac.rhul.cs.dice.gawl.interfaces.actions;
 
 import uk.ac.rhul.cs.dice.gawl.interfaces.entities.Actor;
-import uk.ac.rhul.cs.dice.gawl.interfaces.environment.EnvironmentalSpace;
+import uk.ac.rhul.cs.dice.gawl.interfaces.environment.Space;
 import uk.ac.rhul.cs.dice.gawl.interfaces.environment.physics.Physics;
 
 /**
@@ -63,7 +63,7 @@ public abstract class AbstractEvent implements Event {
 	}
 	
 	@Override
-	public Result attempt(Physics physics, EnvironmentalSpace context) {
+	public Result attempt(Physics physics, Space context) {
 		return physics.attempt(this, context);
 	}
 

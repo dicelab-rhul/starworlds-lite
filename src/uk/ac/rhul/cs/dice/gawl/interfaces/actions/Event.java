@@ -1,7 +1,7 @@
 package uk.ac.rhul.cs.dice.gawl.interfaces.actions;
 
 import uk.ac.rhul.cs.dice.gawl.interfaces.entities.Actor;
-import uk.ac.rhul.cs.dice.gawl.interfaces.environment.EnvironmentalSpace;
+import uk.ac.rhul.cs.dice.gawl.interfaces.environment.Space;
 import uk.ac.rhul.cs.dice.gawl.interfaces.environment.physics.Physics;
 
 /**
@@ -68,45 +68,45 @@ public interface Event {
 	 * Checks the pre-conditions for the event.
 	 * 
 	 * @param physics : the {@link Physics} of the context where the event is executed.
-	 * @param context : the {@link EnvironmentalSpace} where the event is executed.
+	 * @param context : the {@link Space} where the event is executed.
 	 * @return <code>true</code> if the event can take place, <code>false</code> otherwise.
 	 */
-	public boolean isPossible(Physics physics, EnvironmentalSpace context);
+	public boolean isPossible(Physics physics, Space context);
 	
 	/**
 	 * Checks whether the event taking place is a mandatory condition.
 	 * 
 	 * @param physics : the {@link Physics} of the context where the event is executed.
-	 * @param context : the {@link EnvironmentalSpace} where the event is executed.
+	 * @param context : the {@link Space} where the event is executed.
 	 * @return <code>true</code> if the event must take place, <code>false</code> otherwise.
 	 */
-	public boolean isNecessary(Physics physics, EnvironmentalSpace context);
+	public boolean isNecessary(Physics physics, Space context);
 	
 	/**
 	 * Attempts to execute the event by calling {@link #isPossible(physics, context)},
 	 * {@link #perform(physics, context)} and {@link #succeeded(physics, event)}.
 	 * 
 	 * @param physics : the {@link Physics} of the context where the event is executed.
-	 * @param context : the {@link EnvironmentalSpace} where the event is executed.
+	 * @param context : the {@link Space} where the event is executed.
 	 * @return a {@link Result} instance which shows the result of the execution.
 	 */
-	public Result attempt(Physics physics, EnvironmentalSpace context);
+	public Result attempt(Physics physics, Space context);
 	
 	/**
 	 * Performs an event whose pre-conditions were already met.
 	 * 
 	 * @param physics : the {@link Physics} of the context where the event is executed.
-	 * @param context : the {@link EnvironmentalSpace} where the event is executed.
+	 * @param context : the {@link Space} where the event is executed.
 	 * @return a {@link Result} instance which shows the result of the execution.
 	 */
-	public Result perform(Physics physics, EnvironmentalSpace context);
+	public Result perform(Physics physics, Space context);
 	
 	/**
 	 * Checks the post-conditions (effects) of the event.
 	 * 
 	 * @param physics : the {@link Physics} of the context where the event is executed.
-	 * @param context : the {@link EnvironmentalSpace} where the event is executed.
+	 * @param context : the {@link Space} where the event is executed.
 	 * @return <code>true</code> if the event post-conditions are met, <code>false</code> otherwise.
 	 */
-	public boolean succeeded(Physics physics, EnvironmentalSpace context);
+	public boolean succeeded(Physics physics, Space context);
 }
