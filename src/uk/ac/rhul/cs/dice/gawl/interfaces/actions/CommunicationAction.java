@@ -1,5 +1,9 @@
 package uk.ac.rhul.cs.dice.gawl.interfaces.actions;
 
+import java.util.List;
+
+import uk.ac.rhul.cs.dice.gawl.interfaces.actions.speech.Payload;
+
 /**
  * A subclass of {@link AbstractAction} representing communication actions.<br/><br/>
  * 
@@ -11,5 +15,25 @@ package uk.ac.rhul.cs.dice.gawl.interfaces.actions;
  *
  */
 public abstract class CommunicationAction extends AbstractAction {
+	private String senderId;
+	private List<String> recipientsIds;
+	private Payload payload;
+	
+	public CommunicationAction(String senderId, List<String> recipientsIds, Payload payload) {
+		this.senderId = senderId;
+		this.recipientsIds = recipientsIds;
+		this.payload = payload;
+	}
 
+	public String getSenderId() {
+		return this.senderId;
+	}
+
+	public List<String> getRecipientsIds() {
+		return this.recipientsIds;
+	}
+
+	public Payload getPayload() {
+		return this.payload;
+	}
 }

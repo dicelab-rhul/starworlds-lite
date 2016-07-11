@@ -16,15 +16,15 @@ import uk.ac.rhul.cs.dice.gawl.interfaces.observer.CustomObserver;
  *
  */
 public abstract class AbstractPhysics extends CustomObservable implements Physics, CustomObserver {
-	private Result currentMoveResult;
+	private Result currentResult;
 
 	/**
 	 * Returns the {@link Result} of the current execution attempt.
 	 * 
 	 * @return Returns the {@link Result} of the current execution attempt.
 	 */
-	public Result getCurrentMoveResult() {
-		return this.currentMoveResult;
+	public Result getCurrentResult() {
+		return this.currentResult;
 	}
 
 	/**
@@ -32,15 +32,15 @@ public abstract class AbstractPhysics extends CustomObservable implements Physic
 	 * 
 	 * @param currentMoveResult : the {@link Result} of the current execution attempt.
 	 */
-	public void setCurrentMoveResult(Result currentMoveResult) {
-		this.currentMoveResult = currentMoveResult;
+	public void setCurrentResult(Result currentMoveResult) {
+		this.currentResult = currentMoveResult;
 	}
 
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = super.hashCode();
-		result = prime * result + ((currentMoveResult == null) ? 0 : currentMoveResult.hashCode());
+		result = prime * result + ((currentResult == null) ? 0 : currentResult.hashCode());
 		return result;
 	}
 
@@ -53,10 +53,10 @@ public abstract class AbstractPhysics extends CustomObservable implements Physic
 		if (getClass() != obj.getClass())
 			return false;
 		AbstractPhysics other = (AbstractPhysics) obj;
-		if (currentMoveResult == null) {
-			if (other.currentMoveResult != null)
+		if (currentResult == null) {
+			if (other.currentResult != null)
 				return false;
-		} else if (!currentMoveResult.equals(other.currentMoveResult))
+		} else if (!currentResult.equals(other.currentResult))
 			return false;
 		return true;
 	}
