@@ -13,7 +13,7 @@ import uk.ac.rhul.cs.dice.gawl.interfaces.entities.agents.Actuator;
 import uk.ac.rhul.cs.dice.gawl.interfaces.entities.agents.Sensor;
 
 /**
- * A subclass of {@link PhysicalBody} capable to perform and/or simulate an {@link Action}, thus implementing {@link Actor} and {@link Simulator}. It has a {@link List}
+ * A subclass of {@link PhysicalBody} capable to perform and/or simulate an {@link EnvironmentalAction}, thus implementing {@link Actor} and {@link Simulator}. It has a {@link List}
  * of {@link Sensor} elements and one of {@link Actuator} elements.<br/><br/>
  * 
  * Known direct subclasses: {@link AbstractAgent}, {@link DependentBody}.

@@ -5,7 +5,7 @@ import uk.ac.rhul.cs.dice.gawl.interfaces.environment.Space;
 import uk.ac.rhul.cs.dice.gawl.interfaces.environment.physics.Physics;
 
 /**
- * The most generic action class implementing {@link Action}.<br/><br/>
+ * The most generic action class implementing {@link EnvironmentalAction}.<br/><br/>
  * 
  * Known direct subclasses: {@link PhysicalAction}, {@link CommunicationAction}, {@link SensingAction}.
  * 
@@ -14,7 +14,7 @@ import uk.ac.rhul.cs.dice.gawl.interfaces.environment.physics.Physics;
  * @author Kostas Stathis
  *
  */
-public abstract class AbstractAction implements Action {
+public abstract class AbstractAction implements EnvironmentalAction {
 	private Actor actor;
 	
 	/**
@@ -25,25 +25,25 @@ public abstract class AbstractAction implements Action {
 	/**
 	 * The constructor with an {@link Actor}.
 	 * 
-	 * @param actor : the {@link Actor} of the {@link Action}.
+	 * @param actor : the {@link Actor} of the {@link EnvironmentalAction}.
 	 */
 	public AbstractAction(Actor actor) {
 		this.actor = actor;
 	}
 	
 	/**
-	 * Returns the {@link Actor} of the {@link Action}.
+	 * Returns the {@link Actor} of the {@link EnvironmentalAction}.
 	 * 
-	 * @return the {@link Actor} of the {@link Action}.
+	 * @return the {@link Actor} of the {@link EnvironmentalAction}.
 	 */
 	public Actor getActor() {
 		return this.actor;
 	}
 	
 	/**
-	 * Sets the {@link Actor} of the {@link Action}.
+	 * Sets the {@link Actor} of the {@link EnvironmentalAction}.
 	 * 
-	 * @param actor : the {@link Actor} of the {@link Action}.
+	 * @param actor : the {@link Actor} of the {@link EnvironmentalAction}.
 	 */
 	public void setActor(Actor actor) {
 		this.actor = actor;

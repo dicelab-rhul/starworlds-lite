@@ -1,9 +1,9 @@
 package uk.ac.rhul.cs.dice.gawl.interfaces.entities;
 
-import uk.ac.rhul.cs.dice.gawl.interfaces.actions.Action;
+import uk.ac.rhul.cs.dice.gawl.interfaces.actions.EnvironmentalAction;
 
 /**
- * The interface for classes capable of performing an {@link Action}.<br/><br>
+ * The interface for classes capable of performing an {@link EnvironmentalAction}.<br/><br>
  * 
  * Known implementations: {@link ActiveBody}.
  * 

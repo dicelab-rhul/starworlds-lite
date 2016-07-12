@@ -1,6 +1,6 @@
 package uk.ac.rhul.cs.dice.gawl.interfaces.entities.agents;
 
-import uk.ac.rhul.cs.dice.gawl.interfaces.actions.Action;
+import uk.ac.rhul.cs.dice.gawl.interfaces.actions.EnvironmentalAction;
 
 /**
  * A subclass of {@link AbstractAgentMind} designed for {@link AutonomousAgent} instances.<br/><br/>
@@ -14,7 +14,7 @@ import uk.ac.rhul.cs.dice.gawl.interfaces.actions.Action;
  */
 public abstract class AutonomousAgentMind extends AbstractAgentMind {
 	/**
-	 * Starts a new {@link #perceive(Object)} - {@link #decide(Object[])} - {@link #execute(Action)} cycle.
+	 * Starts a new {@link #perceive(Object)} - {@link #decide(Object[])} - {@link #execute(EnvironmentalAction)} cycle.
 	 * 
 	 * @param perviousActionResultWrapper : an {@link Object} which wraps the result of the previous execution (if any).
 	 */

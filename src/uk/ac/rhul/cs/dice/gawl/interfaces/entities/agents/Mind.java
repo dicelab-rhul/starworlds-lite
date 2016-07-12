@@ -2,7 +2,7 @@ package uk.ac.rhul.cs.dice.gawl.interfaces.entities.agents;
 
 import java.util.List;
 
-import uk.ac.rhul.cs.dice.gawl.interfaces.actions.Action;
+import uk.ac.rhul.cs.dice.gawl.interfaces.actions.EnvironmentalAction;
 import uk.ac.rhul.cs.dice.gawl.interfaces.observer.CustomObserver;
 import uk.ac.rhul.cs.dice.gawl.interfaces.perception.Perception;
 
@@ -25,31 +25,31 @@ public interface Mind extends CustomObserver {
 	public void perceive(Object perceptionWrapper);
 	
 	/**
-	 * Selects an {@link Action} to be attempted after a computation involving <code>parameters</code>.
+	 * Selects an {@link EnvironmentalAction} to be attempted after a computation involving <code>parameters</code>.
 	 * 
-	 * @param parameters : an array of {@link Object} elements used to select the {@link Action} to attempt.
-	 * @return the {@link Action} to attempt.
+	 * @param parameters : an array of {@link Object} elements used to select the {@link EnvironmentalAction} to attempt.
+	 * @return the {@link EnvironmentalAction} to attempt.
 	 */
-	public Action decide(Object... parameters);
+	public EnvironmentalAction decide(Object... parameters);
 	
 	/**
-	 * Passes the {@link Action} to a manager which will decide when, how and who will execute it.
+	 * Passes the {@link EnvironmentalAction} to a manager which will decide when, how and who will execute it.
 	 * 
 	 * @param action
 	 */
-	public void execute(Action action);
+	public void execute(EnvironmentalAction action);
 	
 	/**
-	 * Returns the {@link List} of all the {@link Action} instances which can be attempted.
+	 * Returns the {@link List} of all the {@link EnvironmentalAction} instances which can be attempted.
 	 * 
-	 * @return the {@link List} of all the {@link Action} instances which can be attempted.
+	 * @return the {@link List} of all the {@link EnvironmentalAction} instances which can be attempted.
 	 */
-	public List<Action> getAvailableActionsForThisCicle();
+	public List<EnvironmentalAction> getAvailableActionsForThisCicle();
 	
 	/**
-	 * Adds an {@link Action} to the {@link List} of the {@link Action} instances which can be attempted.
+	 * Adds an {@link EnvironmentalAction} to the {@link List} of the {@link EnvironmentalAction} instances which can be attempted.
 	 * 
-	 * @param availableActionForThisCicle : the {@link Action} to add.
+	 * @param availableActionForThisCicle : the {@link EnvironmentalAction} to add.
 	 */
-	public void addAvailableActionForThisCicle(Action availableActionForThisCicle);
+	public void addAvailableActionForThisCicle(EnvironmentalAction availableActionForThisCicle);
 }

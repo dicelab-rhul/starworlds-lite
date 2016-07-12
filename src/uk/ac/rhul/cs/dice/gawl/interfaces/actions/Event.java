@@ -23,18 +23,18 @@ public interface Event {
 	public String represent();
 	
 	/**
-	 * Returns the wrapped {@link Action}.
+	 * Returns the wrapped {@link EnvironmentalAction}.
 	 * 
-	 * @return the {@link Action} wrapped by the event.
+	 * @return the {@link EnvironmentalAction} wrapped by the event.
 	 */
-	public Action getAction();
+	public EnvironmentalAction getAction();
 	
 	/**
-	 * Sets a new {@link Action}.
+	 * Sets a new {@link EnvironmentalAction}.
 	 * 
-	 * @param action : the new {@link Action} to be contained in the event.
+	 * @param action : the new {@link EnvironmentalAction} to be contained in the event.
 	 */
-	public void setAction(Action action);
+	public void setAction(EnvironmentalAction action);
 	
 	/**
 	 * Returns the timestamp of the event.

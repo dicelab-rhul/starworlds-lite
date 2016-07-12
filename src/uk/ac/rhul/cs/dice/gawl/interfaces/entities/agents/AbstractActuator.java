@@ -2,13 +2,13 @@ package uk.ac.rhul.cs.dice.gawl.interfaces.entities.agents;
 
 import java.util.UUID;
 
-import uk.ac.rhul.cs.dice.gawl.interfaces.actions.Action;
+import uk.ac.rhul.cs.dice.gawl.interfaces.actions.EnvironmentalAction;
 import uk.ac.rhul.cs.dice.gawl.interfaces.actions.Event;
 import uk.ac.rhul.cs.dice.gawl.interfaces.observer.CustomObservable;
 
 /**
  * The most generic class implementing {@link Actuator}. It also extends {@link CustomObservable}.
- * It may contain an {@link Event} to perform and the corresponding {@link Action}.<br/><br/>
+ * It may contain an {@link Event} to perform and the corresponding {@link EnvironmentalAction}.<br/><br/>
  * 
  * Known direct subclasses: none.
  * 
@@ -18,7 +18,7 @@ import uk.ac.rhul.cs.dice.gawl.interfaces.observer.CustomObservable;
  *
  */
 public abstract class AbstractActuator extends CustomObservable implements Actuator {
-	private Action actionToPerform;
+	private EnvironmentalAction actionToPerform;
 	private Event eventToPerform;
 	private String id;
 	
@@ -31,36 +31,36 @@ public abstract class AbstractActuator extends CustomObservable implements Actua
 	}
 	
 	/**
-	 * Return the {@link Action} to attempt.
+	 * Return the {@link EnvironmentalAction} to attempt.
 	 * 
-	 * @return the {@link Action} to attempt.
+	 * @return the {@link EnvironmentalAction} to attempt.
 	 */
-	protected Action getActionToPerform() {
+	protected EnvironmentalAction getActionToPerform() {
 		return this.actionToPerform;
 	}
 	
 	/**
-	 * Return the {@link Event} wrapping the {@link Action} to attempt.
+	 * Return the {@link Event} wrapping the {@link EnvironmentalAction} to attempt.
 	 * 
-	 * @return the {@link Event} wrapping the {@link Action} to attempt.
+	 * @return the {@link Event} wrapping the {@link EnvironmentalAction} to attempt.
 	 */
 	protected Event getEventToPerform() {
 		return this.eventToPerform;
 	}
 	
 	/**
-	 * Sets the {@link Action} to attempt.
+	 * Sets the {@link EnvironmentalAction} to attempt.
 	 * 
-	 * @param action : the {@link Action} to attempt.
+	 * @param action : the {@link EnvironmentalAction} to attempt.
 	 */
-	protected void setActionToPerform(Action action) {
+	protected void setActionToPerform(EnvironmentalAction action) {
 		this.actionToPerform = action;
 	}
 	
 	/**
-	 * Sets the {@link Event} wrapping the {@link Action} to attempt.
+	 * Sets the {@link Event} wrapping the {@link EnvironmentalAction} to attempt.
 	 * 
-	 * @param event : the {@link Event} wrapping the {@link Action} to attempt.
+	 * @param event : the {@link Event} wrapping the {@link EnvironmentalAction} to attempt.
 	 */
 	protected void setEventToPerform(Event event) {
 		this.eventToPerform = event;
