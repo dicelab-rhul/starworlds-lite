@@ -14,6 +14,6 @@ import uk.ac.rhul.cs.dice.gawl.interfaces.entities.agents.Mind;
  * @author Kostas Stathis
  *
  */
-public interface MentalAction {
+public interface MentalAction extends Action {
 
 }

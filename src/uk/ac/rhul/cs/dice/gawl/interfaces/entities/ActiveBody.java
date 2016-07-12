@@ -3,8 +3,7 @@ package uk.ac.rhul.cs.dice.gawl.interfaces.entities;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.Action;
-
+import uk.ac.rhul.cs.dice.gawl.interfaces.actions.EnvironmentalAction;
 import uk.ac.rhul.cs.dice.gawl.interfaces.appearances.BodyAppearance;
 import uk.ac.rhul.cs.dice.gawl.interfaces.entities.agents.AbstractActuator;
 import uk.ac.rhul.cs.dice.gawl.interfaces.entities.agents.AbstractAgent;

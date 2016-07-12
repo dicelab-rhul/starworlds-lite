@@ -15,7 +15,7 @@ import uk.ac.rhul.cs.dice.gawl.interfaces.environment.physics.Physics;
  * @author Kostas Stathis
  *
  */
-public interface EnvironmentalAction {
+public interface EnvironmentalAction extends Action {
   /**
    * Checks the pre-conditions for the action.
    * 
