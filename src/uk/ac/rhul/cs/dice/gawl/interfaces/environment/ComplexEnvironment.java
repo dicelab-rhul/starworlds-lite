@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import uk.ac.rhul.cs.dice.gawl.interfaces.actions.EnvironmentalAction;
+import uk.ac.rhul.cs.dice.gawl.interfaces.actions.AbstractAction;
 import uk.ac.rhul.cs.dice.gawl.interfaces.appearances.ComplexEnvironmentAppearance;
 import uk.ac.rhul.cs.dice.gawl.interfaces.entities.Body;
 import uk.ac.rhul.cs.dice.gawl.interfaces.environment.physics.Physics;
@@ -27,13 +27,13 @@ public abstract class ComplexEnvironment extends SimpleEnvironment {
 	 * The default class constructor.
 	 * 
 	 * @param state : an {@link EnvironmentalSpace} instance.
-	 * @param admissibleActions : the {@link Set} of performable {@link EnvironmentalAction} instances.
+	 * @param admissibleActions : the {@link Set} of performable {@link AbstractAction} instances.
 	 * @param bodies : a {@link Set} of {@link Body} elements.
 	 * @param physics : the {@link Physics} of the environment.
 	 * @param bounded : a {@link Boolean} value indicating whether the environment is bounded or not.
 	 * @param appearance : the {@link ComplexEnvironmentAppearance} of the environment.
 	 */
-	public ComplexEnvironment(EnvironmentalSpace state, Set<EnvironmentalAction> admissibleActions, Set<Body> bodies, Physics physics, Boolean bounded, ComplexEnvironmentAppearance appearance) {
+	public ComplexEnvironment(EnvironmentalSpace state, Set<Class<? extends AbstractAction>> admissibleActions, Set<Body> bodies, Physics physics, Boolean bounded, ComplexEnvironmentAppearance appearance) {
 		super(state, admissibleActions, bodies, physics, bounded, appearance);
 		this.subEnvironments = new ArrayList<>();
 	}

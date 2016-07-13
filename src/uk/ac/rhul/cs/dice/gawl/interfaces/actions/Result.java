@@ -1,5 +1,7 @@
 package uk.ac.rhul.cs.dice.gawl.interfaces.actions;
 
+import java.util.List;
+
 /**
  * The interface for generic action results.<br/><br/>
  * 
@@ -29,16 +31,16 @@ public interface Result {
 	public Exception getFailureReason();
 	
 	/**
-	 * Returns the {@link String} id of the object which will receive this {@link Result}.
+	 * Returns the {@link List} of {@link String} IDs of the objects which will receive this {@link Result}.
 	 * 
-	 * @return the {@link String} id of the object which will receive this {@link Result}.
+	 * @return the {@link List} of {@link String} IDs of the objects which will receive this {@link Result}.
 	 */
-	public String getRecipientId();
+	public List<String> getRecipientsIds();
 	
 	/**
-	 * Sets the recipientId for this {@link Result}.
+	 * Sets the {@link List} of {@link String} IDs of the objects which will receive this {@link Result}.
 	 * 
-	 * @param recipientId : the recipientId for this {@link Result}.
+	 * @param recipientsIds : the {@link List} of {@link String} IDs of the objects which will receive this {@link Result}.
 	 */
-	public void setRecipientId(String recipientId);
+	public void setRecipientsIds(List<String> recipientsIds);
 }

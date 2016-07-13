@@ -2,7 +2,7 @@ package uk.ac.rhul.cs.dice.gawl.interfaces.environment;
 
 import java.util.Set;
 
-import uk.ac.rhul.cs.dice.gawl.interfaces.actions.EnvironmentalAction;
+import uk.ac.rhul.cs.dice.gawl.interfaces.actions.AbstractAction;
 import uk.ac.rhul.cs.dice.gawl.interfaces.appearances.Appearance;
 import uk.ac.rhul.cs.dice.gawl.interfaces.entities.Body;
 import uk.ac.rhul.cs.dice.gawl.interfaces.environment.physics.Physics;
@@ -33,18 +33,18 @@ public interface Environment {
 	public void setState(EnvironmentalSpace state);
 	
 	/**
-	 * Returns the {@link Set} of {@link EnvironmentalAction} instances which are performable in the {@link Environment}.
+	 * Returns the {@link Set} of {@link AbstractAction} instances which are performable in the {@link Environment}.
 	 * 
-	 * @return the {@link Set} of {@link EnvironmentalAction} instances which are performable in the {@link Environment}.
+	 * @return the {@link Set} of {@link AbstractAction} instances which are performable in the {@link Environment}.
 	 */
-	public Set<EnvironmentalAction> getAdmissibleActions();
+	public Set<Class<? extends AbstractAction>> getAdmissibleActions();
 	
 	/**
-	 * Sets the {@link Set} of {@link EnvironmentalAction} instances which are performable in the {@link Environment}.
+	 * Sets the {@link Set} of {@link AbstractAction} instances which are performable in the {@link Environment}.
 	 * 
-	 * @param admissibleActions : the {@link Set} of {@link EnvironmentalAction} instances which are performable in the {@link Environment}.
+	 * @param admissibleActions : the {@link Set} of {@link AbstractAction} instances which are performable in the {@link Environment}.
 	 */
-	public void setAdmissibleActions(Set<EnvironmentalAction> admissibleActions);
+	public void setAdmissibleActions(Set<Class<? extends AbstractAction>> admissibleActions);
 	
 	/**
 	 * Returns the {@link Set} of bodies present in the {@link Environment}.

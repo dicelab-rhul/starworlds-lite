@@ -2,6 +2,7 @@ package uk.ac.rhul.cs.dice.gawl.interfaces.entities.agents;
 
 import java.util.List;
 
+import uk.ac.rhul.cs.dice.gawl.interfaces.actions.AbstractAction;
 import uk.ac.rhul.cs.dice.gawl.interfaces.actions.EnvironmentalAction;
 import uk.ac.rhul.cs.dice.gawl.interfaces.observer.CustomObserver;
 import uk.ac.rhul.cs.dice.gawl.interfaces.perception.Perception;
@@ -40,16 +41,16 @@ public interface Mind extends CustomObserver {
 	public void execute(EnvironmentalAction action);
 	
 	/**
-	 * Returns the {@link List} of all the {@link EnvironmentalAction} instances which can be attempted.
+	 * Returns the {@link List} of all the {@link AbstractAction} instances which can be attempted.
 	 * 
-	 * @return the {@link List} of all the {@link EnvironmentalAction} instances which can be attempted.
+	 * @return the {@link List} of all the {@link AbstractAction} instances which can be attempted.
 	 */
-	public List<EnvironmentalAction> getAvailableActionsForThisCicle();
+	public List<Class<? extends AbstractAction>> getAvailableActionsForThisCicle();
 	
 	/**
-	 * Adds an {@link EnvironmentalAction} to the {@link List} of the {@link EnvironmentalAction} instances which can be attempted.
+	 * Adds an {@link AbstractAction} to the {@link List} of the {@link AbstractAction} instances which can be attempted.
 	 * 
-	 * @param availableActionForThisCicle : the {@link EnvironmentalAction} to add.
+	 * @param availableActionForThisCicle : the {@link AbstractAction} to add.
 	 */
-	public void addAvailableActionForThisCicle(EnvironmentalAction availableActionForThisCicle);
+	public void addAvailableActionForThisCicle(Class<? extends AbstractAction> availableActionForThisCicle);
 }

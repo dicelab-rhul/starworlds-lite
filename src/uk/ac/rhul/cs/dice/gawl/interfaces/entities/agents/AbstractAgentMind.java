@@ -3,7 +3,7 @@ package uk.ac.rhul.cs.dice.gawl.interfaces.entities.agents;
 import java.util.ArrayList;
 import java.util.List;
 
-import uk.ac.rhul.cs.dice.gawl.interfaces.actions.EnvironmentalAction;
+import uk.ac.rhul.cs.dice.gawl.interfaces.actions.AbstractAction;
 import uk.ac.rhul.cs.dice.gawl.interfaces.observer.CustomObservable;
 
 /**
@@ -17,15 +17,15 @@ import uk.ac.rhul.cs.dice.gawl.interfaces.observer.CustomObservable;
  *
  */
 public abstract class AbstractAgentMind extends CustomObservable implements Mind {
-	private List<EnvironmentalAction> availableActionsForThisCicle;
+	private List<Class<? extends AbstractAction>> availableActionsForThisCicle;
 
 	@Override
-	public List<EnvironmentalAction> getAvailableActionsForThisCicle() {
+	public List<Class<? extends AbstractAction>> getAvailableActionsForThisCicle() {
 		return this.availableActionsForThisCicle;
 	}
 
 	@Override
-	public void addAvailableActionForThisCicle(EnvironmentalAction availableActionForThisCicle) {
+	public void addAvailableActionForThisCicle(Class<? extends AbstractAction> availableActionForThisCicle) {
 		if(this.availableActionsForThisCicle == null) {
 			this.availableActionsForThisCicle = new ArrayList<>();
 		}
