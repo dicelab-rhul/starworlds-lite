@@ -45,12 +45,12 @@ public interface Mind extends CustomObserver {
 	 * 
 	 * @return the {@link List} of all the {@link AbstractAction} instances which can be attempted.
 	 */
-	public List<Class<? extends AbstractAction>> getAvailableActionsForThisCicle();
+	public List<Class<? extends AbstractAction>> getAvailableActionsForThisCycle();
 	
 	/**
 	 * Adds an {@link AbstractAction} to the {@link List} of the {@link AbstractAction} instances which can be attempted.
 	 * 
 	 * @param availableActionForThisCicle : the {@link AbstractAction} to add.
 	 */
-	public void addAvailableActionForThisCicle(Class<? extends AbstractAction> availableActionForThisCicle);
+	public void addAvailableActionForThisCycle(Class<? extends AbstractAction> availableActionForThisCicle);
 }

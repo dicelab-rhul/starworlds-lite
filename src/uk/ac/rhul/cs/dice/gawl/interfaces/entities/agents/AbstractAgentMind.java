@@ -17,20 +17,20 @@ import uk.ac.rhul.cs.dice.gawl.interfaces.observer.CustomObservable;
  *
  */
 public abstract class AbstractAgentMind extends CustomObservable implements Mind {
-	private List<Class<? extends AbstractAction>> availableActionsForThisCicle;
+	private List<Class<? extends AbstractAction>> availableActionsForThisCycle;
 
 	@Override
-	public List<Class<? extends AbstractAction>> getAvailableActionsForThisCicle() {
-		return this.availableActionsForThisCicle;
+	public List<Class<? extends AbstractAction>> getAvailableActionsForThisCycle() {
+		return this.availableActionsForThisCycle;
 	}
 
 	@Override
-	public void addAvailableActionForThisCicle(Class<? extends AbstractAction> availableActionForThisCicle) {
-		if(this.availableActionsForThisCicle == null) {
-			this.availableActionsForThisCicle = new ArrayList<>();
+	public void addAvailableActionForThisCycle(Class<? extends AbstractAction> availableActionForThisCycle) {
+		if(this.availableActionsForThisCycle == null) {
+			this.availableActionsForThisCycle = new ArrayList<>();
 		}
 		
-		this.availableActionsForThisCicle.add(availableActionForThisCicle);
+		this.availableActionsForThisCycle.add(availableActionForThisCycle);
 	}
 
 	@Override
@@ -38,12 +38,14 @@ public abstract class AbstractAgentMind extends CustomObservable implements Mind
 		final int prime = 31;
 		int result = super.hashCode();
 		result = prime * result
-				+ ((availableActionsForThisCicle == null) ? 0 : availableActionsForThisCicle.hashCode());
+				+ ((availableActionsForThisCycle == null) ? 0 : availableActionsForThisCycle.hashCode());
 		return result;
 	}
 
 	@Override
 	public boolean equals(Object obj) {
+		if (obj == null)
+			return false;
 		if (this == obj)
 			return true;
 		if (!super.equals(obj))
@@ -51,10 +53,10 @@ public abstract class AbstractAgentMind extends CustomObservable implements Mind
 		if (getClass() != obj.getClass())
 			return false;
 		AbstractAgentMind other = (AbstractAgentMind) obj;
-		if (availableActionsForThisCicle == null) {
-			if (other.availableActionsForThisCicle != null)
+		if (availableActionsForThisCycle == null) {
+			if (other.availableActionsForThisCycle != null)
 				return false;
-		} else if (!availableActionsForThisCicle.equals(other.availableActionsForThisCicle))
+		} else if (!availableActionsForThisCycle.equals(other.availableActionsForThisCycle))
 			return false;
 		return true;
 	}
