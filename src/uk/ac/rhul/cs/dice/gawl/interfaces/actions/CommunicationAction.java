@@ -5,7 +5,8 @@ import java.util.List;
 import uk.ac.rhul.cs.dice.gawl.interfaces.actions.speech.Payload;
 
 /**
- * A subclass of {@link AbstractAction} representing communication actions.<br/><br/>
+ * A subclass of {@link AbstractAction} representing communication actions.<br/>
+ * <br/>
  * 
  * Known direct subclasses: none.
  * 
@@ -14,26 +15,27 @@ import uk.ac.rhul.cs.dice.gawl.interfaces.actions.speech.Payload;
  * @author Kostas Stathis
  *
  */
-public abstract class CommunicationAction extends AbstractAction {
-	private String senderId;
-	private List<String> recipientsIds;
-	private Payload payload;
-	
-	public CommunicationAction(String senderId, List<String> recipientsIds, Payload payload) {
-		this.senderId = senderId;
-		this.recipientsIds = recipientsIds;
-		this.payload = payload;
-	}
+public abstract class CommunicationAction<T> extends AbstractAction {
+  private String senderId;
+  private List<String> recipientsIds;
+  private Payload<T> payload;
 
-	public String getSenderId() {
-		return this.senderId;
-	}
+  public CommunicationAction(String senderId, List<String> recipientsIds,
+      Payload<T> payload) {
+    this.senderId = senderId;
+    this.recipientsIds = recipientsIds;
+    this.payload = payload;
+  }
 
-	public List<String> getRecipientsIds() {
-		return this.recipientsIds;
-	}
+  public String getSenderId() {
+    return this.senderId;
+  }
 
-	public Payload getPayload() {
-		return this.payload;
-	}
+  public List<String> getRecipientsIds() {
+    return this.recipientsIds;
+  }
+
+  public Payload<T> getPayload() {
+    return this.payload;
+  }
 }
