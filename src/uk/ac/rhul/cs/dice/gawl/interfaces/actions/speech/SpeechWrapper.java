@@ -1,8 +1,9 @@
 package uk.ac.rhul.cs.dice.gawl.interfaces.actions.speech;
 
-public abstract class SpeechWrapper {
+public abstract class SpeechWrapper<T> {
+  
 	private String senderId; //the recipient ids are useless in the wrapper, since it's created in the mind.
-	private Payload payload;
+	private Payload<T> payload;
 	private boolean managed;
 	
 	public SpeechWrapper() {
@@ -17,11 +18,11 @@ public abstract class SpeechWrapper {
 		this.senderId = senderId;
 	}
 
-	public Payload getPayload() {
+	public Payload<T> getPayload() {
 		return this.payload;
 	}
 
-	protected void setPayload(Payload payload) {
+	protected void setPayload(Payload<T> payload) {
 		this.payload = payload;
 	}
 

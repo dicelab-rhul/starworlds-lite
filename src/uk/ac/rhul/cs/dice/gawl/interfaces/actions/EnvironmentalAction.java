@@ -7,7 +7,7 @@ import uk.ac.rhul.cs.dice.gawl.interfaces.environment.physics.Physics;
  * The interface for all the actions that should be performed in some
  * environment with some physics.<br/>
  * <br/>
- * Implements: {@link Action}. </br> Known implementations:
+ * Implements: {@link EnvironmentalAction}. </br> Known implementations:
  * {@link AbstractAction}.
  * 
  * @author cloudstrife9999 a.k.a. Emanuele Uliana
