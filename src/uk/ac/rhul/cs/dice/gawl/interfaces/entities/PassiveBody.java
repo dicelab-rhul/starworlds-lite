@@ -22,5 +22,4 @@ public abstract class PassiveBody extends PhysicalBody implements ObjectInterfac
 	public PassiveBody(PassiveBodyAppearance appearance) {
 		super(appearance);
 	}
-
 }

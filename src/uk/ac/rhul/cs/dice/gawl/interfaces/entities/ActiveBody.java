@@ -118,35 +118,4 @@ public abstract class ActiveBody extends PhysicalBody implements Actor, Simulato
 			this.addObserver(sensor);
 		}
 	}
-
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = super.hashCode();
-		result = prime * result + ((actuators == null) ? 0 : actuators.hashCode());
-		result = prime * result + ((sensors == null) ? 0 : sensors.hashCode());
-		return result;
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (!super.equals(obj))
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		ActiveBody other = (ActiveBody) obj;
-		if (actuators == null) {
-			if (other.actuators != null)
-				return false;
-		} else if (!actuators.equals(other.actuators))
-			return false;
-		if (sensors == null) {
-			if (other.sensors != null)
-				return false;
-		} else if (!sensors.equals(other.sensors))
-			return false;
-		return true;
-	}
 }

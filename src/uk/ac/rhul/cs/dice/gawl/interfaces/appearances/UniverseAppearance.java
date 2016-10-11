@@ -38,7 +38,7 @@ public abstract class UniverseAppearance extends ComplexEnvironmentAppearance {
 	 * every {@link SpaceCoordinates} instance in the {@link Universe}.
 	 */
 	public Map<SpaceCoordinates, Double[]> getBounds() {
-		return bounds;
+		return this.bounds;
 	}
 	
 	/**
@@ -48,31 +48,6 @@ public abstract class UniverseAppearance extends ComplexEnvironmentAppearance {
 	 * @return the bounds for a particular {@link SpaceCoordinates} instance.
 	 */
 	public Double[] getBounds(SpaceCoordinates coord) {
-		return bounds.get(coord);
-	}
-
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = super.hashCode();
-		result = prime * result + ((bounds == null) ? 0 : bounds.hashCode());
-		return result;
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (!super.equals(obj))
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		UniverseAppearance other = (UniverseAppearance) obj;
-		if (bounds == null) {
-			if (other.bounds != null)
-				return false;
-		} else if (!bounds.equals(other.bounds))
-			return false;
-		return true;
+		return this.bounds.get(coord);
 	}
 }

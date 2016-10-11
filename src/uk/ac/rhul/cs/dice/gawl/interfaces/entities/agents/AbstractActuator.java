@@ -74,41 +74,4 @@ public abstract class AbstractActuator extends CustomObservable implements Actua
 	public String getActuatorId() {
 		return this.id;
 	}
-
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = super.hashCode();
-		result = prime * result + ((actionToPerform == null) ? 0 : actionToPerform.hashCode());
-		result = prime * result + ((eventToPerform == null) ? 0 : eventToPerform.hashCode());
-		result = prime * result + ((id == null) ? 0 : id.hashCode());
-		return result;
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (!super.equals(obj))
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		AbstractActuator other = (AbstractActuator) obj;
-		if (actionToPerform == null) {
-			if (other.actionToPerform != null)
-				return false;
-		} else if (!actionToPerform.equals(other.actionToPerform))
-			return false;
-		if (eventToPerform == null) {
-			if (other.eventToPerform != null)
-				return false;
-		} else if (!eventToPerform.equals(other.eventToPerform))
-			return false;
-		if (id == null) {
-			if (other.id != null)
-				return false;
-		} else if (!id.equals(other.id))
-			return false;
-		return true;
-	}
 }

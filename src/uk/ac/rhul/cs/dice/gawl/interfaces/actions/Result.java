@@ -14,7 +14,16 @@ import java.util.List;
  */
 public interface Result {
 	/**
+	 * Returns the {@link String} actorId of the actor attempting the event this result refers to.
+	 * 
+	 * @return the {@link String} actorId of the actor attempting the event this result refers to.
+	 */
+	public String getActorId();
+	
+	/**
 	 * Returns the {@link ActionResult} wrapped by this object.
+	 * 
+	 * @return the {@link ActionResult} wrapped by this object.
 	 */
 	public ActionResult getActionResult();
 	
@@ -27,6 +36,8 @@ public interface Result {
 	
 	/**
 	 * Returns the {@link Exception} wrapped by this object.
+	 * 
+	 * @return the {@link Exception} wrapped by this object.
 	 */
 	public Exception getFailureReason();
 	

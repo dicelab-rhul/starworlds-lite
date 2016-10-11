@@ -78,35 +78,4 @@ public abstract class AbstractAgent extends ActiveBody implements Agent {
 	public void setMind(Mind mind) {
 		this.mind = mind;
 	}
-
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = super.hashCode();
-		result = prime * result + ((brain == null) ? 0 : brain.hashCode());
-		result = prime * result + ((mind == null) ? 0 : mind.hashCode());
-		return result;
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (!super.equals(obj))
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		AbstractAgent other = (AbstractAgent) obj;
-		if (brain == null) {
-			if (other.brain != null)
-				return false;
-		} else if (!brain.equals(other.brain))
-			return false;
-		if (mind == null) {
-			if (other.mind != null)
-				return false;
-		} else if (!mind.equals(other.mind))
-			return false;
-		return true;
-	}
 }

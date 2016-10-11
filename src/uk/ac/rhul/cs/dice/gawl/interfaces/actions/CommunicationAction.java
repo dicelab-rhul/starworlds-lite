@@ -16,26 +16,25 @@ import uk.ac.rhul.cs.dice.gawl.interfaces.actions.speech.Payload;
  *
  */
 public abstract class CommunicationAction<T> extends AbstractAction {
-  private String senderId;
-  private List<String> recipientsIds;
-  private Payload<T> payload;
+	private String senderId;
+	private List<String> recipientsIds;
+	private Payload<T> payload;
 
-  public CommunicationAction(String senderId, List<String> recipientsIds,
-      Payload<T> payload) {
-    this.senderId = senderId;
-    this.recipientsIds = recipientsIds;
-    this.payload = payload;
-  }
+	public CommunicationAction(String senderId, List<String> recipientsIds, Payload<T> payload) {
+		this.senderId = senderId;
+		this.recipientsIds = recipientsIds;
+		this.payload = payload;
+	}
 
-  public String getSenderId() {
-    return this.senderId;
-  }
+	public String getSenderId() {
+		return this.senderId;
+	}
 
-  public List<String> getRecipientsIds() {
-    return this.recipientsIds;
-  }
+	public List<String> getRecipientsIds() {
+		return this.recipientsIds;
+	}
 
-  public Payload<T> getPayload() {
-    return this.payload;
-  }
+	public Payload<T> getPayload() {
+		return this.payload;
+	}
 }
