@@ -21,7 +21,7 @@ import uk.ac.rhul.cs.dice.gawl.interfaces.environment.physics.Physics;
  *
  */
 public abstract class AbstractEnvironment implements Environment, Container {
-	private EnvironmentalSpace state;
+	private Space state;
 	private Set<Class<? extends AbstractAction>> admissibleActions;
 	private Set<Body> bodies;
 	private Physics physics;
@@ -31,14 +31,14 @@ public abstract class AbstractEnvironment implements Environment, Container {
 	/**
 	 * The default class constructor.
 	 * 
-	 * @param state : an {@link EnvironmentalSpace} instance.
+	 * @param state : an {@link Space} instance.
 	 * @param admissibleActions : the {@link Set} of performable {@link AbstractAction} instances.
 	 * @param bodies : a {@link Set} of {@link Body} elements.
 	 * @param physics : the {@link Physics} of the environment.
 	 * @param bounded : a {@link Boolean} value indicating whether the environment is bounded or not.
 	 * @param appearance : the {@link Appearance} of the environment.
 	 */
-	public AbstractEnvironment(EnvironmentalSpace state, Set<Class<? extends AbstractAction>> admissibleActions, Set<Body> bodies, Physics physics, Boolean bounded, Appearance appearance) {
+	public AbstractEnvironment(Space state, Set<Class<? extends AbstractAction>> admissibleActions, Set<Body> bodies, Physics physics, Boolean bounded, Appearance appearance) {
 		this.state = state;
 		this.admissibleActions = admissibleActions != null ? admissibleActions : new HashSet<>();
 		this.bodies = bodies != null ? bodies : new HashSet<>();
@@ -48,12 +48,12 @@ public abstract class AbstractEnvironment implements Environment, Container {
 	}
 
 	@Override
-	public EnvironmentalSpace getState() {
+	public Space getState() {
 		return this.state;
 	}
 
 	@Override
-	public void setState(EnvironmentalSpace state) {
+	public void setState(Space state) {
 		this.state = state;
 	}
 

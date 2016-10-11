@@ -19,18 +19,18 @@ import uk.ac.rhul.cs.dice.gawl.interfaces.environment.physics.Physics;
  */
 public interface Environment {
 	/**
-	 * Returns the {@link EnvironmentalSpace} of the {@link Environment}.
+	 * Returns the {@link Space} of the {@link Environment}.
 	 * 
-	 * @return the {@link EnvironmentalSpace} of the {@link Environment}.
+	 * @return the {@link Space} of the {@link Environment}.
 	 */
-	public EnvironmentalSpace getState();
+	public Space getState();
 	
 	/**
-	 * Sets the {@link EnvironmentalSpace} of the {@link Environment}.
+	 * Sets the {@link Space} of the {@link Environment}.
 	 * 
-	 * @param state : the {@link EnvironmentalSpace} of the {@link Environment}.
+	 * @param state : the {@link Space} of the {@link Environment}.
 	 */
-	public void setState(EnvironmentalSpace state);
+	public void setState(Space state);
 	
 	/**
 	 * Returns the {@link Set} of {@link AbstractAction} instances which are performable in the {@link Environment}.

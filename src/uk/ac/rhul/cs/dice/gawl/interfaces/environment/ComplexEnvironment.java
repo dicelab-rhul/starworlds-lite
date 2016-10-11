@@ -26,14 +26,14 @@ public abstract class ComplexEnvironment extends SimpleEnvironment {
 	/**
 	 * The default class constructor.
 	 * 
-	 * @param state : an {@link EnvironmentalSpace} instance.
+	 * @param state : an {@link Space} instance.
 	 * @param admissibleActions : the {@link Set} of performable {@link AbstractAction} instances.
 	 * @param bodies : a {@link Set} of {@link Body} elements.
 	 * @param physics : the {@link Physics} of the environment.
 	 * @param bounded : a {@link Boolean} value indicating whether the environment is bounded or not.
 	 * @param appearance : the {@link ComplexEnvironmentAppearance} of the environment.
 	 */
-	public ComplexEnvironment(EnvironmentalSpace state, Set<Class<? extends AbstractAction>> admissibleActions, Set<Body> bodies, Physics physics, Boolean bounded, ComplexEnvironmentAppearance appearance) {
+	public ComplexEnvironment(Space state, Set<Class<? extends AbstractAction>> admissibleActions, Set<Body> bodies, Physics physics, Boolean bounded, ComplexEnvironmentAppearance appearance) {
 		super(state, admissibleActions, bodies, physics, bounded, appearance);
 		this.subEnvironments = new ArrayList<>();
 	}

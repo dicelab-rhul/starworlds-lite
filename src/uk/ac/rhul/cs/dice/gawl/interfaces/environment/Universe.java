@@ -22,13 +22,13 @@ public class Universe extends ComplexEnvironment {
 	/**
 	 * The default class constructor.
 	 * 
-	 * @param state : an {@link EnvironmentalSpace} instance.
+	 * @param state : an {@link Space} instance.
 	 * @param admissibleActions : the {@link Set} of performable {@link AbstractAction} instances.
 	 * @param bodies : a {@link Set} of {@link Body} elements.
 	 * @param physics : the {@link Physics} of the environment.
 	 * @param appearance : the {@link UniverseAppearance} of the environment.
 	 */
-	public Universe(EnvironmentalSpace state, Set<Class<? extends AbstractAction>> admissibleActions, Set<Body> bodies, Physics physics, UniverseAppearance appearance) {
+	public Universe(Space state, Set<Class<? extends AbstractAction>> admissibleActions, Set<Body> bodies, Physics physics, UniverseAppearance appearance) {
 		super(state, admissibleActions, bodies, physics, true, appearance);
 	}
 }
