@@ -28,7 +28,7 @@ public interface EnvironmentalAction<P extends Perception> extends Action {
 	 * @return <code>true</code> if the action can be executed,
 	 *         <code>false</code> otherwise.
 	 */
-	public boolean isPossible(Physics<P> physics, Space context);
+	public abstract boolean isPossible(Physics<P> physics, Space context);
 
 	/**
 	 * Checks whether the action being executed is a mandatory condition.
@@ -41,7 +41,7 @@ public interface EnvironmentalAction<P extends Perception> extends Action {
 	 * @return <code>true</code> if the action must be executed,
 	 *         <code>false</code> otherwise.
 	 */
-	public boolean isNecessary(Physics<P> physics, Space context);
+	public abstract boolean isNecessary(Physics<P> physics, Space context);
 
 	/**
 	 * Attempts to execute the action by calling
@@ -56,7 +56,7 @@ public interface EnvironmentalAction<P extends Perception> extends Action {
 	 * @return a {@link Result} instance which shows the result of the
 	 *         execution.
 	 */
-	public Result<P> attempt(Physics<P> physics, Space context);
+	public abstract Result<P> attempt(Physics<P> physics, Space context);
 
 	/**
 	 * Performs an action whose pre-conditions were already met.
@@ -69,7 +69,7 @@ public interface EnvironmentalAction<P extends Perception> extends Action {
 	 * @return a {@link Result} instance which shows the result of the
 	 *         execution.
 	 */
-	public Result<P> perform(Physics<P> physics, Space context);
+	public abstract Result<P> perform(Physics<P> physics, Space context);
 
 	/**
 	 * Checks the post-conditions (effects) of the action.
@@ -82,5 +82,5 @@ public interface EnvironmentalAction<P extends Perception> extends Action {
 	 * @return <code>true</code> if the action post-conditions are met,
 	 *         <code>false</code> otherwise.
 	 */
-	public boolean succeeded(Physics<P> physics, Space context);
+	public abstract boolean succeeded(Physics<P> physics, Space context);
 }

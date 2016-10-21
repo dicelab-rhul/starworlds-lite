@@ -1,6 +1,5 @@
 package uk.ac.rhul.cs.dice.gawl.interfaces.environment.physics;
 
-import uk.ac.rhul.cs.dice.gawl.interfaces.actions.Action;
 import uk.ac.rhul.cs.dice.gawl.interfaces.actions.EnvironmentalAction;
 import uk.ac.rhul.cs.dice.gawl.interfaces.actions.Event;
 import uk.ac.rhul.cs.dice.gawl.interfaces.actions.Result;
@@ -28,11 +27,10 @@ public interface Physics<P extends Perception> {
 	 * @return a {@link Result} instance which shows the result of the attempt.
 	 */
 	public abstract Result<P> attempt(Event<P> event, Space context);
-	public abstract boolean isPossible(Action action, Space context);
-	public abstract boolean isNecessary(Action action, Space context);
-	public abstract Result<P> attempt(Action action, Space context);
-	public abstract Result<P> perform(Action action, Space context);
-	public abstract boolean succeeded(Action action, Space context);
+	public abstract boolean isPossible(EnvironmentalAction<P> action, Space context);
+	public abstract boolean isNecessary(EnvironmentalAction<P> action, Space context);
+	public abstract Result<P> perform(EnvironmentalAction<P> action, Space context);
+	public abstract boolean succeeded(EnvironmentalAction<P> action, Space context);
 	public abstract Result<P> getCurrentResult();
 	public abstract void setCurrentResult(Result<P> currentMoveResult);
 }
