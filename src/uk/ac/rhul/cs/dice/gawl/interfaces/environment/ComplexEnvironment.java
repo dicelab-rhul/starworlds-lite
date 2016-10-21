@@ -5,9 +5,11 @@ import java.util.List;
 import java.util.Set;
 
 import uk.ac.rhul.cs.dice.gawl.interfaces.actions.AbstractAction;
+import uk.ac.rhul.cs.dice.gawl.interfaces.actions.EnvironmentalAction;
 import uk.ac.rhul.cs.dice.gawl.interfaces.appearances.ComplexEnvironmentAppearance;
 import uk.ac.rhul.cs.dice.gawl.interfaces.entities.Body;
 import uk.ac.rhul.cs.dice.gawl.interfaces.environment.physics.Physics;
+import uk.ac.rhul.cs.dice.gawl.interfaces.perception.Perception;
 
 /**
  * A subclass of {@link SimpleEnvironment} which can contain an arbitrary number of {@link AbstractEnvironment} instances as sub-environments.
@@ -20,8 +22,8 @@ import uk.ac.rhul.cs.dice.gawl.interfaces.environment.physics.Physics;
  * @author Kostas Stathis
  *
  */
-public abstract class ComplexEnvironment extends SimpleEnvironment {
-	private List<AbstractEnvironment> subEnvironments;
+public abstract class ComplexEnvironment<P extends Perception> extends SimpleEnvironment<P> {
+	private List<AbstractEnvironment<P>> subEnvironments;
 	
 	/**
 	 * The default class constructor.
@@ -33,7 +35,7 @@ public abstract class ComplexEnvironment extends SimpleEnvironment {
 	 * @param bounded : a {@link Boolean} value indicating whether the environment is bounded or not.
 	 * @param appearance : the {@link ComplexEnvironmentAppearance} of the environment.
 	 */
-	public ComplexEnvironment(Space state, Set<Class<? extends AbstractAction>> admissibleActions, Set<Body> bodies, Physics physics, Boolean bounded, ComplexEnvironmentAppearance appearance) {
+	public ComplexEnvironment(Space state, Set<Class<? extends EnvironmentalAction<P>>> admissibleActions, Set<Body> bodies, Physics<P> physics, Boolean bounded, ComplexEnvironmentAppearance appearance) {
 		super(state, admissibleActions, bodies, physics, bounded, appearance);
 		this.subEnvironments = new ArrayList<>();
 	}
@@ -43,7 +45,7 @@ public abstract class ComplexEnvironment extends SimpleEnvironment {
 	 * 
 	 * @return a {@link List} of {@link AbstractEnvironment} elements.
 	 */
-	public List<AbstractEnvironment> getSubEnvironments() {
+	public List<AbstractEnvironment<P>> getSubEnvironments() {
 		return this.subEnvironments;
 	}
 	
@@ -52,7 +54,7 @@ public abstract class ComplexEnvironment extends SimpleEnvironment {
 	 * 
 	 * @param environment : the {@link AbstractEnvironment} to add to the {@link List} of sub-environments.
 	 */
-	public void addSubEnvironment(AbstractEnvironment environment) {
+	public void addSubEnvironment(AbstractEnvironment<P> environment) {
 		this.subEnvironments.add(environment);
 	}
 	

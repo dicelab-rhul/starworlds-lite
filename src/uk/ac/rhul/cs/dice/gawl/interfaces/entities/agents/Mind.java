@@ -1,9 +1,10 @@
 package uk.ac.rhul.cs.dice.gawl.interfaces.entities.agents;
 
 import java.util.List;
+import java.util.Random;
 
-import uk.ac.rhul.cs.dice.gawl.interfaces.actions.AbstractAction;
 import uk.ac.rhul.cs.dice.gawl.interfaces.actions.EnvironmentalAction;
+import uk.ac.rhul.cs.dice.gawl.interfaces.actions.Result;
 import uk.ac.rhul.cs.dice.gawl.interfaces.observer.CustomObserver;
 import uk.ac.rhul.cs.dice.gawl.interfaces.perception.Perception;
 
@@ -17,40 +18,32 @@ import uk.ac.rhul.cs.dice.gawl.interfaces.perception.Perception;
  * @author Kostas Stathis
  *
  */
-public interface Mind extends CustomObserver {
-	/**
-	 * Stores the received perception for reuse.
-	 * 
-	 * @param perceptionWrapper : a wrapper for a {@link Perception}.
-	 */
-	public void perceive(Object perceptionWrapper);
-	
-	/**
-	 * Selects an {@link EnvironmentalAction} to be attempted after a computation involving <code>parameters</code>.
-	 * 
-	 * @param parameters : an array of {@link Object} elements used to select the {@link EnvironmentalAction} to attempt.
-	 * @return the {@link EnvironmentalAction} to attempt.
-	 */
-	public EnvironmentalAction decide(Object... parameters);
-	
-	/**
-	 * Passes the {@link EnvironmentalAction} to a manager which will decide when, how and who will execute it.
-	 * 
-	 * @param action
-	 */
-	public void execute(EnvironmentalAction action);
-	
-	/**
-	 * Returns the {@link List} of all the {@link AbstractAction} instances which can be attempted.
-	 * 
-	 * @return the {@link List} of all the {@link AbstractAction} instances which can be attempted.
-	 */
-	public List<Class<? extends AbstractAction>> getAvailableActionsForThisCycle();
-	
-	/**
-	 * Adds an {@link AbstractAction} to the {@link List} of the {@link AbstractAction} instances which can be attempted.
-	 * 
-	 * @param availableActionForThisCicle : the {@link AbstractAction} to add.
-	 */
-	public void addAvailableActionForThisCycle(Class<? extends AbstractAction> availableActionForThisCicle);
+public interface Mind<P extends Perception> extends CustomObserver {
+	public abstract void perceive(Object perceptionWrapper);
+	public abstract EnvironmentalAction<P> decide(Object... parameters);
+	public abstract void execute(EnvironmentalAction<P> action);
+	public abstract List<Class<? extends EnvironmentalAction<P>>> getAvailableActionsForThisCycle();
+	public abstract void addAvailableActionForThisCycle(Class<? extends EnvironmentalAction<P>> availableActionForThisCycle);
+	public void loadAvailableActionsForThisCycle(Object... availableActionsForThisCycle);
+	public abstract void loadAvailableActionsForThisCycle(List<Class<? extends EnvironmentalAction<P>>> availableActionsForThisCycle);
+	public abstract void loadAvailableActionsForThisMind(Object... mindActions);
+	public abstract void loadAvailableActionsForThisMind(List<Class<? extends EnvironmentalAction<P>>> mindActions);
+	public abstract List<Class<? extends EnvironmentalAction<P>>> getAvailableActionsForThisMind();
+	public abstract Class<? extends EnvironmentalAction<P>> decideActionPrototypeRandomly();
+	public abstract EnvironmentalAction<P> decideActionRandomly();
+	public abstract Random getRNG();
+	public abstract Object getBodyId();
+	public abstract void setBodyId(Object bodyId);
+	public abstract boolean lastActionSucceeded();
+	public abstract boolean lastActionFailed();
+	public abstract boolean wasLastActionImpossible();
+	public abstract int getPerceptionRange();
+	public abstract boolean canSeeBehind();
+	public abstract void setCanSeeBehind(boolean canSeeBehind);
+	public abstract void setPerceptionRange(int preceptionRange);
+	public abstract EnvironmentalAction<P> getNextAction();
+	public abstract void setNextActionForExecution(EnvironmentalAction<P> action);
+	public abstract Result<P> getLastActionResult();
+	public abstract void setLastActionResult(Result<P> result);
+	public abstract Perception getPerception();
 }

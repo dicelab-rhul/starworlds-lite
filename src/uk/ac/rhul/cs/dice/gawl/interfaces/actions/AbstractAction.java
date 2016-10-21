@@ -1,8 +1,11 @@
 package uk.ac.rhul.cs.dice.gawl.interfaces.actions;
 
+import java.util.ArrayList;
+
 import uk.ac.rhul.cs.dice.gawl.interfaces.entities.Actor;
 import uk.ac.rhul.cs.dice.gawl.interfaces.environment.Space;
 import uk.ac.rhul.cs.dice.gawl.interfaces.environment.physics.Physics;
+import uk.ac.rhul.cs.dice.gawl.interfaces.perception.Perception;
 
 /**
  * The most generic action class implementing {@link EnvironmentalAction}.<br/><br/>
@@ -14,7 +17,7 @@ import uk.ac.rhul.cs.dice.gawl.interfaces.environment.physics.Physics;
  * @author Kostas Stathis
  *
  */
-public abstract class AbstractAction implements EnvironmentalAction {
+public abstract class AbstractAction<P extends Perception> implements EnvironmentalAction<P> {
 	private Actor actor;
 	
 	/**
@@ -50,8 +53,8 @@ public abstract class AbstractAction implements EnvironmentalAction {
 	}
 	
 	@Override
-	public Result attempt(Physics physics, Space context) {
-		Result result = new DefaultActionResult(ActionResult.ACTION_IMPOSSIBLE, null);
+	public Result<P> attempt(Physics<P> physics, Space context) {
+		Result<P> result = new DefaultActionResult<>(ActionResult.ACTION_IMPOSSIBLE, getActor().getId().toString(), new ArrayList<>(), null);
 		
 		if(isPossible(physics, context)) {
 			result = perform(physics, context);
@@ -61,7 +64,7 @@ public abstract class AbstractAction implements EnvironmentalAction {
 		return result;
 	}
 
-	private Result checkResultSoundness(Result result, Physics physics, Space context) {
+	private Result<P> checkResultSoundness(Result<P> result, Physics< P> physics, Space context) {
 		if(result.getActionResult() == ActionResult.ACTION_FAILED) {
 			return result;
 		}
@@ -70,7 +73,27 @@ public abstract class AbstractAction implements EnvironmentalAction {
 			return result;
 		}
 		else {
-			return new DefaultActionResult(ActionResult.ACTION_FAILED, null);
+			return new DefaultActionResult<>(ActionResult.ACTION_FAILED, getActor().getId().toString(), result.getFailureReason(), new ArrayList<>());
 		}
+	}
+	
+	@Override
+	public boolean isPossible(Physics<P> physics, Space context) {
+		return physics.isPossible(this, context);
+	}
+	
+	@Override
+	public boolean isNecessary(Physics<P> physics, Space context) {
+		return physics.isNecessary(this, context);
+	}
+	
+	@Override
+	public Result<P> perform(Physics<P> physics, Space context) {
+		return physics.perform(this, context);
+	}
+	
+	@Override
+	public boolean succeeded(Physics<P> physics, Space context) {
+		return physics.succeeded(this, context);
 	}
 }

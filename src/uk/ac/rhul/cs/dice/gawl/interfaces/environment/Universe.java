@@ -3,9 +3,11 @@ package uk.ac.rhul.cs.dice.gawl.interfaces.environment;
 import java.util.Set;
 
 import uk.ac.rhul.cs.dice.gawl.interfaces.actions.AbstractAction;
+import uk.ac.rhul.cs.dice.gawl.interfaces.actions.EnvironmentalAction;
 import uk.ac.rhul.cs.dice.gawl.interfaces.appearances.UniverseAppearance;
 import uk.ac.rhul.cs.dice.gawl.interfaces.entities.Body;
 import uk.ac.rhul.cs.dice.gawl.interfaces.environment.physics.Physics;
+import uk.ac.rhul.cs.dice.gawl.interfaces.perception.Perception;
 
 /**
  * A subclass of {@link ComplexEnvironment} which is always bounded. Thus, the {@link #isBounded()} method will always return true.<br/><br/>
@@ -17,7 +19,7 @@ import uk.ac.rhul.cs.dice.gawl.interfaces.environment.physics.Physics;
  * @author Kostas Stathis
  *
  */
-public class Universe extends ComplexEnvironment {
+public class Universe<P extends Perception> extends ComplexEnvironment<P> {
 
 	/**
 	 * The default class constructor.
@@ -28,7 +30,7 @@ public class Universe extends ComplexEnvironment {
 	 * @param physics : the {@link Physics} of the environment.
 	 * @param appearance : the {@link UniverseAppearance} of the environment.
 	 */
-	public Universe(Space state, Set<Class<? extends AbstractAction>> admissibleActions, Set<Body> bodies, Physics physics, UniverseAppearance appearance) {
+	public Universe(Space state, Set<Class<? extends EnvironmentalAction<P>>> admissibleActions, Set<Body> bodies, Physics<P> physics, UniverseAppearance appearance) {
 		super(state, admissibleActions, bodies, physics, true, appearance);
 	}
 }

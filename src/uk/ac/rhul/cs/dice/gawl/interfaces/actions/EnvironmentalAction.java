@@ -2,6 +2,7 @@ package uk.ac.rhul.cs.dice.gawl.interfaces.actions;
 
 import uk.ac.rhul.cs.dice.gawl.interfaces.environment.Space;
 import uk.ac.rhul.cs.dice.gawl.interfaces.environment.physics.Physics;
+import uk.ac.rhul.cs.dice.gawl.interfaces.perception.Perception;
 
 /**
  * The interface for all the actions that should be performed in some
@@ -15,7 +16,7 @@ import uk.ac.rhul.cs.dice.gawl.interfaces.environment.physics.Physics;
  * @author Kostas Stathis
  *
  */
-public interface EnvironmentalAction extends Action {
+public interface EnvironmentalAction<P extends Perception> extends Action {
 	/**
 	 * Checks the pre-conditions for the action.
 	 * 
@@ -27,7 +28,7 @@ public interface EnvironmentalAction extends Action {
 	 * @return <code>true</code> if the action can be executed,
 	 *         <code>false</code> otherwise.
 	 */
-	public boolean isPossible(Physics physics, Space context);
+	public boolean isPossible(Physics<P> physics, Space context);
 
 	/**
 	 * Checks whether the action being executed is a mandatory condition.
@@ -40,7 +41,7 @@ public interface EnvironmentalAction extends Action {
 	 * @return <code>true</code> if the action must be executed,
 	 *         <code>false</code> otherwise.
 	 */
-	public boolean isNecessary(Physics physics, Space context);
+	public boolean isNecessary(Physics<P> physics, Space context);
 
 	/**
 	 * Attempts to execute the action by calling
@@ -55,7 +56,7 @@ public interface EnvironmentalAction extends Action {
 	 * @return a {@link Result} instance which shows the result of the
 	 *         execution.
 	 */
-	public Result attempt(Physics physics, Space context);
+	public Result<P> attempt(Physics<P> physics, Space context);
 
 	/**
 	 * Performs an action whose pre-conditions were already met.
@@ -68,7 +69,7 @@ public interface EnvironmentalAction extends Action {
 	 * @return a {@link Result} instance which shows the result of the
 	 *         execution.
 	 */
-	public Result perform(Physics physics, Space context);
+	public Result<P> perform(Physics<P> physics, Space context);
 
 	/**
 	 * Checks the post-conditions (effects) of the action.
@@ -81,5 +82,5 @@ public interface EnvironmentalAction extends Action {
 	 * @return <code>true</code> if the action post-conditions are met,
 	 *         <code>false</code> otherwise.
 	 */
-	public boolean succeeded(Physics physics, Space context);
+	public boolean succeeded(Physics<P> physics, Space context);
 }

@@ -3,9 +3,11 @@ package uk.ac.rhul.cs.dice.gawl.interfaces.environment;
 import java.util.Set;
 
 import uk.ac.rhul.cs.dice.gawl.interfaces.actions.AbstractAction;
+import uk.ac.rhul.cs.dice.gawl.interfaces.actions.EnvironmentalAction;
 import uk.ac.rhul.cs.dice.gawl.interfaces.appearances.Appearance;
 import uk.ac.rhul.cs.dice.gawl.interfaces.entities.Body;
 import uk.ac.rhul.cs.dice.gawl.interfaces.environment.physics.Physics;
+import uk.ac.rhul.cs.dice.gawl.interfaces.perception.Perception;
 
 /**
  * The most general interface exposing the essential methods all the environments need to implement.<br/><br/>
@@ -17,95 +19,95 @@ import uk.ac.rhul.cs.dice.gawl.interfaces.environment.physics.Physics;
  * @author Kostas Stathis
  *
  */
-public interface Environment {
+public interface Environment<P extends Perception> {
 	/**
 	 * Returns the {@link Space} of the {@link Environment}.
 	 * 
 	 * @return the {@link Space} of the {@link Environment}.
 	 */
-	public Space getState();
+	public abstract Space getState();
 	
 	/**
 	 * Sets the {@link Space} of the {@link Environment}.
 	 * 
 	 * @param state : the {@link Space} of the {@link Environment}.
 	 */
-	public void setState(Space state);
+	public abstract void setState(Space state);
 	
 	/**
 	 * Returns the {@link Set} of {@link AbstractAction} instances which are performable in the {@link Environment}.
 	 * 
 	 * @return the {@link Set} of {@link AbstractAction} instances which are performable in the {@link Environment}.
 	 */
-	public Set<Class<? extends AbstractAction>> getAdmissibleActions();
+	public abstract Set<Class<? extends EnvironmentalAction<P>>> getAdmissibleActions();
 	
 	/**
 	 * Sets the {@link Set} of {@link AbstractAction} instances which are performable in the {@link Environment}.
 	 * 
 	 * @param admissibleActions : the {@link Set} of {@link AbstractAction} instances which are performable in the {@link Environment}.
 	 */
-	public void setAdmissibleActions(Set<Class<? extends AbstractAction>> admissibleActions);
+	public abstract void setAdmissibleActions(Set<Class<? extends EnvironmentalAction<P>>> admissibleActions);
 	
 	/**
 	 * Returns the {@link Set} of bodies present in the {@link Environment}.
 	 * 
 	 * @return the {@link Set} of bodies present in the {@link Environment}.
 	 */
-	public Set<Body> getBodies();
+	public abstract Set<Body> getBodies();
 	
 	/**
 	 * Adds a {@link Set} of bodies to the {@link Environment}.
 	 * 
 	 * @param bodies : the {@link Set} of bodies to be added to the {@link Environment}.
 	 */
-	public void setBodies(Set<Body> bodies);
+	public abstract void setBodies(Set<Body> bodies);
 	
 	/**
 	 * Returns the {@link Physics} of the {@link Environment}.
 	 * 
 	 * @return the {@link Physics} of the {@link Environment}.
 	 */
-	public Physics getPhysics();
+	public abstract Physics<P> getPhysics();
 	
 	/**
 	 * Sets the {@link Physics} of the {@link Environment}.
 	 * 
 	 * @param physics : the {@link Physics} of the {@link Environment}.
 	 */
-	public void setPhysics(Physics physics);
+	public abstract void setPhysics(Physics<P> physics);
 	
 	/**
 	 * Sets whether the {@link Environment} is bounded or not.
 	 * 
 	 * @param bounded : a {@link Boolean} value representing whether the {@link Environment} is bounded or not.
 	 */
-	public void setBounded(Boolean bounded);
+	public abstract void setBounded(Boolean bounded);
 	
 	/**
 	 * Returns the {@link Appearance} of the {@link Environment}.
 	 * 
 	 * @return the {@link Appearance} of the {@link Environment}.
 	 */
-	public Appearance getAppearance();
+	public abstract Appearance getAppearance();
 	
 	/**
 	 * Sets the {@link Appearance} of the {@link Environment}.
 	 * 
 	 * @param appearance : the {@link Appearance} of the {@link Environment}.
 	 */
-	public void setAppearance(Appearance appearance);
+	public abstract void setAppearance(Appearance appearance);
 	
 	/**
 	 * Checks whether the {@link Environment} is simple or not.
 	 * 
 	 * @return a {@link Boolean} value representing whether the {@link Environment} is simple or not.
 	 */
-	public Boolean isSimple();
+	public abstract Boolean isSimple();
 	
 	/**
 	 * Checks whether the {@link Environment} is bounded or not.
 	 * 
 	 * @return a {@link Boolean} value representing whether the {@link Environment} is bounded or not.
 	 */
-	public Boolean isBounded();
+	public abstract Boolean isBounded();
 }

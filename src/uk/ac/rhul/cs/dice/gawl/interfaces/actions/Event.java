@@ -3,6 +3,7 @@ package uk.ac.rhul.cs.dice.gawl.interfaces.actions;
 import uk.ac.rhul.cs.dice.gawl.interfaces.entities.Actor;
 import uk.ac.rhul.cs.dice.gawl.interfaces.environment.Space;
 import uk.ac.rhul.cs.dice.gawl.interfaces.environment.physics.Physics;
+import uk.ac.rhul.cs.dice.gawl.interfaces.perception.Perception;
 
 /**
  * The interface for events.<br/><br/>
@@ -14,11 +15,11 @@ import uk.ac.rhul.cs.dice.gawl.interfaces.environment.physics.Physics;
  * @author Kostas Stathis
  *
  */
-public interface Event {
+public interface Event<P extends Perception> {
 	/**
 	 * Represents the event with a {@link String}.
 	 * 
-	 * @return a {@link String} represetation of the event.
+	 * @return a {@link String} representation of the event.
 	 */
 	public String represent();
 	
@@ -27,14 +28,14 @@ public interface Event {
 	 * 
 	 * @return the {@link EnvironmentalAction} wrapped by the event.
 	 */
-	public EnvironmentalAction getAction();
+	public EnvironmentalAction<P> getAction();
 	
 	/**
 	 * Sets a new {@link EnvironmentalAction}.
 	 * 
 	 * @param action : the new {@link EnvironmentalAction} to be contained in the event.
 	 */
-	public void setAction(EnvironmentalAction action);
+	public void setAction(EnvironmentalAction<P> action);
 	
 	/**
 	 * Returns the timestamp of the event.
@@ -71,7 +72,7 @@ public interface Event {
 	 * @param context : the {@link Space} where the event is executed.
 	 * @return <code>true</code> if the event can take place, <code>false</code> otherwise.
 	 */
-	public boolean isPossible(Physics physics, Space context);
+	public boolean isPossible(Physics<P> physics, Space context);
 	
 	/**
 	 * Checks whether the event taking place is a mandatory condition.
@@ -80,7 +81,7 @@ public interface Event {
 	 * @param context : the {@link Space} where the event is executed.
 	 * @return <code>true</code> if the event must take place, <code>false</code> otherwise.
 	 */
-	public boolean isNecessary(Physics physics, Space context);
+	public boolean isNecessary(Physics<P> physics, Space context);
 	
 	/**
 	 * Attempts to execute the event by calling {@link #isPossible(physics, context)},
@@ -90,7 +91,7 @@ public interface Event {
 	 * @param context : the {@link Space} where the event is executed.
 	 * @return a {@link Result} instance which shows the result of the execution.
 	 */
-	public Result attempt(Physics physics, Space context);
+	public Result<P> attempt(Physics<P> physics, Space context);
 	
 	/**
 	 * Performs an event whose pre-conditions were already met.
@@ -99,7 +100,7 @@ public interface Event {
 	 * @param context : the {@link Space} where the event is executed.
 	 * @return a {@link Result} instance which shows the result of the execution.
 	 */
-	public Result perform(Physics physics, Space context);
+	public Result<P> perform(Physics<P> physics, Space context);
 	
 	/**
 	 * Checks the post-conditions (effects) of the event.
@@ -108,5 +109,5 @@ public interface Event {
 	 * @param context : the {@link Space} where the event is executed.
 	 * @return <code>true</code> if the event post-conditions are met, <code>false</code> otherwise.
 	 */
-	public boolean succeeded(Physics physics, Space context);
+	public boolean succeeded(Physics<P> physics, Space context);
 }

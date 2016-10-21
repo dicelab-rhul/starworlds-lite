@@ -1,6 +1,7 @@
 package uk.ac.rhul.cs.dice.gawl.interfaces.entities.agents;
 
 import uk.ac.rhul.cs.dice.gawl.interfaces.observer.CustomObserver;
+import uk.ac.rhul.cs.dice.gawl.interfaces.perception.Perception;
 
 /**
  * The interface for sensor objects. It extends {@link CustomObserver}.<br/><br/>
@@ -12,6 +13,10 @@ import uk.ac.rhul.cs.dice.gawl.interfaces.observer.CustomObserver;
  * @author Kostas Stathis
  *
  */
-public interface Sensor extends CustomObserver {
-
+public interface Sensor<T extends Enum<?>> extends CustomObserver {
+	public abstract T getRole();
+	public abstract Object getSensorId();
+	public abstract Object getBodyId();
+	public abstract Perception getPerception();
+	public abstract void setPerception(Perception perception);
 }

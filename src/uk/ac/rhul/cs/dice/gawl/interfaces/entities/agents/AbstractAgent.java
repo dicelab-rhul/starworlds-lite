@@ -5,6 +5,7 @@ import java.util.List;
 import uk.ac.rhul.cs.dice.gawl.interfaces.appearances.AbstractAgentAppearance;
 import uk.ac.rhul.cs.dice.gawl.interfaces.entities.ActiveBody;
 import uk.ac.rhul.cs.dice.gawl.interfaces.entities.Agent;
+import uk.ac.rhul.cs.dice.gawl.interfaces.perception.Perception;
 
 /**
  * A subclass of {@link ActiveBody} implementing the {@link Agent} interface. It contains a {@link Brain}
@@ -17,9 +18,9 @@ import uk.ac.rhul.cs.dice.gawl.interfaces.entities.Agent;
  * @author Kostas Stathis
  *
  */
-public abstract class AbstractAgent extends ActiveBody implements Agent {
+public abstract class AbstractAgent<T1 extends Enum<?>, T2 extends Enum<?>, P extends Perception> extends ActiveBody<T1, T2, P> implements Agent<P> {
 	private Brain brain;
-	private Mind mind;
+	private AbstractAgentMind<P> mind;
 	
 	/**
 	 * The class constructor.
@@ -30,14 +31,14 @@ public abstract class AbstractAgent extends ActiveBody implements Agent {
 	 * @param mind : the {@link AbstractAgentMind}.
 	 * @param brain : the {@link AbstractAgentBrain}.
 	 */
-	public AbstractAgent(AbstractAgentAppearance appearance, List<Sensor> sensors, List<Actuator> actuators, AbstractAgentMind mind, AbstractAgentBrain brain) {
+	public AbstractAgent(AbstractAgentAppearance appearance, List<Sensor<T1>> sensors, List<Actuator<T2, P>> actuators, AbstractAgentMind<P> mind, AbstractAgentBrain brain) {
 		super(appearance, sensors, actuators);
 		
 		this.brain = brain;
 		this.mind = mind;
 		
 		((AbstractAgentBrain) this.brain).addObserver(this.mind);
-		((AbstractAgentMind) this.mind).addObserver(this.brain);
+		this.mind.addObserver(this.brain);
 		
 		((AbstractAgentBrain) this.brain).addObserver(this);
 		this.addObserver(this.brain);
@@ -48,6 +49,7 @@ public abstract class AbstractAgent extends ActiveBody implements Agent {
 	 * 
 	 * @return the {@link Brain} of the {@link AbstractAgent}.
 	 */
+	@Override
 	public Brain getBrain() {
 		return this.brain;
 	}
@@ -57,6 +59,7 @@ public abstract class AbstractAgent extends ActiveBody implements Agent {
 	 * 
 	 * @param brain : the {@link Brain} of the {@link AbstractAgent}.
 	 */
+	@Override
 	public void setBrain(Brain brain) {
 		this.brain = brain;
 	}
@@ -66,7 +69,8 @@ public abstract class AbstractAgent extends ActiveBody implements Agent {
 	 * 
 	 * @return the {@link Mind} of the {@link AbstractAgent}.
 	 */
-	public Mind getMind() {
+	@Override
+	public AbstractAgentMind<P> getMind() {
 		return this.mind;
 	}
 
@@ -75,7 +79,8 @@ public abstract class AbstractAgent extends ActiveBody implements Agent {
 	 * 
 	 * @param mind : the {@link Mind} of the {@link AbstractAgent}.
 	 */
-	public void setMind(Mind mind) {
+	@Override
+	public void setMind(AbstractAgentMind<P> mind) {
 		this.mind = mind;
 	}
 }

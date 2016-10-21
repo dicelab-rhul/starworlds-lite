@@ -2,9 +2,12 @@ package uk.ac.rhul.cs.dice.gawl.interfaces.entities.agents;
 
 import java.util.UUID;
 
+import uk.ac.rhul.cs.dice.gawl.interfaces.actions.AbstractAction;
+import uk.ac.rhul.cs.dice.gawl.interfaces.actions.AbstractEvent;
 import uk.ac.rhul.cs.dice.gawl.interfaces.actions.EnvironmentalAction;
 import uk.ac.rhul.cs.dice.gawl.interfaces.actions.Event;
 import uk.ac.rhul.cs.dice.gawl.interfaces.observer.CustomObservable;
+import uk.ac.rhul.cs.dice.gawl.interfaces.perception.Perception;
 
 /**
  * The most generic class implementing {@link Actuator}. It also extends {@link CustomObservable}.
@@ -17,17 +20,20 @@ import uk.ac.rhul.cs.dice.gawl.interfaces.observer.CustomObservable;
  * @author Kostas Stathis
  *
  */
-public abstract class AbstractActuator extends CustomObservable implements Actuator {
-	private EnvironmentalAction actionToPerform;
-	private Event eventToPerform;
+public abstract class AbstractActuator<T extends Enum<?>, P extends Perception> extends CustomObservable implements Actuator<T, P> {
+	private AbstractAction<P> actionToPerform;
+	private AbstractEvent<P> eventToPerform;
 	private String id;
+	private String bodyId;
+	private T role;
 	
 	/**
 	 * Default constructor. A random uuid is generated and stored.
 	 */
-	public AbstractActuator() {
-		UUID uuid = UUID.randomUUID();
-		this.id = uuid.toString();
+	public AbstractActuator(String bodyId, T role) {
+		this.id = UUID.randomUUID().toString();
+		this.bodyId = bodyId;
+		this.role = role;
 	}
 	
 	/**
@@ -35,7 +41,8 @@ public abstract class AbstractActuator extends CustomObservable implements Actua
 	 * 
 	 * @return the {@link EnvironmentalAction} to attempt.
 	 */
-	protected EnvironmentalAction getActionToPerform() {
+	@Override
+	public AbstractAction<P> getActionToPerform() {
 		return this.actionToPerform;
 	}
 	
@@ -44,7 +51,8 @@ public abstract class AbstractActuator extends CustomObservable implements Actua
 	 * 
 	 * @return the {@link Event} wrapping the {@link EnvironmentalAction} to attempt.
 	 */
-	protected Event getEventToPerform() {
+	@Override
+	public AbstractEvent<P> getEventToPerform() {
 		return this.eventToPerform;
 	}
 	
@@ -53,7 +61,8 @@ public abstract class AbstractActuator extends CustomObservable implements Actua
 	 * 
 	 * @param action : the {@link EnvironmentalAction} to attempt.
 	 */
-	protected void setActionToPerform(EnvironmentalAction action) {
+	@Override
+	public void setActionToPerform(AbstractAction<P> action) {
 		this.actionToPerform = action;
 	}
 	
@@ -62,7 +71,8 @@ public abstract class AbstractActuator extends CustomObservable implements Actua
 	 * 
 	 * @param event : the {@link Event} wrapping the {@link EnvironmentalAction} to attempt.
 	 */
-	protected void setEventToPerform(Event event) {
+	@Override
+	public void setEventToPerform(AbstractEvent<P> event) {
 		this.eventToPerform = event;
 	}
 	
@@ -71,7 +81,18 @@ public abstract class AbstractActuator extends CustomObservable implements Actua
 	 * 
 	 * @return the actuator ID as a {@link String}.
 	 */
+	@Override
 	public String getActuatorId() {
 		return this.id;
+	}
+	
+	@Override
+	public T getRole() {
+		return this.role;
+	}
+	
+	@Override
+	public String getBodyId() {
+		return this.bodyId;
 	}
 }

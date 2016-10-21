@@ -12,6 +12,7 @@ import uk.ac.rhul.cs.dice.gawl.interfaces.actions.EnvironmentalAction;
  * @author Kostas Stathis
  *
  */
+@FunctionalInterface
 public interface Actor {
-
+	public abstract Object getId();
 }

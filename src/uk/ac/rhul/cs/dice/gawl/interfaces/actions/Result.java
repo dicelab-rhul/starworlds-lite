@@ -2,6 +2,8 @@ package uk.ac.rhul.cs.dice.gawl.interfaces.actions;
 
 import java.util.List;
 
+import uk.ac.rhul.cs.dice.gawl.interfaces.perception.Perception;
+
 /**
  * The interface for generic action results.<br/><br/>
  * 
@@ -12,7 +14,7 @@ import java.util.List;
  * @author Kostas Stathis
  *
  */
-public interface Result {
+public interface Result<P extends Perception> {
 	/**
 	 * Returns the {@link String} actorId of the actor attempting the event this result refers to.
 	 * 
@@ -54,4 +56,6 @@ public interface Result {
 	 * @param recipientsIds : the {@link List} of {@link String} IDs of the objects which will receive this {@link Result}.
 	 */
 	public void setRecipientsIds(List<String> recipientsIds);
+	public abstract P getPerception();
+	public abstract void setPerception(P perception);
 }

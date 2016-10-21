@@ -1,5 +1,11 @@
 package uk.ac.rhul.cs.dice.gawl.interfaces.entities;
 
+import java.util.List;
+
+import uk.ac.rhul.cs.dice.gawl.interfaces.entities.agents.Actuator;
+import uk.ac.rhul.cs.dice.gawl.interfaces.entities.agents.Sensor;
+import uk.ac.rhul.cs.dice.gawl.interfaces.perception.Perception;
+
 /**
  * The interface for classes that can simulate behaviours.<br/><br/>
  * 
@@ -10,13 +16,16 @@ package uk.ac.rhul.cs.dice.gawl.interfaces.entities;
  * @author Kostas Stathis
  *
  */
-@FunctionalInterface
-public interface Simulator {
+public interface Simulator<T1 extends Enum<?>, T2 extends Enum<?>, P extends Perception> {
 	
 	/**
 	 * Performs a simulation.
 	 * 
 	 * @return the simulation return value as a generic {@link Object}.
 	 */
-	public Object simulate();
+	public abstract Object simulate();
+	public abstract List<Sensor<T1>> getSensors();
+	public abstract List<Actuator<T2, P>> getActuators();
+	public abstract void addSensor(Sensor<T1> sensor);
+	public abstract void addActuator(Actuator<T2, P> actuator);
 }

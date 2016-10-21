@@ -16,16 +16,19 @@ import uk.ac.rhul.cs.dice.gawl.interfaces.perception.Perception;
  * @author Kostas Stathis
  *
  */
-public abstract class AbstractSensor extends CustomObservable implements Sensor {
+public abstract class AbstractSensor<T extends Enum<?>> extends CustomObservable implements Sensor<T> {
 	private Perception perception;
 	private String id;
+	private String bodyId;
+	private T role;
 	
 	/**
 	 * Default constructor. A random uuid is generated and stored.
 	 */
-	public AbstractSensor() {
-		UUID uuid = UUID.randomUUID();
-		this.id = uuid.toString();
+	public AbstractSensor(String bodyId, T role) {
+		this.id = UUID.randomUUID().toString();
+		this.bodyId = bodyId;
+		this.role = role;
 	}
 	
 	/**
@@ -33,6 +36,7 @@ public abstract class AbstractSensor extends CustomObservable implements Sensor 
 	 * 
 	 * @param perception : the perceived {@link Perception}.
 	 */
+	@Override
 	public void setPerception(Perception perception) {
 		this.perception = perception;
 	}
@@ -42,6 +46,7 @@ public abstract class AbstractSensor extends CustomObservable implements Sensor 
 	 * 
 	 * @return the perceived {@link Perception}.
 	 */
+	@Override
 	public Perception getPerception() {
 		return this.perception;
 	}
@@ -51,7 +56,18 @@ public abstract class AbstractSensor extends CustomObservable implements Sensor 
 	 * 
 	 * @return the sensor ID as a {@link String}.
 	 */
+	@Override
 	public String getSensorId() {
 		return this.id;
+	}
+	
+	@Override
+	public T getRole() {
+		return this.role;
+	}
+	
+	@Override
+	public String getBodyId() {
+		return this.bodyId;
 	}
 }

@@ -4,9 +4,11 @@ import java.util.HashSet;
 import java.util.Set;
 
 import uk.ac.rhul.cs.dice.gawl.interfaces.actions.AbstractAction;
+import uk.ac.rhul.cs.dice.gawl.interfaces.actions.EnvironmentalAction;
 import uk.ac.rhul.cs.dice.gawl.interfaces.appearances.Appearance;
 import uk.ac.rhul.cs.dice.gawl.interfaces.entities.Body;
 import uk.ac.rhul.cs.dice.gawl.interfaces.environment.physics.Physics;
+import uk.ac.rhul.cs.dice.gawl.interfaces.perception.Perception;
 
 /**
  * The most general class representing an environment. It has an {@link EnvironmentalSpace}, a {@link Set} of admissible {@link AbstractAction}
@@ -20,11 +22,11 @@ import uk.ac.rhul.cs.dice.gawl.interfaces.environment.physics.Physics;
  * @author Kostas Stathis
  *
  */
-public abstract class AbstractEnvironment implements Environment, Container {
+public abstract class AbstractEnvironment<P extends Perception> implements Environment<P>, Container {
 	private Space state;
-	private Set<Class<? extends AbstractAction>> admissibleActions;
+	private Set<Class<? extends EnvironmentalAction<P>>> admissibleActions;
 	private Set<Body> bodies;
-	private Physics physics;
+	private Physics<P> physics;
 	private Boolean bounded;
 	private Appearance appearance;
 	
@@ -38,7 +40,7 @@ public abstract class AbstractEnvironment implements Environment, Container {
 	 * @param bounded : a {@link Boolean} value indicating whether the environment is bounded or not.
 	 * @param appearance : the {@link Appearance} of the environment.
 	 */
-	public AbstractEnvironment(Space state, Set<Class<? extends AbstractAction>> admissibleActions, Set<Body> bodies, Physics physics, Boolean bounded, Appearance appearance) {
+	public AbstractEnvironment(Space state, Set<Class<? extends EnvironmentalAction<P>>> admissibleActions, Set<Body> bodies, Physics<P> physics, Boolean bounded, Appearance appearance) {
 		this.state = state;
 		this.admissibleActions = admissibleActions != null ? admissibleActions : new HashSet<>();
 		this.bodies = bodies != null ? bodies : new HashSet<>();
@@ -58,12 +60,12 @@ public abstract class AbstractEnvironment implements Environment, Container {
 	}
 
 	@Override
-	public Set<Class<? extends AbstractAction>> getAdmissibleActions() {
+	public Set<Class<? extends EnvironmentalAction<P>>> getAdmissibleActions() {
 		return this.admissibleActions;
 	}
 
 	@Override
-	public void setAdmissibleActions(Set<Class<? extends AbstractAction>> admissibleActions) {
+	public void setAdmissibleActions(Set<Class<? extends EnvironmentalAction<P>>> admissibleActions) {
 		this.admissibleActions = admissibleActions;
 	}
 
@@ -78,12 +80,12 @@ public abstract class AbstractEnvironment implements Environment, Container {
 	}
 
 	@Override
-	public Physics getPhysics() {
+	public Physics<P> getPhysics() {
 		return this.physics;
 	}
 
 	@Override
-	public void setPhysics(Physics physics) {
+	public void setPhysics(Physics<P> physics) {
 		this.physics = physics;
 	}
 

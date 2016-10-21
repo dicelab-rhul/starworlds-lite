@@ -10,6 +10,7 @@ import uk.ac.rhul.cs.dice.gawl.interfaces.entities.agents.AbstractAgent;
 import uk.ac.rhul.cs.dice.gawl.interfaces.entities.agents.AbstractSensor;
 import uk.ac.rhul.cs.dice.gawl.interfaces.entities.agents.Actuator;
 import uk.ac.rhul.cs.dice.gawl.interfaces.entities.agents.Sensor;
+import uk.ac.rhul.cs.dice.gawl.interfaces.perception.Perception;
 
 /**
  * A subclass of {@link PhysicalBody} capable to perform and/or simulate an {@link EnvironmentalAction}, thus implementing {@link Actor} and {@link Simulator}. It has a {@link List}
@@ -22,9 +23,9 @@ import uk.ac.rhul.cs.dice.gawl.interfaces.entities.agents.Sensor;
  * @author Kostas Stathis
  *
  */
-public abstract class ActiveBody extends PhysicalBody implements Actor, Simulator {
-	private List<Sensor> sensors;
-	private List<Actuator> actuators;
+public abstract class ActiveBody<T1 extends Enum<?>, T2 extends Enum<?>, P extends Perception> extends PhysicalBody implements Actor, Simulator<T1, T2, P> {
+	private List<Sensor<T1>> sensors;
+	private List<Actuator<T2, P>> actuators;
 	
 	/**
 	 * Constructor with a {@link BodyAppearance}, a {@link List} of {@link Sensor} instances and
@@ -34,7 +35,7 @@ public abstract class ActiveBody extends PhysicalBody implements Actor, Simulato
 	 * @param sensors : a {@link List} of {@link Sensor} instances.
 	 * @param actuators : a {@link List} of {@link Actuator} instances.
 	 */
-	public ActiveBody(BodyAppearance appearance, List<Sensor> sensors, List<Actuator> actuators) {
+	public ActiveBody(BodyAppearance appearance, List<Sensor<T1>> sensors, List<Actuator<T2, P>> actuators) {
 		super(appearance);
 		
 		this.sensors = sensors != null ? sensors : new ArrayList<>();
@@ -54,13 +55,13 @@ public abstract class ActiveBody extends PhysicalBody implements Actor, Simulato
 	}
 
 	private void initActuators() {
-		for(Actuator a : this.actuators) {
+		for(Actuator<T2, P> a : this.actuators) {
 			registerActuator(a);
 		}
 	}
 
 	private void initSensors() {
-		for(Sensor s : this.sensors) {
+		for(Sensor<T1> s : this.sensors) {
 			registerSensor(s);
 		}
 	}
@@ -70,7 +71,8 @@ public abstract class ActiveBody extends PhysicalBody implements Actor, Simulato
 	 * 
 	 * @return the {@link List} of {@link Sensor} instances.
 	 */
-	public List<Sensor> getSensors() {
+	@Override
+	public List<Sensor<T1>> getSensors() {
 		return this.sensors;
 	}
 	
@@ -79,7 +81,8 @@ public abstract class ActiveBody extends PhysicalBody implements Actor, Simulato
 	 * 
 	 * @return the {@link List} of {@link Actuator} instances.
 	 */
-	public List<Actuator> getActuators() {
+	@Override
+	public List<Actuator<T2, P>> getActuators() {
 		return this.actuators;
 	}
 	
@@ -88,7 +91,8 @@ public abstract class ActiveBody extends PhysicalBody implements Actor, Simulato
 	 * 
 	 * @param sensor : the {@link Sensor} to be added to the {@link List}.
 	 */
-	public void addSensor(Sensor sensor) {
+	@Override
+	public void addSensor(Sensor<T1> sensor) {
 		registerSensor(sensor);
 		
 		this.sensors.add(sensor);
@@ -99,22 +103,23 @@ public abstract class ActiveBody extends PhysicalBody implements Actor, Simulato
 	 * 
 	 * @param sensor : the {@link Actuator} to be added to the {@link List}.
 	 */
-	public void addActuator(Actuator actuator) {
+	@Override
+	public void addActuator(Actuator<T2, P> actuator) {
 		registerActuator(actuator);
 		
 		this.actuators.add(actuator);
 	}
 	
-	private void registerActuator(Actuator actuator) {
+	private void registerActuator(Actuator<T2, P> actuator) {
 		if(actuator instanceof AbstractActuator) {
-			((AbstractActuator) actuator).addObserver(this);
+			((AbstractActuator<T2, P>) actuator).addObserver(this);
 			this.addObserver(actuator);
 		}
 	}
 	
-	private void registerSensor(Sensor sensor) {
+	private void registerSensor(Sensor<T1> sensor) {
 		if(sensor instanceof AbstractSensor) {
-			((AbstractSensor) sensor).addObserver(this);
+			((AbstractSensor<T1>) sensor).addObserver(this);
 			this.addObserver(sensor);
 		}
 	}

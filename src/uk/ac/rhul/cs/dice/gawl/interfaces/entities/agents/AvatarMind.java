@@ -1,5 +1,9 @@
 package uk.ac.rhul.cs.dice.gawl.interfaces.entities.agents;
 
+import java.util.Random;
+
+import uk.ac.rhul.cs.dice.gawl.interfaces.perception.Perception;
+
 /**
  * A subclass of {@link AbstractAgentMind} designed for {@link Avatar} agents.<br/><br/>
  * 
@@ -10,6 +14,13 @@ package uk.ac.rhul.cs.dice.gawl.interfaces.entities.agents;
  * @author Kostas Stathis
  *
  */
-public abstract class AvatarMind extends AbstractAgentMind {
+public abstract class AvatarMind<P extends Perception> extends AbstractAgentMind<P> {
 
+	public AvatarMind(Random rng, String bodyId) {
+		super(rng, bodyId);
+	}
+	
+	public AvatarMind(String bodyId) {
+		super(bodyId);
+	}
 }

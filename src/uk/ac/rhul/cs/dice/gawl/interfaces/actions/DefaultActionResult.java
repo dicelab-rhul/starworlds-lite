@@ -2,6 +2,8 @@ package uk.ac.rhul.cs.dice.gawl.interfaces.actions;
 
 import java.util.List;
 
+import uk.ac.rhul.cs.dice.gawl.interfaces.perception.Perception;
+
 /**
  * A {@link Result} implementation containing an {@link DefaultActionResult}.<br/><br/>
  * 
@@ -12,11 +14,12 @@ import java.util.List;
  * @author Kostas Stathis
  *
  */
-public class DefaultActionResult implements Result {
+public class DefaultActionResult<P extends Perception> implements Result<P> {
 	private String actorId;
 	private ActionResult actionResult;
 	private Exception failureReason;
 	private List<String> recipientsIds;
+	private P perception;
 	
 	/**
 	 * Constructor with an {@link ActionResult}, an {@link Exception} and a {@link List}. It is used when an
@@ -32,6 +35,7 @@ public class DefaultActionResult implements Result {
 		this.actorId = null;
 		this.failureReason = failureReason;
 		this.recipientsIds = recipientsIds;
+		this.perception = null;
 	}
 	
 	/**
@@ -49,6 +53,7 @@ public class DefaultActionResult implements Result {
 		this.actorId = actorId;
 		this.failureReason = failureReason;
 		this.recipientsIds = recipientsIds;
+		this.perception = null;
 	}
 	
 	/**
@@ -57,11 +62,12 @@ public class DefaultActionResult implements Result {
 	 * @param result : an {@link ActionResult} expressing the result of an action.
 	 * @param recipientsIds : a {@link List} of {@link String} IDs of the objects which will receive this {@link Result}.
 	 */
-	public DefaultActionResult(ActionResult result, List<String> recipientsIds) {
+	public DefaultActionResult(ActionResult result, List<String> recipientsIds, P perception) {
 		this.actionResult = result;
 		this.actorId = null;
 		this.failureReason = null;
 		this.recipientsIds = recipientsIds;
+		this.perception = perception;
 	}
 	
 	/**
@@ -71,11 +77,12 @@ public class DefaultActionResult implements Result {
 	 * @param actorId : the {@link String} actorId of the actor attempting the event this result refers to.
 	 * @param recipientsIds : a {@link List} of {@link String} IDs of the objects which will receive this {@link Result}.
 	 */
-	public DefaultActionResult(ActionResult result, String actorId, List<String> recipientsIds) {
+	public DefaultActionResult(ActionResult result, String actorId, List<String> recipientsIds, P perception) {
 		this.actionResult = result;
 		this.actorId = actorId;
 		this.failureReason = null;
 		this.recipientsIds = recipientsIds;
+		this.perception = perception;
 	}
 
 	@Override
@@ -106,5 +113,15 @@ public class DefaultActionResult implements Result {
 	@Override
 	public void setRecipientsIds(List<String> recipientsIds) {
 		this.recipientsIds = recipientsIds;
+	}
+	
+	@Override
+	public P getPerception() {
+		return this.perception;
+	}
+	
+	@Override
+	public void setPerception(P perception) {
+		this.perception = perception;
 	}
 }

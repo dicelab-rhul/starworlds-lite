@@ -5,6 +5,7 @@ import java.util.List;
 import uk.ac.rhul.cs.dice.gawl.interfaces.appearances.DependentBodyAppearance;
 import uk.ac.rhul.cs.dice.gawl.interfaces.entities.agents.Actuator;
 import uk.ac.rhul.cs.dice.gawl.interfaces.entities.agents.Sensor;
+import uk.ac.rhul.cs.dice.gawl.interfaces.perception.Perception;
 
 /**
  * A subclass of {@link ActiveBody} which implements {@link ObjectInterface}.<br/><br/>
@@ -16,7 +17,7 @@ import uk.ac.rhul.cs.dice.gawl.interfaces.entities.agents.Sensor;
  * @author Kostas Stathis
  *
  */
-public abstract class DependentBody extends ActiveBody implements ObjectInterface {
+public abstract class DependentBody<T1 extends Enum<?>, T2 extends Enum<?>, P extends Perception> extends ActiveBody<T1, T2, P> implements ObjectInterface {
 
 	/**
 	 * Constructor with a {@link DependentBodyAppearance}, a {@link List} of {@link Sensor} instances and
@@ -26,7 +27,7 @@ public abstract class DependentBody extends ActiveBody implements ObjectInterfac
 	 * @param sensors : a {@link List} of {@link Sensor} instances.
 	 * @param actuators : a {@link List} of {@link Actuator} instances.
 	 */
-	public DependentBody(DependentBodyAppearance appearance, List<Sensor> sensors, List<Actuator> actuators) {
+	public DependentBody(DependentBodyAppearance appearance, List<Sensor<T1>> sensors, List<Actuator<T2, P>> actuators) {
 		super(appearance, sensors, actuators);
 	}
 }
