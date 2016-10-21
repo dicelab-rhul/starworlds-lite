@@ -26,7 +26,7 @@ public abstract class Avatar<T1 extends Enum<?>, T2 extends Enum<?>, P extends P
 	 * @param mind : the {@link AvatarMind}.
 	 * @param brain : the {@link AbstractAgentBrain} of the {@link Avatar}.
 	 */
-	public Avatar(AbstractAgentAppearance appearance, List<Sensor<T1>> sensors, List<Actuator<T2, P>> actuators, AvatarMind<P> mind, AbstractAgentBrain brain) {
+	public Avatar(AbstractAgentAppearance appearance, List<Sensor<T1>> sensors, List<Actuator<T2, P>> actuators, AvatarMind<P> mind, AbstractAgentBrain<P> brain) {
 		super(appearance, sensors, actuators, mind, brain);
 	}
 }

@@ -19,7 +19,7 @@ import uk.ac.rhul.cs.dice.gawl.interfaces.perception.Perception;
  *
  */
 public abstract class AbstractAgent<T1 extends Enum<?>, T2 extends Enum<?>, P extends Perception> extends ActiveBody<T1, T2, P> implements Agent<P> {
-	private Brain brain;
+	private AbstractAgentBrain<P> brain;
 	private AbstractAgentMind<P> mind;
 	
 	/**
@@ -31,16 +31,16 @@ public abstract class AbstractAgent<T1 extends Enum<?>, T2 extends Enum<?>, P ex
 	 * @param mind : the {@link AbstractAgentMind}.
 	 * @param brain : the {@link AbstractAgentBrain}.
 	 */
-	public AbstractAgent(AbstractAgentAppearance appearance, List<Sensor<T1>> sensors, List<Actuator<T2, P>> actuators, AbstractAgentMind<P> mind, AbstractAgentBrain brain) {
+	public AbstractAgent(AbstractAgentAppearance appearance, List<Sensor<T1>> sensors, List<Actuator<T2, P>> actuators, AbstractAgentMind<P> mind, AbstractAgentBrain<P> brain) {
 		super(appearance, sensors, actuators);
 		
 		this.brain = brain;
 		this.mind = mind;
 		
-		((AbstractAgentBrain) this.brain).addObserver(this.mind);
+		this.brain.addObserver(this.mind);
 		this.mind.addObserver(this.brain);
 		
-		((AbstractAgentBrain) this.brain).addObserver(this);
+		this.brain.addObserver(this);
 		this.addObserver(this.brain);
 	}
 
@@ -50,7 +50,7 @@ public abstract class AbstractAgent<T1 extends Enum<?>, T2 extends Enum<?>, P ex
 	 * @return the {@link Brain} of the {@link AbstractAgent}.
 	 */
 	@Override
-	public Brain getBrain() {
+	public AbstractAgentBrain<P> getBrain() {
 		return this.brain;
 	}
 
@@ -60,7 +60,7 @@ public abstract class AbstractAgent<T1 extends Enum<?>, T2 extends Enum<?>, P ex
 	 * @param brain : the {@link Brain} of the {@link AbstractAgent}.
 	 */
 	@Override
-	public void setBrain(Brain brain) {
+	public void setBrain(AbstractAgentBrain<P> brain) {
 		this.brain = brain;
 	}
 

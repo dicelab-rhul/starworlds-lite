@@ -59,6 +59,7 @@ public abstract class EnvironmentalSpace extends CustomObservable implements Spa
 	 * 
 	 * @return the internal {@link Map} from {@link LocationKey} keys to {@link Location} values.
 	 */
+	@Override
 	public Map<LocationKey, Location> getGrid() {
 		return this.grid;
 	}
@@ -69,6 +70,7 @@ public abstract class EnvironmentalSpace extends CustomObservable implements Spa
 	 * @param locationKey : the {@link LocationKey} key.
 	 * @param location : the {@link Location} value.
 	 */
+	@Override
 	public void addLocation(LocationKey locationKey, Location location) {
 		this.grid.put(locationKey, location);
 	}
@@ -78,6 +80,7 @@ public abstract class EnvironmentalSpace extends CustomObservable implements Spa
 	 * 
 	 * @param locationKey : the {@link LocationKey} key for the {@link Location} value to be deleted.
 	 */
+	@Override
 	public void removeLocation(LocationKey locationKey) {
 		this.grid.remove(locationKey);
 	}
@@ -88,6 +91,7 @@ public abstract class EnvironmentalSpace extends CustomObservable implements Spa
 	 * @param locationKey : the {@link LocationKey} key for the {@link Location} value to be popped.
 	 * @return the {@link Location} value pointed by <code>locationKey</code>.
 	 */
+	@Override
 	public Location popLocation(LocationKey locationKey) {
 		return this.grid.remove(locationKey);
 	}
@@ -98,6 +102,7 @@ public abstract class EnvironmentalSpace extends CustomObservable implements Spa
 	 * @param locationKey : the {@link LocationKey} key for the {@link Location} value to be returned.
 	 * @return the {@link Location} value pointed by <code>locationKey</code>.
 	 */
+	@Override
 	public Location getLocation(LocationKey locationKey) {
 		return this.grid.get(locationKey);
 	}
@@ -108,6 +113,7 @@ public abstract class EnvironmentalSpace extends CustomObservable implements Spa
 	 * @param locationKey the {@link LocationKey} instance to be looked for.
 	 * @return <code>true</code> if the key is found, <code>false</code> otherwise.
 	 */
+	@Override
 	public boolean containsKey(LocationKey locationKey) {
 		return this.grid.containsKey(locationKey);
 	}
@@ -118,6 +124,7 @@ public abstract class EnvironmentalSpace extends CustomObservable implements Spa
 	 * @param location the {@link Location} instance to be looked for.
 	 * @return <code>true</code> if the {@link Location} instance is found, <code>false</code> otherwise.
 	 */
+	@Override
 	public boolean containsValue(Location location) {
 		return this.grid.containsValue(location);
 	}
@@ -127,6 +134,7 @@ public abstract class EnvironmentalSpace extends CustomObservable implements Spa
 	 * 
 	 * @return a {@link Set} of {@link LocationKey} elements.
 	 */
+	@Override
 	public Set<LocationKey> getKeys() {
 		return this.grid.keySet();
 	}
@@ -136,6 +144,7 @@ public abstract class EnvironmentalSpace extends CustomObservable implements Spa
 	 * 
 	 * @return a {@link Collection} of {@link Location} elements.
 	 */
+	@Override
 	public Collection<Location> getLocations() {
 		return this.grid.values();
 	}
@@ -145,6 +154,7 @@ public abstract class EnvironmentalSpace extends CustomObservable implements Spa
 	 * 
 	 * @return a {@link Set} of {@link Entry} elements.
 	 */
+	@Override
 	public Set<Entry<LocationKey, Location>> getEntries() {
 		return this.grid.entrySet();
 	}

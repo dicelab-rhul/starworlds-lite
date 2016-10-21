@@ -26,12 +26,14 @@ public abstract class AbstractAgentMind<P extends Perception> extends CustomObse
 	private String bodyId;
 	private EnvironmentalAction<P> nextAction;
 	private Result<P> lastActionResult;
+	private List<Result<P>> lastCycleIncomingCommunications;
 	
 	public AbstractAgentMind(Random rng, String bodyId) {
 		this.rng = rng;
 		this.bodyId = bodyId;
 		this.availableActionsForThisCycle = new ArrayList<>();
 		this.mindActions = new ArrayList<>();
+		this.lastCycleIncomingCommunications = new ArrayList<>();
 	}
 	
 	public AbstractAgentMind(String bodyId) {
@@ -61,8 +63,12 @@ public abstract class AbstractAgentMind<P extends Perception> extends CustomObse
 	}
 	
 	@Override
-	public void loadAvailableActionsForThisMind(List<Class<? extends EnvironmentalAction<P>>> mindActions) {
-		this.mindActions = mindActions;
+	public void loadAvailableActionForThisMind(Class<? extends EnvironmentalAction<P>> mindAction) {
+		if(this.mindActions == null) {
+			this.mindActions = new ArrayList<>();
+		}
+		
+		this.mindActions.add(mindAction);
 	}
 	
 	@Override
@@ -127,5 +133,20 @@ public abstract class AbstractAgentMind<P extends Perception> extends CustomObse
 		else {
 			return this.lastActionResult.getPerception();
 		}
+	}
+	
+	@Override
+	public List<Result<P>> getReceivedCommunications() {
+		return this.lastCycleIncomingCommunications;
+	}
+	
+	@Override
+	public void addReceivedCommunicationToList(Result<P> communicationResult) {
+		this.lastCycleIncomingCommunications.add(communicationResult);
+	}
+	
+	@Override
+	public void clearReceivedCommunications() {
+		this.lastCycleIncomingCommunications = new ArrayList<>();
 	}
 }

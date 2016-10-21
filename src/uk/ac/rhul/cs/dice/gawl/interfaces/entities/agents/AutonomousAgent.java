@@ -26,7 +26,7 @@ public abstract class AutonomousAgent<T1 extends Enum<?>, T2 extends Enum<?>,  P
 	 * @param mind : the {@link AutonomousAgentMind}.
 	 * @param brain : the {@link AbstractAgentBrain}.
 	 */
-	public AutonomousAgent(AbstractAgentAppearance appearance, List<Sensor<T1>> sensors, List<Actuator<T2, P>> actuators, AutonomousAgentMind<P> mind, AbstractAgentBrain brain) {
+	public AutonomousAgent(AbstractAgentAppearance appearance, List<Sensor<T1>> sensors, List<Actuator<T2, P>> actuators, AutonomousAgentMind<P> mind, AbstractAgentBrain<P> brain) {
 		super(appearance, sensors, actuators, mind, brain);
 	}
 }

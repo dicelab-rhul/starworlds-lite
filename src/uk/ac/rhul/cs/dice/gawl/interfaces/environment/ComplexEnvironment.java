@@ -2,12 +2,7 @@ package uk.ac.rhul.cs.dice.gawl.interfaces.environment;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
-
-import uk.ac.rhul.cs.dice.gawl.interfaces.actions.AbstractAction;
-import uk.ac.rhul.cs.dice.gawl.interfaces.actions.EnvironmentalAction;
 import uk.ac.rhul.cs.dice.gawl.interfaces.appearances.ComplexEnvironmentAppearance;
-import uk.ac.rhul.cs.dice.gawl.interfaces.entities.Body;
 import uk.ac.rhul.cs.dice.gawl.interfaces.environment.physics.Physics;
 import uk.ac.rhul.cs.dice.gawl.interfaces.perception.Perception;
 
@@ -29,14 +24,13 @@ public abstract class ComplexEnvironment<P extends Perception> extends SimpleEnv
 	 * The default class constructor.
 	 * 
 	 * @param state : an {@link Space} instance.
-	 * @param admissibleActions : the {@link Set} of performable {@link AbstractAction} instances.
-	 * @param bodies : a {@link Set} of {@link Body} elements.
 	 * @param physics : the {@link Physics} of the environment.
 	 * @param bounded : a {@link Boolean} value indicating whether the environment is bounded or not.
 	 * @param appearance : the {@link ComplexEnvironmentAppearance} of the environment.
 	 */
-	public ComplexEnvironment(Space state, Set<Class<? extends EnvironmentalAction<P>>> admissibleActions, Set<Body> bodies, Physics<P> physics, Boolean bounded, ComplexEnvironmentAppearance appearance) {
-		super(state, admissibleActions, bodies, physics, bounded, appearance);
+	public ComplexEnvironment(Space state, Physics<P> physics, Boolean bounded, ComplexEnvironmentAppearance appearance) {
+		super(state, physics, bounded, appearance);
+		
 		this.subEnvironments = new ArrayList<>();
 	}
 	

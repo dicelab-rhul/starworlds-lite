@@ -1,11 +1,6 @@
 package uk.ac.rhul.cs.dice.gawl.interfaces.environment;
 
-import java.util.Set;
-
-import uk.ac.rhul.cs.dice.gawl.interfaces.actions.AbstractAction;
-import uk.ac.rhul.cs.dice.gawl.interfaces.actions.EnvironmentalAction;
 import uk.ac.rhul.cs.dice.gawl.interfaces.appearances.Appearance;
-import uk.ac.rhul.cs.dice.gawl.interfaces.entities.Body;
 import uk.ac.rhul.cs.dice.gawl.interfaces.environment.physics.Physics;
 import uk.ac.rhul.cs.dice.gawl.interfaces.perception.Perception;
 
@@ -33,34 +28,6 @@ public interface Environment<P extends Perception> {
 	 * @param state : the {@link Space} of the {@link Environment}.
 	 */
 	public abstract void setState(Space state);
-	
-	/**
-	 * Returns the {@link Set} of {@link AbstractAction} instances which are performable in the {@link Environment}.
-	 * 
-	 * @return the {@link Set} of {@link AbstractAction} instances which are performable in the {@link Environment}.
-	 */
-	public abstract Set<Class<? extends EnvironmentalAction<P>>> getAdmissibleActions();
-	
-	/**
-	 * Sets the {@link Set} of {@link AbstractAction} instances which are performable in the {@link Environment}.
-	 * 
-	 * @param admissibleActions : the {@link Set} of {@link AbstractAction} instances which are performable in the {@link Environment}.
-	 */
-	public abstract void setAdmissibleActions(Set<Class<? extends EnvironmentalAction<P>>> admissibleActions);
-	
-	/**
-	 * Returns the {@link Set} of bodies present in the {@link Environment}.
-	 * 
-	 * @return the {@link Set} of bodies present in the {@link Environment}.
-	 */
-	public abstract Set<Body> getBodies();
-	
-	/**
-	 * Adds a {@link Set} of bodies to the {@link Environment}.
-	 * 
-	 * @param bodies : the {@link Set} of bodies to be added to the {@link Environment}.
-	 */
-	public abstract void setBodies(Set<Body> bodies);
 	
 	/**
 	 * Returns the {@link Physics} of the {@link Environment}.

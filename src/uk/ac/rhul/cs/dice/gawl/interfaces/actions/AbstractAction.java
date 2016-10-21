@@ -39,6 +39,7 @@ public abstract class AbstractAction<P extends Perception> implements Environmen
 	 * 
 	 * @return the {@link Actor} of the {@link EnvironmentalAction}.
 	 */
+	@Override
 	public Actor getActor() {
 		return this.actor;
 	}
@@ -48,6 +49,7 @@ public abstract class AbstractAction<P extends Perception> implements Environmen
 	 * 
 	 * @param actor : the {@link Actor} of the {@link EnvironmentalAction}.
 	 */
+	@Override
 	public void setActor(Actor actor) {
 		this.actor = actor;
 	}

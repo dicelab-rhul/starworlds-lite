@@ -1,18 +1,11 @@
 package uk.ac.rhul.cs.dice.gawl.interfaces.environment;
 
-import java.util.HashSet;
-import java.util.Set;
-
-import uk.ac.rhul.cs.dice.gawl.interfaces.actions.AbstractAction;
-import uk.ac.rhul.cs.dice.gawl.interfaces.actions.EnvironmentalAction;
 import uk.ac.rhul.cs.dice.gawl.interfaces.appearances.Appearance;
-import uk.ac.rhul.cs.dice.gawl.interfaces.entities.Body;
 import uk.ac.rhul.cs.dice.gawl.interfaces.environment.physics.Physics;
 import uk.ac.rhul.cs.dice.gawl.interfaces.perception.Perception;
 
 /**
- * The most general class representing an environment. It has an {@link EnvironmentalSpace}, a {@link Set} of admissible {@link AbstractAction}
- * elements and one of {@link Body} elements. It also contains an instance of {@link Physics}, a {@link Boolean} indicating whether
+ * The most general class representing an environment. It has an {@link EnvironmentalSpace}, an instance of {@link Physics}, a {@link Boolean} indicating whether
  * it is bounded or not, and an {@link Appearance}.<br/><br/>
  * 
  * Known direct subclasses: {@link SimpleEnvironment}.
@@ -24,8 +17,6 @@ import uk.ac.rhul.cs.dice.gawl.interfaces.perception.Perception;
  */
 public abstract class AbstractEnvironment<P extends Perception> implements Environment<P>, Container {
 	private Space state;
-	private Set<Class<? extends EnvironmentalAction<P>>> admissibleActions;
-	private Set<Body> bodies;
 	private Physics<P> physics;
 	private Boolean bounded;
 	private Appearance appearance;
@@ -34,16 +25,12 @@ public abstract class AbstractEnvironment<P extends Perception> implements Envir
 	 * The default class constructor.
 	 * 
 	 * @param state : an {@link Space} instance.
-	 * @param admissibleActions : the {@link Set} of performable {@link AbstractAction} instances.
-	 * @param bodies : a {@link Set} of {@link Body} elements.
 	 * @param physics : the {@link Physics} of the environment.
 	 * @param bounded : a {@link Boolean} value indicating whether the environment is bounded or not.
 	 * @param appearance : the {@link Appearance} of the environment.
 	 */
-	public AbstractEnvironment(Space state, Set<Class<? extends EnvironmentalAction<P>>> admissibleActions, Set<Body> bodies, Physics<P> physics, Boolean bounded, Appearance appearance) {
+	public AbstractEnvironment(Space state, Physics<P> physics, Boolean bounded, Appearance appearance) {
 		this.state = state;
-		this.admissibleActions = admissibleActions != null ? admissibleActions : new HashSet<>();
-		this.bodies = bodies != null ? bodies : new HashSet<>();
 		this.physics = physics;
 		this.bounded = bounded;
 		this.appearance = appearance;
@@ -57,26 +44,6 @@ public abstract class AbstractEnvironment<P extends Perception> implements Envir
 	@Override
 	public void setState(Space state) {
 		this.state = state;
-	}
-
-	@Override
-	public Set<Class<? extends EnvironmentalAction<P>>> getAdmissibleActions() {
-		return this.admissibleActions;
-	}
-
-	@Override
-	public void setAdmissibleActions(Set<Class<? extends EnvironmentalAction<P>>> admissibleActions) {
-		this.admissibleActions = admissibleActions;
-	}
-
-	@Override
-	public Set<Body> getBodies() {
-		return this.bodies;
-	}
-
-	@Override
-	public void setBodies(Set<Body> bodies) {
-		this.bodies = bodies;
 	}
 
 	@Override

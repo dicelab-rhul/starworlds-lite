@@ -24,10 +24,9 @@ public interface Mind<P extends Perception> extends CustomObserver {
 	public abstract void execute(EnvironmentalAction<P> action);
 	public abstract List<Class<? extends EnvironmentalAction<P>>> getAvailableActionsForThisCycle();
 	public abstract void addAvailableActionForThisCycle(Class<? extends EnvironmentalAction<P>> availableActionForThisCycle);
-	public void loadAvailableActionsForThisCycle(Object... availableActionsForThisCycle);
 	public abstract void loadAvailableActionsForThisCycle(List<Class<? extends EnvironmentalAction<P>>> availableActionsForThisCycle);
-	public abstract void loadAvailableActionsForThisMind(Object... mindActions);
-	public abstract void loadAvailableActionsForThisMind(List<Class<? extends EnvironmentalAction<P>>> mindActions);
+	public abstract void loadAvailableActionsForThisMindFromArbitraryParameters(Object... mindActions);
+	public abstract void loadAvailableActionForThisMind(Class<? extends EnvironmentalAction<P>> mindAction);
 	public abstract List<Class<? extends EnvironmentalAction<P>>> getAvailableActionsForThisMind();
 	public abstract Class<? extends EnvironmentalAction<P>> decideActionPrototypeRandomly();
 	public abstract EnvironmentalAction<P> decideActionRandomly();
@@ -46,4 +45,7 @@ public interface Mind<P extends Perception> extends CustomObserver {
 	public abstract Result<P> getLastActionResult();
 	public abstract void setLastActionResult(Result<P> result);
 	public abstract Perception getPerception();
+	public abstract List<Result<P>> getReceivedCommunications();
+	public abstract void addReceivedCommunicationToList(Result<P> communicationResult);
+	public abstract void clearReceivedCommunications();
 }

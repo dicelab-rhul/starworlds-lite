@@ -1,5 +1,7 @@
 package uk.ac.rhul.cs.dice.gawl.interfaces.actions;
 
+import uk.ac.rhul.cs.dice.gawl.interfaces.entities.Actor;
+
 /**
  * The interface for all the actions.<br/>
  * <br/>
@@ -12,5 +14,6 @@ package uk.ac.rhul.cs.dice.gawl.interfaces.actions;
  *
  */
 public interface Action {
-
+	public abstract Actor getActor();
+	public abstract void setActor(Actor actor);
 }
