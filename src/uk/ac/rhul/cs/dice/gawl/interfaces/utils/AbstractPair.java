@@ -63,4 +63,8 @@ public abstract class AbstractPair<T1, T2> {
 			return this.second.equals(other.getSecond());
 		}
 	}
+	
+	public boolean checkClasses(Class<?> firstClass, Class<?> secondClass) {
+		return firstClass.isAssignableFrom(this.first.getClass()) && secondClass.isAssignableFrom(this.second.getClass());
+	}
 }

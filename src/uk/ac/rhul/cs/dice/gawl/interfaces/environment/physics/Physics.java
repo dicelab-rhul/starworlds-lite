@@ -4,7 +4,6 @@ import uk.ac.rhul.cs.dice.gawl.interfaces.actions.EnvironmentalAction;
 import uk.ac.rhul.cs.dice.gawl.interfaces.actions.Event;
 import uk.ac.rhul.cs.dice.gawl.interfaces.actions.Result;
 import uk.ac.rhul.cs.dice.gawl.interfaces.environment.Space;
-import uk.ac.rhul.cs.dice.gawl.interfaces.perception.Perception;
 
 /**
  * The general interface for all the physics.<br/><br/>
@@ -16,21 +15,20 @@ import uk.ac.rhul.cs.dice.gawl.interfaces.perception.Perception;
  * @author Kostas Stathis
  *
  */
-public interface Physics<P extends Perception> {
+public interface Physics {	
+	public abstract boolean isPossible(Event event, Space context);
+	public abstract boolean isNecessary(Event event, Space context);
+	public abstract Result attempt(Event event, Space context);
+	public abstract Result perform(Event event, Space context);
+	public abstract boolean succeeded(Event event, Space context);
 	
-	/**
-	 * Attempts the execution of the {@link EnvironmentalAction} wrapped by the event in the {@link Space}
-	 * passed as a parameter.
-	 * 
-	 * @param event : the {@link Event} wrapping the {@link EnvironmentalAction} to be attempted.
-	 * @param context : the {@link Space} where the {@link EnvironmentalAction} is attempted.
-	 * @return a {@link Result} instance which shows the result of the attempt.
-	 */
-	public abstract Result<P> attempt(Event<P> event, Space context);
-	public abstract boolean isPossible(EnvironmentalAction<P> action, Space context);
-	public abstract boolean isNecessary(EnvironmentalAction<P> action, Space context);
-	public abstract Result<P> perform(EnvironmentalAction<P> action, Space context);
-	public abstract boolean succeeded(EnvironmentalAction<P> action, Space context);
-	public abstract Result<P> getCurrentResult();
-	public abstract void setCurrentResult(Result<P> currentMoveResult);
+	public abstract boolean isPossible(EnvironmentalAction action, Space context);
+	public abstract boolean isNecessary(EnvironmentalAction action, Space context);
+	public abstract Result attempt(EnvironmentalAction action, Space context);
+	public abstract Result perform(EnvironmentalAction action, Space context);
+	public abstract boolean succeeded(EnvironmentalAction action, Space context);
+	
+	
+	public abstract Result getCurrentResult();
+	public abstract void setCurrentResult(Result currentMoveResult);
 }

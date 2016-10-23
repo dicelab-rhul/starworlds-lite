@@ -18,18 +18,18 @@ import uk.ac.rhul.cs.dice.gawl.interfaces.perception.Perception;
  * @author Kostas Stathis
  *
  */
-public interface Mind<P extends Perception> extends CustomObserver {
+public interface Mind extends CustomObserver {
 	public abstract void perceive(Object perceptionWrapper);
-	public abstract EnvironmentalAction<P> decide(Object... parameters);
-	public abstract void execute(EnvironmentalAction<P> action);
-	public abstract List<Class<? extends EnvironmentalAction<P>>> getAvailableActionsForThisCycle();
-	public abstract void addAvailableActionForThisCycle(Class<? extends EnvironmentalAction<P>> availableActionForThisCycle);
-	public abstract void loadAvailableActionsForThisCycle(List<Class<? extends EnvironmentalAction<P>>> availableActionsForThisCycle);
+	public abstract EnvironmentalAction decide(Object... parameters);
+	public abstract void execute(EnvironmentalAction action);
+	public abstract List<Class<? extends EnvironmentalAction>> getAvailableActionsForThisCycle();
+	public abstract void addAvailableActionForThisCycle(Class<? extends EnvironmentalAction> availableActionForThisCycle);
+	public abstract void loadAvailableActionsForThisCycle(List<Class<? extends EnvironmentalAction>> availableActionsForThisCycle);
 	public abstract void loadAvailableActionsForThisMindFromArbitraryParameters(Object... mindActions);
-	public abstract void loadAvailableActionForThisMind(Class<? extends EnvironmentalAction<P>> mindAction);
-	public abstract List<Class<? extends EnvironmentalAction<P>>> getAvailableActionsForThisMind();
-	public abstract Class<? extends EnvironmentalAction<P>> decideActionPrototypeRandomly();
-	public abstract EnvironmentalAction<P> decideActionRandomly();
+	public abstract void loadAvailableActionForThisMind(Class<? extends EnvironmentalAction> mindAction);
+	public abstract List<Class<? extends EnvironmentalAction>> getAvailableActionsForThisMind();
+	public abstract Class<? extends EnvironmentalAction> decideActionPrototypeRandomly();
+	public abstract EnvironmentalAction decideActionRandomly();
 	public abstract Random getRNG();
 	public abstract Object getBodyId();
 	public abstract void setBodyId(Object bodyId);
@@ -40,12 +40,12 @@ public interface Mind<P extends Perception> extends CustomObserver {
 	public abstract boolean canSeeBehind();
 	public abstract void setCanSeeBehind(boolean canSeeBehind);
 	public abstract void setPerceptionRange(int preceptionRange);
-	public abstract EnvironmentalAction<P> getNextAction();
-	public abstract void setNextActionForExecution(EnvironmentalAction<P> action);
-	public abstract Result<P> getLastActionResult();
-	public abstract void setLastActionResult(Result<P> result);
+	public abstract EnvironmentalAction getNextAction();
+	public abstract void setNextActionForExecution(EnvironmentalAction action);
+	public abstract Result getLastActionResult();
+	public abstract void setLastActionResult(Result result);
 	public abstract Perception getPerception();
-	public abstract List<Result<P>> getReceivedCommunications();
-	public abstract void addReceivedCommunicationToList(Result<P> communicationResult);
+	public abstract List<Result> getReceivedCommunications();
+	public abstract void addReceivedCommunicationToList(Result communicationResult);
 	public abstract void clearReceivedCommunications();
 }

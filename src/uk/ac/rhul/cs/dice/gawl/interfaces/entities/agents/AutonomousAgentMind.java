@@ -3,7 +3,6 @@ package uk.ac.rhul.cs.dice.gawl.interfaces.entities.agents;
 import java.util.Random;
 
 import uk.ac.rhul.cs.dice.gawl.interfaces.actions.EnvironmentalAction;
-import uk.ac.rhul.cs.dice.gawl.interfaces.perception.Perception;
 
 /**
  * A subclass of {@link AbstractAgentMind} designed for {@link AutonomousAgent} instances.<br/><br/>
@@ -15,7 +14,7 @@ import uk.ac.rhul.cs.dice.gawl.interfaces.perception.Perception;
  * @author Kostas Stathis
  *
  */
-public abstract class AutonomousAgentMind<P extends Perception> extends AbstractAgentMind<P> {
+public abstract class AutonomousAgentMind extends AbstractAgentMind {
 	
 	public AutonomousAgentMind(Random rng, String bodyId) {
 		super(rng, bodyId);

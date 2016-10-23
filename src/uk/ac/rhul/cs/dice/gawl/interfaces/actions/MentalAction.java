@@ -1,7 +1,6 @@
 package uk.ac.rhul.cs.dice.gawl.interfaces.actions;
 
 import uk.ac.rhul.cs.dice.gawl.interfaces.entities.agents.Mind;
-import uk.ac.rhul.cs.dice.gawl.interfaces.perception.Perception;
 
 /**
  * The interface for all the actions that should be performed inside a
@@ -15,6 +14,6 @@ import uk.ac.rhul.cs.dice.gawl.interfaces.perception.Perception;
  * @author Kostas Stathis
  *
  */
-public interface MentalAction<P extends Perception> extends EnvironmentalAction<P> {
+public interface MentalAction extends EnvironmentalAction {
 
 }

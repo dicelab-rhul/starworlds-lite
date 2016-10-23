@@ -1,7 +1,5 @@
 package uk.ac.rhul.cs.dice.gawl.interfaces.actions;
 
-import uk.ac.rhul.cs.dice.gawl.interfaces.perception.Perception;
-
 /**
  * A subclass of {@link AbstractAction} representing sensing actions.<br/><br/>
  * 
@@ -12,6 +10,6 @@ import uk.ac.rhul.cs.dice.gawl.interfaces.perception.Perception;
  * @author Kostas Stathis
  *
  */
-public abstract class SensingAction<P extends Perception> extends AbstractAction<P> {
+public abstract class SensingAction extends AbstractAction {
 
 }

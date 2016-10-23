@@ -3,7 +3,6 @@ package uk.ac.rhul.cs.dice.gawl.interfaces.actions;
 import uk.ac.rhul.cs.dice.gawl.interfaces.entities.Actor;
 import uk.ac.rhul.cs.dice.gawl.interfaces.environment.Space;
 import uk.ac.rhul.cs.dice.gawl.interfaces.environment.physics.Physics;
-import uk.ac.rhul.cs.dice.gawl.interfaces.perception.Perception;
 
 /**
  * The interface for events.<br/><br/>
@@ -15,7 +14,7 @@ import uk.ac.rhul.cs.dice.gawl.interfaces.perception.Perception;
  * @author Kostas Stathis
  *
  */
-public interface Event<P extends Perception> {
+public interface Event {
 	/**
 	 * Represents the event with a {@link String}.
 	 * 
@@ -28,14 +27,14 @@ public interface Event<P extends Perception> {
 	 * 
 	 * @return the {@link EnvironmentalAction} wrapped by the event.
 	 */
-	public abstract EnvironmentalAction<P> getAction();
+	public abstract EnvironmentalAction getAction();
 	
 	/**
 	 * Sets a new {@link EnvironmentalAction}.
 	 * 
 	 * @param action : the new {@link EnvironmentalAction} to be contained in the event.
 	 */
-	public abstract void setAction(EnvironmentalAction<P> action);
+	public abstract void setAction(EnvironmentalAction action);
 	
 	/**
 	 * Returns the timestamp of the event.
@@ -72,7 +71,7 @@ public interface Event<P extends Perception> {
 	 * @param context : the {@link Space} where the event is executed.
 	 * @return <code>true</code> if the event can take place, <code>false</code> otherwise.
 	 */
-	public abstract boolean isPossible(Physics<P> physics, Space context);
+	public abstract boolean isPossible(Physics physics, Space context);
 	
 	/**
 	 * Checks whether the event taking place is a mandatory condition.
@@ -81,7 +80,7 @@ public interface Event<P extends Perception> {
 	 * @param context : the {@link Space} where the event is executed.
 	 * @return <code>true</code> if the event must take place, <code>false</code> otherwise.
 	 */
-	public abstract boolean isNecessary(Physics<P> physics, Space context);
+	public abstract boolean isNecessary(Physics physics, Space context);
 	
 	/**
 	 * Attempts to execute the event by calling {@link #isPossible(physics, context)},
@@ -91,7 +90,7 @@ public interface Event<P extends Perception> {
 	 * @param context : the {@link Space} where the event is executed.
 	 * @return a {@link Result} instance which shows the result of the execution.
 	 */
-	public abstract Result<P> attempt(Physics<P> physics, Space context);
+	public abstract Result attempt(Physics physics, Space context);
 	
 	/**
 	 * Performs an event whose pre-conditions were already met.
@@ -100,7 +99,7 @@ public interface Event<P extends Perception> {
 	 * @param context : the {@link Space} where the event is executed.
 	 * @return a {@link Result} instance which shows the result of the execution.
 	 */
-	public abstract Result<P> perform(Physics<P> physics, Space context);
+	public abstract Result perform(Physics physics, Space context);
 	
 	/**
 	 * Checks the post-conditions (effects) of the event.
@@ -109,7 +108,7 @@ public interface Event<P extends Perception> {
 	 * @param context : the {@link Space} where the event is executed.
 	 * @return <code>true</code> if the event post-conditions are met, <code>false</code> otherwise.
 	 */
-	public abstract boolean succeeded(Physics<P> physics, Space context);
+	public abstract boolean succeeded(Physics physics, Space context);
 	public abstract Object getSensorToCallBackId();
 	public abstract void setSensorToCallBackId(String sensorToCallBackId);
 	public abstract Object getActuatorRecipientId();

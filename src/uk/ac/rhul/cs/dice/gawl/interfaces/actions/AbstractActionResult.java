@@ -5,7 +5,7 @@ import java.util.List;
 import uk.ac.rhul.cs.dice.gawl.interfaces.perception.Perception;
 
 /**
- * A {@link Result} implementation containing an {@link DefaultActionResult}.<br/><br/>
+ * A {@link Result} implementation containing an {@link AbstractActionResult}.<br/><br/>
  * 
  * Known direct subclasses: none.
  * 
@@ -14,12 +14,12 @@ import uk.ac.rhul.cs.dice.gawl.interfaces.perception.Perception;
  * @author Kostas Stathis
  *
  */
-public class DefaultActionResult<P extends Perception> implements Result<P> {
+public abstract class AbstractActionResult implements Result {
 	private String actorId;
 	private ActionResult actionResult;
 	private Exception failureReason;
 	private List<String> recipientsIds;
-	private P perception;
+	private Perception perception;
 	
 	/**
 	 * Constructor with an {@link ActionResult}, an {@link Exception} and a {@link List}. It is used when an
@@ -30,7 +30,7 @@ public class DefaultActionResult<P extends Perception> implements Result<P> {
 	 * of the failure (if the action failed).
 	 * @param recipientsIds : a {@link List} of {@link String} IDs of the objects which will receive this {@link Result}.
 	 */
-	public DefaultActionResult(ActionResult result, Exception failureReason, List<String> recipientsIds) {
+	public AbstractActionResult(ActionResult result, Exception failureReason, List<String> recipientsIds) {
 		this.actionResult = result;
 		this.actorId = null;
 		this.failureReason = failureReason;
@@ -48,7 +48,7 @@ public class DefaultActionResult<P extends Perception> implements Result<P> {
 	 * of the failure (if the action failed).
 	 * @param recipientsIds : a {@link List} of {@link String} IDs of the objects which will receive this {@link Result}.
 	 */
-	public DefaultActionResult(ActionResult result, String actorId, Exception failureReason, List<String> recipientsIds) {
+	public AbstractActionResult(ActionResult result, String actorId, Exception failureReason, List<String> recipientsIds) {
 		this.actionResult = result;
 		this.actorId = actorId;
 		this.failureReason = failureReason;
@@ -62,7 +62,7 @@ public class DefaultActionResult<P extends Perception> implements Result<P> {
 	 * @param result : an {@link ActionResult} expressing the result of an action.
 	 * @param recipientsIds : a {@link List} of {@link String} IDs of the objects which will receive this {@link Result}.
 	 */
-	public DefaultActionResult(ActionResult result, List<String> recipientsIds, P perception) {
+	public AbstractActionResult(ActionResult result, List<String> recipientsIds, Perception perception) {
 		this.actionResult = result;
 		this.actorId = null;
 		this.failureReason = null;
@@ -77,7 +77,7 @@ public class DefaultActionResult<P extends Perception> implements Result<P> {
 	 * @param actorId : the {@link String} actorId of the actor attempting the event this result refers to.
 	 * @param recipientsIds : a {@link List} of {@link String} IDs of the objects which will receive this {@link Result}.
 	 */
-	public DefaultActionResult(ActionResult result, String actorId, List<String> recipientsIds, P perception) {
+	public AbstractActionResult(ActionResult result, String actorId, List<String> recipientsIds, Perception perception) {
 		this.actionResult = result;
 		this.actorId = actorId;
 		this.failureReason = null;
@@ -116,12 +116,12 @@ public class DefaultActionResult<P extends Perception> implements Result<P> {
 	}
 	
 	@Override
-	public P getPerception() {
+	public Perception getPerception() {
 		return this.perception;
 	}
 	
 	@Override
-	public void setPerception(P perception) {
+	public void setPerception(Perception perception) {
 		this.perception = perception;
 	}
 }

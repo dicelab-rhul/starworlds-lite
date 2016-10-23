@@ -2,7 +2,6 @@ package uk.ac.rhul.cs.dice.gawl.interfaces.environment;
 
 import uk.ac.rhul.cs.dice.gawl.interfaces.appearances.Appearance;
 import uk.ac.rhul.cs.dice.gawl.interfaces.environment.physics.Physics;
-import uk.ac.rhul.cs.dice.gawl.interfaces.perception.Perception;
 
 /**
  * The most general interface exposing the essential methods all the environments need to implement.<br/><br/>
@@ -14,7 +13,7 @@ import uk.ac.rhul.cs.dice.gawl.interfaces.perception.Perception;
  * @author Kostas Stathis
  *
  */
-public interface Environment<P extends Perception> {
+public interface Environment {
 	/**
 	 * Returns the {@link Space} of the {@link Environment}.
 	 * 
@@ -34,14 +33,14 @@ public interface Environment<P extends Perception> {
 	 * 
 	 * @return the {@link Physics} of the {@link Environment}.
 	 */
-	public abstract Physics<P> getPhysics();
+	public abstract Physics getPhysics();
 	
 	/**
 	 * Sets the {@link Physics} of the {@link Environment}.
 	 * 
 	 * @param physics : the {@link Physics} of the {@link Environment}.
 	 */
-	public abstract void setPhysics(Physics<P> physics);
+	public abstract void setPhysics(Physics physics);
 	
 	/**
 	 * Sets whether the {@link Environment} is bounded or not.

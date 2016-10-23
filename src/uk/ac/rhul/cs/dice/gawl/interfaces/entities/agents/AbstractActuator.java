@@ -7,7 +7,6 @@ import uk.ac.rhul.cs.dice.gawl.interfaces.actions.AbstractEvent;
 import uk.ac.rhul.cs.dice.gawl.interfaces.actions.EnvironmentalAction;
 import uk.ac.rhul.cs.dice.gawl.interfaces.actions.Event;
 import uk.ac.rhul.cs.dice.gawl.interfaces.observer.CustomObservable;
-import uk.ac.rhul.cs.dice.gawl.interfaces.perception.Perception;
 
 /**
  * The most generic class implementing {@link Actuator}. It also extends {@link CustomObservable}.
@@ -20,9 +19,9 @@ import uk.ac.rhul.cs.dice.gawl.interfaces.perception.Perception;
  * @author Kostas Stathis
  *
  */
-public abstract class AbstractActuator<T extends Enum<?>, P extends Perception> extends CustomObservable implements Actuator<T, P> {
-	private AbstractAction<P> actionToPerform;
-	private AbstractEvent<P> eventToPerform;
+public abstract class AbstractActuator<T extends Enum<?>> extends CustomObservable implements Actuator<T> {
+	private AbstractAction actionToPerform;
+	private AbstractEvent eventToPerform;
 	private String id;
 	private String bodyId;
 	private T role;
@@ -42,7 +41,7 @@ public abstract class AbstractActuator<T extends Enum<?>, P extends Perception> 
 	 * @return the {@link EnvironmentalAction} to attempt.
 	 */
 	@Override
-	public AbstractAction<P> getActionToPerform() {
+	public AbstractAction getActionToPerform() {
 		return this.actionToPerform;
 	}
 	
@@ -52,7 +51,7 @@ public abstract class AbstractActuator<T extends Enum<?>, P extends Perception> 
 	 * @return the {@link Event} wrapping the {@link EnvironmentalAction} to attempt.
 	 */
 	@Override
-	public AbstractEvent<P> getEventToPerform() {
+	public AbstractEvent getEventToPerform() {
 		return this.eventToPerform;
 	}
 	
@@ -62,7 +61,7 @@ public abstract class AbstractActuator<T extends Enum<?>, P extends Perception> 
 	 * @param action : the {@link EnvironmentalAction} to attempt.
 	 */
 	@Override
-	public void setActionToPerform(AbstractAction<P> action) {
+	public void setActionToPerform(AbstractAction action) {
 		this.actionToPerform = action;
 	}
 	
@@ -72,7 +71,7 @@ public abstract class AbstractActuator<T extends Enum<?>, P extends Perception> 
 	 * @param event : the {@link Event} wrapping the {@link EnvironmentalAction} to attempt.
 	 */
 	@Override
-	public void setEventToPerform(AbstractEvent<P> event) {
+	public void setEventToPerform(AbstractEvent event) {
 		this.eventToPerform = event;
 	}
 	

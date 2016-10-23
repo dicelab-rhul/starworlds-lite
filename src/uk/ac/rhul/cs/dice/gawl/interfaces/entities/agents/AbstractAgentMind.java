@@ -19,14 +19,14 @@ import uk.ac.rhul.cs.dice.gawl.interfaces.perception.Perception;
  * @author Kostas Stathis
  *
  */
-public abstract class AbstractAgentMind<P extends Perception> extends CustomObservable implements Mind<P> {
-	private List<Class<? extends EnvironmentalAction<P>>> availableActionsForThisCycle;
-	private List<Class<? extends EnvironmentalAction<P>>> mindActions;
+public abstract class AbstractAgentMind extends CustomObservable implements Mind {
+	private List<Class<? extends EnvironmentalAction>> availableActionsForThisCycle;
+	private List<Class<? extends EnvironmentalAction>> mindActions;
 	private Random rng;
 	private String bodyId;
-	private EnvironmentalAction<P> nextAction;
-	private Result<P> lastActionResult;
-	private List<Result<P>> lastCycleIncomingCommunications;
+	private EnvironmentalAction nextAction;
+	private Result lastActionResult;
+	private List<Result> lastCycleIncomingCommunications;
 	
 	public AbstractAgentMind(Random rng, String bodyId) {
 		this.rng = rng;
@@ -44,12 +44,12 @@ public abstract class AbstractAgentMind<P extends Perception> extends CustomObse
 	}
 	
 	@Override
-	public List<Class<? extends EnvironmentalAction<P>>> getAvailableActionsForThisCycle() {
+	public List<Class<? extends EnvironmentalAction>> getAvailableActionsForThisCycle() {
 		return this.availableActionsForThisCycle;
 	}
 
 	@Override
-	public void addAvailableActionForThisCycle(Class<? extends EnvironmentalAction<P>> availableActionForThisCycle) {
+	public void addAvailableActionForThisCycle(Class<? extends EnvironmentalAction> availableActionForThisCycle) {
 		if(this.availableActionsForThisCycle == null) {
 			this.availableActionsForThisCycle = new ArrayList<>();
 		}
@@ -58,12 +58,12 @@ public abstract class AbstractAgentMind<P extends Perception> extends CustomObse
 	}
 	
 	@Override
-	public void loadAvailableActionsForThisCycle(List<Class<? extends EnvironmentalAction<P>>> availableActionsForThisCycle) {
+	public void loadAvailableActionsForThisCycle(List<Class<? extends EnvironmentalAction>> availableActionsForThisCycle) {
 		this.availableActionsForThisCycle = availableActionsForThisCycle;
 	}
 	
 	@Override
-	public void loadAvailableActionForThisMind(Class<? extends EnvironmentalAction<P>> mindAction) {
+	public void loadAvailableActionForThisMind(Class<? extends EnvironmentalAction> mindAction) {
 		if(this.mindActions == null) {
 			this.mindActions = new ArrayList<>();
 		}
@@ -72,12 +72,12 @@ public abstract class AbstractAgentMind<P extends Perception> extends CustomObse
 	}
 	
 	@Override
-	public List<Class<? extends EnvironmentalAction<P>>> getAvailableActionsForThisMind() {
+	public List<Class<? extends EnvironmentalAction>> getAvailableActionsForThisMind() {
 		return this.mindActions;
 	}
 	
 	@Override
-	public Class<? extends EnvironmentalAction<P>> decideActionPrototypeRandomly() {
+	public Class<? extends EnvironmentalAction> decideActionPrototypeRandomly() {
 		int availableActionsSize = this.availableActionsForThisCycle.size();
 		
 		if(availableActionsSize == 0) {
@@ -106,27 +106,27 @@ public abstract class AbstractAgentMind<P extends Perception> extends CustomObse
 	}
 	
 	@Override
-	public EnvironmentalAction<P> getNextAction() {
+	public EnvironmentalAction getNextAction() {
 		return this.nextAction;
 	}
 	
 	@Override
-	public void setNextActionForExecution(EnvironmentalAction<P> action) {
+	public void setNextActionForExecution(EnvironmentalAction action) {
 		this.nextAction = action;	
 	}
 	
 	@Override
-	public Result<P> getLastActionResult() {
+	public Result getLastActionResult() {
 		return this.lastActionResult;
 	}
 	
 	@Override
-	public void setLastActionResult(Result<P> result) {
+	public void setLastActionResult(Result result) {
 		this.lastActionResult = result;
 	}
 	
 	@Override
-	public P getPerception() {
+	public Perception getPerception() {
 		if(this.lastActionResult == null) {
 			return null;
 		}
@@ -136,12 +136,12 @@ public abstract class AbstractAgentMind<P extends Perception> extends CustomObse
 	}
 	
 	@Override
-	public List<Result<P>> getReceivedCommunications() {
+	public List<Result> getReceivedCommunications() {
 		return this.lastCycleIncomingCommunications;
 	}
 	
 	@Override
-	public void addReceivedCommunicationToList(Result<P> communicationResult) {
+	public void addReceivedCommunicationToList(Result communicationResult) {
 		this.lastCycleIncomingCommunications.add(communicationResult);
 	}
 	

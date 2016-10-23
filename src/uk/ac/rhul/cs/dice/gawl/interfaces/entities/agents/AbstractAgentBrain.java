@@ -7,7 +7,6 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 import uk.ac.rhul.cs.dice.gawl.interfaces.actions.Result;
 import uk.ac.rhul.cs.dice.gawl.interfaces.observer.CustomObservable;
-import uk.ac.rhul.cs.dice.gawl.interfaces.perception.Perception;
 
 /**
  * A {@link Brain} implementation which is {@link CustomObservable}.<br/><br/>
@@ -19,13 +18,13 @@ import uk.ac.rhul.cs.dice.gawl.interfaces.perception.Perception;
  * @author Kostas Stathis
  *
  */
-public abstract class AbstractAgentBrain<P extends Perception> extends CustomObservable implements Brain<P> {
-	private Queue<Result<P>> receivedResults;
-	private List<Result<P>> resultsToSend;
+public abstract class AbstractAgentBrain extends CustomObservable implements Brain {
+	private Queue<Result> receivedResults;
+	private List<Result> resultsToSend;
 	private boolean actionResultReturned;
-	private Class<? extends Mind<P>> mindClass;
+	private Class<? extends Mind> mindClass;
 	
-	public AbstractAgentBrain(Class<? extends Mind<P>> mindClass) {
+	public AbstractAgentBrain(Class<? extends Mind> mindClass) {
 		this.mindClass = mindClass;
 		this.receivedResults = new ConcurrentLinkedQueue<>();
 		this.resultsToSend = new ArrayList<>();
@@ -33,22 +32,22 @@ public abstract class AbstractAgentBrain<P extends Perception> extends CustomObs
 	}
 	
 	@Override
-	public void addResultToSendToList(Result<P> result) {
+	public void addResultToSendToList(Result result) {
 		this.resultsToSend.add(result);
 	}
 	
 	@Override
-	public Class<? extends Mind<P>> getPairedMindClass() {
+	public Class<? extends Mind> getPairedMindClass() {
 		return this.mindClass;
 	}
 	
 	@Override
-	public Queue<Result<P>> getReceivedResults() {
+	public Queue<Result> getReceivedResults() {
 		return this.receivedResults;
 	}
 	
 	@Override
-	public List<Result<P>> getResultsToSend() {
+	public List<Result> getResultsToSend() {
 		return this.resultsToSend;
 	}
 	
@@ -58,12 +57,12 @@ public abstract class AbstractAgentBrain<P extends Perception> extends CustomObs
 	}
 	
 	@Override
-	public Result<P> pullReceivedResultFromQueue() {
+	public Result pullReceivedResultFromQueue() {
 		return this.receivedResults.poll();
 	}
 	
 	@Override
-	public void pushReceivedResultToQueue(Result<P> result) {
+	public void pushReceivedResultToQueue(Result result) {
 		this.receivedResults.add(result);
 	}
 	

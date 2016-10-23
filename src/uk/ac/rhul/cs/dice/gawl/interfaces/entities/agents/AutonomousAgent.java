@@ -3,7 +3,6 @@ package uk.ac.rhul.cs.dice.gawl.interfaces.entities.agents;
 import java.util.List;
 
 import uk.ac.rhul.cs.dice.gawl.interfaces.appearances.AbstractAgentAppearance;
-import uk.ac.rhul.cs.dice.gawl.interfaces.perception.Perception;
 
 /**
  * A subclass of {@link AbstractAgent} whose {@link Mind} is a {@link AutonomousAgentMind}.<br/><br/>
@@ -15,7 +14,7 @@ import uk.ac.rhul.cs.dice.gawl.interfaces.perception.Perception;
  * @author Kostas Stathis
  *
  */
-public abstract class AutonomousAgent<T1 extends Enum<?>, T2 extends Enum<?>,  P extends Perception> extends AbstractAgent<T1, T2, P> {
+public abstract class AutonomousAgent<T1 extends Enum<?>, T2 extends Enum<?>> extends AbstractAgent<T1, T2> {
 
 	/**
 	 * The class constructor.
@@ -26,7 +25,7 @@ public abstract class AutonomousAgent<T1 extends Enum<?>, T2 extends Enum<?>,  P
 	 * @param mind : the {@link AutonomousAgentMind}.
 	 * @param brain : the {@link AbstractAgentBrain}.
 	 */
-	public AutonomousAgent(AbstractAgentAppearance appearance, List<Sensor<T1>> sensors, List<Actuator<T2, P>> actuators, AutonomousAgentMind<P> mind, AbstractAgentBrain<P> brain) {
+	public AutonomousAgent(AbstractAgentAppearance appearance, List<Sensor<T1>> sensors, List<Actuator<T2>> actuators, AutonomousAgentMind mind, AbstractAgentBrain brain) {
 		super(appearance, sensors, actuators, mind, brain);
 	}
 }

@@ -5,7 +5,6 @@ import java.util.List;
 import uk.ac.rhul.cs.dice.gawl.interfaces.appearances.AbstractAgentAppearance;
 import uk.ac.rhul.cs.dice.gawl.interfaces.entities.ActiveBody;
 import uk.ac.rhul.cs.dice.gawl.interfaces.entities.Agent;
-import uk.ac.rhul.cs.dice.gawl.interfaces.perception.Perception;
 
 /**
  * A subclass of {@link ActiveBody} implementing the {@link Agent} interface. It contains a {@link Brain}
@@ -18,9 +17,9 @@ import uk.ac.rhul.cs.dice.gawl.interfaces.perception.Perception;
  * @author Kostas Stathis
  *
  */
-public abstract class AbstractAgent<T1 extends Enum<?>, T2 extends Enum<?>, P extends Perception> extends ActiveBody<T1, T2, P> implements Agent<P> {
-	private AbstractAgentBrain<P> brain;
-	private AbstractAgentMind<P> mind;
+public abstract class AbstractAgent<T1 extends Enum<?>, T2 extends Enum<?>> extends ActiveBody<T1, T2> implements Agent {
+	private AbstractAgentBrain brain;
+	private AbstractAgentMind mind;
 	
 	/**
 	 * The class constructor.
@@ -31,7 +30,7 @@ public abstract class AbstractAgent<T1 extends Enum<?>, T2 extends Enum<?>, P ex
 	 * @param mind : the {@link AbstractAgentMind}.
 	 * @param brain : the {@link AbstractAgentBrain}.
 	 */
-	public AbstractAgent(AbstractAgentAppearance appearance, List<Sensor<T1>> sensors, List<Actuator<T2, P>> actuators, AbstractAgentMind<P> mind, AbstractAgentBrain<P> brain) {
+	public AbstractAgent(AbstractAgentAppearance appearance, List<Sensor<T1>> sensors, List<Actuator<T2>> actuators, AbstractAgentMind mind, AbstractAgentBrain brain) {
 		super(appearance, sensors, actuators);
 		
 		this.brain = brain;
@@ -50,7 +49,7 @@ public abstract class AbstractAgent<T1 extends Enum<?>, T2 extends Enum<?>, P ex
 	 * @return the {@link Brain} of the {@link AbstractAgent}.
 	 */
 	@Override
-	public AbstractAgentBrain<P> getBrain() {
+	public AbstractAgentBrain getBrain() {
 		return this.brain;
 	}
 
@@ -60,7 +59,7 @@ public abstract class AbstractAgent<T1 extends Enum<?>, T2 extends Enum<?>, P ex
 	 * @param brain : the {@link Brain} of the {@link AbstractAgent}.
 	 */
 	@Override
-	public void setBrain(AbstractAgentBrain<P> brain) {
+	public void setBrain(AbstractAgentBrain brain) {
 		this.brain = brain;
 	}
 
@@ -70,7 +69,7 @@ public abstract class AbstractAgent<T1 extends Enum<?>, T2 extends Enum<?>, P ex
 	 * @return the {@link Mind} of the {@link AbstractAgent}.
 	 */
 	@Override
-	public AbstractAgentMind<P> getMind() {
+	public AbstractAgentMind getMind() {
 		return this.mind;
 	}
 
@@ -80,7 +79,7 @@ public abstract class AbstractAgent<T1 extends Enum<?>, T2 extends Enum<?>, P ex
 	 * @param mind : the {@link Mind} of the {@link AbstractAgent}.
 	 */
 	@Override
-	public void setMind(AbstractAgentMind<P> mind) {
+	public void setMind(AbstractAgentMind mind) {
 		this.mind = mind;
 	}
 }

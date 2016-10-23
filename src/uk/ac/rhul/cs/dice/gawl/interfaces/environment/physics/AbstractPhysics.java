@@ -3,7 +3,6 @@ package uk.ac.rhul.cs.dice.gawl.interfaces.environment.physics;
 import uk.ac.rhul.cs.dice.gawl.interfaces.actions.Result;
 import uk.ac.rhul.cs.dice.gawl.interfaces.observer.CustomObservable;
 import uk.ac.rhul.cs.dice.gawl.interfaces.observer.CustomObserver;
-import uk.ac.rhul.cs.dice.gawl.interfaces.perception.Perception;
 
 /**
  * The most general class representing physics. It extends {@link CustomObservable} and it implements {@link Physics}
@@ -16,8 +15,8 @@ import uk.ac.rhul.cs.dice.gawl.interfaces.perception.Perception;
  * @author Kostas Stathis
  *
  */
-public abstract class AbstractPhysics<P extends Perception> extends CustomObservable implements Physics<P>, CustomObserver {
-	private Result<P> currentResult;
+public abstract class AbstractPhysics extends CustomObservable implements Physics, CustomObserver {
+	private Result currentResult;
 
 	/**
 	 * Returns the {@link Result} of the current execution attempt.
@@ -25,7 +24,7 @@ public abstract class AbstractPhysics<P extends Perception> extends CustomObserv
 	 * @return Returns the {@link Result} of the current execution attempt.
 	 */
 	@Override
-	public Result<P> getCurrentResult() {
+	public Result getCurrentResult() {
 		return this.currentResult;
 	}
 
@@ -35,7 +34,7 @@ public abstract class AbstractPhysics<P extends Perception> extends CustomObserv
 	 * @param currentMoveResult : the {@link Result} of the current execution attempt.
 	 */
 	@Override
-	public void setCurrentResult(Result<P> currentMoveResult) {
+	public void setCurrentResult(Result currentMoveResult) {
 		this.currentResult = currentMoveResult;
 	}
 }

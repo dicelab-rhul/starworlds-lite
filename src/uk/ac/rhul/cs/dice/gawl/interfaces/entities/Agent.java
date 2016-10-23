@@ -3,7 +3,6 @@ package uk.ac.rhul.cs.dice.gawl.interfaces.entities;
 import uk.ac.rhul.cs.dice.gawl.interfaces.entities.agents.AbstractAgent;
 import uk.ac.rhul.cs.dice.gawl.interfaces.entities.agents.AbstractAgentBrain;
 import uk.ac.rhul.cs.dice.gawl.interfaces.entities.agents.AbstractAgentMind;
-import uk.ac.rhul.cs.dice.gawl.interfaces.perception.Perception;
 
 /**
  * The interface for agents.<br/><br/>
@@ -15,11 +14,11 @@ import uk.ac.rhul.cs.dice.gawl.interfaces.perception.Perception;
  * @author Kostas Stathis
  *
  */
-public interface Agent<P extends Perception> extends Actor {
-	public abstract AbstractAgentBrain<P> getBrain();
-	public abstract void setBrain(AbstractAgentBrain<P> brain);
-	public abstract AbstractAgentMind<P> getMind();
-	public abstract void setMind(AbstractAgentMind<P> mind);
+public interface Agent extends Actor {
+	public abstract AbstractAgentBrain getBrain();
+	public abstract void setBrain(AbstractAgentBrain brain);
+	public abstract AbstractAgentMind getMind();
+	public abstract void setMind(AbstractAgentMind mind);
 	public abstract int getPerceptionRange();
 	public abstract boolean canSeeBehind();
 }

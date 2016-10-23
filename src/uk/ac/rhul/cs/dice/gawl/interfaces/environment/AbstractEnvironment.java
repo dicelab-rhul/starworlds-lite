@@ -2,7 +2,6 @@ package uk.ac.rhul.cs.dice.gawl.interfaces.environment;
 
 import uk.ac.rhul.cs.dice.gawl.interfaces.appearances.Appearance;
 import uk.ac.rhul.cs.dice.gawl.interfaces.environment.physics.Physics;
-import uk.ac.rhul.cs.dice.gawl.interfaces.perception.Perception;
 
 /**
  * The most general class representing an environment. It has an {@link EnvironmentalSpace}, an instance of {@link Physics}, a {@link Boolean} indicating whether
@@ -15,9 +14,9 @@ import uk.ac.rhul.cs.dice.gawl.interfaces.perception.Perception;
  * @author Kostas Stathis
  *
  */
-public abstract class AbstractEnvironment<P extends Perception> implements Environment<P>, Container {
+public abstract class AbstractEnvironment implements Environment, Container {
 	private Space state;
-	private Physics<P> physics;
+	private Physics physics;
 	private Boolean bounded;
 	private Appearance appearance;
 	
@@ -29,7 +28,7 @@ public abstract class AbstractEnvironment<P extends Perception> implements Envir
 	 * @param bounded : a {@link Boolean} value indicating whether the environment is bounded or not.
 	 * @param appearance : the {@link Appearance} of the environment.
 	 */
-	public AbstractEnvironment(Space state, Physics<P> physics, Boolean bounded, Appearance appearance) {
+	public AbstractEnvironment(Space state, Physics physics, Boolean bounded, Appearance appearance) {
 		this.state = state;
 		this.physics = physics;
 		this.bounded = bounded;
@@ -47,12 +46,12 @@ public abstract class AbstractEnvironment<P extends Perception> implements Envir
 	}
 
 	@Override
-	public Physics<P> getPhysics() {
+	public Physics getPhysics() {
 		return this.physics;
 	}
 
 	@Override
-	public void setPhysics(Physics<P> physics) {
+	public void setPhysics(Physics physics) {
 		this.physics = physics;
 	}
 
