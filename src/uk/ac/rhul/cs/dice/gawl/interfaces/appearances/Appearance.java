@@ -16,19 +16,21 @@ public interface Appearance {
 	 * 
 	 * @return a {@link String} representation of the appearance.
 	 */
-	public String represent();
+	public abstract String represent();
 	
 	/**
 	 * Returns the {@link String} name of the object the appearance refers to.
 	 * 
 	 * @return the {@link String} name of the object the appearance refers to.
 	 */
-	public String getName();
+	public abstract String getName();
 	
 	/**
 	 * Sets the {@link String} name of the object the appearance refers to.
 	 * 
 	 * @param name : the {@link String} name of the object the appearance refers to.
 	 */
-	public void setName(String name);
+	public abstract void setName(String name);
+	
+	public abstract Appearance duplicate();
 }

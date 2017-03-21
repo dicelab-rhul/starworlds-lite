@@ -14,6 +14,6 @@ import uk.ac.rhul.cs.dice.gawl.interfaces.entities.Actor;
  *
  */
 public interface Action {
-	public abstract Actor getActor();
-	public abstract void setActor(Actor actor);
+    public abstract Actor getActor();
+    public abstract void setActor(Actor actor);
 }
