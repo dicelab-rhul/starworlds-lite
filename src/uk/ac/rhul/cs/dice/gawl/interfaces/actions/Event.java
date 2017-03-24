@@ -1,6 +1,7 @@
 package uk.ac.rhul.cs.dice.gawl.interfaces.actions;
 
 import uk.ac.rhul.cs.dice.gawl.interfaces.entities.Actor;
+import uk.ac.rhul.cs.dice.gawl.interfaces.entities.agents.Actuator;
 import uk.ac.rhul.cs.dice.gawl.interfaces.environment.Space;
 import uk.ac.rhul.cs.dice.gawl.interfaces.environment.physics.Physics;
 
@@ -136,11 +137,31 @@ public interface Event {
      */
     public abstract boolean succeeded(Physics physics, Space context);
 
+    /**
+     * Returns the ID of the {@link Actor}'s {@link Sensor} to call back upon execution in order to forward the {@link Result}.
+     * 
+     * @return the ID of the {@link Actor}'s {@link Sensor} to call back upon execution in order to forward the {@link Result}.
+     */
     public abstract Object getSensorToCallBackId();
 
+    /**
+     * Sets the ID of the {@link Actor}'s {@link Sensor} to call back upon execution in order to forward the {@link Result}.
+     * 
+     * @param sensorToCallBackId: the ID of the {@link Actor}'s {@link Sensor} to call back upon execution in order to forward the {@link Result}.
+     */
     public abstract void setSensorToCallBackId(String sensorToCallBackId);
 
+    /**
+     * Returns the ID of the {@link Actuator} which started the execution.
+     * 
+     * @return the ID of the {@link Actuator} which started the execution.
+     */
     public abstract Object getActuatorRecipientId();
 
+    /**
+     * Sets the ID of the {@link Actuator} which started the execution.
+     * 
+     * @param actuatorRecipient: the ID of the {@link Actuator} which started the execution.
+     */
     public abstract void setActuatorRecipientId(String actuatorRecipient);
 }

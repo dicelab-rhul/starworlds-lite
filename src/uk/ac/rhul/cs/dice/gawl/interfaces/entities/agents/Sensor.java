@@ -14,7 +14,7 @@ import uk.ac.rhul.cs.dice.gawl.interfaces.perception.Perception;
  *
  */
 public interface Sensor<T extends Enum<?>> extends CustomObserver {
-	public abstract T getRole();
+	public abstract T getPurpose();
 	public abstract Object getSensorId();
 	public abstract Object getBodyId();
 	public abstract Perception getPerception();

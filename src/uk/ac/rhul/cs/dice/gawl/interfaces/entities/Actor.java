@@ -3,7 +3,9 @@ package uk.ac.rhul.cs.dice.gawl.interfaces.entities;
 import uk.ac.rhul.cs.dice.gawl.interfaces.actions.EnvironmentalAction;
 
 /**
- * The interface for classes capable of performing an {@link EnvironmentalAction}.<br/><br>
+ * The interface for classes capable of performing an
+ * {@link EnvironmentalAction}.<br/>
+ * <br>
  * 
  * Known implementations: {@link ActiveBody}.
  * 
@@ -14,5 +16,11 @@ import uk.ac.rhul.cs.dice.gawl.interfaces.actions.EnvironmentalAction;
  */
 @FunctionalInterface
 public interface Actor {
-	public abstract Object getId();
+    
+    /**
+     * Returns the {@link Actor} ID.
+     * 
+     * @return the {@link Actor} ID.
+     */
+    public abstract Object getId();
 }

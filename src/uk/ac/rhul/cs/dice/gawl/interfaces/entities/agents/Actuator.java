@@ -15,7 +15,7 @@ import uk.ac.rhul.cs.dice.gawl.interfaces.observer.CustomObserver;
  *
  */
 public interface Actuator<T extends Enum<?>> extends CustomObserver {
-	public abstract T getRole();
+	public abstract T getPurpose();
 	public abstract Object getActuatorId();
 	public abstract Object getBodyId();
 	public abstract AbstractAction getActionToPerform();

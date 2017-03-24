@@ -1,7 +1,8 @@
 package uk.ac.rhul.cs.dice.gawl.interfaces.actions;
 
 /**
- * A subclass of {@link AbstractAction} representing sensing actions.<br/><br/>
+ * A subclass of {@link AbstractAction} representing sensing actions.<br/>
+ * <br/>
  * 
  * Known direct subclasses: none.
  * 

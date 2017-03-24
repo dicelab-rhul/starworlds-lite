@@ -14,6 +14,18 @@ import uk.ac.rhul.cs.dice.gawl.interfaces.entities.Actor;
  *
  */
 public interface Action {
+    
+    /**
+     * Returns the {@link Actor}.
+     * 
+     * @return the {@link Actor}.
+     */
     public abstract Actor getActor();
+    
+    /**
+     * Sets the {@link Actor}.
+     * 
+     * @param actor: the {@link Actor} to be set.
+     */
     public abstract void setActor(Actor actor);
 }
