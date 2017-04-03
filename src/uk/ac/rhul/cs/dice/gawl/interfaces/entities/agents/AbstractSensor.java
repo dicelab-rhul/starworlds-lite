@@ -17,16 +17,16 @@ import uk.ac.rhul.cs.dice.gawl.interfaces.perception.Perception;
  * @author Kostas Stathis
  *
  */
-public abstract class AbstractSensor<T extends Enum<?>> extends CustomObservable implements Sensor<T> {
+public abstract class AbstractSensor extends CustomObservable implements Sensor {
     private Perception perception;
     private String id;
     private String bodyId;
-    private T purpose;
+    private SensorPurpose purpose;
 
     /**
      * Default constructor. A random uuid is generated and stored.
      */
-    public AbstractSensor(String bodyId, T purpose) {
+    public AbstractSensor(String bodyId, SensorPurpose purpose) {
 	this.id = UUID.randomUUID().toString();
 	this.bodyId = bodyId;
 	this.purpose = purpose;
@@ -64,7 +64,7 @@ public abstract class AbstractSensor<T extends Enum<?>> extends CustomObservable
     }
 
     @Override
-    public T getPurpose() {
+    public SensorPurpose getPurpose() {
 	return this.purpose;
     }
 

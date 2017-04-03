@@ -14,7 +14,7 @@ import uk.ac.rhul.cs.dice.gawl.interfaces.appearances.AbstractAgentAppearance;
  * @author Kostas Stathis
  *
  */
-public abstract class Avatar<T1 extends Enum<?>, T2 extends Enum<?>> extends AbstractAgent<T1, T2> {
+public abstract class Avatar extends AbstractAgent {
 
 	/**
 	 * The class constructor.
@@ -25,7 +25,7 @@ public abstract class Avatar<T1 extends Enum<?>, T2 extends Enum<?>> extends Abs
 	 * @param mind : the {@link AvatarMind}.
 	 * @param brain : the {@link AbstractAgentBrain} of the {@link Avatar}.
 	 */
-	public Avatar(AbstractAgentAppearance appearance, List<Sensor<T1>> sensors, List<Actuator<T2>> actuators, AvatarMind mind, AbstractAgentBrain brain) {
+	public Avatar(AbstractAgentAppearance appearance, List<Sensor> sensors, List<Actuator> actuators, AvatarMind mind, AbstractAgentBrain brain) {
 		super(appearance, sensors, actuators, mind, brain);
 	}
 }

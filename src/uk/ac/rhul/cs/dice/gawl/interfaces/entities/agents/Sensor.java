@@ -13,8 +13,8 @@ import uk.ac.rhul.cs.dice.gawl.interfaces.perception.Perception;
  * @author Kostas Stathis
  *
  */
-public interface Sensor<T extends Enum<?>> extends CustomObserver {
-	public abstract T getPurpose();
+public interface Sensor extends CustomObserver {
+	public abstract SensorPurpose getPurpose();
 	public abstract Object getSensorId();
 	public abstract Object getBodyId();
 	public abstract Perception getPerception();

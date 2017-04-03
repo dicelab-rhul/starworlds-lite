@@ -17,7 +17,7 @@ import uk.ac.rhul.cs.dice.gawl.interfaces.entities.Agent;
  * @author Kostas Stathis
  *
  */
-public abstract class AbstractAgent<T1 extends Enum<?>, T2 extends Enum<?>> extends ActiveBody<T1, T2> implements Agent {
+public abstract class AbstractAgent extends ActiveBody implements Agent {
 	private AbstractAgentBrain brain;
 	private AbstractAgentMind mind;
 	
@@ -30,7 +30,7 @@ public abstract class AbstractAgent<T1 extends Enum<?>, T2 extends Enum<?>> exte
 	 * @param mind : the {@link AbstractAgentMind}.
 	 * @param brain : the {@link AbstractAgentBrain}.
 	 */
-	public AbstractAgent(AbstractAgentAppearance appearance, List<Sensor<T1>> sensors, List<Actuator<T2>> actuators, AbstractAgentMind mind, AbstractAgentBrain brain) {
+	public AbstractAgent(AbstractAgentAppearance appearance, List<Sensor> sensors, List<Actuator> actuators, AbstractAgentMind mind, AbstractAgentBrain brain) {
 		super(appearance, sensors, actuators);
 		
 		this.brain = brain;

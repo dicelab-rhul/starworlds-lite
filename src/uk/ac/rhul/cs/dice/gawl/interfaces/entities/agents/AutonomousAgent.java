@@ -14,7 +14,7 @@ import uk.ac.rhul.cs.dice.gawl.interfaces.appearances.AbstractAgentAppearance;
  * @author Kostas Stathis
  *
  */
-public abstract class AutonomousAgent<T1 extends Enum<?>, T2 extends Enum<?>> extends AbstractAgent<T1, T2> {
+public abstract class AutonomousAgent extends AbstractAgent {
 
 	/**
 	 * The class constructor.
@@ -25,7 +25,7 @@ public abstract class AutonomousAgent<T1 extends Enum<?>, T2 extends Enum<?>> ex
 	 * @param mind : the {@link AutonomousAgentMind}.
 	 * @param brain : the {@link AbstractAgentBrain}.
 	 */
-	public AutonomousAgent(AbstractAgentAppearance appearance, List<Sensor<T1>> sensors, List<Actuator<T2>> actuators, AutonomousAgentMind mind, AbstractAgentBrain brain) {
+	public AutonomousAgent(AbstractAgentAppearance appearance, List<Sensor> sensors, List<Actuator> actuators, AutonomousAgentMind mind, AbstractAgentBrain brain) {
 		super(appearance, sensors, actuators, mind, brain);
 	}
 }

@@ -21,17 +21,17 @@ import uk.ac.rhul.cs.dice.gawl.interfaces.observer.CustomObservable;
  * @author Kostas Stathis
  *
  */
-public abstract class AbstractActuator<T extends Enum<?>> extends CustomObservable implements Actuator<T> {
+public abstract class AbstractActuator extends CustomObservable implements Actuator {
     private AbstractAction actionToPerform;
     private AbstractEvent eventToPerform;
     private String id;
     private String bodyId;
-    private T purpose;
+    private ActuatorPurpose purpose;
 
     /**
      * Default constructor. A random uuid is generated and stored.
      */
-    public AbstractActuator(String bodyId, T purpose) {
+    public AbstractActuator(String bodyId, ActuatorPurpose purpose) {
 	this.id = UUID.randomUUID().toString();
 	this.bodyId = bodyId;
 	this.purpose = purpose;
@@ -94,7 +94,7 @@ public abstract class AbstractActuator<T extends Enum<?>> extends CustomObservab
     }
 
     @Override
-    public T getPurpose() {
+    public ActuatorPurpose getPurpose() {
 	return this.purpose;
     }
 

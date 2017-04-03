@@ -16,7 +16,7 @@ import uk.ac.rhul.cs.dice.gawl.interfaces.entities.agents.Sensor;
  * @author Kostas Stathis
  *
  */
-public abstract class DependentBody<T1 extends Enum<?>, T2 extends Enum<?>> extends ActiveBody<T1, T2> implements ObjectInterface {
+public abstract class DependentBody extends ActiveBody implements ObjectInterface {
 
 	/**
 	 * Constructor with a {@link DependentBodyAppearance}, a {@link List} of {@link Sensor} instances and
@@ -26,7 +26,7 @@ public abstract class DependentBody<T1 extends Enum<?>, T2 extends Enum<?>> exte
 	 * @param sensors : a {@link List} of {@link Sensor} instances.
 	 * @param actuators : a {@link List} of {@link Actuator} instances.
 	 */
-	public DependentBody(DependentBodyAppearance appearance, List<Sensor<T1>> sensors, List<Actuator<T2>> actuators) {
+	public DependentBody(DependentBodyAppearance appearance, List<Sensor> sensors, List<Actuator> actuators) {
 		super(appearance, sensors, actuators);
 	}
 }

@@ -22,9 +22,9 @@ import uk.ac.rhul.cs.dice.gawl.interfaces.entities.agents.Sensor;
  * @author Kostas Stathis
  *
  */
-public abstract class ActiveBody<T1 extends Enum<?>, T2 extends Enum<?>> extends PhysicalBody implements Actor, Simulator<T1, T2> {
-	private List<Sensor<T1>> sensors;
-	private List<Actuator<T2>> actuators;
+public abstract class ActiveBody extends PhysicalBody implements Actor, Simulator {
+	private List<Sensor> sensors;
+	private List<Actuator> actuators;
 	
 	/**
 	 * Constructor with a {@link BodyAppearance}, a {@link List} of {@link Sensor} instances and
@@ -34,7 +34,7 @@ public abstract class ActiveBody<T1 extends Enum<?>, T2 extends Enum<?>> extends
 	 * @param sensors : a {@link List} of {@link Sensor} instances.
 	 * @param actuators : a {@link List} of {@link Actuator} instances.
 	 */
-	public ActiveBody(BodyAppearance appearance, List<Sensor<T1>> sensors, List<Actuator<T2>> actuators) {
+	public ActiveBody(BodyAppearance appearance, List<Sensor> sensors, List<Actuator> actuators) {
 		super(appearance);
 		
 		this.sensors = sensors != null ? sensors : new ArrayList<>();
@@ -54,13 +54,13 @@ public abstract class ActiveBody<T1 extends Enum<?>, T2 extends Enum<?>> extends
 	}
 
 	private void initActuators() {
-		for(Actuator<T2> a : this.actuators) {
+		for(Actuator a : this.actuators) {
 			registerActuator(a);
 		}
 	}
 
 	private void initSensors() {
-		for(Sensor<T1> s : this.sensors) {
+		for(Sensor s : this.sensors) {
 			registerSensor(s);
 		}
 	}
@@ -71,7 +71,7 @@ public abstract class ActiveBody<T1 extends Enum<?>, T2 extends Enum<?>> extends
 	 * @return the {@link List} of {@link Sensor} instances.
 	 */
 	@Override
-	public List<Sensor<T1>> getSensors() {
+	public List<Sensor> getSensors() {
 		return this.sensors;
 	}
 	
@@ -81,7 +81,7 @@ public abstract class ActiveBody<T1 extends Enum<?>, T2 extends Enum<?>> extends
 	 * @return the {@link List} of {@link Actuator} instances.
 	 */
 	@Override
-	public List<Actuator<T2>> getActuators() {
+	public List<Actuator> getActuators() {
 		return this.actuators;
 	}
 	
@@ -91,7 +91,7 @@ public abstract class ActiveBody<T1 extends Enum<?>, T2 extends Enum<?>> extends
 	 * @param sensor : the {@link Sensor} to be added to the {@link List}.
 	 */
 	@Override
-	public void addSensor(Sensor<T1> sensor) {
+	public void addSensor(Sensor sensor) {
 		registerSensor(sensor);
 		
 		this.sensors.add(sensor);
@@ -103,22 +103,22 @@ public abstract class ActiveBody<T1 extends Enum<?>, T2 extends Enum<?>> extends
 	 * @param sensor : the {@link Actuator} to be added to the {@link List}.
 	 */
 	@Override
-	public void addActuator(Actuator<T2> actuator) {
+	public void addActuator(Actuator actuator) {
 		registerActuator(actuator);
 		
 		this.actuators.add(actuator);
 	}
 	
-	private void registerActuator(Actuator<T2> actuator) {
+	private void registerActuator(Actuator actuator) {
 		if(actuator instanceof AbstractActuator) {
-			((AbstractActuator<T2>) actuator).addObserver(this);
+			((AbstractActuator) actuator).addObserver(this);
 			this.addObserver(actuator);
 		}
 	}
 	
-	private void registerSensor(Sensor<T1> sensor) {
+	private void registerSensor(Sensor sensor) {
 		if(sensor instanceof AbstractSensor) {
-			((AbstractSensor<T1>) sensor).addObserver(this);
+			((AbstractSensor) sensor).addObserver(this);
 			this.addObserver(sensor);
 		}
 	}

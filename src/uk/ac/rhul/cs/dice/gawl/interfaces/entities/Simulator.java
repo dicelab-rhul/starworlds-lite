@@ -15,7 +15,7 @@ import uk.ac.rhul.cs.dice.gawl.interfaces.entities.agents.Sensor;
  * @author Kostas Stathis
  *
  */
-public interface Simulator<T1 extends Enum<?>, T2 extends Enum<?>> {
+public interface Simulator {
 	
 	/**
 	 * Performs a simulation.
@@ -23,8 +23,8 @@ public interface Simulator<T1 extends Enum<?>, T2 extends Enum<?>> {
 	 * @return the simulation return value as a generic {@link Object}.
 	 */
 	public abstract Object simulate();
-	public abstract List<Sensor<T1>> getSensors();
-	public abstract List<Actuator<T2>> getActuators();
-	public abstract void addSensor(Sensor<T1> sensor);
-	public abstract void addActuator(Actuator<T2> actuator);
+	public abstract List<Sensor> getSensors();
+	public abstract List<Actuator> getActuators();
+	public abstract void addSensor(Sensor sensor);
+	public abstract void addActuator(Actuator actuator);
 }
