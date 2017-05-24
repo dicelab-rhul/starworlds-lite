@@ -1,6 +1,6 @@
 package uk.ac.rhul.cs.dice.gawl.interfaces.entities;
 
-import uk.ac.rhul.cs.dice.gawl.interfaces.actions.EnvironmentalAction;
+import uk.ac.rhul.cs.dice.gawl.interfaces.actions.environmental.EnvironmentalAction;
 
 /**
  * The interface for classes capable of performing an
@@ -14,13 +14,6 @@ import uk.ac.rhul.cs.dice.gawl.interfaces.actions.EnvironmentalAction;
  * @author Kostas Stathis
  *
  */
-@FunctionalInterface
 public interface Actor {
-    
-    /**
-     * Returns the {@link Actor} ID.
-     * 
-     * @return the {@link Actor} ID.
-     */
-    public abstract Object getId();
+
 }

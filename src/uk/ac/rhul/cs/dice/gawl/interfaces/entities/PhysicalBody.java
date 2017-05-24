@@ -1,13 +1,12 @@
 package uk.ac.rhul.cs.dice.gawl.interfaces.entities;
 
 import uk.ac.rhul.cs.dice.gawl.interfaces.appearances.Appearance;
-import uk.ac.rhul.cs.dice.gawl.interfaces.observer.CustomObservable;
-import uk.ac.rhul.cs.dice.gawl.interfaces.observer.CustomObserver;
 
 /**
- * The most generic class for physical bodies implementing {@link Body}. It extends {@link CustomObservable}
- * and can become a {@link CustomObserver}.
- * It has a {@link String} id and an {@link Appearance}.<br/><br/>
+ * The most generic class for physical bodies implementing {@link Body}. It
+ * extends {@link CustomObservable} and can become a {@link CustomObserver}. It
+ * has a {@link String} id and an {@link Appearance}.<br/>
+ * <br/>
  * 
  * Known direct subclasses: {@link ActiveBody}, {@link PassiveBody}.
  * 
@@ -16,49 +15,54 @@ import uk.ac.rhul.cs.dice.gawl.interfaces.observer.CustomObserver;
  * @author Kostas Stathis
  *
  */
-public abstract class PhysicalBody extends CustomObservable implements Body, CustomObserver {
+public abstract class PhysicalBody implements Body {
+
 	private String id;
-	private Appearance externalAppearance;
-	
+	private Appearance appearance;
+
 	/**
 	 * Constructor with an external {@link Appearance}.
 	 * 
-	 * @param externalAppearance : the external {@link Appearance} of the {@link PhysicalBody}.
+	 * @param appearance
+	 *            : the external {@link Appearance} of the {@link PhysicalBody}.
 	 */
-	public PhysicalBody(Appearance externalAppearance) {
-		this.externalAppearance = externalAppearance;
+	public PhysicalBody(Appearance appearance) {
+		this.appearance = appearance;
 	}
-	
+
 	/**
 	 * Returns the external {@link Appearance} of the {@link PhysicalBody}.
 	 * 
 	 * @return the external {@link Appearance} of the {@link PhysicalBody}.
 	 */
 	public Appearance getExternalAppearance() {
-		return this.externalAppearance;
+		return this.appearance;
 	}
-	
+
 	/**
 	 * Sets the external {@link Appearance} of the {@link PhysicalBody}.
 	 * 
-	 * @param externalAppearance : the external {@link Appearance} of the {@link PhysicalBody}.
+	 * @param externalAppearance
+	 *            : the external {@link Appearance} of the {@link PhysicalBody}.
 	 */
 	public void setExternalAppearance(Appearance externalAppearance) {
-		this.externalAppearance = externalAppearance;
+		this.appearance = externalAppearance;
 	}
-	
+
 	@Override
 	public void setId(Object id) {
-		if(id instanceof String) {
+		if (id instanceof String) {
 			this.id = (String) id;
 		}
-		else {
-			this.id = null;
-		}
 	}
-	
+
 	@Override
-	public Object getId() {
+	public String getId() {
 		return this.id;
+	}
+
+	@Override
+	public String toString() {
+		return this.getClass().getSimpleName() + this.id;
 	}
 }

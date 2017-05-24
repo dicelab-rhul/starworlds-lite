@@ -1,9 +1,10 @@
 package uk.ac.rhul.cs.dice.gawl.interfaces.entities;
 
-import uk.ac.rhul.cs.dice.gawl.interfaces.appearances.PassiveBodyAppearance;
+import uk.ac.rhul.cs.dice.gawl.interfaces.appearances.Appearance;
 
 /**
- * A subclass of {@link PhysicalBody} which implements {@link ObjectInterface}.<br/><br/>
+ * A subclass of {@link PhysicalBody} which implements {@link ObjectInterface}.<br/>
+ * <br/>
  * 
  * Known direct subclasses: none.
  * 
@@ -12,14 +13,15 @@ import uk.ac.rhul.cs.dice.gawl.interfaces.appearances.PassiveBodyAppearance;
  * @author Kostas Stathis
  *
  */
-public abstract class PassiveBody extends PhysicalBody implements ObjectInterface {
+public abstract class PassiveBody extends PhysicalBody {
 
 	/**
 	 * Constructor with a {@link PassiveBodyAppearance}.
 	 * 
-	 * @param externalAppearance : the {@link PassiveBodyAppearance}.
+	 * @param externalAppearance
+	 *            : the {@link PassiveBodyAppearance}.
 	 */
-	public PassiveBody(PassiveBodyAppearance appearance) {
+	public PassiveBody(Appearance appearance) {
 		super(appearance);
 	}
 }

@@ -3,17 +3,20 @@ package uk.ac.rhul.cs.dice.gawl.interfaces.entities;
 import java.util.ArrayList;
 import java.util.List;
 
-import uk.ac.rhul.cs.dice.gawl.interfaces.actions.EnvironmentalAction;
-import uk.ac.rhul.cs.dice.gawl.interfaces.appearances.BodyAppearance;
-import uk.ac.rhul.cs.dice.gawl.interfaces.entities.agents.AbstractActuator;
+import uk.ac.rhul.cs.dice.gawl.interfaces.actions.environmental.EnvironmentalAction;
+import uk.ac.rhul.cs.dice.gawl.interfaces.appearances.AbstractAppearance;
 import uk.ac.rhul.cs.dice.gawl.interfaces.entities.agents.AbstractAgent;
-import uk.ac.rhul.cs.dice.gawl.interfaces.entities.agents.AbstractSensor;
-import uk.ac.rhul.cs.dice.gawl.interfaces.entities.agents.Actuator;
-import uk.ac.rhul.cs.dice.gawl.interfaces.entities.agents.Sensor;
+import uk.ac.rhul.cs.dice.gawl.interfaces.entities.agents.components.Actuator;
+import uk.ac.rhul.cs.dice.gawl.interfaces.entities.agents.components.Sensor;
+import uk.ac.rhul.cs.dice.gawl.interfaces.entities.agents.components.concrete.ListeningSensor;
+import uk.ac.rhul.cs.dice.gawl.interfaces.entities.agents.components.concrete.SeeingSensor;
+import uk.ac.rhul.cs.dice.gawl.interfaces.environment.AbstractEnvironment;
 
 /**
- * A subclass of {@link PhysicalBody} capable to perform and/or simulate an {@link EnvironmentalAction}, thus implementing {@link Actor} and {@link Simulator}. It has a {@link List}
- * of {@link Sensor} elements and one of {@link Actuator} elements.<br/><br/>
+ * A subclass of {@link PhysicalBody} capable to perform an
+ * {@link EnvironmentalAction}, thus implementing {@link Actor} It has a
+ * {@link List} of {@link Sensor} elements and one of {@link Actuator} elements.<br/>
+ * <br/>
  * 
  * Known direct subclasses: {@link AbstractAgent}, {@link DependentBody}.
  * 
@@ -22,47 +25,49 @@ import uk.ac.rhul.cs.dice.gawl.interfaces.entities.agents.Sensor;
  * @author Kostas Stathis
  *
  */
-public abstract class ActiveBody extends PhysicalBody implements Actor, Simulator {
+public abstract class ActiveBody extends PhysicalBody implements Actor {
+
+	private SeeingSensor defaultSeeingSensor;
+	private ListeningSensor defaultListeningSensor;
 	private List<Sensor> sensors;
 	private List<Actuator> actuators;
-	
+	private AbstractEnvironment environment;
+
 	/**
-	 * Constructor with a {@link BodyAppearance}, a {@link List} of {@link Sensor} instances and
-	 * one of {@link Actuator} instances.
+	 * Constructor with a {@link AbstractAppearance}, a {@link List} of
+	 * {@link Sensor} instances and one of {@link Actuator} instances.
 	 * 
-	 * @param appearance : the {@link BodyAppearance} of the {@link ActiveBody}.
-	 * @param sensors : a {@link List} of {@link Sensor} instances.
-	 * @param actuators : a {@link List} of {@link Actuator} instances.
+	 * 
+	 * @param appearance
+	 *            : the {@link AbstractAppearance} of the {@link ActiveBody}.
+	 * @param sensors
+	 *            : a {@link List} of {@link Sensor} instances.
+	 * @param actuators
+	 *            : a {@link List} of {@link Actuator} instances.
 	 */
-	public ActiveBody(BodyAppearance appearance, List<Sensor> sensors, List<Actuator> actuators) {
+	public ActiveBody(AbstractAppearance appearance, List<Sensor> sensors,
+			List<Actuator> actuators) {
 		super(appearance);
-		
-		this.sensors = sensors != null ? sensors : new ArrayList<>();
-		this.actuators = actuators != null ? actuators : new ArrayList<>();
-		
-		init();
-	}
+		sensors = sensors != null ? sensors : new ArrayList<>();
+		actuators = actuators != null ? actuators : new ArrayList<>();
+		this.sensors = new ArrayList<>();
+		this.actuators = new ArrayList<>();
+		for (Actuator a : actuators) {
+			this.addActuator(a);
+		}
 
-	private void init() {
-		if(!this.sensors.isEmpty()){
-			initSensors();
+		for (Sensor s : sensors) {
+			this.addSensor(s);
 		}
-		
-		if(!this.actuators.isEmpty()) {
-			initActuators();
-		}
-	}
 
-	private void initActuators() {
-		for(Actuator a : this.actuators) {
-			registerActuator(a);
-		}
-	}
-
-	private void initSensors() {
-		for(Sensor s : this.sensors) {
-			registerSensor(s);
-		}
+		this.setDefaultSeeingSensor((SeeingSensor) this.sensors
+				.stream()
+				.filter((Sensor s) -> SeeingSensor.class.isAssignableFrom(s
+						.getClass())).findFirst().get());
+		this.setDefaultListeningSensor((ListeningSensor) this.sensors
+				.stream()
+				.filter((Sensor s) -> ListeningSensor.class.isAssignableFrom(s
+						.getClass())).findFirst().get());
 	}
 
 	/**
@@ -70,56 +75,62 @@ public abstract class ActiveBody extends PhysicalBody implements Actor, Simulato
 	 * 
 	 * @return the {@link List} of {@link Sensor} instances.
 	 */
-	@Override
 	public List<Sensor> getSensors() {
 		return this.sensors;
 	}
-	
+
 	/**
 	 * Returns a {@link List} of {@link Actuator} instances.
 	 * 
 	 * @return the {@link List} of {@link Actuator} instances.
 	 */
-	@Override
 	public List<Actuator> getActuators() {
 		return this.actuators;
 	}
-	
+
 	/**
 	 * Adds a {@link Sensor} to the {@link List}.
 	 * 
-	 * @param sensor : the {@link Sensor} to be added to the {@link List}.
+	 * @param sensor
+	 *            : the {@link Sensor} to be added to the {@link List}.
 	 */
-	@Override
 	public void addSensor(Sensor sensor) {
-		registerSensor(sensor);
-		
+		sensor.setBody(this);
 		this.sensors.add(sensor);
 	}
-	
+
 	/**
 	 * Adds an {@link Actuator} to the {@link List}.
 	 * 
-	 * @param sensor : the {@link Actuator} to be added to the {@link List}.
+	 * @param sensor
+	 *            : the {@link Actuator} to be added to the {@link List}.
 	 */
-	@Override
 	public void addActuator(Actuator actuator) {
-		registerActuator(actuator);
-		
+		actuator.setBody(this);
 		this.actuators.add(actuator);
 	}
-	
-	private void registerActuator(Actuator actuator) {
-		if(actuator instanceof AbstractActuator) {
-			((AbstractActuator) actuator).addObserver(this);
-			this.addObserver(actuator);
-		}
+
+	public AbstractEnvironment getEnvironment() {
+		return environment;
 	}
-	
-	private void registerSensor(Sensor sensor) {
-		if(sensor instanceof AbstractSensor) {
-			((AbstractSensor) sensor).addObserver(this);
-			this.addObserver(sensor);
-		}
+
+	public void setEnvironment(AbstractEnvironment environment) {
+		this.environment = environment;
+	}
+
+	public ListeningSensor getDefaultListeningSensor() {
+		return this.defaultListeningSensor;
+	}
+
+	public SeeingSensor getDefaultSeeingSensor() {
+		return this.defaultSeeingSensor;
+	}
+
+	public void setDefaultSeeingSensor(SeeingSensor sensor) {
+		this.defaultSeeingSensor = sensor;
+	}
+
+	public void setDefaultListeningSensor(ListeningSensor sensor) {
+		this.defaultListeningSensor = sensor;
 	}
 }

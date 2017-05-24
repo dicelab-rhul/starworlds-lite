@@ -3,7 +3,7 @@ package uk.ac.rhul.cs.dice.gawl.interfaces.appearances;
 /**
  * The interface for appearances.<br/><br/>
  * 
- * Known implementations: {@link BodyAppearance}, {@link SimpleEnvironmentAppearance}.
+ * Known implementations: {@link AbstractAppearance}, {@link SimpleEnvironmentAppearance}.
  * 
  * @author cloudstrife9999 a.k.a. Emanuele Uliana
  * @author Ben Wilkins
@@ -31,6 +31,4 @@ public interface Appearance {
 	 * @param name : the {@link String} name of the object the appearance refers to.
 	 */
 	public abstract void setName(String name);
-	
-	public abstract Appearance duplicate();
 }

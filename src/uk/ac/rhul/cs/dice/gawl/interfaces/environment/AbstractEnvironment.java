@@ -1,11 +1,20 @@
 package uk.ac.rhul.cs.dice.gawl.interfaces.environment;
 
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
+
+import uk.ac.rhul.cs.dice.gawl.interfaces.actions.environmental.AbstractEnvironmentalAction;
 import uk.ac.rhul.cs.dice.gawl.interfaces.appearances.Appearance;
+import uk.ac.rhul.cs.dice.gawl.interfaces.entities.ActiveBody;
+import uk.ac.rhul.cs.dice.gawl.interfaces.entities.agents.AbstractAgent;
 import uk.ac.rhul.cs.dice.gawl.interfaces.environment.physics.Physics;
 
 /**
- * The most general class representing an environment. It has an {@link EnvironmentalSpace}, an instance of {@link Physics}, a {@link Boolean} indicating whether
- * it is bounded or not, and an {@link Appearance}.<br/><br/>
+ * The most general class representing an environment. It has an
+ * {@link EnvironmentalSpace}, an instance of {@link Physics}, a {@link Boolean}
+ * indicating whether it is bounded or not, and an {@link Appearance}.<br/>
+ * <br/>
  * 
  * Known direct subclasses: {@link SimpleEnvironment}.
  * 
@@ -15,33 +24,55 @@ import uk.ac.rhul.cs.dice.gawl.interfaces.environment.physics.Physics;
  *
  */
 public abstract class AbstractEnvironment implements Environment, Container {
-	private Space state;
+
+	private State state;
 	private Physics physics;
 	private Boolean bounded;
 	private Appearance appearance;
-	
+
 	/**
 	 * The default class constructor.
 	 * 
-	 * @param state : an {@link Space} instance.
-	 * @param physics : the {@link Physics} of the environment.
-	 * @param bounded : a {@link Boolean} value indicating whether the environment is bounded or not.
-	 * @param appearance : the {@link Appearance} of the environment.
+	 * @param state
+	 *            : an {@link State} instance.
+	 * @param physics
+	 *            : the {@link Physics} of the environment.
+	 * @param bounded
+	 *            : a {@link Boolean} value indicating whether the environment
+	 *            is bounded or not.
+	 * @param appearance
+	 *            : the {@link Appearance} of the environment.
 	 */
-	public AbstractEnvironment(Space state, Physics physics, Boolean bounded, Appearance appearance) {
+	public AbstractEnvironment(State state, Physics physics, Boolean bounded,
+			Appearance appearance) {
 		this.state = state;
 		this.physics = physics;
 		this.bounded = bounded;
 		this.appearance = appearance;
+		this.physics.setEnvironment(this);
+		this.physics.getAgents().forEach((AbstractAgent agent) -> {
+			agent.setEnvironment(this);
+		});
+		this.physics.getActiveBodies().forEach((ActiveBody body) -> {
+			body.setEnvironment(this);
+		});
 	}
 
 	@Override
-	public Space getState() {
+	public synchronized void updateState(AbstractEnvironmentalAction action) {
+		System.out.println("UPDATING STATE WITH: " + action);
+		state.filterAction(action);
+		System.out
+				.println(Arrays.toString(state.getSensingActions().toArray()));
+	}
+
+	@Override
+	public State getState() {
 		return this.state;
 	}
 
 	@Override
-	public void setState(Space state) {
+	public void setState(State state) {
 		this.state = state;
 	}
 
