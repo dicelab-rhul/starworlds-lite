@@ -22,27 +22,35 @@ public class PhysicalPhysics extends ExperimentPhysics {
 		super(possibleActions, agents, activeBodies, passiveBodies);
 	}
 
-	public Pair<Set<AbstractPerception<?>>, Set<AbstractPerception<?>>> perform(
-			MoveAction action, PhysicalState context) {
-		Pair<Set<AbstractPerception<?>>, Set<AbstractPerception<?>>> result;
+	public Set<AbstractPerception<?>> getAgentPerceptions(MoveAction action,
+			PhysicalState context) {
 		// perceptions for the agent performing the action
-		Set<AbstractPerception<?>> agent = new HashSet<>();
+		Set<AbstractPerception<?>> perception = new HashSet<>();
+		perception.add(new DefaultPerception<>("I "
+				+ ((ActiveBody) action.getActor()).getId() + " HAVE MOVED"));
+		return perception;
+	}
+
+	public Set<AbstractPerception<?>> getOthersPerceptions(MoveAction action,
+			PhysicalState context) {
 		// perceptions for any other agents in range
-		Set<AbstractPerception<?>> others = new HashSet<>();
-		Pair<String, Pair<Pair<Integer, Integer>, Pair<Integer, Integer>>> otherperception;
+		Set<AbstractPerception<?>> perception = new HashSet<>();
+		Pair<String, Pair<Pair<Integer, Integer>, Pair<Integer, Integer>>> payload = new Pair<>(
+				"AGENT: " + ((ActiveBody) action.getActor()).getId(),
+				new Pair<>(action.getMoveFrom(), action.getMoveTo()));
+		perception.add(new DefaultPerception<>(payload));
+		return perception;
+	}
+
+	public boolean perform(MoveAction action, PhysicalState context) {
 		Pair<Integer, Integer> oldposition = context.getGrid().get(
 				action.getActor());
 		Pair<Integer, Integer> newposition = this.addPosition(oldposition,
 				action.getMoveTo());
-		otherperception = new Pair<>("AGENT: "
-				+ ((ActiveBody) action.getActor()).getId(), new Pair<>(
-				oldposition, newposition));
-		others.add(new DefaultPerception<>(otherperception));
-		agent.add(new DefaultPerception<>("I HAVE MOVED"));
-		action.setMoveFrom(oldposition);
 		context.updateGrid(newposition, (ActiveBody) action.getActor());
-		result = new Pair<>(agent, others);
-		return result;
+		action.setMoveFrom(oldposition);
+		action.setMoveTo(newposition);
+		return true;
 	}
 
 	public boolean isPossible(MoveAction action, PhysicalState context) {

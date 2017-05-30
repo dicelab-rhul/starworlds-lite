@@ -5,7 +5,6 @@ import java.util.Set;
 import uk.ac.rhul.cs.dice.starworlds.environment.State;
 import uk.ac.rhul.cs.dice.starworlds.environment.physics.Physics;
 import uk.ac.rhul.cs.dice.starworlds.perception.AbstractPerception;
-import uk.ac.rhul.cs.dice.starworlds.utils.Pair;
 
 /**
  * TODO
@@ -19,8 +18,13 @@ import uk.ac.rhul.cs.dice.starworlds.utils.Pair;
  */
 public abstract class PhysicalAction extends AbstractEnvironmentalAction {
 
-	public abstract Pair<Set<AbstractPerception<?>>, Set<AbstractPerception<?>>>  perform(
-			Physics physics, State context);
+	public abstract Set<AbstractPerception<?>> getAgentPerceptions(Physics physics,
+			State context);
+
+	public abstract Set<AbstractPerception<?>> getOthersPerceptions(Physics physics,
+			State context);
+
+	public abstract boolean perform(Physics physics, State context);
 
 	public abstract boolean isPossible(Physics physics, State context);
 

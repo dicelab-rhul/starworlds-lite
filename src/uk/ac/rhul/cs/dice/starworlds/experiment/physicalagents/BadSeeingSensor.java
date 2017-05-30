@@ -13,6 +13,10 @@ public class BadSeeingSensor extends SeeingSensor {
 	public boolean canSense(AbstractEnvironmentalAction action,
 			AbstractPerception<?> perception, State context) {
 		if (super.canSense(action, perception, context)) {
+			if (action.getActor().equals(this.getBody())) {
+				System.out.println("CAN SENSE SELF");
+				return true;
+			}
 			Pair<Integer, Integer> otherposition = ((PhysicalState) context)
 					.getPositionOfAgent((ActiveBody) (action.getActor()));
 			Pair<Integer, Integer> selfposition = ((PhysicalState) context)
@@ -21,9 +25,11 @@ public class BadSeeingSensor extends SeeingSensor {
 			if (Math.abs(otherposition.getFirst() - selfposition.getFirst()) <= 1
 					&& Math.abs(otherposition.getSecond()
 							- selfposition.getSecond()) <= 1) {
-				System.out.println(Math.abs(otherposition.getFirst() - selfposition.getFirst()) + " " +
-					Math.abs(otherposition.getSecond()
-							- selfposition.getSecond()));
+				System.out.println(Math.abs(otherposition.getFirst()
+						- selfposition.getFirst())
+						+ " "
+						+ Math.abs(otherposition.getSecond()
+								- selfposition.getSecond()));
 				return true;
 			}
 		}

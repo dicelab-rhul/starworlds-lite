@@ -23,8 +23,21 @@ public class MoveAction extends PhysicalAction {
 	}
 
 	@Override
-	public Pair<Set<AbstractPerception<?>>, Set<AbstractPerception<?>>> perform(
-			Physics physics, State context) {
+	public Set<AbstractPerception<?>> getAgentPerceptions(Physics physics,
+			State context) {
+		return ((PhysicalPhysics) physics).getAgentPerceptions(this,
+				(PhysicalState) context);
+	}
+
+	@Override
+	public Set<AbstractPerception<?>> getOthersPerceptions(Physics physics,
+			State context) {
+		return ((PhysicalPhysics) physics).getOthersPerceptions(this,
+				(PhysicalState) context);
+	}
+
+	@Override
+	public boolean perform(Physics physics, State context) {
 		return ((PhysicalPhysics) physics).perform(this,
 				(PhysicalState) context);
 	}
@@ -50,10 +63,6 @@ public class MoveAction extends PhysicalAction {
 		return null;
 	}
 
-	public Pair<Integer, Integer> getMoveTo() {
-		return moveTo;
-	}
-
 	@Override
 	public String toString() {
 		return this.getClass().getSimpleName() + " " + this.moveTo;
@@ -66,4 +75,13 @@ public class MoveAction extends PhysicalAction {
 	public void setMoveFrom(Pair<Integer, Integer> moveFrom) {
 		this.moveFrom = moveFrom;
 	}
+
+	public Pair<Integer, Integer> getMoveTo() {
+		return moveTo;
+	}
+
+	public void setMoveTo(Pair<Integer, Integer> moveTo) {
+		this.moveTo = moveTo;
+	}
+
 }

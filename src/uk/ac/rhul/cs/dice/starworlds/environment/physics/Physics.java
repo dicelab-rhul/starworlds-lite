@@ -39,9 +39,9 @@ public interface Physics {
 
 	// METHODS TO HANDLE PHYSICAL ACTIONS //
 
-	public void execute(PhysicalAction action, State context);
+	public boolean execute(PhysicalAction action, State context);
 
-	public Pair<Set<AbstractPerception<?>>, Set<AbstractPerception<?>>> perform(
+	public boolean perform(
 			PhysicalAction action, State context);
 
 	public boolean isPossible(PhysicalAction action, State context);
