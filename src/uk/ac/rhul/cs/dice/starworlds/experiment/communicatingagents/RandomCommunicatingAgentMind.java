@@ -41,7 +41,7 @@ class RandomCommunicatingAgentMind extends AbstractAgentMind {
 												.getId()));
 			}
 		}
-		//System.out.println(this + " PERCEPTIONS: " + perceptions);
+		System.out.println(this + " PERCEPTIONS: " + perceptions);
 		// no need to return as we are saving the state
 		return null;
 	}
@@ -51,19 +51,21 @@ class RandomCommunicatingAgentMind extends AbstractAgentMind {
 		Collection<Action> actions = new HashSet<>();
 		if (!start) {
 			Optional<String> recipient = otheragents.stream()
-					.skip((long) (Math.random() * otheragents.size())).findAny();
+					.skip((long) (Math.random() * otheragents.size()))
+					.findAny();
 			if (recipient != null) {
 				List<String> recipients = new ArrayList<>();
-				recipients.add(recipient.get());
+				// recipients.add(recipient.get());
 				actions.add(new CommunicationAction<>(this.getId(), recipients));
-				 //System.out.println(this + " DECISIONS: " + actions);
+				// System.out.println(this + " DECISIONS: " + actions);
 				return actions;
 			}
 			// the sensing action must have fail for some reason, so do it again
 		}
+		this.getBody().subscribeAll();
 		actions.add(new SensingAction("AGENTS.RANDOM"));
 		start = false;
-		 //System.out.println(this + " DECISIONS: " + actions);
+		// System.out.println(this + " DECISIONS: " + actions);
 		return actions;
 	}
 
@@ -72,7 +74,7 @@ class RandomCommunicatingAgentMind extends AbstractAgentMind {
 		Collection<?> actions = (Collection<?>) parameters[0];
 		Action action = doAct((AbstractEnvironmentalAction) actions.stream()
 				.findFirst().get());
-		 //System.out.println(this + " EXECUTE: " + action);
+		// System.out.println(this + " EXECUTE: " + action);
 		return action;
 	}
 

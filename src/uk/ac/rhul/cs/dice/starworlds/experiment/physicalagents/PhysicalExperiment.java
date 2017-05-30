@@ -1,18 +1,20 @@
-package uk.ac.rhul.cs.dice.starworlds.experiment.communicatingagents;
+package uk.ac.rhul.cs.dice.starworlds.experiment.physicalagents;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import uk.ac.rhul.cs.dice.starworlds.actions.environmental.AbstractEnvironmentalAction;
 import uk.ac.rhul.cs.dice.starworlds.actions.environmental.CommunicationAction;
 import uk.ac.rhul.cs.dice.starworlds.actions.environmental.SensingAction;
 import uk.ac.rhul.cs.dice.starworlds.entities.agents.AbstractAgent;
+import uk.ac.rhul.cs.dice.starworlds.entities.agents.components.Sensor;
+import uk.ac.rhul.cs.dice.starworlds.entities.agents.components.concrete.ListeningSensor;
 import uk.ac.rhul.cs.dice.starworlds.environment.concrete.DefaultEnvironment;
-import uk.ac.rhul.cs.dice.starworlds.environment.concrete.DefaultState;
-import uk.ac.rhul.cs.dice.starworlds.experiment.ExperimentPhysics;
 import uk.ac.rhul.cs.dice.starworlds.initialisation.AgentFactory;
 
-class ExperimentCommunication {
+public class PhysicalExperiment {
 
 	private final static int NUMAGENTS = 2;
 
@@ -20,21 +22,28 @@ class ExperimentCommunication {
 		Set<Class<? extends AbstractEnvironmentalAction>> possibleActions = new HashSet<>();
 		possibleActions.add(CommunicationAction.class);
 		possibleActions.add(SensingAction.class);
+		possibleActions.add(MoveAction.class);
 
-		ExperimentPhysics physics = new ExperimentPhysics(possibleActions,
+		PhysicalPhysics physics = new PhysicalPhysics(possibleActions,
 				getDefaultAgents(NUMAGENTS), null, null);
-		new DefaultEnvironment(new DefaultState(physics), physics, null);
-		physics.start(false);
+		new DefaultEnvironment(new PhysicalState(physics, 10), physics, null);
+		physics.start(true);
 	}
 
 	public static Set<AbstractAgent> getDefaultAgents(int num) {
 		Set<AbstractAgent> agents = new HashSet<>();
 		for (int i = 0; i < num; i++) {
-			AbstractAgent a = AgentFactory.getInstance().createDefaultAgent(
-					null, new RandomCommunicatingAgentMind());
+
+			List<Sensor> sensors = new ArrayList<>();
+			sensors.add(new ListeningSensor());
+			sensors.add(new BadSeeingSensor());
+			AbstractAgent a = AgentFactory.getInstance()
+					.createCustomDefaultAgent(null, sensors,
+							AgentFactory.getInstance().getDefaultActuators(),
+							new RandomPhysicalAgentMind());
 			agents.add(a);
-			a.setId(String.valueOf(i));
 		}
 		return agents;
 	}
+
 }

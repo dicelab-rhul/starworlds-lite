@@ -6,6 +6,7 @@ import uk.ac.rhul.cs.dice.starworlds.actions.environmental.AbstractEnvironmental
 import uk.ac.rhul.cs.dice.starworlds.appearances.Appearance;
 import uk.ac.rhul.cs.dice.starworlds.entities.ActiveBody;
 import uk.ac.rhul.cs.dice.starworlds.entities.agents.AbstractAgent;
+import uk.ac.rhul.cs.dice.starworlds.entities.agents.components.Sensor;
 import uk.ac.rhul.cs.dice.starworlds.environment.physics.Physics;
 
 /**
@@ -54,6 +55,11 @@ public abstract class AbstractEnvironment implements Environment, Container {
 		this.physics.getActiveBodies().forEach((ActiveBody body) -> {
 			body.setEnvironment(this);
 		});
+	}
+
+	@Override
+	public synchronized void subscribe(ActiveBody body, Sensor... sensors) {
+		this.physics.subscribe(body, sensors);
 	}
 
 	@Override

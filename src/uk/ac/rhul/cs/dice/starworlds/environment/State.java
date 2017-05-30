@@ -35,11 +35,14 @@ public interface State {
 	 * 
 	 * @param keys
 	 *            an array of keys to environmental variables.
+	 * @param action
+	 *            the {@link SensingAction} that began the call
 	 * @return a {@link Set} of {@link Pair}s consisting of < {@link String} ,
 	 *         {@link Object} > where the {@link String} is the key and the
 	 *         {@link Object} is its associated environment variable.
 	 */
-	public Set<Pair<String, Object>> filterActivePerception(String[] keys);
+	public Set<Pair<String, Object>> filterActivePerception(String[] keys,
+			SensingAction action);
 
 	public boolean addEnvironmentVariable(String key, Object variable);
 

@@ -2,8 +2,11 @@ package uk.ac.rhul.cs.dice.starworlds.entities.agents.components;
 
 import java.util.Set;
 
+import uk.ac.rhul.cs.dice.starworlds.actions.environmental.AbstractEnvironmentalAction;
 import uk.ac.rhul.cs.dice.starworlds.actions.environmental.SensingAction;
 import uk.ac.rhul.cs.dice.starworlds.entities.ActiveBody;
+import uk.ac.rhul.cs.dice.starworlds.environment.State;
+import uk.ac.rhul.cs.dice.starworlds.perception.AbstractPerception;
 import uk.ac.rhul.cs.dice.starworlds.perception.Perception;
 
 /**
@@ -18,6 +21,9 @@ import uk.ac.rhul.cs.dice.starworlds.perception.Perception;
  *
  */
 public interface Sensor extends Component {
+
+	public boolean canSense(AbstractEnvironmentalAction action,
+			AbstractPerception<?> perception, State context);
 
 	public String getId();
 

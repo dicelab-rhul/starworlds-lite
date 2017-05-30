@@ -134,10 +134,9 @@ public abstract class AbstractAgentMind implements Mind {
 		}
 		Class<?> as = (sensor != null) ? sensor : getDefaultSensorClass();
 		action.setActuator(as);
-		action.setSensor(as);
 		action.setActor(this.body);
-		this.body
-				.actuatorActive(this.body.findSensorByClass(action.getSensor()));
+		this.body.actuatorActive(this.body.findSensorByClass(action
+				.getActuator()));
 		setActionDone(true);
 		return action;
 	}
@@ -170,7 +169,6 @@ public abstract class AbstractAgentMind implements Mind {
 		}
 		action.setActuator((actuator != null) ? actuator
 				: getDefaultSpeechActuatorClass());
-		action.setSensor(ListeningSensor.class);
 		action.setActor(this.body);
 		this.body.actuatorActive(this.body.findActuatorByClass(action
 				.getActuator()));
@@ -202,7 +200,6 @@ public abstract class AbstractAgentMind implements Mind {
 		}
 		action.setActuator((actuator != null) ? actuator
 				: getDefaultPhysicalActuatorClass());
-		action.setSensor((sensor != null) ? sensor : getDefaultSensorClass());
 		action.setActor(this.body);
 		this.body.actuatorActive(this.body.findActuatorByClass(action
 				.getActuator()));

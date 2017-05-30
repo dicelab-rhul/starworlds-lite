@@ -27,7 +27,8 @@ public abstract class AbstractState implements State {
 
 	private final static String AGENTSKEY = "AGENTS",
 			ACTIVEBODIESKEY = "ACTIVEBODIES",
-			PASSIVEBODIESKEY = "PASSIVEBODIES", RANDOM = "RANDOM";
+			PASSIVEBODIESKEY = "PASSIVEBODIES", RANDOM = "RANDOM",
+			SELF = "SELF";
 
 	private HashMap<String, Object> environmentVariables;
 	private HashMap<String, Filter> filters;
@@ -57,6 +58,7 @@ public abstract class AbstractState implements State {
 		environmentVariables.put(ACTIVEBODIESKEY, physics.getActiveBodies());
 		environmentVariables.put(PASSIVEBODIESKEY, physics.getPassiveBodies());
 		filters.put(RANDOM, new RandomEnvironmentVariable());
+		filters.put(SELF, new SelfFilter());
 	}
 
 	@Override
@@ -148,10 +150,11 @@ public abstract class AbstractState implements State {
 	}
 
 	@Override
-	public Set<Pair<String, Object>> filterActivePerception(String[] keys) {
+	public Set<Pair<String, Object>> filterActivePerception(String[] keys,
+			SensingAction action) {
 		// TODO optimise the recursive environment variables e.g. agents that
 		// are in some space, or sub environment
-		System.out.println("FILTER: " + Arrays.toString(keys));
+		// System.out.println("FILTER: " + Arrays.toString(keys));
 		Set<Pair<String, Object>> perceptions = new HashSet<>();
 
 		for (String key : keys) {
@@ -161,10 +164,10 @@ public abstract class AbstractState implements State {
 													// to do this twice!
 			// TODO handle integer parameters
 			Object result = environmentVariables.get(subkeys[0]);
-			System.out.println("SUB: " + Arrays.toString(subkeys));
-			System.out.println("DATA: " + result);
+			// System.out.println("SUB: " + Arrays.toString(subkeys));
+			// System.out.println("DATA: " + result);
 			for (int i = 1; i < subkeys.length; i++) {
-				result = filters.get(subkeys[i]).get(result);
+				result = filters.get(subkeys[i]).get(action, result);
 			}
 			perceptions.add(new Pair<String, Object>(key, result));
 		}
@@ -200,8 +203,8 @@ public abstract class AbstractState implements State {
 		// private Random random = new Random();
 
 		@Override
-		public Object get(Object... args) {
-			System.out.println(Arrays.toString(args) + args[0].getClass());
+		public Object get(SensingAction action, Object... args) {
+			// we dont need the action for this
 			if (Collection.class.isAssignableFrom(args[0].getClass())) {
 				Collection<?> col = (Collection<?>) args[0];
 				Optional<?> o = col.stream()
@@ -215,8 +218,23 @@ public abstract class AbstractState implements State {
 		}
 	}
 
-	interface Filter {
-		public Object get(Object... args);
+	private class SelfFilter implements ActiveBodyFilter {
+		@Override
+		public Set<ActiveBody> get(SensingAction action, Object... args) {
+			Set<ActiveBody> self = new HashSet<>();
+			self.add((ActiveBody) action.getActor());
+			return self;
+		}
+	}
+
+	public interface ActiveBodyFilter extends Filter {
+
+		@Override
+		public Set<ActiveBody> get(SensingAction action, Object... args);
+	}
+
+	public interface Filter {
+		public Object get(SensingAction action, Object... args);
 	}
 
 	private void variablemissuse(Filter fev) {

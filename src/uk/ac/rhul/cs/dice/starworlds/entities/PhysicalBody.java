@@ -1,5 +1,7 @@
 package uk.ac.rhul.cs.dice.starworlds.entities;
 
+import java.util.Objects;
+
 import uk.ac.rhul.cs.dice.starworlds.appearances.Appearance;
 
 /**
@@ -47,6 +49,22 @@ public abstract class PhysicalBody implements Body {
 	 */
 	public void setExternalAppearance(Appearance externalAppearance) {
 		this.appearance = externalAppearance;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (obj != null) {
+			if (obj instanceof PhysicalBody) {
+				PhysicalBody b = (PhysicalBody) obj;
+				return this.id.equals(b.getId());
+			}
+		}
+		return false;
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(id);
 	}
 
 	@Override

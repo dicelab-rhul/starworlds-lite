@@ -1,13 +1,14 @@
 package uk.ac.rhul.cs.dice.starworlds.environment.physics;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
 import uk.ac.rhul.cs.dice.starworlds.actions.Action;
+import uk.ac.rhul.cs.dice.starworlds.actions.environmental.AbstractEnvironmentalAction;
 import uk.ac.rhul.cs.dice.starworlds.actions.environmental.CommunicationAction;
 import uk.ac.rhul.cs.dice.starworlds.actions.environmental.PhysicalAction;
 import uk.ac.rhul.cs.dice.starworlds.actions.environmental.SensingAction;
@@ -16,7 +17,9 @@ import uk.ac.rhul.cs.dice.starworlds.entities.Agent;
 import uk.ac.rhul.cs.dice.starworlds.entities.Entity;
 import uk.ac.rhul.cs.dice.starworlds.entities.PassiveBody;
 import uk.ac.rhul.cs.dice.starworlds.entities.agents.AbstractAgent;
+import uk.ac.rhul.cs.dice.starworlds.entities.agents.components.AbstractSensor;
 import uk.ac.rhul.cs.dice.starworlds.entities.agents.components.Sensor;
+import uk.ac.rhul.cs.dice.starworlds.environment.AbstractEnvironment;
 import uk.ac.rhul.cs.dice.starworlds.environment.Environment;
 import uk.ac.rhul.cs.dice.starworlds.environment.State;
 import uk.ac.rhul.cs.dice.starworlds.environment.concrete.DefaultPhysics;
@@ -44,21 +47,30 @@ import uk.ac.rhul.cs.dice.starworlds.utils.Pair;
  */
 public abstract class AbstractPhysics implements Physics {
 
-	protected Environment environment;
+	protected AbstractEnvironment environment;
 	protected Map<String, AbstractAgent> agents;
 	protected Map<String, ActiveBody> activeBodies;
 	protected Map<String, PassiveBody> passiveBodies;
+	protected SensorSubscriber sensorSubscriber;
 	protected boolean active = false;
 	protected long framegap = 1000;
 	protected TimeState timestate;
 
-	public AbstractPhysics(Set<AbstractAgent> agents,
-			Set<ActiveBody> activeBodies, Set<PassiveBody> passiveBodies) {
+	public AbstractPhysics(
+			Collection<Class<? extends AbstractEnvironmentalAction>> possibleActions,
+			Set<AbstractAgent> agents, Set<ActiveBody> activeBodies,
+			Set<PassiveBody> passiveBodies) {
 		this.agents = (agents != null) ? setToMap(agents) : new HashMap<>();
 		this.activeBodies = (activeBodies != null) ? setToMap(activeBodies)
 				: new HashMap<>();
 		this.passiveBodies = (passiveBodies != null) ? setToMap(passiveBodies)
 				: new HashMap<>();
+		this.sensorSubscriber = new SensorSubscriber();
+		this.sensorSubscriber.setPossibleActions(possibleActions);
+	}
+
+	public final void subscribe(ActiveBody body, Sensor... sensors) {
+		sensorSubscriber.subscribe(body, sensors);
 	}
 
 	private <T extends Entity> Map<String, T> setToMap(Set<T> set) {
@@ -130,29 +142,40 @@ public abstract class AbstractPhysics implements Physics {
 	@Override
 	public void execute(PhysicalAction action, State context) {
 		AbstractPerception<?> perception = null;
+		Pair<Set<AbstractPerception<?>>, Set<AbstractPerception<?>>> perceptions = null;
 		if (isPossible(action, context)) {
-			perception = perform(action, context);
+			perceptions = perform(action, context);
 			verify(action, context); // TODO do something if failed?
 		}
-		if (perception != null) {
-			notify(action.getSensor(), (ActiveBody) action.getActor(),
-					perception);
+		if (perceptions != null) {
+			// notify the agent who performed
+			notify(action, (ActiveBody) action.getActor(),
+					perceptions.getFirst(), context);
+			// notify the other agents
+			
+			//TODO optimise
+			for (ActiveBody a : this.getAgents()) {
+				if(!a.equals(action.getActor())) {
+					notify(action, a, perceptions.getSecond(), context);
+				}
+			}
 		}
 	}
 
 	@Override
-	public AbstractPerception<?> perform(PhysicalAction action, State context) {
-		return action.perform(context);
+	public Pair<Set<AbstractPerception<?>>, Set<AbstractPerception<?>>> perform(
+			PhysicalAction action, State context) {
+		return action.perform(this, context);
 	}
 
 	@Override
 	public boolean isPossible(PhysicalAction action, State context) {
-		return action.isPossible(context);
+		return action.isPossible(this, context);
 	}
 
 	@Override
 	public boolean verify(PhysicalAction action, State context) {
-		return action.verify(context);
+		return action.verify(this, context);
 	}
 
 	// ***************************************************** //
@@ -166,21 +189,25 @@ public abstract class AbstractPhysics implements Physics {
 			perceptions = perform(action, context);
 			verify(action, context); // TODO what to verify?
 		}
-		notify(action.getSensor(), (ActiveBody) action.getActor(),
-				new DefaultPerception<Set<Pair<String, Object>>>(perceptions));
+		// should other agents be able to sense that this agent is sensing?
+		Collection<AbstractPerception<?>> perceptionsToNotify = new HashSet<>();
+		perceptionsToNotify
+				.add(new DefaultPerception<Set<Pair<String, Object>>>(
+						perceptions));
+		notify(action, (ActiveBody) action.getActor(), perceptionsToNotify, context);
 	}
 
 	@Override
 	public Set<Pair<String, Object>> perform(SensingAction action, State context) {
 		// System.out.println(Arrays.toString(action.getKeys()));
-		return context.filterActivePerception(action.getKeys());
+		return context.filterActivePerception(action.getKeys(), action);
 	}
 
 	@Override
 	public boolean isPossible(SensingAction action, State context) {
 		String[] keys = action.getKeys();
 		int count = 0;
-		System.out.println("KEYS: " + Arrays.toString(keys));
+		// System.out.println("KEYS: " + Arrays.toString(keys));
 		for (int i = 0; i < keys.length; i++) {
 			String[] subkeys = keys[i].split("\\.");
 			// TODO handle integer parameters
@@ -220,16 +247,31 @@ public abstract class AbstractPhysics implements Physics {
 
 	@Override
 	public boolean perform(CommunicationAction<?> action, State context) {
-		action.getRecipientsIds().forEach(
-				(String s) -> {
-					AbstractAgent agent = agents.get(s);
-					if (agent != null) {
-						notify(action.getSensor(),
-								agent,
-								new CommunicationPerception<>(action
-										.getPayload()));
-					}
-				});
+		if (action.getRecipientsIds().isEmpty()) {
+			// send to all agents except the sender.
+			Collection<AbstractAgent> recipients = new HashSet<>(
+					this.getAgents());
+			recipients.remove(action.getActor());
+			recipients
+					.forEach((AbstractAgent a) -> {
+						Collection<AbstractPerception<?>> perceptionsToNotify = new HashSet<>();
+						perceptionsToNotify.add(new CommunicationPerception<>(
+								action.getPayload()));
+						notify(action, a, perceptionsToNotify, context);
+					});
+		}
+		action.getRecipientsIds()
+				.forEach(
+						(String s) -> {
+							AbstractAgent agent = agents.get(s);
+							if (agent != null) {
+								Collection<AbstractPerception<?>> perceptionsToNotify = new HashSet<>();
+								perceptionsToNotify
+										.add(new CommunicationPerception<>(
+												action.getPayload()));
+								notify(action, agent, perceptionsToNotify, context);
+							}
+						});
 		// TODO if something failed
 		return true;
 	}
@@ -247,21 +289,27 @@ public abstract class AbstractPhysics implements Physics {
 	}
 
 	@Override
-	public void notify(Class<?> sensorclass, ActiveBody body,
-			AbstractPerception<?> perception) {
-		if (sensorclass != null) {
-			Sensor sensor = body.findSensorByClass(sensorclass);
-			if (sensor != null) {
-				sensor.notify(perception);
-				return;
+	public void notify(AbstractEnvironmentalAction action, ActiveBody body,
+			Collection<AbstractPerception<?>> perceptions, State context) {
+		
+		Map<Class<? extends AbstractPerception>, Set<AbstractSensor>> sensors = sensorSubscriber
+				.findSensors(body, action);
+		for (AbstractPerception<?> perception : perceptions) {
+			Set<AbstractSensor> ss = sensors.get(perception.getClass());
+			if (ss != null) {
+				for (AbstractSensor s : ss) {
+					if (s.canSense(action, perception, context)) {
+						System.out.println("NOTIFY: " + body + " WITH: " + perceptions);
+						s.notify(perception);
+					}
+				}
+			} else {
+				// TODO remove
+				System.err
+						.println("WARNING: No subscribed Sensor to receive perception type: "
+								+ perception);
 			}
 		}
-		if (body.getDefaultSensor() != null) {
-			body.getDefaultSensor().notify(perception);
-			return;
-		}
-		System.err.println("BODY: " + body + " HAS NO VALID SENSORS FOR: "
-				+ perception);
 	}
 
 	@Override
@@ -280,7 +328,7 @@ public abstract class AbstractPhysics implements Physics {
 	}
 
 	@Override
-	public void setEnvironment(Environment environment) {
+	public void setEnvironment(AbstractEnvironment environment) {
 		this.environment = environment;
 	}
 
@@ -315,6 +363,7 @@ public abstract class AbstractPhysics implements Physics {
 	protected class TimeStateSerial implements TimeState {
 
 		public void simulate() {
+
 			System.out.println("CYCLE");
 			agents.values().forEach((AbstractAgent a) -> {
 				a.run();

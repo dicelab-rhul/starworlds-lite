@@ -5,6 +5,8 @@ import java.util.List;
 
 import uk.ac.rhul.cs.dice.starworlds.actions.speech.DefaultPayload;
 import uk.ac.rhul.cs.dice.starworlds.actions.speech.Payload;
+import uk.ac.rhul.cs.dice.starworlds.environment.physics.SensorSubscriber.SensiblePerception;
+import uk.ac.rhul.cs.dice.starworlds.perception.CommunicationPerception;
 
 /**
  * A subclass of {@link AbstractEnvironmentalAction} representing communication
@@ -19,6 +21,9 @@ import uk.ac.rhul.cs.dice.starworlds.actions.speech.Payload;
  *
  */
 public class CommunicationAction<T> extends AbstractEnvironmentalAction {
+
+	@SensiblePerception
+	public static final Class<?> POSSIBLEPERCEPTION = CommunicationPerception.class;
 
 	private static final String ANONYMOUSSENDER = "Anonymous";
 
@@ -77,5 +82,10 @@ public class CommunicationAction<T> extends AbstractEnvironmentalAction {
 	@Override
 	public String toString() {
 		return "MESSAGE: " + payload;
+	}
+
+	@Override
+	public Object[] getCanSense() {
+		return null;
 	}
 }

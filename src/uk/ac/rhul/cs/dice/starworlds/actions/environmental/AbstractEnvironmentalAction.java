@@ -19,7 +19,8 @@ public abstract class AbstractEnvironmentalAction implements
 
 	private Actor actor;
 	private Class<?> actuatorclass;
-	private Class<?> sensorclass;
+
+	public abstract Object[] getCanSense();
 
 	/**
 	 * The default constructor.
@@ -67,12 +68,4 @@ public abstract class AbstractEnvironmentalAction implements
 	public Class<?> getActuator() {
 		return this.actuatorclass;
 	}
-
-	public Class<?> getSensor() {
-		return sensorclass;
-	}
-
-	public void setSensor(Class<?> sensor) {
-		this.sensorclass = sensor;
-	};
 }

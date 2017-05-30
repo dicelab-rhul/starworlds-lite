@@ -27,7 +27,7 @@ public abstract class AbstractSensor implements Sensor {
 	private String id;
 	private ActiveBody body;
 
-	/**
+	/**AbstractSensor
 	 * Constructor.
 	 */
 	public AbstractSensor() {

@@ -81,9 +81,14 @@ public abstract class ActiveBody extends PhysicalBody implements Actor {
 		this.setDefaultSensor((AbstractSensor) findSensorByClass(AbstractSensor.class));
 		this.setDefaultSpeechActuator((SpeechActuator) findActuatorByClass(SpeechActuator.class));
 		this.setDefaultPhysicalActuator((PhysicalActuator) findActuatorByClass(PhysicalActuator.class));
-		System.out.println(this.getDefaultSensor() + ","
-				+ this.getDefaultPhysicalActuator() + ","
-				+ this.getDefaultSpeechActuator());
+	}
+
+	public final void subscribeAll() {
+		subscribe(this, sensors.toArray(new Sensor[] {}));
+	}
+
+	public final void subscribe(ActiveBody body, Sensor... sensor) {
+		environment.subscribe(body, sensor);
 	}
 
 	public Sensor findSensorByClass(Class<?> c) {

@@ -3,13 +3,15 @@ package uk.ac.rhul.cs.dice.starworlds.environment.physics;
 import java.util.Collection;
 import java.util.Set;
 
+import uk.ac.rhul.cs.dice.starworlds.actions.environmental.AbstractEnvironmentalAction;
 import uk.ac.rhul.cs.dice.starworlds.actions.environmental.CommunicationAction;
 import uk.ac.rhul.cs.dice.starworlds.actions.environmental.PhysicalAction;
 import uk.ac.rhul.cs.dice.starworlds.actions.environmental.SensingAction;
 import uk.ac.rhul.cs.dice.starworlds.entities.ActiveBody;
 import uk.ac.rhul.cs.dice.starworlds.entities.PassiveBody;
 import uk.ac.rhul.cs.dice.starworlds.entities.agents.AbstractAgent;
-import uk.ac.rhul.cs.dice.starworlds.environment.Environment;
+import uk.ac.rhul.cs.dice.starworlds.entities.agents.components.Sensor;
+import uk.ac.rhul.cs.dice.starworlds.environment.AbstractEnvironment;
 import uk.ac.rhul.cs.dice.starworlds.environment.State;
 import uk.ac.rhul.cs.dice.starworlds.perception.AbstractPerception;
 import uk.ac.rhul.cs.dice.starworlds.utils.Pair;
@@ -39,7 +41,8 @@ public interface Physics {
 
 	public void execute(PhysicalAction action, State context);
 
-	public AbstractPerception<?> perform(PhysicalAction action, State context);
+	public Pair<Set<AbstractPerception<?>>, Set<AbstractPerception<?>>> perform(
+			PhysicalAction action, State context);
 
 	public boolean isPossible(PhysicalAction action, State context);
 
@@ -65,10 +68,12 @@ public interface Physics {
 
 	public boolean verify(SensingAction action, State context);
 
-	public void setEnvironment(Environment environment);
+	public void setEnvironment(AbstractEnvironment environment);
 
-	public void notify(Class<?> sensorclass, ActiveBody activeBody,
-			AbstractPerception<?> perception);
+	public void subscribe(ActiveBody body, Sensor... sensors);
+
+	public void notify(AbstractEnvironmentalAction action, ActiveBody body,
+			Collection<AbstractPerception<?>> perceptions, State context);
 
 	/*
 	 * attempt execute - ispossible, perform, verify, notify
