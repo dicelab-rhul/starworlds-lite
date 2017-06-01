@@ -2,8 +2,6 @@ package uk.ac.rhul.cs.dice.starworlds.environment;
 
 import uk.ac.rhul.cs.dice.starworlds.actions.environmental.AbstractEnvironmentalAction;
 import uk.ac.rhul.cs.dice.starworlds.appearances.Appearance;
-import uk.ac.rhul.cs.dice.starworlds.entities.ActiveBody;
-import uk.ac.rhul.cs.dice.starworlds.entities.agents.components.Sensor;
 import uk.ac.rhul.cs.dice.starworlds.environment.physics.Physics;
 
 /**
@@ -19,8 +17,6 @@ import uk.ac.rhul.cs.dice.starworlds.environment.physics.Physics;
  *
  */
 public interface Environment {
-
-	public void subscribe(ActiveBody body, Sensor... sensors);
 
 	public void updateState(AbstractEnvironmentalAction action);
 

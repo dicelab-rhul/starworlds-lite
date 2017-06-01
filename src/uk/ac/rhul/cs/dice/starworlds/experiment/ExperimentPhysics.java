@@ -1,9 +1,7 @@
 package uk.ac.rhul.cs.dice.starworlds.experiment;
 
-import java.util.Collection;
 import java.util.Set;
 
-import uk.ac.rhul.cs.dice.starworlds.actions.environmental.AbstractEnvironmentalAction;
 import uk.ac.rhul.cs.dice.starworlds.entities.ActiveBody;
 import uk.ac.rhul.cs.dice.starworlds.entities.PassiveBody;
 import uk.ac.rhul.cs.dice.starworlds.entities.agents.AbstractAgent;
@@ -13,11 +11,9 @@ public class ExperimentPhysics extends AbstractPhysics {
 
 	private StringBuilder info;
 
-	public ExperimentPhysics(
-			Collection<Class<? extends AbstractEnvironmentalAction>> possibleActions,
-			Set<AbstractAgent> agents, Set<ActiveBody> activeBodies,
-			Set<PassiveBody> passiveBodies) {
-		super(possibleActions, agents, activeBodies, passiveBodies);
+	public ExperimentPhysics(Set<AbstractAgent> agents,
+			Set<ActiveBody> activeBodies, Set<PassiveBody> passiveBodies) {
+		super(agents, activeBodies, passiveBodies);
 	}
 
 	@Override

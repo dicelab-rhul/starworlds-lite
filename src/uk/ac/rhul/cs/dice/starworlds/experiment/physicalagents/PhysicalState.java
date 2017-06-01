@@ -6,6 +6,8 @@ import java.util.Map;
 import java.util.Set;
 
 import uk.ac.rhul.cs.dice.starworlds.actions.environmental.SensingAction;
+import uk.ac.rhul.cs.dice.starworlds.appearances.ActiveBodyAppearance;
+import uk.ac.rhul.cs.dice.starworlds.appearances.Appearance;
 import uk.ac.rhul.cs.dice.starworlds.entities.ActiveBody;
 import uk.ac.rhul.cs.dice.starworlds.entities.agents.AbstractAgent;
 import uk.ac.rhul.cs.dice.starworlds.environment.AbstractState;
@@ -94,13 +96,19 @@ public class PhysicalState extends AbstractState {
 		return this.grid.get(body);
 	}
 
-	public class LocalAgentFilter implements ActiveBodyFilter {
+	public Pair<Integer, Integer> getPositionOfAgent(
+			ActiveBodyAppearance appearance) {
+		return this.grid.get(this.physics.getAgent(appearance));
+	}
+
+	public class LocalAgentFilter extends AppearanceFilter {
 		@Override
-		public Set<ActiveBody> get(SensingAction action, Object... args) {
-			Set<ActiveBody> result = new HashSet<>();
+		public Set<Appearance> get(SensingAction action, Object... args) {
+			Set<Appearance> result = new HashSet<>();
 			Set<?> pairs = (Set<?>) args[0];
 			pairs.forEach((Object o) -> {
-				result.add(inversegrid.get((Pair<?, ?>) o));
+				result.add((inversegrid.get((Pair<?, ?>) o))
+						.getExternalAppearance());
 			});
 			result.remove(null);
 			return result;
@@ -110,7 +118,8 @@ public class PhysicalState extends AbstractState {
 	public class LocalFilter implements Filter {
 
 		@Override
-		public Object get(SensingAction action, Object... args) {
+		public Set<Pair<Integer, Integer>> get(SensingAction action,
+				Object... args) {
 			// Map<ActiveBody, Pair<Integer, Integer>>
 			Map<?, ?> map = (Map<?, ?>) args[0];
 			Pair<?, ?> location = (Pair<?, ?>) map.get(action.getActor());

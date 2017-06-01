@@ -1,20 +1,26 @@
 package uk.ac.rhul.cs.dice.starworlds.environment.physics;
 
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.Set;
 
-import uk.ac.rhul.cs.dice.starworlds.actions.environmental.AbstractEnvironmentalAction;
 import uk.ac.rhul.cs.dice.starworlds.actions.environmental.CommunicationAction;
 import uk.ac.rhul.cs.dice.starworlds.actions.environmental.PhysicalAction;
 import uk.ac.rhul.cs.dice.starworlds.actions.environmental.SensingAction;
 import uk.ac.rhul.cs.dice.starworlds.entities.ActiveBody;
 import uk.ac.rhul.cs.dice.starworlds.entities.PassiveBody;
 import uk.ac.rhul.cs.dice.starworlds.entities.agents.AbstractAgent;
+import uk.ac.rhul.cs.dice.starworlds.entities.agents.components.AbstractSensor;
 import uk.ac.rhul.cs.dice.starworlds.entities.agents.components.Sensor;
+import uk.ac.rhul.cs.dice.starworlds.entities.agents.components.concrete.ListeningSensor;
+import uk.ac.rhul.cs.dice.starworlds.entities.agents.components.concrete.SeeingSensor;
 import uk.ac.rhul.cs.dice.starworlds.environment.AbstractEnvironment;
+import uk.ac.rhul.cs.dice.starworlds.environment.Environment;
 import uk.ac.rhul.cs.dice.starworlds.environment.State;
 import uk.ac.rhul.cs.dice.starworlds.perception.AbstractPerception;
+import uk.ac.rhul.cs.dice.starworlds.perception.Perception;
 import uk.ac.rhul.cs.dice.starworlds.utils.Pair;
+import uk.ac.rhul.cs.dice.starworlds.utils.SerializablePair;
 
 /**
  * The general interface for all the physics.<br/>
@@ -41,8 +47,7 @@ public interface Physics {
 
 	public boolean execute(PhysicalAction action, State context);
 
-	public boolean perform(
-			PhysicalAction action, State context);
+	public boolean perform(PhysicalAction action, State context);
 
 	public boolean isPossible(PhysicalAction action, State context);
 
@@ -70,13 +75,32 @@ public interface Physics {
 
 	public void setEnvironment(AbstractEnvironment environment);
 
-	public void subscribe(ActiveBody body, Sensor... sensors);
-
-	public void notify(AbstractEnvironmentalAction action, ActiveBody body,
-			Collection<AbstractPerception<?>> perceptions, State context);
-
-	/*
-	 * attempt execute - ispossible, perform, verify, notify
+	/**
+	 * The perceivable method for all sensors. This method will never be called.
+	 * Perceivable methods should be defined for all subclasses of
+	 * {@link AbstractSensor}. These methods define that any given
+	 * {@link Sensor} can perceive. They should check whether the given
+	 * {@link Perception} can be perceived by the {@link Sensor} given the
+	 * current {@link State} of the {@link Environment}. (although in some cases
+	 * the ability to perceive may not depend on the {@link State}). All
+	 * perceivable methods must be define as here but replacing the
+	 * {@link AbstractSensor} class with the given subclass. A simple example of
+	 * this is given
+	 * {@link AbstractPhysics#perceivable(ListeningSensor, AbstractPerception, State)}
+	 * and
+	 * {@link AbstractPhysics#perceivable(SeeingSensor, AbstractPerception, State)}
+	 * 
+	 * @param sensor
+	 *            that will be perceiving the given {@link Perception}
+	 * @param perception
+	 *            the {@link Perception} that may or may not be perceived by the
+	 *            sensor
+	 * @param context
+	 *            {@link State} of the {@link Environment} currently
+	 * @return true if the given {@link Sensor} can perceive the given
+	 *         {@link Perception}, false otherwise.
 	 */
+	public boolean perceivable(AbstractSensor sensor,
+			AbstractPerception<?> perception, State context);
 
 }

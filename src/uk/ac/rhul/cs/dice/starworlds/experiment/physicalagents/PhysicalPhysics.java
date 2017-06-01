@@ -1,33 +1,32 @@
 package uk.ac.rhul.cs.dice.starworlds.experiment.physicalagents;
 
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
-import uk.ac.rhul.cs.dice.starworlds.actions.environmental.AbstractEnvironmentalAction;
+import uk.ac.rhul.cs.dice.starworlds.appearances.ActiveBodyAppearance;
 import uk.ac.rhul.cs.dice.starworlds.entities.ActiveBody;
 import uk.ac.rhul.cs.dice.starworlds.entities.PassiveBody;
 import uk.ac.rhul.cs.dice.starworlds.entities.agents.AbstractAgent;
+import uk.ac.rhul.cs.dice.starworlds.environment.State;
 import uk.ac.rhul.cs.dice.starworlds.experiment.ExperimentPhysics;
 import uk.ac.rhul.cs.dice.starworlds.perception.AbstractPerception;
-import uk.ac.rhul.cs.dice.starworlds.perception.DefaultPerception;
 import uk.ac.rhul.cs.dice.starworlds.utils.Pair;
 
 public class PhysicalPhysics extends ExperimentPhysics {
 
-	public PhysicalPhysics(
-			Collection<Class<? extends AbstractEnvironmentalAction>> possibleActions,
-			Set<AbstractAgent> agents, Set<ActiveBody> activeBodies,
-			Set<PassiveBody> passiveBodies) {
-		super(possibleActions, agents, activeBodies, passiveBodies);
+	public PhysicalPhysics(Set<AbstractAgent> agents,
+			Set<ActiveBody> activeBodies, Set<PassiveBody> passiveBodies) {
+		super(agents, activeBodies, passiveBodies);
 	}
 
 	public Set<AbstractPerception<?>> getAgentPerceptions(MoveAction action,
 			PhysicalState context) {
 		// perceptions for the agent performing the action
 		Set<AbstractPerception<?>> perception = new HashSet<>();
-		perception.add(new DefaultPerception<>("I "
-				+ ((ActiveBody) action.getActor()).getId() + " HAVE MOVED"));
+		perception.add(new MovePerception(
+				(ActiveBodyAppearance) ((ActiveBody) action.getActor())
+						.getExternalAppearance(), action.getMoveFrom(), action
+						.getMoveTo()));
 		return perception;
 	}
 
@@ -35,10 +34,10 @@ public class PhysicalPhysics extends ExperimentPhysics {
 			PhysicalState context) {
 		// perceptions for any other agents in range
 		Set<AbstractPerception<?>> perception = new HashSet<>();
-		Pair<String, Pair<Pair<Integer, Integer>, Pair<Integer, Integer>>> payload = new Pair<>(
-				"AGENT: " + ((ActiveBody) action.getActor()).getId(),
-				new Pair<>(action.getMoveFrom(), action.getMoveTo()));
-		perception.add(new DefaultPerception<>(payload));
+		perception.add(new MovePerception(
+				(ActiveBodyAppearance) ((ActiveBody) action.getActor())
+						.getExternalAppearance(), action.getMoveFrom(), action
+						.getMoveTo()));
 		return perception;
 	}
 
@@ -81,4 +80,26 @@ public class PhysicalPhysics extends ExperimentPhysics {
 		((PhysicalState) environment.getState()).printGrid();
 	}
 
+	public boolean perceivable(BadSeeingSensor sensor,
+			AbstractPerception<?> perception, State context) {
+		if (super.perceivable(sensor, perception, context)) {
+			if (MovePerception.class.isAssignableFrom(perception.getClass())) {
+				MovePerception mp = (MovePerception) perception;
+				Pair<Integer, Integer> otherposition = ((PhysicalState) context)
+						.getPositionOfAgent(mp.getActivebody());
+				Pair<Integer, Integer> selfposition = ((PhysicalState) context)
+						.getPositionOfAgent(sensor.getBody());
+				// check that the other agent is in range of this agent
+				if (Math.abs(otherposition.getFirst() - selfposition.getFirst()) <= 1
+						&& Math.abs(otherposition.getSecond()
+								- selfposition.getSecond()) <= 1) {
+					return true;
+				}
+			} else {
+				return true;
+			}
+
+		}
+		return false;
+	}
 }

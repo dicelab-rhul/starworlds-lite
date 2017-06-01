@@ -4,22 +4,22 @@ import java.util.Set;
 
 import uk.ac.rhul.cs.dice.starworlds.actions.environmental.PhysicalAction;
 import uk.ac.rhul.cs.dice.starworlds.environment.State;
+import uk.ac.rhul.cs.dice.starworlds.environment.physics.AbstractSubscriber.SensiblePerception;
 import uk.ac.rhul.cs.dice.starworlds.environment.physics.Physics;
-import uk.ac.rhul.cs.dice.starworlds.environment.physics.SensorSubscriber.SensiblePerception;
 import uk.ac.rhul.cs.dice.starworlds.perception.AbstractPerception;
-import uk.ac.rhul.cs.dice.starworlds.perception.DefaultPerception;
 import uk.ac.rhul.cs.dice.starworlds.utils.Pair;
+import uk.ac.rhul.cs.dice.starworlds.utils.SerializablePair;
 
 public class MoveAction extends PhysicalAction {
 
 	@SensiblePerception
-	public static final Class<?> POSSIBLEPERCEPTION = DefaultPerception.class;
+	public static final Class<?> POSSIBLEPERCEPTION = MovePerception.class;
 
 	private Pair<Integer, Integer> moveFrom;
 	private Pair<Integer, Integer> moveTo;
 
 	public MoveAction(int i, int j) {
-		this.moveTo = new Pair<>(i, j);
+		this.moveTo = new SerializablePair<>(i, j);
 	}
 
 	@Override

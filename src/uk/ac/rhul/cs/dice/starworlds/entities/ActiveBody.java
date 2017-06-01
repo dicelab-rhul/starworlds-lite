@@ -9,6 +9,8 @@ import java.util.Set;
 import uk.ac.rhul.cs.dice.starworlds.actions.environmental.AbstractEnvironmentalAction;
 import uk.ac.rhul.cs.dice.starworlds.actions.environmental.EnvironmentalAction;
 import uk.ac.rhul.cs.dice.starworlds.appearances.AbstractAppearance;
+import uk.ac.rhul.cs.dice.starworlds.appearances.ActiveBodyAppearance;
+import uk.ac.rhul.cs.dice.starworlds.appearances.Appearance;
 import uk.ac.rhul.cs.dice.starworlds.entities.agents.AbstractAgent;
 import uk.ac.rhul.cs.dice.starworlds.entities.agents.components.AbstractSensor;
 import uk.ac.rhul.cs.dice.starworlds.entities.agents.components.Actuator;
@@ -47,12 +49,25 @@ public abstract class ActiveBody extends PhysicalBody implements Actor {
 
 	private List<Sensor> sensors;
 	private List<Actuator> actuators;
-	private AbstractEnvironment environment;
+	private AbstractEnvironment<?> environment;
 
 	/**
-	 * Constructor with a {@link AbstractAppearance}, a {@link List} of
-	 * {@link Sensor} instances and one of {@link Actuator} instances.
+	 * Constructor. The default {@link Appearance} for an {@link ActiveBody} is
+	 * created automatically.
 	 * 
+	 * @param sensors
+	 *            : a {@link List} of {@link Sensor} instances.
+	 * @param actuators
+	 *            : a {@link List} of {@link Actuator} instances.
+	 */
+	public ActiveBody(List<Sensor> sensors, List<Actuator> actuators) {
+		super();
+		init(sensors, actuators);
+		this.setExternalAppearance(new ActiveBodyAppearance(this));
+	}
+
+	/**
+	 * Constructor.
 	 * 
 	 * @param appearance
 	 *            : the {@link AbstractAppearance} of the {@link ActiveBody}.
@@ -64,6 +79,10 @@ public abstract class ActiveBody extends PhysicalBody implements Actor {
 	public ActiveBody(AbstractAppearance appearance, List<Sensor> sensors,
 			List<Actuator> actuators) {
 		super(appearance);
+		init(sensors, actuators);
+	}
+
+	private void init(List<Sensor> sensors, List<Actuator> actuators) {
 		sensors = sensors != null ? sensors : new ArrayList<>();
 		actuators = actuators != null ? actuators : new ArrayList<>();
 		this.sensors = new ArrayList<>();
@@ -81,14 +100,6 @@ public abstract class ActiveBody extends PhysicalBody implements Actor {
 		this.setDefaultSensor((AbstractSensor) findSensorByClass(AbstractSensor.class));
 		this.setDefaultSpeechActuator((SpeechActuator) findActuatorByClass(SpeechActuator.class));
 		this.setDefaultPhysicalActuator((PhysicalActuator) findActuatorByClass(PhysicalActuator.class));
-	}
-
-	public final void subscribeAll() {
-		subscribe(this, sensors.toArray(new Sensor[] {}));
-	}
-
-	public final void subscribe(ActiveBody body, Sensor... sensor) {
-		environment.subscribe(body, sensor);
 	}
 
 	public Sensor findSensorByClass(Class<?> c) {
@@ -180,7 +191,7 @@ public abstract class ActiveBody extends PhysicalBody implements Actor {
 	 * 
 	 * @return the {@link AbstractEnvironment}
 	 */
-	public AbstractEnvironment getEnvironment() {
+	public AbstractEnvironment<?> getEnvironment() {
 		return environment;
 	}
 
@@ -191,7 +202,7 @@ public abstract class ActiveBody extends PhysicalBody implements Actor {
 	 * @param environment
 	 *            to set
 	 */
-	public void setEnvironment(AbstractEnvironment environment) {
+	public void setEnvironment(AbstractEnvironment<?> environment) {
 		this.environment = environment;
 	}
 

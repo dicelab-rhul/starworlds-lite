@@ -1,6 +1,5 @@
 package uk.ac.rhul.cs.dice.starworlds.entities.agents;
 
-import java.net.Socket;
 import java.util.Collection;
 import java.util.List;
 
@@ -10,8 +9,10 @@ import uk.ac.rhul.cs.dice.starworlds.actions.environmental.AbstractEnvironmental
 import uk.ac.rhul.cs.dice.starworlds.appearances.AbstractAppearance;
 import uk.ac.rhul.cs.dice.starworlds.entities.ActiveBody;
 import uk.ac.rhul.cs.dice.starworlds.entities.Agent;
+import uk.ac.rhul.cs.dice.starworlds.entities.agents.components.AbstractSensor;
 import uk.ac.rhul.cs.dice.starworlds.entities.agents.components.Actuator;
 import uk.ac.rhul.cs.dice.starworlds.entities.agents.components.Sensor;
+import uk.ac.rhul.cs.dice.starworlds.environment.AbstractEnvironment;
 import uk.ac.rhul.cs.dice.starworlds.perception.Perception;
 
 /**
@@ -29,10 +30,28 @@ import uk.ac.rhul.cs.dice.starworlds.perception.Perception;
 public abstract class AbstractAgent extends ActiveBody implements Agent {
 
 	private AbstractAgentMind mind;
-	private Socket socket; // TODO
 
 	/**
-	 * The class constructor.
+	 * Constructor.
+	 * 
+	 * @param sensors
+	 *            : a {@link List} of {@link Sensor} instances.
+	 * @param actuators
+	 *            : a {@link List} of {@link Actuator} instances.
+	 * @param mind
+	 *            : the {@link AbstractAgentMind}.
+	 * @param brain
+	 *            : the {@link AbstractAgentBrain}.
+	 * 
+	 */
+	public AbstractAgent(List<Sensor> sensors, List<Actuator> actuators,
+			AbstractAgentMind mind) {
+		super(sensors, actuators);
+		init(mind);
+	}
+
+	/**
+	 * Constructor.
 	 * 
 	 * @param appearance
 	 *            : the {@link AbstractAgentAppearance}.
@@ -44,20 +63,18 @@ public abstract class AbstractAgent extends ActiveBody implements Agent {
 	 *            : the {@link AbstractAgentMind}.
 	 * @param brain
 	 *            : the {@link AbstractAgentBrain}.
+	 * 
 	 */
 	public AbstractAgent(AbstractAppearance appearance, List<Sensor> sensors,
 			List<Actuator> actuators, AbstractAgentMind mind) {
 		super(appearance, sensors, actuators);
-		this.mind = mind;
-		this.mind.setBody(this);
-
+		init(mind);
 	}
 
-	/**
-	 * Returns the {@link Brain} of the {@link AbstractAgent}.
-	 * 
-	 * @return the {@link Brain} of the {@link AbstractAgent}.
-	 */
+	private void init(AbstractAgentMind mind) {
+		this.mind = mind;
+		this.mind.setBody(this);
+	}
 
 	/**
 	 * Returns the {@link Mind} of the {@link AbstractAgent}.

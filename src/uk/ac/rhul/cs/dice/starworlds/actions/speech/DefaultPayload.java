@@ -1,6 +1,8 @@
 package uk.ac.rhul.cs.dice.starworlds.actions.speech;
 
-public class DefaultPayload<T> implements Payload<T> {
+import java.io.Serializable;
+
+public class DefaultPayload<T extends Serializable> implements Payload<T> {
 
 	private T payload;
 

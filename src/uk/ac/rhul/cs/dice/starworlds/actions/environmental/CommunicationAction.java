@@ -1,11 +1,12 @@
 package uk.ac.rhul.cs.dice.starworlds.actions.environmental;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 import uk.ac.rhul.cs.dice.starworlds.actions.speech.DefaultPayload;
 import uk.ac.rhul.cs.dice.starworlds.actions.speech.Payload;
-import uk.ac.rhul.cs.dice.starworlds.environment.physics.SensorSubscriber.SensiblePerception;
+import uk.ac.rhul.cs.dice.starworlds.environment.physics.AbstractSubscriber.SensiblePerception;
 import uk.ac.rhul.cs.dice.starworlds.perception.CommunicationPerception;
 
 /**
@@ -20,7 +21,8 @@ import uk.ac.rhul.cs.dice.starworlds.perception.CommunicationPerception;
  * @author Kostas Stathis
  *
  */
-public class CommunicationAction<T> extends AbstractEnvironmentalAction {
+public class CommunicationAction<T extends Serializable> extends
+		AbstractEnvironmentalAction {
 
 	@SensiblePerception
 	public static final Class<?> POSSIBLEPERCEPTION = CommunicationPerception.class;

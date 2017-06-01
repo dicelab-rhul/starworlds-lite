@@ -22,9 +22,6 @@ import uk.ac.rhul.cs.dice.starworlds.perception.Perception;
  */
 public interface Sensor extends Component {
 
-	public boolean canSense(AbstractEnvironmentalAction action,
-			AbstractPerception<?> perception, State context);
-
 	public String getId();
 
 	public ActiveBody getBody();

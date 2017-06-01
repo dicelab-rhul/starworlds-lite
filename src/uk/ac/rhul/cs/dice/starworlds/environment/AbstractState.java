@@ -14,9 +14,11 @@ import uk.ac.rhul.cs.dice.starworlds.actions.environmental.AbstractEnvironmental
 import uk.ac.rhul.cs.dice.starworlds.actions.environmental.CommunicationAction;
 import uk.ac.rhul.cs.dice.starworlds.actions.environmental.PhysicalAction;
 import uk.ac.rhul.cs.dice.starworlds.actions.environmental.SensingAction;
+import uk.ac.rhul.cs.dice.starworlds.appearances.Appearance;
 import uk.ac.rhul.cs.dice.starworlds.entities.ActiveBody;
 import uk.ac.rhul.cs.dice.starworlds.entities.Agent;
 import uk.ac.rhul.cs.dice.starworlds.entities.PassiveBody;
+import uk.ac.rhul.cs.dice.starworlds.entities.PhysicalBody;
 import uk.ac.rhul.cs.dice.starworlds.entities.agents.components.Actuator;
 import uk.ac.rhul.cs.dice.starworlds.entities.agents.components.Sensor;
 import uk.ac.rhul.cs.dice.starworlds.environment.physics.AbstractPhysics;
@@ -28,7 +30,7 @@ public abstract class AbstractState implements State {
 	private final static String AGENTSKEY = "AGENTS",
 			ACTIVEBODIESKEY = "ACTIVEBODIES",
 			PASSIVEBODIESKEY = "PASSIVEBODIES", RANDOM = "RANDOM",
-			SELF = "SELF";
+			SELF = "SELF", APPEARANCEFILTER = "APPEARANCE";
 
 	private HashMap<String, Object> environmentVariables;
 	private HashMap<String, Filter> filters;
@@ -36,6 +38,7 @@ public abstract class AbstractState implements State {
 	private List<SensingAction> sensingActions;
 	private List<PhysicalAction> physicalActions;
 	private List<CommunicationAction<?>> communicationActions;
+	protected AbstractPhysics physics;
 
 	public AbstractState(AbstractPhysics physics) {
 		this.sensingActions = new ArrayList<>();
@@ -44,6 +47,7 @@ public abstract class AbstractState implements State {
 		this.environmentVariables = new HashMap<>();
 		this.filters = new HashMap<>();
 		initialiseEnvironmentVariables(physics);
+		this.physics = physics;
 	}
 
 	/**
@@ -59,6 +63,7 @@ public abstract class AbstractState implements State {
 		environmentVariables.put(PASSIVEBODIESKEY, physics.getPassiveBodies());
 		filters.put(RANDOM, new RandomEnvironmentVariable());
 		filters.put(SELF, new SelfFilter());
+		filters.put(APPEARANCEFILTER, new AppearanceFilter());
 	}
 
 	@Override
@@ -155,7 +160,7 @@ public abstract class AbstractState implements State {
 		// TODO optimise the recursive environment variables e.g. agents that
 		// are in some space, or sub environment
 		// System.out.println("FILTER: " + Arrays.toString(keys));
-		Set<Pair<String, Object>> perceptions = new HashSet<>();
+		HashSet<Pair<String, Object>> perceptions = new HashSet<>();
 
 		for (String key : keys) {
 			if (key == null)
@@ -170,7 +175,9 @@ public abstract class AbstractState implements State {
 				result = filters.get(subkeys[i]).get(action, result);
 			}
 			perceptions.add(new Pair<String, Object>(key, result));
+			// perceptions.add(null);
 		}
+		System.out.println("PERCEPTIONS: " + perceptions);
 		return perceptions;
 	}
 
@@ -192,7 +199,7 @@ public abstract class AbstractState implements State {
 			this.addPhysicalAction((PhysicalAction) action);
 		} else {
 			// TODO provide more types of actions!
-			System.out.println("ERROR HANDLING ACTION TYPE "
+			System.err.println("ERROR HANDLING ACTION TYPE "
 					+ action.getClass());
 			Thread.dumpStack();
 		}
@@ -218,19 +225,43 @@ public abstract class AbstractState implements State {
 		}
 	}
 
-	private class SelfFilter implements ActiveBodyFilter {
+	private class SelfFilter extends AppearanceFilter {
 		@Override
-		public Set<ActiveBody> get(SensingAction action, Object... args) {
-			Set<ActiveBody> self = new HashSet<>();
-			self.add((ActiveBody) action.getActor());
+		public Set<Appearance> get(SensingAction action, Object... args) {
+			Set<Appearance> self = new HashSet<>();
+			self.add(((ActiveBody) action.getActor()).getExternalAppearance());
 			return self;
 		}
 	}
 
-	public interface ActiveBodyFilter extends Filter {
+	public class AppearanceFilter implements Filter {
 
 		@Override
-		public Set<ActiveBody> get(SensingAction action, Object... args);
+		public Set<Appearance> get(SensingAction action, Object... args) {
+			Set<Appearance> appearances;
+			if (Collection.class.isAssignableFrom(args[0].getClass())) {
+				Collection<?> col = (Collection<?>) args[0];
+				// TODO
+				System.out.println("TYPE: "
+						+ Arrays.toString(col.getClass().getTypeParameters()));
+				Thread.dumpStack();
+				
+				// if(ActiveBody.class.isAssignableFrom(col.getClass().getTypeParameters().))
+				// {
+				//
+				// }
+				// for(Object o : col) {
+				// appearances.add(e)
+				// }
+			} else if (PhysicalBody.class.isAssignableFrom(args[0].getClass())) {
+				appearances = new HashSet<>();
+				appearances.add(((PhysicalBody) args[0])
+						.getExternalAppearance());
+				return appearances;
+			}
+			variablemissuse(this);
+			return null;
+		}
 	}
 
 	public interface Filter {

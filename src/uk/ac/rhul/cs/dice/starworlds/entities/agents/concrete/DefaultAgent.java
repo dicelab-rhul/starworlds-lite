@@ -14,4 +14,9 @@ public class DefaultAgent extends AbstractAgent {
 			List<Actuator> actuators, AbstractAgentMind mind) {
 		super(appearance, sensors, actuators, mind);
 	}
+
+	public DefaultAgent(List<Sensor> sensors, List<Actuator> actuators,
+			AbstractAgentMind mind) {
+		super(sensors, actuators, mind);
+	}
 }

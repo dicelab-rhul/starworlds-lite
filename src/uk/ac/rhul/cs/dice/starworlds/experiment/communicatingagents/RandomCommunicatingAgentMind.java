@@ -5,15 +5,14 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 import uk.ac.rhul.cs.dice.starworlds.actions.Action;
 import uk.ac.rhul.cs.dice.starworlds.actions.environmental.AbstractEnvironmentalAction;
 import uk.ac.rhul.cs.dice.starworlds.actions.environmental.CommunicationAction;
 import uk.ac.rhul.cs.dice.starworlds.actions.environmental.SensingAction;
 import uk.ac.rhul.cs.dice.starworlds.actions.speech.Payload;
+import uk.ac.rhul.cs.dice.starworlds.appearances.Appearance;
 import uk.ac.rhul.cs.dice.starworlds.entities.agents.AbstractAgentMind;
-import uk.ac.rhul.cs.dice.starworlds.entities.agents.concrete.DefaultAgent;
 import uk.ac.rhul.cs.dice.starworlds.perception.CommunicationPerception;
 import uk.ac.rhul.cs.dice.starworlds.perception.Perception;
 import uk.ac.rhul.cs.dice.starworlds.utils.Pair;
@@ -34,11 +33,12 @@ class RandomCommunicatingAgentMind extends AbstractAgentMind {
 				// System.out.println("MESSAGE PAYLOAD: " + payload);
 				otheragents.add((String) payload.getPayload());
 			} else {
-				unpackActivePerception(p)
-						.forEach(
-								(Pair<?, ?> pair) -> otheragents
-										.add(((DefaultAgent) pair.getSecond())
-												.getId()));
+				if (p.getPerception() != null) {
+					Collection<Appearance> appearances = unpackAppearances(p);
+					for (Appearance a : appearances) {
+						this.otheragents.add(a.getName());
+					}
+				}
 			}
 		}
 		System.out.println(this + " PERCEPTIONS: " + perceptions);
@@ -55,17 +55,18 @@ class RandomCommunicatingAgentMind extends AbstractAgentMind {
 					.findAny();
 			if (recipient != null) {
 				List<String> recipients = new ArrayList<>();
-				// recipients.add(recipient.get());
+				recipients.add(otheragents.stream()
+						.skip((long) (Math.random() * otheragents.size()))
+						.findFirst().get());
 				actions.add(new CommunicationAction<>(this.getId(), recipients));
-				// System.out.println(this + " DECISIONS: " + actions);
+				System.out.println(this + " DECISIONS: " + actions);
 				return actions;
 			}
 			// the sensing action must have fail for some reason, so do it again
 		}
-		this.getBody().subscribeAll();
-		actions.add(new SensingAction("AGENTS.RANDOM"));
+		actions.add(new SensingAction("AGENTS.RANDOM.APPEARANCE"));
 		start = false;
-		// System.out.println(this + " DECISIONS: " + actions);
+		System.out.println(this + " DECISIONS: " + actions);
 		return actions;
 	}
 
@@ -78,11 +79,13 @@ class RandomCommunicatingAgentMind extends AbstractAgentMind {
 		return action;
 	}
 
-	private Set<Pair<?, ?>> unpackActivePerception(Perception<?> perception) {
-		Set<Pair<?, ?>> result = new HashSet<>();
-		((Set<?>) perception.getPerception()).forEach((Object o) -> {
-			result.add((Pair<?, ?>) o);
-		});
-		return result;
+	private Collection<Appearance> unpackAppearances(Perception<?> percept) {
+		Collection<Appearance> appearances = new ArrayList<>();
+		Pair<?, ?> pair = (Pair<?, ?>) percept.getPerception();
+		Collection<?> col = (Collection<?>) pair.getSecond();
+		for (Object o : col) {
+			appearances.add((Appearance) o);
+		}
+		return appearances;
 	}
 }

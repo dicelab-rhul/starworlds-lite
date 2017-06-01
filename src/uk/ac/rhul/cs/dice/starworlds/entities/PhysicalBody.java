@@ -23,6 +23,12 @@ public abstract class PhysicalBody implements Body {
 	private Appearance appearance;
 
 	/**
+	 * Constructor.
+	 */
+	public PhysicalBody() {
+	}
+
+	/**
 	 * Constructor with an external {@link Appearance}.
 	 * 
 	 * @param appearance
@@ -70,6 +76,7 @@ public abstract class PhysicalBody implements Body {
 	@Override
 	public void setId(Object id) {
 		this.id = (id != null) ? id.toString() : "NULLID";
+		this.appearance.setName(this.id);
 	}
 
 	@Override

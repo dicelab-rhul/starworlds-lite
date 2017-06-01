@@ -1,5 +1,8 @@
 package uk.ac.rhul.cs.dice.starworlds.environment;
 
+import java.util.Collection;
+
+import uk.ac.rhul.cs.dice.starworlds.actions.environmental.AbstractEnvironmentalAction;
 import uk.ac.rhul.cs.dice.starworlds.appearances.AbstractAppearance;
 import uk.ac.rhul.cs.dice.starworlds.environment.physics.Physics;
 
@@ -26,8 +29,15 @@ public class Universe extends ComplexEnvironment {
 	 *            : the {@link Physics} of the environment.
 	 * @param appearance
 	 *            : the {@link UniverseAppearance} of the environment.
+	 * @param server
+	 *            :
+	 * @param possibleActions
 	 */
-	public Universe(State state, Physics physics, AbstractAppearance appearance) {
-		super(state, physics, true, appearance);
+	public Universe(
+			State state,
+			Physics physics,
+			AbstractAppearance appearance,
+			Collection<Class<? extends AbstractEnvironmentalAction>> possibleActions) {
+		super(state, physics, false, appearance, possibleActions);
 	}
 }

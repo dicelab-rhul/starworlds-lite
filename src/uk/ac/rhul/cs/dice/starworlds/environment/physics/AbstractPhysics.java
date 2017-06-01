@@ -8,17 +8,18 @@ import java.util.Map;
 import java.util.Set;
 
 import uk.ac.rhul.cs.dice.starworlds.actions.Action;
-import uk.ac.rhul.cs.dice.starworlds.actions.environmental.AbstractEnvironmentalAction;
 import uk.ac.rhul.cs.dice.starworlds.actions.environmental.CommunicationAction;
 import uk.ac.rhul.cs.dice.starworlds.actions.environmental.PhysicalAction;
 import uk.ac.rhul.cs.dice.starworlds.actions.environmental.SensingAction;
+import uk.ac.rhul.cs.dice.starworlds.appearances.ActiveBodyAppearance;
 import uk.ac.rhul.cs.dice.starworlds.entities.ActiveBody;
 import uk.ac.rhul.cs.dice.starworlds.entities.Agent;
 import uk.ac.rhul.cs.dice.starworlds.entities.Entity;
 import uk.ac.rhul.cs.dice.starworlds.entities.PassiveBody;
 import uk.ac.rhul.cs.dice.starworlds.entities.agents.AbstractAgent;
 import uk.ac.rhul.cs.dice.starworlds.entities.agents.components.AbstractSensor;
-import uk.ac.rhul.cs.dice.starworlds.entities.agents.components.Sensor;
+import uk.ac.rhul.cs.dice.starworlds.entities.agents.components.concrete.ListeningSensor;
+import uk.ac.rhul.cs.dice.starworlds.entities.agents.components.concrete.SeeingSensor;
 import uk.ac.rhul.cs.dice.starworlds.environment.AbstractEnvironment;
 import uk.ac.rhul.cs.dice.starworlds.environment.Environment;
 import uk.ac.rhul.cs.dice.starworlds.environment.State;
@@ -26,6 +27,7 @@ import uk.ac.rhul.cs.dice.starworlds.environment.concrete.DefaultPhysics;
 import uk.ac.rhul.cs.dice.starworlds.perception.AbstractPerception;
 import uk.ac.rhul.cs.dice.starworlds.perception.CommunicationPerception;
 import uk.ac.rhul.cs.dice.starworlds.perception.DefaultPerception;
+import uk.ac.rhul.cs.dice.starworlds.perception.NullPerception;
 import uk.ac.rhul.cs.dice.starworlds.utils.Pair;
 
 /**
@@ -51,26 +53,17 @@ public abstract class AbstractPhysics implements Physics {
 	protected Map<String, AbstractAgent> agents;
 	protected Map<String, ActiveBody> activeBodies;
 	protected Map<String, PassiveBody> passiveBodies;
-	protected SensorSubscriber sensorSubscriber;
 	protected boolean active = false;
 	protected long framegap = 1000;
 	protected TimeState timestate;
 
-	public AbstractPhysics(
-			Collection<Class<? extends AbstractEnvironmentalAction>> possibleActions,
-			Set<AbstractAgent> agents, Set<ActiveBody> activeBodies,
-			Set<PassiveBody> passiveBodies) {
+	public AbstractPhysics(Set<AbstractAgent> agents,
+			Set<ActiveBody> activeBodies, Set<PassiveBody> passiveBodies) {
 		this.agents = (agents != null) ? setToMap(agents) : new HashMap<>();
 		this.activeBodies = (activeBodies != null) ? setToMap(activeBodies)
 				: new HashMap<>();
 		this.passiveBodies = (passiveBodies != null) ? setToMap(passiveBodies)
 				: new HashMap<>();
-		this.sensorSubscriber = new SensorSubscriber();
-		this.sensorSubscriber.setPossibleActions(possibleActions);
-	}
-
-	public final void subscribe(ActiveBody body, Sensor... sensors) {
-		sensorSubscriber.subscribe(body, sensors);
 	}
 
 	private <T extends Entity> Map<String, T> setToMap(Set<T> set) {
@@ -93,7 +86,6 @@ public abstract class AbstractPhysics implements Physics {
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
-
 	}
 
 	@Override
@@ -166,11 +158,11 @@ public abstract class AbstractPhysics implements Physics {
 				.getAgentPerceptions(this, context);
 		Set<AbstractPerception<?>> otherPerceptions = action
 				.getOthersPerceptions(this, context);
-		notify(action, (ActiveBody) action.getActor(), agentPerceptions,
-				context);
+		environment.notify(action, (ActiveBody) action.getActor(),
+				agentPerceptions, context);
 		for (ActiveBody a : this.getAgents()) {
 			if (!a.equals(action.getActor())) {
-				notify(action, a, otherPerceptions, context);
+				environment.notify(action, a, otherPerceptions, context);
 			}
 		}
 	}
@@ -203,11 +195,17 @@ public abstract class AbstractPhysics implements Physics {
 		}
 		// should other agents be able to sense that this agent is sensing?
 		Collection<AbstractPerception<?>> perceptionsToNotify = new HashSet<>();
-		perceptionsToNotify
-				.add(new DefaultPerception<Set<Pair<String, Object>>>(
-						perceptions));
-		notify(action, (ActiveBody) action.getActor(), perceptionsToNotify,
-				context);
+		for (Pair<String, Object> p : perceptions) {
+			if (p != null) {
+				perceptionsToNotify
+						.add(new DefaultPerception<Pair<String, Object>>(p));
+			} else {
+				perceptionsToNotify.add(new NullPerception());
+			}
+
+		}
+		environment.notify(action, (ActiveBody) action.getActor(),
+				perceptionsToNotify, context);
 	}
 
 	@Override
@@ -270,7 +268,8 @@ public abstract class AbstractPhysics implements Physics {
 						Collection<AbstractPerception<?>> perceptionsToNotify = new HashSet<>();
 						perceptionsToNotify.add(new CommunicationPerception<>(
 								action.getPayload()));
-						notify(action, a, perceptionsToNotify, context);
+						environment.notify(action, a, perceptionsToNotify,
+								context);
 					});
 		}
 		action.getRecipientsIds()
@@ -282,8 +281,8 @@ public abstract class AbstractPhysics implements Physics {
 								perceptionsToNotify
 										.add(new CommunicationPerception<>(
 												action.getPayload()));
-								notify(action, agent, perceptionsToNotify,
-										context);
+								environment.notify(action, agent,
+										perceptionsToNotify, context);
 							}
 						});
 		// TODO if something failed
@@ -302,29 +301,8 @@ public abstract class AbstractPhysics implements Physics {
 		return true;
 	}
 
-	@Override
-	public void notify(AbstractEnvironmentalAction action, ActiveBody body,
-			Collection<AbstractPerception<?>> perceptions, State context) {
-
-		Map<Class<? extends AbstractPerception>, Set<AbstractSensor>> sensors = sensorSubscriber
-				.findSensors(body, action);
-		for (AbstractPerception<?> perception : perceptions) {
-			Set<AbstractSensor> ss = sensors.get(perception.getClass());
-			if (ss != null) {
-				for (AbstractSensor s : ss) {
-					if (s.canSense(action, perception, context)) {
-						System.out.println("NOTIFY: " + body + " WITH: "
-								+ perceptions);
-						s.notify(perception);
-					}
-				}
-			} else {
-				// TODO remove
-				System.err
-						.println("WARNING: No subscribed Sensor to receive perception type: "
-								+ perception);
-			}
-		}
+	public ActiveBody getAgent(ActiveBodyAppearance appearance) {
+		return this.agents.get(appearance.getName());
 	}
 
 	@Override
@@ -365,6 +343,8 @@ public abstract class AbstractPhysics implements Physics {
 	 *
 	 */
 	protected interface TimeState {
+		public void start();
+
 		public void simulate();
 	}
 
@@ -378,14 +358,16 @@ public abstract class AbstractPhysics implements Physics {
 	protected class TimeStateSerial implements TimeState {
 
 		public void simulate() {
-
-			System.out.println("CYCLE");
 			agents.values().forEach((AbstractAgent a) -> {
 				a.run();
 			});
 			executeActions();
 		}
 
+		@Override
+		public void start() {
+
+		}
 	}
 
 	/**
@@ -396,6 +378,11 @@ public abstract class AbstractPhysics implements Physics {
 	 *
 	 */
 	protected class TimeStateParallel implements TimeState {
+
+		@Override
+		public void start() {
+
+		}
 
 		@Override
 		public void simulate() {
@@ -417,8 +404,35 @@ public abstract class AbstractPhysics implements Physics {
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
-			System.out.println("ALL AGENTS DONE!");
 		}
 	}
 
+	/**
+	 * Perceivable method for all {@link SeeingSensor}s. See
+	 * {@link Physics#perceivable(AbstractSensor, AbstractPerception, State)}.
+	 */
+	public boolean perceivable(SeeingSensor sensor,
+			AbstractPerception<?> perception, State context) {
+		return SeeingSensor.DEFAULTPERCEPTION.isAssignableFrom(perception
+				.getClass())
+				|| SeeingSensor.NULLPERCEPTION.isAssignableFrom(perception
+						.getClass());
+	}
+
+	/**
+	 * Perceivable method for all {@link ListeningSensor}s. See
+	 * {@link Physics#perceivable(AbstractSensor, AbstractPerception, State)}.
+	 */
+	public boolean perceivable(ListeningSensor sensor,
+			AbstractPerception<?> perception, State context) {
+		return ListeningSensor.COMMUNICATIONPERCEPTION
+				.isAssignableFrom(perception.getClass());
+	}
+
+	@Override
+	public boolean perceivable(AbstractSensor sensor,
+			AbstractPerception<?> perception, State context) {
+		return AbstractSensor.NULLPERCEPTION.isAssignableFrom(perception
+				.getClass());
+	}
 }

@@ -1,6 +1,8 @@
 package uk.ac.rhul.cs.dice.starworlds.environment;
 
+import java.io.Serializable;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Set;
 
 import uk.ac.rhul.cs.dice.starworlds.actions.environmental.AbstractEnvironmentalAction;
@@ -9,8 +11,8 @@ import uk.ac.rhul.cs.dice.starworlds.actions.environmental.PhysicalAction;
 import uk.ac.rhul.cs.dice.starworlds.actions.environmental.SensingAction;
 import uk.ac.rhul.cs.dice.starworlds.environment.AbstractState.Filter;
 import uk.ac.rhul.cs.dice.starworlds.environment.physics.Physics;
-import uk.ac.rhul.cs.dice.starworlds.perception.Perception;
 import uk.ac.rhul.cs.dice.starworlds.utils.Pair;
+import uk.ac.rhul.cs.dice.starworlds.utils.SerializablePair;
 
 /**
  * The interface for states.<br/>
@@ -39,7 +41,9 @@ public interface State {
 	 *            the {@link SensingAction} that began the call
 	 * @return a {@link Set} of {@link Pair}s consisting of < {@link String} ,
 	 *         {@link Object} > where the {@link String} is the key and the
-	 *         {@link Object} is its associated environment variable.
+	 *         {@link Object} is its associated environment variable. The
+	 *         returned {@link Object} will be {@link Serializable} if it is to
+	 *         be sent overnetwork.
 	 */
 	public Set<Pair<String, Object>> filterActivePerception(String[] keys,
 			SensingAction action);

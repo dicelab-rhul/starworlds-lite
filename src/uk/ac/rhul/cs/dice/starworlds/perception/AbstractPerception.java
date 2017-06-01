@@ -1,6 +1,8 @@
 package uk.ac.rhul.cs.dice.starworlds.perception;
 
-public abstract class AbstractPerception<T> implements Perception<T> {
+
+public abstract class AbstractPerception<T> implements
+		Perception<T> {
 
 	private T content;
 

@@ -3,7 +3,8 @@ package uk.ac.rhul.cs.dice.starworlds.appearances;
 import uk.ac.rhul.cs.dice.starworlds.entities.Body;
 
 /**
- * The {@link Appearance} of any entity. Contains only the name of the entity. <br/>
+ * The {@link Appearance} of some entity. Contains only the name (which may be
+ * the id) of the entity. <br/>
  * 
  * 
  * @author cloudstrife9999 a.k.a. Emanuele Uliana
@@ -12,6 +13,10 @@ import uk.ac.rhul.cs.dice.starworlds.entities.Body;
  *
  */
 public abstract class AbstractAppearance implements Appearance {
+
+	private static final long serialVersionUID = 3285622766204723013L;
+
+	protected static final String REPSEP = " ";
 
 	private String name;
 
@@ -33,5 +38,10 @@ public abstract class AbstractAppearance implements Appearance {
 	@Override
 	public void setName(String bodyName) {
 		this.name = bodyName;
+	}
+
+	@Override
+	public String represent() {
+		return this.getClass().getSimpleName() + REPSEP + this.name;
 	}
 }

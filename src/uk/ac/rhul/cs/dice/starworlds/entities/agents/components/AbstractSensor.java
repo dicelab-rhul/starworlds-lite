@@ -1,18 +1,19 @@
 package uk.ac.rhul.cs.dice.starworlds.entities.agents.components;
 
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
 import uk.ac.rhul.cs.dice.starworlds.actions.environmental.AbstractEnvironmentalAction;
 import uk.ac.rhul.cs.dice.starworlds.actions.environmental.SensingAction;
 import uk.ac.rhul.cs.dice.starworlds.entities.ActiveBody;
+import uk.ac.rhul.cs.dice.starworlds.environment.physics.AbstractSubscriber.SensiblePerception;
+import uk.ac.rhul.cs.dice.starworlds.perception.AbstractPerception;
+import uk.ac.rhul.cs.dice.starworlds.perception.CommunicationPerception;
+import uk.ac.rhul.cs.dice.starworlds.perception.NullPerception;
 import uk.ac.rhul.cs.dice.starworlds.perception.Perception;
 
 /**
- * The most generic class implementing {@link Sensor}. It also extends
- * {@link CustomObservable}. It may contain a {@link Perception}.<br/>
- * <br/>
+ * An abstract class implementing {@link Sensor}. //TODO <br/>
  * 
  * Known direct subclasses: none.
  * 
@@ -23,12 +24,16 @@ import uk.ac.rhul.cs.dice.starworlds.perception.Perception;
  */
 public abstract class AbstractSensor implements Sensor {
 
+	// All sensors can receive the null perception
+	@SensiblePerception
+	public static Class<? extends AbstractPerception<?>> NULLPERCEPTION = NullPerception.class;
+
 	private Set<Perception<?>> perceptions;
 	private String id;
 	private ActiveBody body;
 
-	/**AbstractSensor
-	 * Constructor.
+	/**
+	 * AbstractSensor Constructor.
 	 */
 	public AbstractSensor() {
 		this.perceptions = new HashSet<>();

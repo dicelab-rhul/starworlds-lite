@@ -1,6 +1,8 @@
 package uk.ac.rhul.cs.dice.starworlds.actions.environmental;
 
 import uk.ac.rhul.cs.dice.starworlds.entities.Actor;
+import uk.ac.rhul.cs.dice.starworlds.environment.physics.AbstractSubscriber.SensiblePerception;
+import uk.ac.rhul.cs.dice.starworlds.perception.NullPerception;
 
 /**
  * The most generic action class implementing {@link EnvironmentalAction}.<br/>
@@ -16,6 +18,10 @@ import uk.ac.rhul.cs.dice.starworlds.entities.Actor;
  */
 public abstract class AbstractEnvironmentalAction implements
 		EnvironmentalAction {
+
+	// All actions may return a null perception
+	@SensiblePerception
+	public static final Class<?> NULLPERCEPTION = NullPerception.class;
 
 	private Actor actor;
 	private Class<?> actuatorclass;
