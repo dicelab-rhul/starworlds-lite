@@ -8,7 +8,6 @@ import uk.ac.rhul.cs.dice.starworlds.actions.environmental.SensingAction;
 import uk.ac.rhul.cs.dice.starworlds.entities.ActiveBody;
 import uk.ac.rhul.cs.dice.starworlds.environment.physics.AbstractSubscriber.SensiblePerception;
 import uk.ac.rhul.cs.dice.starworlds.perception.AbstractPerception;
-import uk.ac.rhul.cs.dice.starworlds.perception.CommunicationPerception;
 import uk.ac.rhul.cs.dice.starworlds.perception.NullPerception;
 import uk.ac.rhul.cs.dice.starworlds.perception.Perception;
 
@@ -28,8 +27,8 @@ public abstract class AbstractSensor implements Sensor {
 	@SensiblePerception
 	public static Class<? extends AbstractPerception<?>> NULLPERCEPTION = NullPerception.class;
 
-	private Set<Perception<?>> perceptions;
 	private String id;
+	private Set<Perception<?>> perceptions;
 	private ActiveBody body;
 
 	/**
@@ -70,6 +69,11 @@ public abstract class AbstractSensor implements Sensor {
 	@Override
 	public String getId() {
 		return this.id;
+	}
+
+	@Override
+	public void setId(String id) {
+		this.id = id;
 	}
 
 	/**

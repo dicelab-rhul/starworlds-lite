@@ -29,8 +29,7 @@ public class TestServerEnvironment {
 
 		DefaultPhysics physics = new DefaultPhysics(
 				getDefaultAgents(NUMAGENTS), null, null);
-		new Universe(new DefaultState(physics), physics,  null, true,
-				possibleActions);
+		new Universe(new DefaultState(physics), physics, null, possibleActions);
 		physics.start(false);
 	}
 
@@ -40,8 +39,9 @@ public class TestServerEnvironment {
 			List<Sensor> sensors = new ArrayList<>();
 			sensors.add(new ListeningSensor());
 			sensors.add(new BadSeeingSensor());
-			AbstractAgent a = AgentFactory.getInstance().createDefaultAgent(
-					null, new DefaultAgentMind(), true);
+			AbstractAgent a = AgentFactory.getInstance()
+					.createCustomDefaultAgent(null, null,
+							new DefaultAgentMind());
 			agents.add(a);
 		}
 		return agents;

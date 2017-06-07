@@ -1,6 +1,5 @@
 package uk.ac.rhul.cs.dice.starworlds.environment.physics;
 
-import java.io.Serializable;
 import java.util.Collection;
 import java.util.Set;
 
@@ -14,13 +13,13 @@ import uk.ac.rhul.cs.dice.starworlds.entities.agents.components.AbstractSensor;
 import uk.ac.rhul.cs.dice.starworlds.entities.agents.components.Sensor;
 import uk.ac.rhul.cs.dice.starworlds.entities.agents.components.concrete.ListeningSensor;
 import uk.ac.rhul.cs.dice.starworlds.entities.agents.components.concrete.SeeingSensor;
-import uk.ac.rhul.cs.dice.starworlds.environment.AbstractEnvironment;
-import uk.ac.rhul.cs.dice.starworlds.environment.Environment;
-import uk.ac.rhul.cs.dice.starworlds.environment.State;
+import uk.ac.rhul.cs.dice.starworlds.environment.base.AbstractEnvironment;
+import uk.ac.rhul.cs.dice.starworlds.environment.base.Environment;
+import uk.ac.rhul.cs.dice.starworlds.environment.base.State;
 import uk.ac.rhul.cs.dice.starworlds.perception.AbstractPerception;
 import uk.ac.rhul.cs.dice.starworlds.perception.Perception;
+import uk.ac.rhul.cs.dice.starworlds.utils.Identifiable;
 import uk.ac.rhul.cs.dice.starworlds.utils.Pair;
-import uk.ac.rhul.cs.dice.starworlds.utils.SerializablePair;
 
 /**
  * The general interface for all the physics.<br/>
@@ -33,7 +32,9 @@ import uk.ac.rhul.cs.dice.starworlds.utils.SerializablePair;
  * @author Kostas Stathis
  *
  */
-public interface Physics {
+public interface Physics extends Identifiable {
+
+	public void runAgents();
 
 	public void executeActions();
 

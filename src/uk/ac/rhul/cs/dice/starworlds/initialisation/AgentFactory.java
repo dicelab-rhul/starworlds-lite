@@ -22,15 +22,19 @@ public class AgentFactory {
 	public DefaultAgent createCustomDefaultAgent(List<Sensor> sensors,
 			List<Actuator> actuators, AbstractAgentMind mind) {
 		DefaultAgent agent = new DefaultAgent(sensors, actuators, mind);
-		agent.setId(IDGENERATOR.nextInt(IDBOUND));
+		agent.setId(generateId());
 		return agent;
 	}
 
 	public DefaultAgent createDefaultAgent(AbstractAgentMind mind) {
 		DefaultAgent agent = new DefaultAgent(getDefaultSensors(),
 				getDefaultActuators(), mind);
-		agent.setId(IDGENERATOR.nextInt(IDBOUND));
+		agent.setId(generateId());
 		return agent;
+	}
+
+	private String generateId() {
+		return String.valueOf(IDGENERATOR.nextInt(IDBOUND));
 	}
 
 	// TODO

@@ -2,16 +2,12 @@ package uk.ac.rhul.cs.dice.starworlds.entities.agents.components;
 
 import java.util.Set;
 
-import uk.ac.rhul.cs.dice.starworlds.actions.environmental.AbstractEnvironmentalAction;
 import uk.ac.rhul.cs.dice.starworlds.actions.environmental.SensingAction;
 import uk.ac.rhul.cs.dice.starworlds.entities.ActiveBody;
-import uk.ac.rhul.cs.dice.starworlds.environment.State;
-import uk.ac.rhul.cs.dice.starworlds.perception.AbstractPerception;
 import uk.ac.rhul.cs.dice.starworlds.perception.Perception;
 
 /**
- * The interface for sensors. It extends {@link CustomObserver}.<br/>
- * <br/>
+ * The interface for sensors. <br/>
  * 
  * Known implementations: {@link AbstractSensor}.
  * 
@@ -21,6 +17,8 @@ import uk.ac.rhul.cs.dice.starworlds.perception.Perception;
  *
  */
 public interface Sensor extends Component {
+
+	public void setId(String id);
 
 	public String getId();
 

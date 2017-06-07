@@ -5,6 +5,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -17,14 +18,14 @@ import uk.ac.rhul.cs.dice.starworlds.entities.ActiveBody;
 import uk.ac.rhul.cs.dice.starworlds.entities.agents.components.AbstractSensor;
 import uk.ac.rhul.cs.dice.starworlds.perception.AbstractPerception;
 
-public abstract class AbstractSubscriber<T> {
+public abstract class AbstractSubscriber {
 
 	@Retention(RetentionPolicy.RUNTIME)
 	public @interface SensiblePerception {
 	}
 
 	// map: agentid -> map: sensorclass -> sensor
-	protected Map<String, Map<Class<? extends AbstractSensor>, T>> subscribedSensors;
+	protected Map<String, Map<Class<? extends AbstractSensor>, AbstractSensor>> subscribedSensors;
 	protected Map<Class<? extends AbstractPerception>, Set<Class<? extends AbstractSensor>>> perceptionSensors;
 	protected Map<Class<? extends AbstractEnvironmentalAction>, Set<Class<? extends AbstractPerception>>> actionPerceptions;
 	protected Set<Class<? extends AbstractSensor>> sensors;
@@ -69,14 +70,14 @@ public abstract class AbstractSubscriber<T> {
 		}
 	}
 
-	public Map<Class<? extends AbstractPerception>, Set<T>> findSensors(
+	public Map<Class<? extends AbstractPerception>, Set<AbstractSensor>> findSensors(
 			ActiveBody body, AbstractEnvironmentalAction action) {
-		Map<Class<? extends AbstractSensor>, T> sensormap = subscribedSensors
+		Map<Class<? extends AbstractSensor>, AbstractSensor> sensormap = subscribedSensors
 				.get(body.getId());
-		Map<Class<? extends AbstractPerception>, Set<T>> sensors = new HashMap<>();
+		Map<Class<? extends AbstractPerception>, Set<AbstractSensor>> sensors = new HashMap<>();
 		actionPerceptions.get(action.getClass()).forEach(
 				(Class<? extends AbstractPerception> p) -> {
-					Set<T> sas;
+					Set<AbstractSensor> sas;
 					sensors.put(p, (sas = new HashSet<>()));
 					perceptionSensors.get(p).forEach(
 							(Class<? extends AbstractSensor> c) -> {
@@ -86,10 +87,10 @@ public abstract class AbstractSubscriber<T> {
 		return sensors;
 	}
 
-	public void addNewSensorType(T sensor, Class<T> sensorclass) {
+	public void addNewSensorType(AbstractSensor sensor) {
 		if (sensor != null) {
 			if (AbstractSensor.class.isAssignableFrom(sensor.getClass())) {
-				addNewSensorType(sensor.getClass().asSubclass(sensorclass));
+				addNewSensorType(sensor.getClass());
 			} else {
 				System.out.println("TODO");
 				Thread.dumpStack();
@@ -98,11 +99,53 @@ public abstract class AbstractSubscriber<T> {
 		}
 	}
 
-	public abstract void addNewSensorType(Class<? extends T> sensor);
+	public void addNewSensorType(Class<? extends AbstractSensor> sensor) {
+		Class<? extends AbstractSensor> realsensor = sensor;
+		if (!sensors.contains(sensor)) {
+			while (AbstractSensor.class
+					.isAssignableFrom(sensor.getSuperclass())) {
 
-	public abstract void subscribe(ActiveBody body, T[] sensors);
+				Collection<Class<?>> classes = findClassTypeFieldsWithAnnotation(
+						sensor, SensiblePerception.class);
+				for (Class<?> c : classes) {
+					if (AbstractPerception.class.isAssignableFrom(c)) {
+						Class<? extends AbstractPerception> perception = c
+								.asSubclass(AbstractPerception.class);
+						perceptionSensors.putIfAbsent(perception,
+								new HashSet<>());
+						perceptionSensors.get(perception).add(realsensor);
+						sensors.add(realsensor);
+					}
+				}
+				sensor = sensor.getSuperclass()
+						.asSubclass(AbstractSensor.class);
+			}
+		}
+	}
 
-	public Map<String, Map<Class<? extends AbstractSensor>, T>> getSubscribedSensors() {
+	public void subscribe(ActiveBody body, AbstractSensor[] sensors) {
+		Map<Class<? extends AbstractSensor>, AbstractSensor> sensormap = subscribedSensors
+				.putIfAbsent(body.getId(), new HashMap<>());
+		System.out.println("SUBSCRIBING: " + Arrays.toString(sensors));
+		if (sensormap == null) {
+			sensormap = subscribedSensors.get(body.getId());
+		}
+		for (AbstractSensor s : sensors) {
+			AbstractSensor as = (AbstractSensor) s;
+			if (!this.sensors.contains(as.getClass())) {
+				this.addNewSensorType(as.getClass());
+			}
+			if (sensormap.putIfAbsent(as.getClass(), as) != null) {
+				System.err.println("WARNING: Sensor class: "
+						+ s.getClass().getSimpleName()
+						+ " is over-subscribed for agent: " + body
+						+ System.lineSeparator() + " Sensor: " + as
+						+ " was not subscribed");
+			}
+		}
+	}
+
+	public Map<String, Map<Class<? extends AbstractSensor>, AbstractSensor>> getSubscribedSensors() {
 		return subscribedSensors;
 	}
 

@@ -1,4 +1,4 @@
-package uk.ac.rhul.cs.dice.starworlds.environment;
+package uk.ac.rhul.cs.dice.starworlds.environment.base;
 
 import java.util.ArrayList;
 import java.util.Arrays;

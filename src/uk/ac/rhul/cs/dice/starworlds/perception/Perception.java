@@ -1,6 +1,5 @@
 package uk.ac.rhul.cs.dice.starworlds.perception;
 
-
 /**
  * The interface for perceptions.<br/>
  * <br/>
@@ -12,10 +11,15 @@ package uk.ac.rhul.cs.dice.starworlds.perception;
  * @author Kostas Stathis
  *
  * @param <T>
- *            the type of the contents of the perception
+ *            the type of the content of the perception
  */
 public interface Perception<T> {
 
+	/**
+	 * Getter for the content of this {@link Perception}.
+	 * 
+	 * @return the content
+	 */
 	public T getPerception();
 
 }

@@ -3,12 +3,11 @@ package uk.ac.rhul.cs.dice.starworlds.experiment.physicalagents;
 import java.util.Set;
 
 import uk.ac.rhul.cs.dice.starworlds.actions.environmental.PhysicalAction;
-import uk.ac.rhul.cs.dice.starworlds.environment.State;
+import uk.ac.rhul.cs.dice.starworlds.environment.base.State;
 import uk.ac.rhul.cs.dice.starworlds.environment.physics.AbstractSubscriber.SensiblePerception;
 import uk.ac.rhul.cs.dice.starworlds.environment.physics.Physics;
 import uk.ac.rhul.cs.dice.starworlds.perception.AbstractPerception;
 import uk.ac.rhul.cs.dice.starworlds.utils.Pair;
-import uk.ac.rhul.cs.dice.starworlds.utils.SerializablePair;
 
 public class MoveAction extends PhysicalAction {
 
@@ -19,7 +18,7 @@ public class MoveAction extends PhysicalAction {
 	private Pair<Integer, Integer> moveTo;
 
 	public MoveAction(int i, int j) {
-		this.moveTo = new SerializablePair<>(i, j);
+		this.moveTo = new Pair<>(i, j);
 	}
 
 	@Override

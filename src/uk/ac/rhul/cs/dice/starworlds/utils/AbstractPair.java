@@ -1,6 +1,11 @@
 package uk.ac.rhul.cs.dice.starworlds.utils;
 
-public abstract class AbstractPair<T1, T2> {
+import java.io.Serializable;
+
+public abstract class AbstractPair<T1, T2> implements Serializable {
+
+	private static final long serialVersionUID = -6023533208083775052L;
+
 	private T1 first;
 	private T2 second;
 

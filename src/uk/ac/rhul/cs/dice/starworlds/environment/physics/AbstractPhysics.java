@@ -20,10 +20,14 @@ import uk.ac.rhul.cs.dice.starworlds.entities.agents.AbstractAgent;
 import uk.ac.rhul.cs.dice.starworlds.entities.agents.components.AbstractSensor;
 import uk.ac.rhul.cs.dice.starworlds.entities.agents.components.concrete.ListeningSensor;
 import uk.ac.rhul.cs.dice.starworlds.entities.agents.components.concrete.SeeingSensor;
-import uk.ac.rhul.cs.dice.starworlds.environment.AbstractEnvironment;
-import uk.ac.rhul.cs.dice.starworlds.environment.Environment;
-import uk.ac.rhul.cs.dice.starworlds.environment.State;
+import uk.ac.rhul.cs.dice.starworlds.environment.Simulator;
+import uk.ac.rhul.cs.dice.starworlds.environment.base.AbstractEnvironment;
+import uk.ac.rhul.cs.dice.starworlds.environment.base.DistributedEnvironment;
+import uk.ac.rhul.cs.dice.starworlds.environment.base.Environment;
+import uk.ac.rhul.cs.dice.starworlds.environment.base.State;
 import uk.ac.rhul.cs.dice.starworlds.environment.concrete.DefaultPhysics;
+import uk.ac.rhul.cs.dice.starworlds.environment.physics.time.LocalSynchroniser;
+import uk.ac.rhul.cs.dice.starworlds.environment.physics.time.SuperSynchroniser;
 import uk.ac.rhul.cs.dice.starworlds.perception.AbstractPerception;
 import uk.ac.rhul.cs.dice.starworlds.perception.CommunicationPerception;
 import uk.ac.rhul.cs.dice.starworlds.perception.DefaultPerception;
@@ -47,15 +51,16 @@ import uk.ac.rhul.cs.dice.starworlds.utils.Pair;
  * @author Kostas Stathis
  *
  */
-public abstract class AbstractPhysics implements Physics {
+public abstract class AbstractPhysics implements Physics, Simulator {
 
+	private String id;
 	protected AbstractEnvironment environment;
 	protected Map<String, AbstractAgent> agents;
 	protected Map<String, ActiveBody> activeBodies;
 	protected Map<String, PassiveBody> passiveBodies;
-	protected boolean active = false;
-	protected long framegap = 1000;
-	protected TimeState timestate;
+	// TODO change to not default
+	private TimeState timestate = new TimeStateSerial();
+	private LocalSynchroniser synchronizer;
 
 	public AbstractPhysics(Set<AbstractAgent> agents,
 			Set<ActiveBody> activeBodies, Set<PassiveBody> passiveBodies) {
@@ -66,26 +71,13 @@ public abstract class AbstractPhysics implements Physics {
 				: new HashMap<>();
 	}
 
-	private <T extends Entity> Map<String, T> setToMap(Set<T> set) {
-		Map<String, T> map = new HashMap<>();
-		set.forEach((T t) -> {
-			;
-			map.put((String) t.getId(), t);
-		});
-		return map;
+	public void simulate() {
+		((SuperSynchroniser) synchronizer).simulate();
 	}
 
-	public void start(boolean serial) {
-		setTimeState(serial);
-		try {
-			active = true;
-			while (active) {
-				timestate.simulate();
-				Thread.sleep(framegap);
-			}
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
+	@Override
+	public void runAgents() {
+		timestate.simulate();
 	}
 
 	@Override
@@ -276,13 +268,24 @@ public abstract class AbstractPhysics implements Physics {
 				.forEach(
 						(String s) -> {
 							AbstractAgent agent = agents.get(s);
+							Collection<AbstractPerception<?>> perceptionsToNotify = new HashSet<>();
+							perceptionsToNotify
+									.add(new CommunicationPerception<>(action
+											.getPayload()));
 							if (agent != null) {
-								Collection<AbstractPerception<?>> perceptionsToNotify = new HashSet<>();
-								perceptionsToNotify
-										.add(new CommunicationPerception<>(
-												action.getPayload()));
+								// the agent resides within this environment
 								environment.notify(action, agent,
 										perceptionsToNotify, context);
+							} else {
+								// the agent may reside in another environment
+								if (DistributedEnvironment.class
+										.isAssignableFrom(environment
+												.getClass())) {
+									((DistributedEnvironment) environment)
+											.notifyRemote(action, s,
+													perceptionsToNotify,
+													context);
+								}
 							}
 						});
 		// TODO if something failed
@@ -322,22 +325,21 @@ public abstract class AbstractPhysics implements Physics {
 
 	@Override
 	public void setEnvironment(AbstractEnvironment environment) {
-		this.environment = environment;
-	}
-
-	protected void setTimeState(boolean serial) {
-		if (serial) {
-			timestate = new TimeStateSerial();
-		} else {
-			timestate = new TimeStateParallel();
+		if (this.environment == null) {
+			this.environment = environment;
+			if (!Simulator.class.isAssignableFrom(environment.getClass())) {
+				this.synchronizer = new LocalSynchroniser(environment);
+			} else {
+				this.synchronizer = new SuperSynchroniser(environment);
+			}
 		}
 	}
 
 	/**
 	 * The state of a {@link Physics} that may be either serial or parallel see
 	 * {@link TimeStateSerial}, {@link TimeStateParallel}. These
-	 * {@link TimeState}s define how the system should run, namely whether the
-	 * system is multi-threaded.
+	 * {@link TimeState}s define the order in which the {@link Agent}s should
+	 * run, namely whether the system is multi-threaded.
 	 * 
 	 * @author Ben Wilkins
 	 *
@@ -361,7 +363,6 @@ public abstract class AbstractPhysics implements Physics {
 			agents.values().forEach((AbstractAgent a) -> {
 				a.run();
 			});
-			executeActions();
 		}
 
 		@Override
@@ -394,7 +395,6 @@ public abstract class AbstractPhysics implements Physics {
 				t.start();
 			});
 			waitForAgents(threads);
-			executeActions();
 		}
 
 		private void waitForAgents(Collection<Thread> threads) {
@@ -435,4 +435,36 @@ public abstract class AbstractPhysics implements Physics {
 		return AbstractSensor.NULLPERCEPTION.isAssignableFrom(perception
 				.getClass());
 	}
+
+	@Override
+	public String getId() {
+		return this.id;
+	}
+
+	@Override
+	public void setId(String id) {
+		this.id = id;
+	}
+
+	public LocalSynchroniser getSynchronizer() {
+		return synchronizer;
+	}
+
+	protected void setTimeState(boolean serial) {
+		if (serial) {
+			timestate = new TimeStateSerial();
+		} else {
+			timestate = new TimeStateParallel();
+		}
+	}
+
+	private <T extends Entity> Map<String, T> setToMap(Set<T> set) {
+		Map<String, T> map = new HashMap<>();
+		set.forEach((T t) -> {
+			;
+			map.put((String) t.getId(), t);
+		});
+		return map;
+	}
+
 }

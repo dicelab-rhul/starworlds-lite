@@ -12,28 +12,11 @@ public class ExperimentPhysics extends AbstractPhysics {
 	private StringBuilder info;
 
 	public ExperimentPhysics(Set<AbstractAgent> agents,
-			Set<ActiveBody> activeBodies, Set<PassiveBody> passiveBodies) {
+			Set<ActiveBody> activeBodies, Set<PassiveBody> passiveBodies,
+			String id) {
 		super(agents, activeBodies, passiveBodies);
-	}
-
-	@Override
-	public void start(boolean serial) {
-		int count = 0;
-		Long totaltime = 0l;
-		super.setTimeState(serial);
-		while (true) {
-			count++;
-			info = new StringBuilder("---------------------"
-					+ System.lineSeparator());
-			System.out.println(info.toString());
-			Long time = System.nanoTime();
-			super.timestate.simulate();
-			optional();
-			info.append(System.lineSeparator() + "TOTAL TIME: "
-					+ String.valueOf(getTime(time)));
-			System.out.println(info.toString());
-			sleep(1000);
-		}
+		this.setId(id);
+		System.out.println("PHYSICS: " + id + " " + this.getAgents());
 	}
 
 	protected void optional() {

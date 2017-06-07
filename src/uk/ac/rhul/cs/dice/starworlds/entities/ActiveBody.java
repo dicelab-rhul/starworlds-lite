@@ -18,7 +18,7 @@ import uk.ac.rhul.cs.dice.starworlds.entities.agents.components.Component;
 import uk.ac.rhul.cs.dice.starworlds.entities.agents.components.Sensor;
 import uk.ac.rhul.cs.dice.starworlds.entities.agents.components.concrete.PhysicalActuator;
 import uk.ac.rhul.cs.dice.starworlds.entities.agents.components.concrete.SpeechActuator;
-import uk.ac.rhul.cs.dice.starworlds.environment.AbstractEnvironment;
+import uk.ac.rhul.cs.dice.starworlds.environment.base.AbstractEnvironment;
 import uk.ac.rhul.cs.dice.starworlds.environment.physics.Physics;
 import uk.ac.rhul.cs.dice.starworlds.perception.Perception;
 
@@ -49,7 +49,7 @@ public abstract class ActiveBody extends PhysicalBody implements Actor {
 
 	private List<Sensor> sensors;
 	private List<Actuator> actuators;
-	private AbstractEnvironment<?> environment;
+	private AbstractEnvironment environment;
 
 	/**
 	 * Constructor. The default {@link Appearance} for an {@link ActiveBody} is
@@ -156,6 +156,7 @@ public abstract class ActiveBody extends PhysicalBody implements Actor {
 	 */
 	public void addActuator(Actuator actuator) {
 		actuator.setBody(this);
+		actuator.setId(this.getId() + ":" + actuators.size());
 		this.actuators.add(actuator);
 	}
 
@@ -177,6 +178,17 @@ public abstract class ActiveBody extends PhysicalBody implements Actor {
 		activatedActuators.clear();
 	}
 
+	@Override
+	public void setId(String id) {
+		super.setId(id);
+		for (int i = 0; i < sensors.size(); i++) {
+			sensors.get(i).setId(this.getId() + ":" + i);
+		}
+		for (int i = 0; i < actuators.size(); i++) {
+			actuators.get(i).setId(this.getId() + ":" + i);
+		}
+	}
+
 	public void sensorActive(Sensor sensor) {
 		this.activatedSensors.add(sensor);
 	}
@@ -191,7 +203,7 @@ public abstract class ActiveBody extends PhysicalBody implements Actor {
 	 * 
 	 * @return the {@link AbstractEnvironment}
 	 */
-	public AbstractEnvironment<?> getEnvironment() {
+	public AbstractEnvironment getEnvironment() {
 		return environment;
 	}
 
@@ -202,7 +214,7 @@ public abstract class ActiveBody extends PhysicalBody implements Actor {
 	 * @param environment
 	 *            to set
 	 */
-	public void setEnvironment(AbstractEnvironment<?> environment) {
+	public void setEnvironment(AbstractEnvironment environment) {
 		this.environment = environment;
 	}
 

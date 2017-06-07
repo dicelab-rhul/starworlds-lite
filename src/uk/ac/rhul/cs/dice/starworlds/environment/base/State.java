@@ -1,18 +1,16 @@
-package uk.ac.rhul.cs.dice.starworlds.environment;
+package uk.ac.rhul.cs.dice.starworlds.environment.base;
 
 import java.io.Serializable;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.Set;
 
 import uk.ac.rhul.cs.dice.starworlds.actions.environmental.AbstractEnvironmentalAction;
 import uk.ac.rhul.cs.dice.starworlds.actions.environmental.CommunicationAction;
 import uk.ac.rhul.cs.dice.starworlds.actions.environmental.PhysicalAction;
 import uk.ac.rhul.cs.dice.starworlds.actions.environmental.SensingAction;
-import uk.ac.rhul.cs.dice.starworlds.environment.AbstractState.Filter;
+import uk.ac.rhul.cs.dice.starworlds.environment.base.AbstractState.Filter;
 import uk.ac.rhul.cs.dice.starworlds.environment.physics.Physics;
 import uk.ac.rhul.cs.dice.starworlds.utils.Pair;
-import uk.ac.rhul.cs.dice.starworlds.utils.SerializablePair;
 
 /**
  * The interface for states.<br/>

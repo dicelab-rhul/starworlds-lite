@@ -15,8 +15,6 @@ import uk.ac.rhul.cs.dice.starworlds.entities.ActiveBody;
  */
 public interface Actuator extends Component {
 
-	public String getId();
-
 	public ActiveBody getBody();
 
 	public void setBody(ActiveBody body);

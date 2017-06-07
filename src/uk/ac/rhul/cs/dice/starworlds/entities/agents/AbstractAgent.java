@@ -12,7 +12,7 @@ import uk.ac.rhul.cs.dice.starworlds.entities.Agent;
 import uk.ac.rhul.cs.dice.starworlds.entities.agents.components.AbstractSensor;
 import uk.ac.rhul.cs.dice.starworlds.entities.agents.components.Actuator;
 import uk.ac.rhul.cs.dice.starworlds.entities.agents.components.Sensor;
-import uk.ac.rhul.cs.dice.starworlds.environment.AbstractEnvironment;
+import uk.ac.rhul.cs.dice.starworlds.environment.base.AbstractEnvironment;
 import uk.ac.rhul.cs.dice.starworlds.perception.Perception;
 
 /**

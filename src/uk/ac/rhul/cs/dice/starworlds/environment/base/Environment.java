@@ -1,8 +1,11 @@
-package uk.ac.rhul.cs.dice.starworlds.environment;
+package uk.ac.rhul.cs.dice.starworlds.environment.base;
+
+import java.util.Map;
 
 import uk.ac.rhul.cs.dice.starworlds.actions.environmental.AbstractEnvironmentalAction;
 import uk.ac.rhul.cs.dice.starworlds.appearances.Appearance;
 import uk.ac.rhul.cs.dice.starworlds.environment.physics.Physics;
+import uk.ac.rhul.cs.dice.starworlds.utils.Identifiable;
 
 /**
  * The most general interface exposing the essential methods all the
@@ -16,7 +19,7 @@ import uk.ac.rhul.cs.dice.starworlds.environment.physics.Physics;
  * @author Kostas Stathis
  *
  */
-public interface Environment {
+public interface Environment extends Identifiable {
 
 	public void updateState(AbstractEnvironmentalAction action);
 

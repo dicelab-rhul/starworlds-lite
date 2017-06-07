@@ -5,11 +5,11 @@ import java.util.List;
 
 import uk.ac.rhul.cs.dice.starworlds.actions.environmental.AbstractEnvironmentalAction;
 import uk.ac.rhul.cs.dice.starworlds.appearances.Appearance;
+import uk.ac.rhul.cs.dice.starworlds.environment.base.DistributedEnvironment;
+import uk.ac.rhul.cs.dice.starworlds.environment.base.State;
 import uk.ac.rhul.cs.dice.starworlds.environment.physics.Physics;
 
-public class DistributedComplexEnvironment extends DistributedEnvironment {
-
-	private List<AbstractEnvironment<?>> subEnvironments;
+public abstract class DistributedComplexEnvironment extends DistributedEnvironment {
 
 	public DistributedComplexEnvironment(
 			State state,
@@ -22,27 +22,6 @@ public class DistributedComplexEnvironment extends DistributedEnvironment {
 
 	}
 
-	/**
-	 * Returns the {@link List} of sub-environments.
-	 * 
-	 * @return a {@link List} of {@link AbstractEnvironment} elements.
-	 */
-	public List<AbstractEnvironment<?>> getSubEnvironments() {
-		return this.subEnvironments;
-	}
-
-	/**
-	 * Adds an {@link AbstractEnvironment} to the {@link List} of
-	 * sub-environments.
-	 * 
-	 * @param environment
-	 *            : the {@link AbstractEnvironment} to add to the {@link List}
-	 *            of sub-environments.
-	 */
-	public void addSubEnvironment(AbstractEnvironment<?> environment) {
-		this.subEnvironments.add(environment);
-	}
-
 	@Override
 	public Boolean isSimple() {
 		return false;
@@ -52,5 +31,4 @@ public class DistributedComplexEnvironment extends DistributedEnvironment {
 	public boolean isDistributed() {
 		return true;
 	}
-
 }
