@@ -31,9 +31,4 @@ public class INetByteReceiver implements INetReceiver {
 			return null;
 		}
 	}
-
-	@Override
-	public Class<?> getExpectedinclass() {
-		return byte[].class;
-	}
 }

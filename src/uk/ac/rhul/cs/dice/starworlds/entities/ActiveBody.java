@@ -264,4 +264,9 @@ public abstract class ActiveBody extends PhysicalBody implements Actor {
 		this.defaultPhysicalActuator = defaultPhysicalActuator;
 	}
 
+	@Override
+	public ActiveBodyAppearance getAppearance() {
+		return (ActiveBodyAppearance) super.getAppearance();
+	}
+
 }

@@ -1,5 +1,6 @@
 package uk.ac.rhul.cs.dice.starworlds.environment.physics;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -20,14 +21,14 @@ import uk.ac.rhul.cs.dice.starworlds.entities.agents.AbstractAgent;
 import uk.ac.rhul.cs.dice.starworlds.entities.agents.components.AbstractSensor;
 import uk.ac.rhul.cs.dice.starworlds.entities.agents.components.concrete.ListeningSensor;
 import uk.ac.rhul.cs.dice.starworlds.entities.agents.components.concrete.SeeingSensor;
-import uk.ac.rhul.cs.dice.starworlds.environment.Simulator;
+import uk.ac.rhul.cs.dice.starworlds.environment.base.AbstractConnectedEnvironment;
 import uk.ac.rhul.cs.dice.starworlds.environment.base.AbstractEnvironment;
 import uk.ac.rhul.cs.dice.starworlds.environment.base.DistributedEnvironment;
-import uk.ac.rhul.cs.dice.starworlds.environment.base.Environment;
-import uk.ac.rhul.cs.dice.starworlds.environment.base.State;
+import uk.ac.rhul.cs.dice.starworlds.environment.base.interfaces.Environment;
+import uk.ac.rhul.cs.dice.starworlds.environment.base.interfaces.Simulator;
+import uk.ac.rhul.cs.dice.starworlds.environment.base.interfaces.State;
+import uk.ac.rhul.cs.dice.starworlds.environment.concrete.ComplexEnvironment;
 import uk.ac.rhul.cs.dice.starworlds.environment.concrete.DefaultPhysics;
-import uk.ac.rhul.cs.dice.starworlds.environment.physics.time.LocalSynchroniser;
-import uk.ac.rhul.cs.dice.starworlds.environment.physics.time.SuperSynchroniser;
 import uk.ac.rhul.cs.dice.starworlds.perception.AbstractPerception;
 import uk.ac.rhul.cs.dice.starworlds.perception.CommunicationPerception;
 import uk.ac.rhul.cs.dice.starworlds.perception.DefaultPerception;
@@ -53,6 +54,8 @@ import uk.ac.rhul.cs.dice.starworlds.utils.Pair;
  */
 public abstract class AbstractPhysics implements Physics, Simulator {
 
+	private static final long FRAMELENGTH = 1000;
+
 	private String id;
 	protected AbstractEnvironment environment;
 	protected Map<String, AbstractAgent> agents;
@@ -60,7 +63,6 @@ public abstract class AbstractPhysics implements Physics, Simulator {
 	protected Map<String, PassiveBody> passiveBodies;
 	// TODO change to not default
 	private TimeState timestate = new TimeStateSerial();
-	private LocalSynchroniser synchronizer;
 
 	public AbstractPhysics(Set<AbstractAgent> agents,
 			Set<ActiveBody> activeBodies, Set<PassiveBody> passiveBodies) {
@@ -72,7 +74,15 @@ public abstract class AbstractPhysics implements Physics, Simulator {
 	}
 
 	public void simulate() {
-		((SuperSynchroniser) synchronizer).simulate();
+		while (true) {
+			this.runAgents();
+			this.executeActions();
+			try {
+				Thread.sleep(FRAMELENGTH);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 
 	@Override
@@ -82,48 +92,38 @@ public abstract class AbstractPhysics implements Physics, Simulator {
 
 	@Override
 	public void executeActions() {
-		doPhysicalActions();
-		doSensingActions();
-		doCommunicationActions();
+		doPhysicalActions(environment.getState().flushPhysicalActions());
+		doSensingActions(environment.getState().flushSensingActions());
+		doCommunicationActions(environment.getState()
+				.flushCommunicationActions());
 	}
 
-	private void doPhysicalActions() {
+	protected void doPhysicalActions(Collection<PhysicalAction> actions) {
 		Collection<PhysicalAction> failedactions = new ArrayList<>();
-		environment.getState().getPhysicalActions()
-				.forEach((PhysicalAction a) -> {
-					if (!this.execute(a, environment.getState())) {
-						failedactions.add(a);
-					}
-				});
-		environment.getState().getPhysicalActions().removeAll(failedactions);
+		actions.forEach((PhysicalAction a) -> {
+			if (!this.execute(a, environment.getState())) {
+				failedactions.add(a);
+			}
+		});
+		actions.removeAll(failedactions);
 		// get the perceptions of all non-failed actions, this must be done so
 		// that any perceptions are not out of sync
-		environment.getState().getPhysicalActions()
-				.forEach((PhysicalAction a) -> {
-					this.doPhysicalPerceptions(a, environment.getState());
-				});
+		actions.forEach((PhysicalAction a) -> {
+			this.doPhysicalPerceptions(a, environment.getState());
+		});
 	}
 
-	private void doSensingActions() {
+	protected void doSensingActions(Collection<SensingAction> actions) {
 		// System.out.println("DO SENSING ACTIONS"
 		// + environment.getState().getSensingActions());
-		environment
-				.getState()
-				.getSensingActions()
-				.forEach(
-						(SensingAction s) -> this.execute(s,
-								environment.getState()));
-		environment.getState().getSensingActions().clear();
+		actions.forEach((SensingAction s) -> this.execute(s,
+				environment.getState()));
 	}
 
-	private void doCommunicationActions() {
-		environment
-				.getState()
-				.getCommunicationActions()
-				.forEach(
-						(CommunicationAction<?> c) -> this.execute(c,
-								environment.getState()));
-		environment.getState().getCommunicationActions().clear();
+	protected void doCommunicationActions(
+			Collection<CommunicationAction<?>> actions) {
+		actions.forEach((CommunicationAction<?> c) -> this.execute(c,
+				environment.getState()));
 	}
 
 	// ***************************************************** //
@@ -150,11 +150,12 @@ public abstract class AbstractPhysics implements Physics, Simulator {
 				.getAgentPerceptions(this, context);
 		Set<AbstractPerception<?>> otherPerceptions = action
 				.getOthersPerceptions(this, context);
-		environment.notify(action, (ActiveBody) action.getActor(),
-				agentPerceptions, context);
+		environment
+				.notify(action, action.getActor(), agentPerceptions, context);
 		for (ActiveBody a : this.getAgents()) {
 			if (!a.equals(action.getActor())) {
-				environment.notify(action, a, otherPerceptions, context);
+				environment.notify(action, a.getAppearance(), otherPerceptions,
+						context);
 			}
 		}
 	}
@@ -186,23 +187,23 @@ public abstract class AbstractPhysics implements Physics, Simulator {
 			verify(action, context); // TODO what to verify?
 		}
 		// should other agents be able to sense that this agent is sensing?
-		Collection<AbstractPerception<?>> perceptionsToNotify = new HashSet<>();
-		for (Pair<String, Object> p : perceptions) {
-			if (p != null) {
-				perceptionsToNotify
-						.add(new DefaultPerception<Pair<String, Object>>(p));
-			} else {
-				perceptionsToNotify.add(new NullPerception());
+		if (perceptions != null) {
+			Collection<AbstractPerception<?>> perceptionsToNotify = new HashSet<>();
+			for (Pair<String, Object> p : perceptions) {
+				if (p != null) {
+					perceptionsToNotify
+							.add(new DefaultPerception<Pair<String, Object>>(p));
+				} else {
+					perceptionsToNotify.add(new NullPerception());
+				}
 			}
-
+			environment.notify(action, action.getActor(), perceptionsToNotify,
+					context);
 		}
-		environment.notify(action, (ActiveBody) action.getActor(),
-				perceptionsToNotify, context);
 	}
 
 	@Override
 	public Set<Pair<String, Object>> perform(SensingAction action, State context) {
-		// System.out.println(Arrays.toString(action.getKeys()));
 		return context.filterActivePerception(action.getKeys(), action);
 	}
 
@@ -210,7 +211,6 @@ public abstract class AbstractPhysics implements Physics, Simulator {
 	public boolean isPossible(SensingAction action, State context) {
 		String[] keys = action.getKeys();
 		int count = 0;
-		// System.out.println("KEYS: " + Arrays.toString(keys));
 		for (int i = 0; i < keys.length; i++) {
 			String[] subkeys = keys[i].split("\\.");
 			// TODO handle integer parameters
@@ -260,32 +260,28 @@ public abstract class AbstractPhysics implements Physics, Simulator {
 						Collection<AbstractPerception<?>> perceptionsToNotify = new HashSet<>();
 						perceptionsToNotify.add(new CommunicationPerception<>(
 								action.getPayload()));
-						environment.notify(action, a, perceptionsToNotify,
-								context);
+						environment.notify(action, a.getAppearance(),
+								perceptionsToNotify, context);
 					});
 		}
+		// Clone the action as a special case - the perception should be
+		// returned to the recipients that (may) reside in this environment
+		CommunicationAction<?> clone = new CommunicationAction<>(action);
+		clone.setLocalEnvironment(this.environment.getAppearance());
 		action.getRecipientsIds()
 				.forEach(
 						(String s) -> {
 							AbstractAgent agent = agents.get(s);
-							Collection<AbstractPerception<?>> perceptionsToNotify = new HashSet<>();
-							perceptionsToNotify
-									.add(new CommunicationPerception<>(action
-											.getPayload()));
 							if (agent != null) {
+								ActiveBodyAppearance appearance = agent
+										.getAppearance();
+								Collection<AbstractPerception<?>> perceptionsToNotify = new HashSet<>();
+								perceptionsToNotify
+										.add(new CommunicationPerception<>(
+												action.getPayload()));
 								// the agent resides within this environment
-								environment.notify(action, agent,
+								environment.notify(clone, appearance,
 										perceptionsToNotify, context);
-							} else {
-								// the agent may reside in another environment
-								if (DistributedEnvironment.class
-										.isAssignableFrom(environment
-												.getClass())) {
-									((DistributedEnvironment) environment)
-											.notifyRemote(action, s,
-													perceptionsToNotify,
-													context);
-								}
 							}
 						});
 		// TODO if something failed
@@ -327,12 +323,12 @@ public abstract class AbstractPhysics implements Physics, Simulator {
 	public void setEnvironment(AbstractEnvironment environment) {
 		if (this.environment == null) {
 			this.environment = environment;
-			if (!Simulator.class.isAssignableFrom(environment.getClass())) {
-				this.synchronizer = new LocalSynchroniser(environment);
-			} else {
-				this.synchronizer = new SuperSynchroniser(environment);
-			}
+			this.setId(environment.getId());
 		}
+	}
+
+	protected AbstractEnvironment getEnvironment() {
+		return this.environment;
 	}
 
 	/**
@@ -444,10 +440,6 @@ public abstract class AbstractPhysics implements Physics, Simulator {
 	@Override
 	public void setId(String id) {
 		this.id = id;
-	}
-
-	public LocalSynchroniser getSynchronizer() {
-		return synchronizer;
 	}
 
 	protected void setTimeState(boolean serial) {

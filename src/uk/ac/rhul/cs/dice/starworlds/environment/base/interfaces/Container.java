@@ -1,4 +1,6 @@
-package uk.ac.rhul.cs.dice.starworlds.environment.base;
+package uk.ac.rhul.cs.dice.starworlds.environment.base.interfaces;
+
+import uk.ac.rhul.cs.dice.starworlds.environment.base.AbstractEnvironment;
 
 /**
  * An interface for classes which act as a container for specific containable objects.<br/><br/>

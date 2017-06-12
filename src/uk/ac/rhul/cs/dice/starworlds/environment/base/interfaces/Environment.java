@@ -1,15 +1,17 @@
-package uk.ac.rhul.cs.dice.starworlds.environment.base;
+package uk.ac.rhul.cs.dice.starworlds.environment.base.interfaces;
 
-import java.util.Map;
+import java.util.Collection;
 
+import uk.ac.rhul.cs.dice.starworlds.actions.Action;
 import uk.ac.rhul.cs.dice.starworlds.actions.environmental.AbstractEnvironmentalAction;
 import uk.ac.rhul.cs.dice.starworlds.appearances.Appearance;
+import uk.ac.rhul.cs.dice.starworlds.environment.base.AbstractEnvironment;
 import uk.ac.rhul.cs.dice.starworlds.environment.physics.Physics;
 import uk.ac.rhul.cs.dice.starworlds.utils.Identifiable;
 
 /**
  * The most general interface exposing the essential methods all the
- * environments need to implement.<br/>
+ * environments should to implement.<br/>
  * <br/>
  * 
  * Known implementations: {@link AbstractEnvironment}.
@@ -21,6 +23,15 @@ import uk.ac.rhul.cs.dice.starworlds.utils.Identifiable;
  */
 public interface Environment extends Identifiable {
 
+	public void postInitialisation();
+
+	/**
+	 * Updates the state of this {@link Environment} with a new {@link Action}
+	 * that should be executed this cycle.
+	 * 
+	 * @param action
+	 *            to execute
+	 */
 	public void updateState(AbstractEnvironmentalAction action);
 
 	/**

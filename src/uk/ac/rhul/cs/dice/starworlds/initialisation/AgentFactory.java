@@ -2,7 +2,6 @@ package uk.ac.rhul.cs.dice.starworlds.initialisation;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 import uk.ac.rhul.cs.dice.starworlds.entities.agents.AbstractAgentMind;
 import uk.ac.rhul.cs.dice.starworlds.entities.agents.components.Actuator;
@@ -16,25 +15,23 @@ import uk.ac.rhul.cs.dice.starworlds.entities.agents.concrete.DefaultAgent;
 public class AgentFactory {
 
 	private static AgentFactory instance = new AgentFactory();
-	private static Random IDGENERATOR = new Random();
-	private static Integer IDBOUND = Integer.MAX_VALUE;
+	private static IDFactory idfactory = IDFactory.getInstance();
+
+	private AgentFactory() {
+	}
 
 	public DefaultAgent createCustomDefaultAgent(List<Sensor> sensors,
 			List<Actuator> actuators, AbstractAgentMind mind) {
 		DefaultAgent agent = new DefaultAgent(sensors, actuators, mind);
-		agent.setId(generateId());
+		agent.setId(idfactory.getNewID());
 		return agent;
 	}
 
 	public DefaultAgent createDefaultAgent(AbstractAgentMind mind) {
 		DefaultAgent agent = new DefaultAgent(getDefaultSensors(),
 				getDefaultActuators(), mind);
-		agent.setId(generateId());
+		agent.setId(idfactory.getNewID());
 		return agent;
-	}
-
-	private String generateId() {
-		return String.valueOf(IDGENERATOR.nextInt(IDBOUND));
 	}
 
 	// TODO

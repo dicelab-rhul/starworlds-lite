@@ -1,0 +1,82 @@
+{
+
+@possibleactions : {
+	communicationaction : uk.ac.rhul.cs.dice.starworlds.actions.environmental.CommunicationAction,
+	sensingaction : uk.ac.rhul.cs.dice.starworlds.actions.environmental.SensingAction,
+},
+
+@environments : {
+		universe : uk.ac.rhul.cs.dice.starworlds.environment.concrete.DefaultUniverse,
+		simpleenv : uk.ac.rhul.cs.dice.starworlds.environment.concrete.SimpleEnvironment,
+		complexenv : uk.ac.rhul.cs.dice.starworlds.environment.concrete.ComplexEnvironment,
+},
+
+@appearances : {
+	environmentalappearance : uk.ac.rhul.cs.dice.starworlds.appearances.EnvironmentalAppearance,
+},
+
+@physics : {
+	dphysics : uk.ac.rhul.cs.dice.starworlds.environment.concrete.DefaultPhysics,
+	dcphysics : uk.ac.rhul.cs.dice.starworlds.environment.concrete.DefaultConnectedPhysics,
+},
+
+@states : {
+	dstate : uk.ac.rhul.cs.dice.starworlds.environment.concrete.DefaultState,
+},
+
+@agentminds : {
+	dagentmind : uk.ac.rhul.cs.dice.starworlds.entities.agents.concrete.DefaultAgentMind,
+	cagentmind :  uk.ac.rhul.cs.dice.starworlds.experiment.communicatingagents.RandomCommunicatingAgentMind
+},
+
+@agentbodies : {
+	dagent : uk.ac.rhul.cs.dice.starworlds.entities.agents.concrete.DefaultAgent,
+},
+
+@agentsensors : {
+	listeningsensor : uk.ac.rhul.cs.dice.starworlds.entities.agents.components.concrete.ListeningSensor,
+	seeingsensor : uk.ac.rhul.cs.dice.starworlds.entities.agents.components.concrete.SeeingSensor,
+},
+
+@agentactuators : {
+	physicalactuator : uk.ac.rhul.cs.dice.starworlds.entities.agents.components.concrete.PhysicalActuator,
+	speechactuator : uk.ac.rhul.cs.dice.starworlds.entities.agents.components.concrete.SpeechActuator,
+},
+
+~agents : {
+	DefaultAgent : {
+		@agentbodies : dagent,
+		@agentminds : dagentmind,
+		@agentsensors : [listeningsensor, seeingsensor],
+		@agentactuators : [physicalactuator, speechactuator],
+	},
+	CommunicatingAgent : {
+		@agentbodies : dagent,
+		@agentminds : cagentmind,
+		@agentsensors : [listeningsensor, seeingsensor],
+		@agentactuators : [speechactuator],
+	},
+},
+
+~environments : {
+
+	DefaultUniverse : {
+		@environments : universe,
+		@possibleactions : [communicationaction, sensingaction],
+		@physics : dcphysics,
+		@states : dstate,
+	},
+	DefaultEnvironment : {
+		@environments : complexenv,
+		@possibleactions : [communicationaction, sensingaction],
+		@physics : dcphysics,
+		@states : dstate,
+	}
+},
+
+~structure : {
+	DefaultUniverse : {
+		~agents : [CommunicatingAgent,CommunicatingAgent],
+	}
+}	
+}

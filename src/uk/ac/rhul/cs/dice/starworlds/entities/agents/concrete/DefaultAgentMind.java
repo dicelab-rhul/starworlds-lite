@@ -40,4 +40,9 @@ public class DefaultAgentMind extends AbstractAgentMind {
 		System.out.println("EXECUTE: " + action);
 		return super.doSpeakAct((CommunicationAction<?>) action);
 	}
+
+	@Override
+	public String toString() {
+		return this.getClass().getSimpleName();
+	}
 }

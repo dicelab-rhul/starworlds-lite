@@ -2,7 +2,7 @@ package uk.ac.rhul.cs.dice.starworlds.actions.environmental;
 
 import java.util.Arrays;
 
-import uk.ac.rhul.cs.dice.starworlds.environment.physics.AbstractSubscriber.SensiblePerception;
+import uk.ac.rhul.cs.dice.starworlds.environment.subscriber.AbstractSubscriber.SensiblePerception;
 import uk.ac.rhul.cs.dice.starworlds.perception.CommunicationPerception;
 import uk.ac.rhul.cs.dice.starworlds.perception.DefaultPerception;
 
@@ -36,10 +36,5 @@ public class SensingAction extends AbstractEnvironmentalAction {
 	@Override
 	public String toString() {
 		return this.getClass().getSimpleName() + Arrays.toString(this.keys);
-	}
-
-	@Override
-	public Object[] getCanSense() {
-		return null;
 	}
 }

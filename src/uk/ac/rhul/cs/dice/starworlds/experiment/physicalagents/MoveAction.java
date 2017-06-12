@@ -3,9 +3,9 @@ package uk.ac.rhul.cs.dice.starworlds.experiment.physicalagents;
 import java.util.Set;
 
 import uk.ac.rhul.cs.dice.starworlds.actions.environmental.PhysicalAction;
-import uk.ac.rhul.cs.dice.starworlds.environment.base.State;
-import uk.ac.rhul.cs.dice.starworlds.environment.physics.AbstractSubscriber.SensiblePerception;
+import uk.ac.rhul.cs.dice.starworlds.environment.base.interfaces.State;
 import uk.ac.rhul.cs.dice.starworlds.environment.physics.Physics;
+import uk.ac.rhul.cs.dice.starworlds.environment.subscriber.AbstractSubscriber.SensiblePerception;
 import uk.ac.rhul.cs.dice.starworlds.perception.AbstractPerception;
 import uk.ac.rhul.cs.dice.starworlds.utils.Pair;
 

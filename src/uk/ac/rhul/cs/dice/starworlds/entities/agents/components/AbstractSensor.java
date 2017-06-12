@@ -6,7 +6,7 @@ import java.util.Set;
 import uk.ac.rhul.cs.dice.starworlds.actions.environmental.AbstractEnvironmentalAction;
 import uk.ac.rhul.cs.dice.starworlds.actions.environmental.SensingAction;
 import uk.ac.rhul.cs.dice.starworlds.entities.ActiveBody;
-import uk.ac.rhul.cs.dice.starworlds.environment.physics.AbstractSubscriber.SensiblePerception;
+import uk.ac.rhul.cs.dice.starworlds.environment.subscriber.AbstractSubscriber.SensiblePerception;
 import uk.ac.rhul.cs.dice.starworlds.perception.AbstractPerception;
 import uk.ac.rhul.cs.dice.starworlds.perception.NullPerception;
 import uk.ac.rhul.cs.dice.starworlds.perception.Perception;
@@ -40,8 +40,6 @@ public abstract class AbstractSensor implements Sensor {
 
 	@Override
 	public void notify(Perception<?> perception) {
-		// System.out.println("AGENT: " + body.getId() + " SENSOR: " + this
-		// + " RECEIVED PERCEPTION: " + perception);
 		this.perceptions.add(perception);
 		body.sensorActive(this);
 	}

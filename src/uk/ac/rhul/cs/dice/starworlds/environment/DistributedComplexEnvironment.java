@@ -6,7 +6,7 @@ import java.util.List;
 import uk.ac.rhul.cs.dice.starworlds.actions.environmental.AbstractEnvironmentalAction;
 import uk.ac.rhul.cs.dice.starworlds.appearances.Appearance;
 import uk.ac.rhul.cs.dice.starworlds.environment.base.DistributedEnvironment;
-import uk.ac.rhul.cs.dice.starworlds.environment.base.State;
+import uk.ac.rhul.cs.dice.starworlds.environment.base.interfaces.State;
 import uk.ac.rhul.cs.dice.starworlds.environment.physics.Physics;
 
 public abstract class DistributedComplexEnvironment extends DistributedEnvironment {

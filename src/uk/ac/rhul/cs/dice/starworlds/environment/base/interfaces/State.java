@@ -1,4 +1,4 @@
-package uk.ac.rhul.cs.dice.starworlds.environment.base;
+package uk.ac.rhul.cs.dice.starworlds.environment.base.interfaces;
 
 import java.io.Serializable;
 import java.util.Collection;
@@ -8,6 +8,7 @@ import uk.ac.rhul.cs.dice.starworlds.actions.environmental.AbstractEnvironmental
 import uk.ac.rhul.cs.dice.starworlds.actions.environmental.CommunicationAction;
 import uk.ac.rhul.cs.dice.starworlds.actions.environmental.PhysicalAction;
 import uk.ac.rhul.cs.dice.starworlds.actions.environmental.SensingAction;
+import uk.ac.rhul.cs.dice.starworlds.environment.base.AbstractState;
 import uk.ac.rhul.cs.dice.starworlds.environment.base.AbstractState.Filter;
 import uk.ac.rhul.cs.dice.starworlds.environment.physics.Physics;
 import uk.ac.rhul.cs.dice.starworlds.utils.Pair;
@@ -69,6 +70,12 @@ public interface State {
 	public void addPhysicalAction(PhysicalAction action);
 
 	public void addCommunicationAction(CommunicationAction<?> action);
+	
+	public Collection<SensingAction> flushSensingActions();
+
+	public Collection<PhysicalAction> flushPhysicalActions();
+
+	public Collection<CommunicationAction<?>> flushCommunicationActions();
 
 	public Collection<SensingAction> getSensingActions();
 

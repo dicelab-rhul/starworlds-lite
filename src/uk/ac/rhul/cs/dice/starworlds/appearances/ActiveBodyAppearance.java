@@ -45,7 +45,7 @@ public class ActiveBodyAppearance extends PhysicalBodyAppearance {
 			Collection<? extends Class<?>> collection) {
 		StringBuilder builder = new StringBuilder("[ ");
 		for (Class<?> c : collection) {
-			builder.append(c.getSimpleName());
+			builder.append(c.getSimpleName() + " ");
 		}
 		builder.append("]");
 		return builder.toString();

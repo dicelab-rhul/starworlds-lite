@@ -33,5 +33,4 @@ public class INetObjectReceiver implements INetReceiver {
 	public Class<?> getExpectedinclass() {
 		return expectedinclass;
 	}
-
 }

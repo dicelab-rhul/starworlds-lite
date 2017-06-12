@@ -1,7 +1,10 @@
 package uk.ac.rhul.cs.dice.starworlds.actions.environmental;
 
+import uk.ac.rhul.cs.dice.starworlds.appearances.ActiveBodyAppearance;
+import uk.ac.rhul.cs.dice.starworlds.appearances.EnvironmentAppearance;
 import uk.ac.rhul.cs.dice.starworlds.entities.Actor;
-import uk.ac.rhul.cs.dice.starworlds.environment.physics.AbstractSubscriber.SensiblePerception;
+import uk.ac.rhul.cs.dice.starworlds.environment.subscriber.AbstractSubscriber.SensiblePerception;
+import uk.ac.rhul.cs.dice.starworlds.initialisation.IDFactory;
 import uk.ac.rhul.cs.dice.starworlds.perception.NullPerception;
 
 /**
@@ -23,15 +26,16 @@ public abstract class AbstractEnvironmentalAction implements
 	@SensiblePerception
 	public static final Class<?> NULLPERCEPTION = NullPerception.class;
 
-	private Actor actor;
+	private String id;
+	private ActiveBodyAppearance actor;
 	private Class<?> actuatorclass;
-
-	public abstract Object[] getCanSense();
+	private EnvironmentAppearance localEnvironment;
 
 	/**
 	 * The default constructor.
 	 */
 	public AbstractEnvironmentalAction() {
+		this.id = IDFactory.getInstance().getNewID();
 	}
 
 	/**
@@ -40,17 +44,20 @@ public abstract class AbstractEnvironmentalAction implements
 	 * @param actor
 	 *            : the {@link Actor} of the {@link EnvironmentalAction}.
 	 */
-	public AbstractEnvironmentalAction(Actor actor) {
+	public AbstractEnvironmentalAction(ActiveBodyAppearance actor) {
 		this.actor = actor;
+		this.id = IDFactory.getInstance().getNewID();
 	}
 
 	/**
-	 * Returns the {@link Actor} of the {@link EnvironmentalAction}.
+	 * Returns the {@link ActiveBodyAppearance} of the
+	 * {@link EnvironmentalAction}.
 	 * 
-	 * @return the {@link Actor} of the {@link EnvironmentalAction}.
+	 * @return the {@link ActiveBodyAppearance} of the
+	 *         {@link EnvironmentalAction}.
 	 */
 	@Override
-	public Actor getActor() {
+	public ActiveBodyAppearance getActor() {
 		return this.actor;
 	}
 
@@ -61,7 +68,7 @@ public abstract class AbstractEnvironmentalAction implements
 	 *            : the {@link Actor} of the {@link EnvironmentalAction}.
 	 */
 	@Override
-	public void setActor(Actor actor) {
+	public void setActor(ActiveBodyAppearance actor) {
 		this.actor = actor;
 	}
 
@@ -73,5 +80,28 @@ public abstract class AbstractEnvironmentalAction implements
 	@Override
 	public Class<?> getActuator() {
 		return this.actuatorclass;
+	}
+
+	@Override
+	public String getId() {
+		// TODO networked actions? ensuring unique ids?
+		return this.id;
+	}
+
+	/**
+	 * The id of an {@link AbstractEnvironmentalAction} cannot be changed, this
+	 * method does nothing.
+	 */
+	@Override
+	public void setId(String id) {
+		// the id of an action cannot be changed
+	}
+
+	public EnvironmentAppearance getLocalEnvironment() {
+		return localEnvironment;
+	}
+
+	public void setLocalEnvironment(EnvironmentAppearance localEnvironment) {
+		this.localEnvironment = localEnvironment;
 	}
 }

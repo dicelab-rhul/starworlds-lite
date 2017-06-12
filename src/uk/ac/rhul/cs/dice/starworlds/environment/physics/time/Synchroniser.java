@@ -4,6 +4,8 @@ public interface Synchroniser {
 
 	public void runagents();
 
+	public void propagateActions();
+
 	public void executeactions();
 
 }

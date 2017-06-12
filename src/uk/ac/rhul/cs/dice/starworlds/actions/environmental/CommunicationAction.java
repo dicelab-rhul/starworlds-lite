@@ -6,7 +6,7 @@ import java.util.List;
 
 import uk.ac.rhul.cs.dice.starworlds.actions.speech.DefaultPayload;
 import uk.ac.rhul.cs.dice.starworlds.actions.speech.Payload;
-import uk.ac.rhul.cs.dice.starworlds.environment.physics.AbstractSubscriber.SensiblePerception;
+import uk.ac.rhul.cs.dice.starworlds.environment.subscriber.AbstractSubscriber.SensiblePerception;
 import uk.ac.rhul.cs.dice.starworlds.perception.CommunicationPerception;
 
 /**
@@ -29,38 +29,34 @@ public class CommunicationAction<T extends Serializable> extends
 
 	private static final String ANONYMOUSSENDER = "Anonymous";
 
-	private String senderId;
 	private List<String> recipientsIds;
 	private Payload<T> payload;
 
 	/**
-	 * The constructor with senderId, recipientsIds and payload.
+	 * Constructor.
 	 * 
-	 * @param senderId
-	 *            : the ID of the sender.
 	 * @param recipientsIds
 	 *            : a {@link List} of IDs of the recipients.
 	 * @param payload
 	 *            : the {@link Payload} of the communication.
 	 */
 	public CommunicationAction(T payload, List<String> recipientsIds) {
-		this.senderId = ANONYMOUSSENDER;
 		this.recipientsIds = (recipientsIds != null) ? recipientsIds
 				: new ArrayList<>();
 		this.payload = new DefaultPayload<T>(payload);
 	}
 
-	public void setSenderId(String senderId) {
-		this.senderId = senderId;
-	}
-
 	/**
-	 * Returns the sender ID.
+	 * Constructor. Clones the action given. The payload of the action is NOT
+	 * cloned.
 	 * 
-	 * @return the sender ID.
+	 * @param action
+	 *            to clone.
 	 */
-	public String getSenderId() {
-		return this.senderId;
+	public CommunicationAction(CommunicationAction<T> action) {
+		this.recipientsIds = new ArrayList<>(action.getRecipientsIds());
+		this.payload = new DefaultPayload<T>(action.getPayload().getPayload());
+		this.setLocalEnvironment(action.getLocalEnvironment());
 	}
 
 	/**
@@ -84,10 +80,5 @@ public class CommunicationAction<T extends Serializable> extends
 	@Override
 	public String toString() {
 		return "MESSAGE: " + payload;
-	}
-
-	@Override
-	public Object[] getCanSense() {
-		return null;
 	}
 }

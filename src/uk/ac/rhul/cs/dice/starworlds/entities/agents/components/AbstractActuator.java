@@ -46,7 +46,6 @@ public abstract class AbstractActuator implements Actuator {
 
 	@Override
 	public void attempt(AbstractEnvironmentalAction action) {
-		// System.out.println(this + " ATTEMPTING: " + action);
 		body.getEnvironment().updateState(action);
 	}
 

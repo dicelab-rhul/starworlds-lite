@@ -3,6 +3,8 @@ package uk.ac.rhul.cs.dice.starworlds.entities;
 import java.util.Objects;
 
 import uk.ac.rhul.cs.dice.starworlds.appearances.Appearance;
+import uk.ac.rhul.cs.dice.starworlds.appearances.PhysicalBodyAppearance;
+import uk.ac.rhul.cs.dice.starworlds.initialisation.IDFactory;
 
 /**
  * The most generic class for physical bodies implementing {@link Body}. It
@@ -26,6 +28,8 @@ public abstract class PhysicalBody implements Body {
 	 * Constructor.
 	 */
 	public PhysicalBody() {
+		this.id = IDFactory.getInstance().getNewID();
+		this.appearance = new PhysicalBodyAppearance(this);
 	}
 
 	/**
@@ -39,12 +43,12 @@ public abstract class PhysicalBody implements Body {
 	}
 
 	/**
-	 * Returns the external {@link Appearance} of the {@link PhysicalBody}.
+	 * Returns the {@link Appearance} of the {@link PhysicalBody}.
 	 * 
-	 * @return the external {@link Appearance} of the {@link PhysicalBody}.
+	 * @return the {@link Appearance} of the {@link PhysicalBody}.
 	 */
-	public Appearance getExternalAppearance() {
-		return this.appearance;
+	public PhysicalBodyAppearance getAppearance() {
+		return (PhysicalBodyAppearance) this.appearance;
 	}
 
 	/**
@@ -76,7 +80,9 @@ public abstract class PhysicalBody implements Body {
 	@Override
 	public void setId(String id) {
 		this.id = (id != null) ? id.toString() : "NULLID";
-		this.appearance.setName(this.id);
+		if (this.appearance != null) {
+			this.appearance.setName(this.id);
+		}
 	}
 
 	@Override
@@ -86,6 +92,6 @@ public abstract class PhysicalBody implements Body {
 
 	@Override
 	public String toString() {
-		return this.getClass().getSimpleName() + this.id;
+		return this.appearance.toString();
 	}
 }

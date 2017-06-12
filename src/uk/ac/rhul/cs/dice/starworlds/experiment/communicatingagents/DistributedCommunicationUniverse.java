@@ -7,7 +7,7 @@ import uk.ac.rhul.cs.dice.starworlds.actions.environmental.AbstractEnvironmental
 import uk.ac.rhul.cs.dice.starworlds.appearances.Appearance;
 import uk.ac.rhul.cs.dice.starworlds.environment.DistributedUniverse;
 import uk.ac.rhul.cs.dice.starworlds.environment.base.AbstractEnvironment;
-import uk.ac.rhul.cs.dice.starworlds.environment.base.State;
+import uk.ac.rhul.cs.dice.starworlds.environment.base.interfaces.State;
 import uk.ac.rhul.cs.dice.starworlds.environment.physics.Physics;
 
 public class DistributedCommunicationUniverse extends DistributedUniverse {

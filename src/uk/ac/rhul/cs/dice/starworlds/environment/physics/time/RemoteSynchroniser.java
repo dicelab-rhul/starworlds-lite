@@ -2,15 +2,15 @@ package uk.ac.rhul.cs.dice.starworlds.environment.physics.time;
 
 import java.net.SocketAddress;
 
-import uk.ac.rhul.cs.dice.starworlds.environment.base.AbstractEnvironment;
-import uk.ac.rhul.cs.dice.starworlds.environment.base.ConnectedEnvironmentManager;
+import uk.ac.rhul.cs.dice.starworlds.environment.base.AbstractConnectedEnvironment;
+import uk.ac.rhul.cs.dice.starworlds.environment.base.EnvironmentConnectionManager;
 
 public class RemoteSynchroniser implements Synchroniser {
 
-	private ConnectedEnvironmentManager environmentManager;
+	private EnvironmentConnectionManager environmentManager;
 	private SocketAddress remoteEnvironment;
 
-	public RemoteSynchroniser(AbstractEnvironment localEnvironment,
+	public RemoteSynchroniser(AbstractConnectedEnvironment localEnvironment,
 			SocketAddress remoteEnvironment) {
 		this.environmentManager = localEnvironment
 				.getConnectedEnvironmentManager();
@@ -27,6 +27,12 @@ public class RemoteSynchroniser implements Synchroniser {
 	public void executeactions() {
 		// TODO Auto-generated method stub
 
+	}
+
+	@Override
+	public void propagateActions() {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

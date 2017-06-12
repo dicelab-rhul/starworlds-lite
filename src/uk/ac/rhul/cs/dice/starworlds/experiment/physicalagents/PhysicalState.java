@@ -108,7 +108,7 @@ public class PhysicalState extends AbstractState {
 			Set<?> pairs = (Set<?>) args[0];
 			pairs.forEach((Object o) -> {
 				result.add((inversegrid.get((Pair<?, ?>) o))
-						.getExternalAppearance());
+						.getAppearance());
 			});
 			result.remove(null);
 			return result;

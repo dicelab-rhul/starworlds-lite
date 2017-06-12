@@ -2,7 +2,7 @@ package uk.ac.rhul.cs.dice.starworlds.actions.environmental;
 
 import java.util.Set;
 
-import uk.ac.rhul.cs.dice.starworlds.environment.base.State;
+import uk.ac.rhul.cs.dice.starworlds.environment.base.interfaces.State;
 import uk.ac.rhul.cs.dice.starworlds.environment.physics.Physics;
 import uk.ac.rhul.cs.dice.starworlds.perception.AbstractPerception;
 

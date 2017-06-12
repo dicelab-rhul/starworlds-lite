@@ -7,15 +7,19 @@ import java.util.Map;
 import java.util.Set;
 
 import uk.ac.rhul.cs.dice.starworlds.actions.environmental.AbstractEnvironmentalAction;
+import uk.ac.rhul.cs.dice.starworlds.appearances.ActiveBodyAppearance;
 import uk.ac.rhul.cs.dice.starworlds.appearances.Appearance;
 import uk.ac.rhul.cs.dice.starworlds.appearances.EnvironmentAppearance;
 import uk.ac.rhul.cs.dice.starworlds.entities.ActiveBody;
 import uk.ac.rhul.cs.dice.starworlds.entities.agents.AbstractAgent;
 import uk.ac.rhul.cs.dice.starworlds.entities.agents.components.AbstractSensor;
 import uk.ac.rhul.cs.dice.starworlds.entities.agents.components.Sensor;
+import uk.ac.rhul.cs.dice.starworlds.environment.base.interfaces.Container;
+import uk.ac.rhul.cs.dice.starworlds.environment.base.interfaces.Environment;
+import uk.ac.rhul.cs.dice.starworlds.environment.base.interfaces.State;
 import uk.ac.rhul.cs.dice.starworlds.environment.physics.AbstractPhysics;
-import uk.ac.rhul.cs.dice.starworlds.environment.physics.AbstractSubscriber;
 import uk.ac.rhul.cs.dice.starworlds.environment.physics.Physics;
+import uk.ac.rhul.cs.dice.starworlds.environment.subscriber.AbstractSubscriber;
 import uk.ac.rhul.cs.dice.starworlds.perception.AbstractPerception;
 
 /**
@@ -34,14 +38,10 @@ public abstract class AbstractEnvironment implements Environment, Container {
 	protected Boolean bounded;
 	protected EnvironmentAppearance appearance;
 	protected AbstractSubscriber subscriber;
-	protected ConnectedEnvironmentManager connectedEnvironmentManager;
 
 	/**
 	 * Constructor.
-	 * 
-	 * @param connectedEnvironmentManager
-	 *            : manages connections to other environments, locally or over
-	 *            network.
+	 *
 	 * @param subscriber
 	 *            : used to manage {@link Sensor}s in the system.
 	 * @param state
@@ -55,30 +55,27 @@ public abstract class AbstractEnvironment implements Environment, Container {
 	 *            : the {@link Appearance} of the environment.
 	 */
 	public AbstractEnvironment(
-			ConnectedEnvironmentManager connectedEnvironmentManager,
 			AbstractSubscriber subscriber,
 			AbstractState state,
 			AbstractPhysics physics,
 			Boolean bounded,
 			EnvironmentAppearance appearance,
 			Collection<Class<? extends AbstractEnvironmentalAction>> possibleActions) {
-		init(connectedEnvironmentManager, subscriber, state, physics, bounded,
-				appearance, possibleActions);
+		init(subscriber, state, physics, bounded, appearance, possibleActions);
 	}
 
 	private void init(
-			ConnectedEnvironmentManager connectedEnvironmentManager,
 			AbstractSubscriber subscriber,
 			AbstractState state,
 			AbstractPhysics physics,
 			Boolean bounded,
 			EnvironmentAppearance appearance,
 			Collection<Class<? extends AbstractEnvironmentalAction>> possibleActions) {
-		this.connectedEnvironmentManager = connectedEnvironmentManager;
 		this.state = state;
 		this.physics = physics;
 		this.bounded = bounded;
 		this.appearance = appearance;
+		this.id = this.appearance.getName(); // TODO should this be true?
 		this.physics.setEnvironment(this);
 		this.subscriber = subscriber;
 		this.subscriber.setPossibleActions(possibleActions);
@@ -105,15 +102,14 @@ public abstract class AbstractEnvironment implements Environment, Container {
 
 	@Override
 	public synchronized void updateState(AbstractEnvironmentalAction action) {
-		// System.out.println("UPDATING STATE WITH: " + action);
 		state.filterAction(action);
-		// System.out.println(Arrays.toString(state.getSensingActions().toArray()));
 	}
 
-	public void notify(AbstractEnvironmentalAction action, ActiveBody body,
+	public void notify(AbstractEnvironmentalAction action,
+			ActiveBodyAppearance bodyappearance,
 			Collection<AbstractPerception<?>> perceptions, State context) {
 		Map<Class<? extends AbstractPerception>, Set<AbstractSensor>> sensors = subscriber
-				.findSensors(body, action);
+				.findSensors(bodyappearance, action);
 		for (AbstractPerception<?> perception : perceptions) {
 			Set<AbstractSensor> ss = sensors.get(perception.getClass());
 			if (ss != null) {
@@ -176,12 +172,8 @@ public abstract class AbstractEnvironment implements Environment, Container {
 		subscriber.subscribe(body, sensors);
 	}
 
-	protected synchronized AbstractSubscriber getSubscriber() {
+	public synchronized AbstractSubscriber getSubscriber() {
 		return subscriber;
-	}
-
-	public ConnectedEnvironmentManager getConnectedEnvironmentManager() {
-		return connectedEnvironmentManager;
 	}
 
 	protected boolean checkPerceivable(AbstractSensor sensor,

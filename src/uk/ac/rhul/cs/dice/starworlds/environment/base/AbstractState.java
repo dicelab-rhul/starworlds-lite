@@ -15,12 +15,14 @@ import uk.ac.rhul.cs.dice.starworlds.actions.environmental.CommunicationAction;
 import uk.ac.rhul.cs.dice.starworlds.actions.environmental.PhysicalAction;
 import uk.ac.rhul.cs.dice.starworlds.actions.environmental.SensingAction;
 import uk.ac.rhul.cs.dice.starworlds.appearances.Appearance;
+import uk.ac.rhul.cs.dice.starworlds.appearances.PhysicalBodyAppearance;
 import uk.ac.rhul.cs.dice.starworlds.entities.ActiveBody;
 import uk.ac.rhul.cs.dice.starworlds.entities.Agent;
 import uk.ac.rhul.cs.dice.starworlds.entities.PassiveBody;
 import uk.ac.rhul.cs.dice.starworlds.entities.PhysicalBody;
 import uk.ac.rhul.cs.dice.starworlds.entities.agents.components.Actuator;
 import uk.ac.rhul.cs.dice.starworlds.entities.agents.components.Sensor;
+import uk.ac.rhul.cs.dice.starworlds.environment.base.interfaces.State;
 import uk.ac.rhul.cs.dice.starworlds.environment.physics.AbstractPhysics;
 import uk.ac.rhul.cs.dice.starworlds.environment.physics.Physics;
 import uk.ac.rhul.cs.dice.starworlds.utils.Pair;
@@ -69,7 +71,6 @@ public abstract class AbstractState implements State {
 	@Override
 	public void addSenseAction(SensingAction action) {
 		this.sensingActions.add(action);
-		// System.out.println(getSensingActions());
 	}
 
 	@Override
@@ -80,6 +81,30 @@ public abstract class AbstractState implements State {
 	@Override
 	public void addCommunicationAction(CommunicationAction<?> action) {
 		this.communicationActions.add(action);
+	}
+
+	@Override
+	public Collection<CommunicationAction<?>> flushCommunicationActions() {
+		List<CommunicationAction<?>> actions = new ArrayList<>();
+		actions.addAll(this.communicationActions);
+		this.communicationActions.clear();
+		return actions;
+	}
+
+	@Override
+	public Collection<PhysicalAction> flushPhysicalActions() {
+		List<PhysicalAction> actions = new ArrayList<>();
+		actions.addAll(this.physicalActions);
+		this.physicalActions.clear();
+		return actions;
+	}
+
+	@Override
+	public Collection<SensingAction> flushSensingActions() {
+		List<SensingAction> actions = new ArrayList<>();
+		actions.addAll(this.sensingActions);
+		this.sensingActions.clear();
+		return actions;
 	}
 
 	@Override
@@ -217,7 +242,11 @@ public abstract class AbstractState implements State {
 				Optional<?> o = col.stream()
 						.skip((long) (Math.random() * col.size())).findAny();
 				if (o != null) {
-					return o.get();
+					if (o.isPresent()) {
+						return o.get();
+					} else {
+						return null;
+					}
 				}
 			}
 			variablemissuse(this);
@@ -229,7 +258,7 @@ public abstract class AbstractState implements State {
 		@Override
 		public Set<Appearance> get(SensingAction action, Object... args) {
 			Set<Appearance> self = new HashSet<>();
-			self.add(((ActiveBody) action.getActor()).getExternalAppearance());
+			self.add(action.getActor());
 			return self;
 		}
 	}
@@ -238,25 +267,19 @@ public abstract class AbstractState implements State {
 
 		@Override
 		public Set<Appearance> get(SensingAction action, Object... args) {
-			Set<Appearance> appearances;
+			Set<Appearance> appearances = new HashSet<>();
 			if (Collection.class.isAssignableFrom(args[0].getClass())) {
 				Collection<?> col = (Collection<?>) args[0];
-				// TODO
-				System.out.println("TYPE: "
-						+ Arrays.toString(col.getClass().getTypeParameters()));
-				Thread.dumpStack();
-				
-				// if(ActiveBody.class.isAssignableFrom(col.getClass().getTypeParameters().))
-				// {
-				//
-				// }
-				// for(Object o : col) {
-				// appearances.add(e)
-				// }
+				PhysicalBodyAppearance actor = action.getActor();
+				col.forEach((Object o) -> {
+					PhysicalBody body = (PhysicalBody) o;
+					if (!body.getAppearance().equals(actor)) {
+						appearances.add(body.getAppearance());
+					}
+				});
+				return appearances;
 			} else if (PhysicalBody.class.isAssignableFrom(args[0].getClass())) {
-				appearances = new HashSet<>();
-				appearances.add(((PhysicalBody) args[0])
-						.getExternalAppearance());
+				appearances.add(((PhysicalBody) args[0]).getAppearance());
 				return appearances;
 			}
 			variablemissuse(this);

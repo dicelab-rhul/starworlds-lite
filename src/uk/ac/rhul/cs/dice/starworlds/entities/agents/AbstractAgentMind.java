@@ -18,8 +18,8 @@ import uk.ac.rhul.cs.dice.starworlds.entities.agents.components.concrete.Physica
 import uk.ac.rhul.cs.dice.starworlds.entities.agents.components.concrete.SeeingSensor;
 import uk.ac.rhul.cs.dice.starworlds.entities.agents.components.concrete.SpeechActuator;
 import uk.ac.rhul.cs.dice.starworlds.entities.agents.concrete.DefaultAgentMind;
-import uk.ac.rhul.cs.dice.starworlds.environment.base.Environment;
-import uk.ac.rhul.cs.dice.starworlds.environment.base.State;
+import uk.ac.rhul.cs.dice.starworlds.environment.base.interfaces.Environment;
+import uk.ac.rhul.cs.dice.starworlds.environment.base.interfaces.State;
 import uk.ac.rhul.cs.dice.starworlds.environment.physics.Physics;
 import uk.ac.rhul.cs.dice.starworlds.perception.Perception;
 
@@ -134,7 +134,7 @@ public abstract class AbstractAgentMind implements Mind {
 		}
 		Class<?> as = (sensor != null) ? sensor : getDefaultSensorClass();
 		action.setActuator(as);
-		action.setActor(this.body);
+		action.setActor(this.body.getAppearance());
 		this.body.actuatorActive(this.body.findSensorByClass(action
 				.getActuator()));
 		setActionDone(true);
@@ -169,7 +169,7 @@ public abstract class AbstractAgentMind implements Mind {
 		}
 		action.setActuator((actuator != null) ? actuator
 				: getDefaultSpeechActuatorClass());
-		action.setActor(this.body);
+		action.setActor(this.body.getAppearance());
 		this.body.actuatorActive(this.body.findActuatorByClass(action
 				.getActuator()));
 		setActionDone(true);
@@ -200,7 +200,7 @@ public abstract class AbstractAgentMind implements Mind {
 		}
 		action.setActuator((actuator != null) ? actuator
 				: getDefaultPhysicalActuatorClass());
-		action.setActor(this.body);
+		action.setActor(this.body.getAppearance());
 		this.body.actuatorActive(this.body.findActuatorByClass(action
 				.getActuator()));
 		setActionDone(true);
@@ -283,7 +283,7 @@ public abstract class AbstractAgentMind implements Mind {
 
 	@Override
 	public String toString() {
-		return this.getClass().getSimpleName() + this.getId();
+		return this.getClass().getSimpleName() + " " + this.getId();
 	}
 
 	@Override

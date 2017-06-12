@@ -2,8 +2,8 @@ package uk.ac.rhul.cs.dice.starworlds.test;
 
 import uk.ac.rhul.cs.dice.starworlds.actions.environmental.CommunicationAction;
 import uk.ac.rhul.cs.dice.starworlds.entities.agents.components.concrete.ListeningSensor;
-import uk.ac.rhul.cs.dice.starworlds.environment.physics.AbstractSubscriber;
-import uk.ac.rhul.cs.dice.starworlds.environment.physics.Subscriber;
+import uk.ac.rhul.cs.dice.starworlds.environment.subscriber.AbstractSubscriber;
+import uk.ac.rhul.cs.dice.starworlds.environment.subscriber.Subscriber;
 
 public class TestSensorSubscriber {
 

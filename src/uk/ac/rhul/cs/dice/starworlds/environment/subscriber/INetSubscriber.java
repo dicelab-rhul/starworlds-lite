@@ -1,4 +1,4 @@
-package uk.ac.rhul.cs.dice.starworlds.environment.physics;
+package uk.ac.rhul.cs.dice.starworlds.environment.subscriber;
 
 import java.net.SocketAddress;
 import java.util.HashMap;

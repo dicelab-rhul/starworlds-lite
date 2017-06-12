@@ -3,6 +3,7 @@ package uk.ac.rhul.cs.dice.starworlds.actions;
 import javax.swing.AbstractAction;
 
 import uk.ac.rhul.cs.dice.starworlds.actions.environmental.SensingAction;
+import uk.ac.rhul.cs.dice.starworlds.appearances.ActiveBodyAppearance;
 import uk.ac.rhul.cs.dice.starworlds.entities.Actor;
 import uk.ac.rhul.cs.dice.starworlds.entities.agents.components.Actuator;
 import uk.ac.rhul.cs.dice.starworlds.entities.agents.components.Sensor;
@@ -39,17 +40,19 @@ public interface Action {
 	public Class<?> getActuator();
 
 	/**
-	 * Returns the {@link Actor}.
+	 * Returns the {@link ActiveBodyAppearance} of the {@link Actor} that
+	 * performed this {@link Action}
 	 * 
-	 * @return the {@link Actor}.
+	 * @return the {@link ActiveBodyAppearance}.
 	 */
-	public Actor getActor();
+	public ActiveBodyAppearance getActor();
 
 	/**
-	 * Sets the {@link Actor}.
+	 * Sets the {@link ActiveBodyAppearance} of the {@link Actor} that performed
+	 * this {@link Action}.
 	 * 
 	 * @param actor
-	 *            : the {@link Actor} to be set.
+	 *            : the {@link ActiveBodyAppearance} to be set.
 	 */
-	public void setActor(Actor actor);
+	public void setActor(ActiveBodyAppearance actor);
 }

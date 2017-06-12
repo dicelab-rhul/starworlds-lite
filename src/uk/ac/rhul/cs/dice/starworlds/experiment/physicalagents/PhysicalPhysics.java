@@ -7,7 +7,7 @@ import uk.ac.rhul.cs.dice.starworlds.appearances.ActiveBodyAppearance;
 import uk.ac.rhul.cs.dice.starworlds.entities.ActiveBody;
 import uk.ac.rhul.cs.dice.starworlds.entities.PassiveBody;
 import uk.ac.rhul.cs.dice.starworlds.entities.agents.AbstractAgent;
-import uk.ac.rhul.cs.dice.starworlds.environment.base.State;
+import uk.ac.rhul.cs.dice.starworlds.environment.base.interfaces.State;
 import uk.ac.rhul.cs.dice.starworlds.experiment.ExperimentPhysics;
 import uk.ac.rhul.cs.dice.starworlds.perception.AbstractPerception;
 import uk.ac.rhul.cs.dice.starworlds.utils.Pair;
@@ -25,7 +25,7 @@ public class PhysicalPhysics extends ExperimentPhysics {
 		Set<AbstractPerception<?>> perception = new HashSet<>();
 		perception.add(new MovePerception(
 				(ActiveBodyAppearance) ((ActiveBody) action.getActor())
-						.getExternalAppearance(), action.getMoveFrom(), action
+						.getAppearance(), action.getMoveFrom(), action
 						.getMoveTo()));
 		return perception;
 	}
@@ -36,7 +36,7 @@ public class PhysicalPhysics extends ExperimentPhysics {
 		Set<AbstractPerception<?>> perception = new HashSet<>();
 		perception.add(new MovePerception(
 				(ActiveBodyAppearance) ((ActiveBody) action.getActor())
-						.getExternalAppearance(), action.getMoveFrom(), action
+						.getAppearance(), action.getMoveFrom(), action
 						.getMoveTo()));
 		return perception;
 	}

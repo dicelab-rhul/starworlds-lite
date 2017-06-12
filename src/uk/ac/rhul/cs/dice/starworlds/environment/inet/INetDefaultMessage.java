@@ -2,16 +2,14 @@ package uk.ac.rhul.cs.dice.starworlds.environment.inet;
 
 import java.io.Serializable;
 
-import uk.ac.rhul.cs.dice.starworlds.utils.Pair;
-import uk.ac.rhul.cs.dice.starworlds.utils.inet.INetAbstractMessage;
+import uk.ac.rhul.cs.dice.starworlds.environment.concrete.DefaultMessage;
 
-public class INetDefaultMessage extends
-		INetAbstractMessage<Pair<String, Serializable>> {
+public class INetDefaultMessage extends DefaultMessage<Serializable> implements
+		Serializable {
 
 	private static final long serialVersionUID = -1105794538281856367L;
 
 	public INetDefaultMessage(String command, Serializable payload) {
-		super(new Pair<String, Serializable>(command, payload));
+		super(command, payload);
 	}
-
 }

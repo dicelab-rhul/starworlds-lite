@@ -4,34 +4,50 @@ import java.net.SocketAddress;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import uk.ac.rhul.cs.dice.starworlds.environment.base.AbstractEnvironment;
-import uk.ac.rhul.cs.dice.starworlds.environment.base.ConnectedEnvironmentManager;
-import uk.ac.rhul.cs.dice.starworlds.environment.physics.AbstractPhysics;
+import uk.ac.rhul.cs.dice.starworlds.environment.base.AbstractConnectedEnvironment;
+import uk.ac.rhul.cs.dice.starworlds.environment.base.EnvironmentConnectionManager;
+import uk.ac.rhul.cs.dice.starworlds.environment.physics.AbstractConnectedPhysics;
 
 public class LocalSynchroniser implements Synchroniser {
 
 	private Collection<Synchroniser> subsynchronisers;
-	private ConnectedEnvironmentManager environmentManager;
-	private AbstractPhysics physics;
-	private AbstractEnvironment environment;
+	private EnvironmentConnectionManager environmentManager;
+	private AbstractConnectedPhysics physics;
+	private AbstractConnectedEnvironment environment;
 
-	public LocalSynchroniser(AbstractEnvironment environment) {
+	public LocalSynchroniser(AbstractConnectedEnvironment environment,
+			Collection<AbstractConnectedEnvironment> subenvironments,
+			Collection<AbstractConnectedEnvironment> neighbouringenvironments) {
 		this.environment = environment;
 		this.environmentManager = environment.getConnectedEnvironmentManager();
-		this.physics = (AbstractPhysics) environment.getPhysics();
+		this.physics = (AbstractConnectedPhysics) environment.getPhysics();
 		this.subsynchronisers = new ArrayList<>();
 		// get all local synchronisers
-		updateSynchronisers();
-		System.out.println("SUBSYNCS: " + subsynchronisers);
+		updateSynchronisers(subenvironments, neighbouringenvironments);
+		System.out.println(this + " SUBSYNCS: " + subsynchronisers);
 	}
 
-	public void updateSynchronisers() {
+	public LocalSynchroniser(AbstractConnectedEnvironment environment) {
+		this.environment = environment;
+		this.environmentManager = environment.getConnectedEnvironmentManager();
+		this.physics = (AbstractConnectedPhysics) environment.getPhysics();
+		this.subsynchronisers = new ArrayList<>();
+		// get all local synchronisers
+		updateSynchronisers(null, null);
+	}
+
+	public void updateSynchronisers(
+			Collection<AbstractConnectedEnvironment> subenvironments,
+			Collection<AbstractConnectedEnvironment> neighbouringenvironments) {
 		// TODO check that the synchroniser has not been added already
 		// add local synchronisers
-		environmentManager.getSubEnvironments().forEach(
-				(AbstractEnvironment e) -> {
-					subsynchronisers.add(e.getPhysics().getSynchronizer());
+		if (subenvironments != null) {
+			subenvironments.forEach((AbstractConnectedEnvironment e) -> {
+				// TODO if the connection starts closed?
+					subsynchronisers.add(((AbstractConnectedPhysics) e
+							.getPhysics()).getSynchroniser());
 				});
+		}
 		// create remote synchronisers
 		environmentManager.getRemoteSubEnvironments().forEach(
 				(SocketAddress a) -> {
@@ -46,7 +62,7 @@ public class LocalSynchroniser implements Synchroniser {
 		for (Synchroniser s : subsynchronisers) {
 			s.runagents();
 		}
-		physics.executeActions();
+		physics.runAgents();
 	}
 
 	@Override
@@ -56,6 +72,20 @@ public class LocalSynchroniser implements Synchroniser {
 			s.executeactions();
 		}
 		physics.executeActions();
+	}
+
+	@Override
+	public void propagateActions() {
+		// TODO multithreaded
+		for (Synchroniser s : subsynchronisers) {
+			s.propagateActions();
+		}
+		physics.propagateActions();
+	}
+
+	@Override
+	public String toString() {
+		return this.getClass().getSimpleName() + " : " + physics.getId();
 	}
 
 }

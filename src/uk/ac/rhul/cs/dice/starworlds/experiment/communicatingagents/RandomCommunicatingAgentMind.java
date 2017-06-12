@@ -17,7 +17,7 @@ import uk.ac.rhul.cs.dice.starworlds.perception.CommunicationPerception;
 import uk.ac.rhul.cs.dice.starworlds.perception.Perception;
 import uk.ac.rhul.cs.dice.starworlds.utils.Pair;
 
-class RandomCommunicatingAgentMind extends AbstractAgentMind {
+public class RandomCommunicatingAgentMind extends AbstractAgentMind {
 
 	private boolean start = true;
 	private List<String> otheragents = new ArrayList<>();
@@ -64,7 +64,7 @@ class RandomCommunicatingAgentMind extends AbstractAgentMind {
 			}
 			// the sensing action must have fail for some reason, so do it again
 		}
-		actions.add(new SensingAction("AGENTS.RANDOM.APPEARANCE"));
+		actions.add(new SensingAction("AGENTS.APPEARANCE.RANDOM"));
 		start = false;
 		System.out.println(this + " DECISIONS: " + actions);
 		return actions;
@@ -82,9 +82,8 @@ class RandomCommunicatingAgentMind extends AbstractAgentMind {
 	private Collection<Appearance> unpackAppearances(Perception<?> percept) {
 		Collection<Appearance> appearances = new ArrayList<>();
 		Pair<?, ?> pair = (Pair<?, ?>) percept.getPerception();
-		Collection<?> col = (Collection<?>) pair.getSecond();
-		for (Object o : col) {
-			appearances.add((Appearance) o);
+		if (pair.getSecond() != null) {
+			appearances.add((Appearance) pair.getSecond());
 		}
 		return appearances;
 	}

@@ -8,6 +8,4 @@ public class DefaultState extends AbstractState {
 	public DefaultState(AbstractPhysics physics) {
 		super(physics);
 	}
-
-
 }
