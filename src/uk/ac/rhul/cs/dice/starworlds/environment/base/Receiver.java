@@ -1,5 +1,7 @@
 package uk.ac.rhul.cs.dice.starworlds.environment.base;
 
+import uk.ac.rhul.cs.dice.starworlds.environment.base.interfaces.Message;
+
 /**
  * A simple Observer class that should
  * {@link Receiver#receive(Recipient, Object)} data from a {@link Recipient}
@@ -12,6 +14,6 @@ package uk.ac.rhul.cs.dice.starworlds.environment.base;
  */
 public interface Receiver {
 
-	public void receive(Recipient recipient, AbstractMessage<?> message);
+	public void receive(Recipient recipient, Message<?> message);
 
 }

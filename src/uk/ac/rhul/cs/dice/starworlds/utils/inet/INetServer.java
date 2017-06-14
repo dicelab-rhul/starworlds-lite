@@ -73,9 +73,15 @@ public abstract class INetServer extends Observable implements Observer {
 		return Collections.unmodifiableSet(slaves.keySet());
 	}
 
-	public abstract void send(SocketAddress addr, Object message);
+	public INetSlave getSlave(SocketAddress addr) {
+		return this.slaves.get(addr);
+	}
 
-	public SocketAddress connect(String host, int port)
+	public void send(SocketAddress addr, Object message) {
+		this.slaves.get(addr).send(message);
+	}
+
+	public SocketAddress connect(String host, Integer port)
 			throws UnknownHostException, IOException {
 		System.out.println(this + " INITIATING COMMUNICATION WITH: " + host
 				+ ":" + port);

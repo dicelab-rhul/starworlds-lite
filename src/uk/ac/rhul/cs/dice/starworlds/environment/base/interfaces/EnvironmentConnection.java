@@ -2,13 +2,12 @@ package uk.ac.rhul.cs.dice.starworlds.environment.base.interfaces;
 
 import uk.ac.rhul.cs.dice.starworlds.appearances.Appearance;
 import uk.ac.rhul.cs.dice.starworlds.appearances.EnvironmentAppearance;
-import uk.ac.rhul.cs.dice.starworlds.environment.base.AbstractMessage;
 
 public interface EnvironmentConnection {
 
-	public void send(AbstractMessage<?> obj);
+	public void send(Message<?> obj);
 
-	public void receive(AbstractMessage<?> obj);
+	public void receive(Message<?> obj);
 
 	public boolean isOpen();
 
@@ -23,7 +22,7 @@ public interface EnvironmentConnection {
 	 * 
 	 * @return the local {@link EnvironmentAppearance}.
 	 */
-	public EnvironmentAppearance getAppearance();
+	public Appearance getAppearance();
 
 	/**
 	 * Getter for the {@link Appearance} of the remote {@link Environment}.
@@ -32,6 +31,6 @@ public interface EnvironmentConnection {
 	 * 
 	 * @return
 	 */
-	public EnvironmentAppearance getRemoteAppearance();
+	public Appearance getRemoteAppearance();
 
 }

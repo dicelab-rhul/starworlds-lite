@@ -1,13 +1,15 @@
 package uk.ac.rhul.cs.dice.starworlds.environment.base;
 
+import uk.ac.rhul.cs.dice.starworlds.appearances.Appearance;
 import uk.ac.rhul.cs.dice.starworlds.appearances.EnvironmentAppearance;
 import uk.ac.rhul.cs.dice.starworlds.environment.base.interfaces.EnvironmentConnection;
+import uk.ac.rhul.cs.dice.starworlds.environment.base.interfaces.Message;
 
 public abstract class AbstractEnvironmentConnection extends Recipient implements
 		EnvironmentConnection {
 
 	private Boolean open = true;
-	// The connector of the environment that this connector is connected to
+	// The connection to the pair environment
 	private AbstractEnvironmentConnection mutualConnector;
 	// The appearance of the local environment
 	private EnvironmentAppearance environmentAppearance;
@@ -26,13 +28,13 @@ public abstract class AbstractEnvironmentConnection extends Recipient implements
 	}
 
 	@Override
-	public void send(AbstractMessage<?> message) {
+	public void send(Message<?> message) {
 		// System.out.println(this + " SENDING: " + message);
 		mutualConnector.receive(message);
 	}
 
 	@Override
-	public void receive(AbstractMessage<?> message) {
+	public void receive(Message<?> message) {
 		if (open) {
 			// System.out.println(this + " RECEIVED: " + message);
 		}
@@ -59,7 +61,7 @@ public abstract class AbstractEnvironmentConnection extends Recipient implements
 	}
 
 	@Override
-	public EnvironmentAppearance getRemoteAppearance() {
+	public Appearance getRemoteAppearance() {
 		return this.mutualConnector.getAppearance();
 	}
 

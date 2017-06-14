@@ -1,13 +1,15 @@
 package uk.ac.rhul.cs.dice.starworlds.environment.base;
 
-import uk.ac.rhul.cs.dice.starworlds.appearances.Appearance;
+import uk.ac.rhul.cs.dice.starworlds.environment.base.interfaces.Message;
 
-public abstract class AbstractMessage<T> {
+public abstract class AbstractMessage<T> implements Message<T> {
 
-	protected Appearance appearance;
 	protected T payload;
 
-	public AbstractMessage(Appearance appearance, T payload) {
+	public AbstractMessage() {
+	}
+
+	public AbstractMessage(T payload) {
 		this.setPayload(payload);
 	}
 
@@ -22,9 +24,5 @@ public abstract class AbstractMessage<T> {
 	@Override
 	public String toString() {
 		return this.getClass().getSimpleName() + " : " + this.getPayload();
-	}
-
-	public Appearance getSenderAppearance() {
-		return appearance;
 	}
 }

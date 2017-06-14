@@ -58,11 +58,6 @@ public class MoveAction extends PhysicalAction {
 	}
 
 	@Override
-	public Object[] getCanSense() {
-		return null;
-	}
-
-	@Override
 	public String toString() {
 		return this.getClass().getSimpleName() + " " + this.moveTo;
 	}

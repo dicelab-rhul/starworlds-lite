@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import uk.ac.rhul.cs.dice.starworlds.actions.Action;
@@ -15,6 +16,7 @@ import uk.ac.rhul.cs.dice.starworlds.appearances.Appearance;
 import uk.ac.rhul.cs.dice.starworlds.appearances.EnvironmentAppearance;
 import uk.ac.rhul.cs.dice.starworlds.entities.agents.components.Sensor;
 import uk.ac.rhul.cs.dice.starworlds.environment.base.interfaces.Environment;
+import uk.ac.rhul.cs.dice.starworlds.environment.base.interfaces.Message;
 import uk.ac.rhul.cs.dice.starworlds.environment.base.interfaces.State;
 import uk.ac.rhul.cs.dice.starworlds.environment.concrete.DefaultMessage;
 import uk.ac.rhul.cs.dice.starworlds.environment.inet.INetDefaultMessage;
@@ -36,8 +38,8 @@ public abstract class AbstractConnectedEnvironment extends AbstractEnvironment {
 			PERCEPTION = "PERCEPTION";
 
 	protected Map<String, MessageProcessor> messageProcessors;
-
-	protected EnvironmentConnectionManager connectedEnvironmentManager;
+	protected EnvironmentConnectionManager envconManager;
+	protected List<Pair<String, Integer>> initialConnections;
 
 	/**
 	 * Constructor. This constructor assumes that all
@@ -70,8 +72,9 @@ public abstract class AbstractConnectedEnvironment extends AbstractEnvironment {
 			EnvironmentAppearance appearance,
 			Collection<Class<? extends AbstractEnvironmentalAction>> possibleActions) {
 		super(subscriber, state, physics, bounded, appearance, possibleActions);
-		this.connectedEnvironmentManager = new EnvironmentConnectionManager(
-				this, subenvironments, neighbouringenvironments);
+		System.out.println("LOCAL ENVIRONMENT INITIALISATION");
+		this.envconManager = new EnvironmentConnectionManager(this,
+				subenvironments, neighbouringenvironments);
 		physics.initSynchroniser(subenvironments, neighbouringenvironments);
 		initialiseMessageProcessors();
 	}
@@ -95,6 +98,9 @@ public abstract class AbstractConnectedEnvironment extends AbstractEnvironment {
 	 *            is bounded or not.
 	 * @param appearance
 	 *            : the {@link Appearance} of the environment.
+	 * @param possibleActions
+	 *            : a {@link Collection} of {@link Action}s that are possible in
+	 *            this {@link Environment}
 	 */
 	public AbstractConnectedEnvironment(
 			Integer port,
@@ -105,10 +111,11 @@ public abstract class AbstractConnectedEnvironment extends AbstractEnvironment {
 			EnvironmentAppearance appearance,
 			Collection<Class<? extends AbstractEnvironmentalAction>> possibleActions) {
 		super(subscriber, state, physics, bounded, appearance, possibleActions);
-		this.connectedEnvironmentManager = new EnvironmentConnectionManager(
-				this, port);
+		System.out.println("REMOTE ENVIRONMENT INITIALISATION");
+		this.envconManager = new EnvironmentConnectionManager(this, port);
 		physics.initSynchroniser();
 		initialiseMessageProcessors();
+		initialConnections = new ArrayList<>();
 	}
 
 	/**
@@ -150,10 +157,11 @@ public abstract class AbstractConnectedEnvironment extends AbstractEnvironment {
 			EnvironmentAppearance appearance,
 			Collection<Class<? extends AbstractEnvironmentalAction>> possibleActions) {
 		super(subscriber, state, physics, bounded, appearance, possibleActions);
-		this.connectedEnvironmentManager = new EnvironmentConnectionManager(
-				this, superenvironment, subenvironments,
-				neighbouringenvironments, port);
+		this.envconManager = new EnvironmentConnectionManager(this,
+				superenvironment, subenvironments, neighbouringenvironments,
+				port);
 		physics.initSynchroniser(subenvironments, neighbouringenvironments);
+		initialConnections = new ArrayList<>();
 	}
 
 	protected void initialiseMessageProcessors() {
@@ -164,7 +172,7 @@ public abstract class AbstractConnectedEnvironment extends AbstractEnvironment {
 	}
 
 	public void handleMessage(EnvironmentAppearance appearance,
-			AbstractMessage<?> message) {
+			Message<?> message) {
 		if (DefaultMessage.class.isAssignableFrom(message.getClass())) {
 			DefaultMessage<?> dm = (DefaultMessage<?>) message;
 			messageProcessors.get(dm.getCommand()).process(appearance,
@@ -183,11 +191,28 @@ public abstract class AbstractConnectedEnvironment extends AbstractEnvironment {
 	 * @param message
 	 */
 	public abstract void handleCustomMessage(EnvironmentAppearance appearance,
-			AbstractMessage<?> message);
+			Message<?> message);
 
 	@Override
 	public void postInitialisation() {
 		this.initialActionSubscribe();
+	}
+
+	public void initialConnect() {
+		if (initialConnections != null) {
+			System.out.println(initialConnections);
+			// perform all initial remote connections
+			for (Pair<String, Integer> p : initialConnections) {
+				System.out.println("connect: " + p);
+				this.envconManager.connectToEnvironment(p.getFirst(),
+						p.getSecond());
+			}
+		}
+		initialConnections = null;
+	}
+
+	public void addInitialConnection(String addr, Integer port) {
+		this.initialConnections.add(new Pair<>(addr, port));
 	}
 
 	public void clearAndUpdateActionsAfterPropagation() {
@@ -221,7 +246,7 @@ public abstract class AbstractConnectedEnvironment extends AbstractEnvironment {
 			Collection<AbstractPerception<?>> perceptions) {
 		if (perceptions != null) {
 			if (!perceptions.isEmpty()) {
-				this.connectedEnvironmentManager
+				this.envconManager
 						.sendToEnvironment(
 								environment,
 								new DefaultMessage<Pair<AbstractEnvironmentalAction, Collection<AbstractPerception<?>>>>(
@@ -232,7 +257,7 @@ public abstract class AbstractConnectedEnvironment extends AbstractEnvironment {
 	}
 
 	public EnvironmentConnectionManager getConnectedEnvironmentManager() {
-		return connectedEnvironmentManager;
+		return envconManager;
 	}
 
 	/**
@@ -270,8 +295,8 @@ public abstract class AbstractConnectedEnvironment extends AbstractEnvironment {
 		DefaultMessage<Collection<Class<? extends AbstractEnvironmentalAction>>> sub = new DefaultMessage<>(
 				this.getAppearance(), SUBSCRIBE, getInitialActionsToSubscribe());
 		// this.connectedEnvironmentManager.sendToAllNeighbouringEnvironments(sub);
-		this.connectedEnvironmentManager.sendToAllSubEnvironments(sub);
-		this.connectedEnvironmentManager.sendToSuperEnvironment(sub);
+		this.envconManager.sendToAllSubEnvironments(sub);
+		this.envconManager.sendToSuperEnvironment(sub);
 	}
 
 	@Override
@@ -287,7 +312,7 @@ public abstract class AbstractConnectedEnvironment extends AbstractEnvironment {
 			if (toSend != null) {
 				// dont send to the environment that the action originated from!
 				toSend.remove(action.getLocalEnvironment());
-				this.connectedEnvironmentManager.sendToEnvironments(toSend,
+				this.envconManager.sendToEnvironments(toSend,
 						new DefaultMessage<T>(this.appearance, ACTION, action));
 			}
 		}
@@ -302,7 +327,7 @@ public abstract class AbstractConnectedEnvironment extends AbstractEnvironment {
 								.next().getClass());
 				if (toSend != null) {
 					// TODO check not sending to the sender?
-					this.connectedEnvironmentManager.sendToEnvironments(toSend,
+					this.envconManager.sendToEnvironments(toSend,
 							new DefaultMessage<Collection<T>>(this.appearance,
 									ACTION, actions));
 				}

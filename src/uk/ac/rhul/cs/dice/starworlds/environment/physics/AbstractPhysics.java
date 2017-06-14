@@ -1,6 +1,5 @@
 package uk.ac.rhul.cs.dice.starworlds.environment.physics;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -21,13 +20,10 @@ import uk.ac.rhul.cs.dice.starworlds.entities.agents.AbstractAgent;
 import uk.ac.rhul.cs.dice.starworlds.entities.agents.components.AbstractSensor;
 import uk.ac.rhul.cs.dice.starworlds.entities.agents.components.concrete.ListeningSensor;
 import uk.ac.rhul.cs.dice.starworlds.entities.agents.components.concrete.SeeingSensor;
-import uk.ac.rhul.cs.dice.starworlds.environment.base.AbstractConnectedEnvironment;
 import uk.ac.rhul.cs.dice.starworlds.environment.base.AbstractEnvironment;
-import uk.ac.rhul.cs.dice.starworlds.environment.base.DistributedEnvironment;
 import uk.ac.rhul.cs.dice.starworlds.environment.base.interfaces.Environment;
 import uk.ac.rhul.cs.dice.starworlds.environment.base.interfaces.Simulator;
 import uk.ac.rhul.cs.dice.starworlds.environment.base.interfaces.State;
-import uk.ac.rhul.cs.dice.starworlds.environment.concrete.ComplexEnvironment;
 import uk.ac.rhul.cs.dice.starworlds.environment.concrete.DefaultPhysics;
 import uk.ac.rhul.cs.dice.starworlds.perception.AbstractPerception;
 import uk.ac.rhul.cs.dice.starworlds.perception.CommunicationPerception;

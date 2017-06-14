@@ -2,14 +2,17 @@ package uk.ac.rhul.cs.dice.starworlds.environment.concrete;
 
 import java.util.Collection;
 
+import uk.ac.rhul.cs.dice.starworlds.actions.Action;
 import uk.ac.rhul.cs.dice.starworlds.actions.environmental.AbstractEnvironmentalAction;
 import uk.ac.rhul.cs.dice.starworlds.appearances.EnvironmentAppearance;
 import uk.ac.rhul.cs.dice.starworlds.environment.base.AbstractConnectedEnvironment;
-import uk.ac.rhul.cs.dice.starworlds.environment.base.AbstractMessage;
 import uk.ac.rhul.cs.dice.starworlds.environment.base.AbstractState;
 import uk.ac.rhul.cs.dice.starworlds.environment.base.interfaces.Environment;
+import uk.ac.rhul.cs.dice.starworlds.environment.base.interfaces.Message;
+import uk.ac.rhul.cs.dice.starworlds.environment.base.interfaces.State;
 import uk.ac.rhul.cs.dice.starworlds.environment.base.interfaces.Universe;
 import uk.ac.rhul.cs.dice.starworlds.environment.physics.AbstractConnectedPhysics;
+import uk.ac.rhul.cs.dice.starworlds.environment.physics.Physics;
 import uk.ac.rhul.cs.dice.starworlds.environment.subscriber.Subscriber;
 import uk.ac.rhul.cs.dice.starworlds.initialisation.IDFactory;
 
@@ -57,6 +60,35 @@ public class ComplexEnvironment extends AbstractConnectedEnvironment {
 	}
 
 	/**
+	 * Constructor. This constructor assumes that all
+	 * {@link AbstractConnectedEnvironment}s will be remote. All remote
+	 * {@link Environment}s should connect via the given port.
+	 * 
+	 * @param port
+	 *            : the port that any remote {@link Environment} will try to
+	 *            make connections to
+	 * @param state
+	 *            : a {@link State} instance.
+	 * @param physics
+	 *            : the {@link Physics} of the environment.
+	 * @param bounded
+	 *            : a {@link Boolean} value indicating whether the environment
+	 *            is bounded or not.
+	 * @param possibleActions
+	 *            : a {@link Collection} of {@link Action}s that are possible in
+	 *            this {@link Environment}
+	 */
+	public ComplexEnvironment(
+			Integer port,
+			AbstractState state,
+			AbstractConnectedPhysics physics,
+			Collection<Class<? extends AbstractEnvironmentalAction>> possibleActions) {
+		super(port, new Subscriber(), state, physics, true,
+				new EnvironmentAppearance(IDFactory.getInstance().getNewID(),
+						false, false), possibleActions);
+	}
+
+	/**
 	 * Constructor.
 	 * 
 	 * @param subenvironments
@@ -65,10 +97,7 @@ public class ComplexEnvironment extends AbstractConnectedEnvironment {
 	 * @param state
 	 *            : an {@link AbstractState} instance.
 	 * @param physics
-	 *            : the {@link AbstractConnectedPhysics} of the environment.
-	 * @param bounded
-	 *            : a {@link Boolean} value indicating whether the environment
-	 *            is bounded or not.
+	 *            : the {@link AbstractConnectedPhysics} of the environment
 	 * @param possibleActions
 	 *            : the {@link AbstractEnvironmentalAction}s that are possible
 	 *            in this {@link Environment}
@@ -95,7 +124,7 @@ public class ComplexEnvironment extends AbstractConnectedEnvironment {
 
 	@Override
 	public void handleCustomMessage(EnvironmentAppearance appearance,
-			AbstractMessage<?> message) {
+			Message<?> message) {
 		// TODO Auto-generated method stub
 
 	}

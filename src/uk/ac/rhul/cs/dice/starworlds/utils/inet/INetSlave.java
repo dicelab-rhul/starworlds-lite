@@ -14,6 +14,8 @@ public abstract class INetSlave extends Observable implements Runnable {
 	private Socket socket;
 	private INetSender sender;
 	private INetReceiver receiver;
+	private volatile boolean waiting = false;
+	private Object waitReceive = null;
 
 	public INetSlave(String host, int port, INetSender sender,
 			INetReceiver receiver) {
@@ -48,15 +50,61 @@ public abstract class INetSlave extends Observable implements Runnable {
 				while (true) {
 					Object received = receiver.receive();
 					System.out.println("RECEIVED: " + received);
-					setChanged();
-					notifyObservers(received);
+					if (!waiting) {
+						setChanged();
+						notifyObservers(received);
+					} else {
+						waitReceive = received;
+						waiting = false;
+					}
 				}
 			}
 		});
 		thread.start();
 	}
 
+	/**
+	 * Sends the given messages and blocks until a reply is given. A default
+	 * time out of approximately 10 seconds is used.
+	 * 
+	 * @param message
+	 *            : to send
+	 * @return reply received
+	 */
+	public Object sendAndWaitForReply(Object message) {
+		return sendAndWaitForReply(message, 10000L);
+	}
+
+	/**
+	 * Sends the given messages and blocks until a reply is given or until the
+	 * given timeout.
+	 * 
+	 * @param message
+	 *            : to send
+	 * @param timeout
+	 *            : time to wait for reply
+	 * @return
+	 */
+	public Object sendAndWaitForReply(Object message, Long timeout) {
+		waiting = true;
+		this.send(message);
+		Long o = System.currentTimeMillis();
+		Long c = System.currentTimeMillis();
+		while (c - o < timeout) {
+			c = System.currentTimeMillis();
+			if (!waiting) {
+				System.out.println("replied: " + waitReceive);
+				return waitReceive;
+			}
+		}
+		System.out.println("Timeout: " + timeout
+				+ " while waiting for reply from: "
+				+ this.socket.getRemoteSocketAddress());
+		return null;
+	}
+
 	public void send(Object message) {
+		System.out.println("SENDING: " + message);
 		sender.send(message);
 	}
 

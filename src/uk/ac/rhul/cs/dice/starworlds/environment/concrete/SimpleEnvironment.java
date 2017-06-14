@@ -1,13 +1,13 @@
-package uk.ac.rhul.cs.dice.starworlds.environment;
+package uk.ac.rhul.cs.dice.starworlds.environment.concrete;
 
 import java.util.Collection;
 
 import uk.ac.rhul.cs.dice.starworlds.actions.environmental.AbstractEnvironmentalAction;
 import uk.ac.rhul.cs.dice.starworlds.appearances.EnvironmentAppearance;
 import uk.ac.rhul.cs.dice.starworlds.environment.base.AbstractConnectedEnvironment;
-import uk.ac.rhul.cs.dice.starworlds.environment.base.AbstractMessage;
 import uk.ac.rhul.cs.dice.starworlds.environment.base.AbstractState;
 import uk.ac.rhul.cs.dice.starworlds.environment.base.interfaces.Environment;
+import uk.ac.rhul.cs.dice.starworlds.environment.base.interfaces.Message;
 import uk.ac.rhul.cs.dice.starworlds.environment.physics.AbstractConnectedPhysics;
 import uk.ac.rhul.cs.dice.starworlds.environment.subscriber.Subscriber;
 
@@ -43,7 +43,7 @@ public class SimpleEnvironment extends AbstractConnectedEnvironment {
 
 	@Override
 	public void handleCustomMessage(EnvironmentAppearance appearance,
-			AbstractMessage<?> message) {
+			Message<?> message) {
 		System.err.println("UNKNOWN MESSAGE FROM: " + appearance
 				+ System.lineSeparator() + message);
 	}

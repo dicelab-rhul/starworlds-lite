@@ -31,12 +31,14 @@ public class Parser {
 	public static final String[] KEYWORDS = new String[] { "@agentbodies",
 			"@agentminds", "@agentactuators", "@agentsensors",
 			"@possibleactions", "@environments", "@physics", "@states",
-			"~structure", "~agents", "~environments" };
+			"~structure", "~agents", "~environments", "~remote",
+			"@connections", "@port" };
 	public static final String AGENTBODIES = KEYWORDS[0],
 			AGENTMINDS = KEYWORDS[1], AGENTACTUATORS = KEYWORDS[2],
 			AGENTSENSORS = KEYWORDS[3], POSSIBLEACTIONS = KEYWORDS[4],
 			ENVIRONMENTS = KEYWORDS[5], PHYSICS = KEYWORDS[6],
-			STATES = KEYWORDS[7];
+			STATES = KEYWORDS[7], REMOTE = KEYWORDS[11],
+			CONNECTIONS = KEYWORDS[12], PORT = KEYWORDS[13];
 	public static final String STRUCTURE = KEYWORDS[8], AGENTS = KEYWORDS[9],
 			REALENVIRONMENTS = KEYWORDS[10];
 
@@ -54,7 +56,7 @@ public class Parser {
 		}
 	}
 
-	public Universe parse() {
+	public Universe parse() throws Exception {
 		JSONObject structure = total.getJSONObject(STRUCTURE);
 		if (structure.keySet().size() == 1) {
 			environmentkeys = total.getJSONObject(REALENVIRONMENTS).keySet();
@@ -64,11 +66,14 @@ public class Parser {
 			// do post initialisation
 			environments.add((AbstractEnvironment) universe);
 			for (AbstractEnvironment e : environments) {
+				((AbstractConnectedEnvironment) e).initialConnect();
+			}
+			for (AbstractEnvironment e : environments) {
 				e.postInitialisation();
 			}
-//			for (AbstractEnvironment e : environments) {
-//				((AbstractConnectedEnvironment) e).gatherMessages();
-//			}
+			// for (AbstractEnvironment e : environments) {
+			// ((AbstractConnectedEnvironment) e).gatherMessages();
+			// }
 			return universe;
 		} else {
 			return null;
@@ -76,7 +81,7 @@ public class Parser {
 	}
 
 	private AbstractEnvironment recurseStructure(String key,
-			JSONObject structure, JSONObject total) {
+			JSONObject structure, JSONObject total) throws Exception {
 		List<AbstractEnvironment> subenvs = new ArrayList<>();
 		for (String s : structure.keySet()) {
 			if (environmentkeys.contains(s)) {
@@ -100,14 +105,12 @@ public class Parser {
 		// create physics
 		// TODO add active bodies and passive bodies
 		AbstractPhysics physics = null;
-		try {
-			physics = (AbstractPhysics) getClassFromJson(PHYSICS,
-					environmentjson.getString(PHYSICS), total).getConstructor(
-					Set.class, Set.class, Set.class).newInstance(agents, null,
-					null);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+
+		Class<?> physicsclass = getClassFromJson(PHYSICS,
+				environmentjson.getString(PHYSICS), total);
+
+		physics = (AbstractPhysics) physicsclass.getConstructor(Set.class,
+				Set.class, Set.class).newInstance(agents, null, null);
 
 		// create state
 		AbstractState state = null;
@@ -127,16 +130,38 @@ public class Parser {
 					pajson.getString(i), total));
 		}
 		// TODO create appearance via parsing
-
+		// TODO mixed constructor
 		// create environment
-		try {
-			return (AbstractEnvironment) getClassFromJson(ENVIRONMENTS,
-					environmentjson.getString(ENVIRONMENTS), total)
-					.getConstructor(Collection.class, AbstractState.class,
+		Class<?> environmentclass = getClassFromJson(ENVIRONMENTS,
+				environmentjson.getString(ENVIRONMENTS), total);
+		if (structure.keySet().contains(REMOTE)) {
+			// we should use the remote constructor
+			JSONObject remote = structure.getJSONObject(REMOTE);
+			Integer port = remote.getInt(PORT);
+			AbstractConnectedEnvironment remoteEnvironment = (AbstractConnectedEnvironment) environmentclass
+					.getConstructor(Integer.class, AbstractState.class,
 							AbstractConnectedPhysics.class, Collection.class)
-					.newInstance(subenvs, state, physics, possibleactions);
-		} catch (Exception e) {
-			e.printStackTrace();
+					.newInstance(port, state, physics, possibleactions);
+			// check for any initial connections and add them
+			if (remote.keySet().contains(CONNECTIONS)) {
+				JSONArray connections = remote.getJSONArray(CONNECTIONS);
+				for (int i = 0; i < connections.length(); i++) {
+					String[] ap = connections.getString(i).split(":");
+					remoteEnvironment.addInitialConnection(ap[0],
+							Integer.valueOf(ap[1]));
+				}
+			}
+			return remoteEnvironment;
+		} else {
+			// use the local constructor.
+			try {
+				return (AbstractEnvironment) environmentclass.getConstructor(
+						Collection.class, AbstractState.class,
+						AbstractConnectedPhysics.class, Collection.class)
+						.newInstance(subenvs, state, physics, possibleactions);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
 		return null;
 	}

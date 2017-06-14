@@ -48,12 +48,6 @@ public class LocalSynchroniser implements Synchroniser {
 							.getPhysics()).getSynchroniser());
 				});
 		}
-		// create remote synchronisers
-		environmentManager.getRemoteSubEnvironments().forEach(
-				(SocketAddress a) -> {
-					subsynchronisers
-							.add(new RemoteSynchroniser(environment, a));
-				});
 	}
 
 	@Override

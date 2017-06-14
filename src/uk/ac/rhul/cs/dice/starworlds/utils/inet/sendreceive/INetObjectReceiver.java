@@ -9,7 +9,6 @@ public class INetObjectReceiver implements INetReceiver {
 	protected ObjectInputStream in;
 	protected Class<?> expectedinclass;
 
-	
 	public INetObjectReceiver(Socket socket, Class<?> expectedinclass) {
 		try {
 			INetObjectReceiver.this.in = new ObjectInputStream(
@@ -26,10 +25,11 @@ public class INetObjectReceiver implements INetReceiver {
 			return this.in.readObject();
 		} catch (ClassNotFoundException | IOException e) {
 			System.err.println(this + " RECEIVED INVALID DATA");
+			e.printStackTrace();
 			return null;
 		}
 	}
-	
+
 	public Class<?> getExpectedinclass() {
 		return expectedinclass;
 	}

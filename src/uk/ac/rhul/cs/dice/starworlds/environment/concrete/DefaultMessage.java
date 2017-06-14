@@ -8,8 +8,10 @@ import uk.ac.rhul.cs.dice.starworlds.utils.Pair;
 public class DefaultMessage<T> extends AbstractMessage<Pair<String, T>>
 		implements CommandMessage<T> {
 
-	public DefaultMessage(Appearance appearance, String command, T payload) {
-		super(appearance, new Pair<String, T>(command, payload));
+	private Appearance sender;
+
+	public DefaultMessage(Appearance sender, String command, T payload) {
+		super(new Pair<String, T>(command, payload));
 	}
 
 	@Override

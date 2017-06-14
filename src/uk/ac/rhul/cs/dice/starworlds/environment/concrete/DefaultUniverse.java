@@ -24,6 +24,22 @@ public class DefaultUniverse extends ComplexEnvironment implements Universe {
 	/**
 	 * TODO
 	 * 
+	 * @param port
+	 * @param state
+	 * @param physics
+	 * @param possibleActions
+	 */
+	public DefaultUniverse(
+			Integer port,
+			AbstractState state,
+			AbstractConnectedPhysics physics,
+			Collection<Class<? extends AbstractEnvironmentalAction>> possibleActions) {
+		super(port, state, physics, possibleActions);
+	}
+
+	/**
+	 * TODO
+	 * 
 	 * @param state
 	 * @param physics
 	 * @param appearance
@@ -65,7 +81,7 @@ public class DefaultUniverse extends ComplexEnvironment implements Universe {
 				this.getAppearance(), SUBSCRIBE, getInitialActionsToSubscribe());
 		// this.connectedEnvironmentManager.sendToAllNeighbouringEnvironments(sub);
 		// //?
-		this.connectedEnvironmentManager.sendToAllSubEnvironments(sub);
+		this.envconManager.sendToAllSubEnvironments(sub);
 	}
 
 	@Override

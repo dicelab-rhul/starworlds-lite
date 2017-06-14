@@ -3,6 +3,8 @@ package uk.ac.rhul.cs.dice.starworlds.environment.base;
 import java.util.HashSet;
 import java.util.Set;
 
+import uk.ac.rhul.cs.dice.starworlds.environment.base.interfaces.Message;
+
 /**
  * A simple Observable class that contains some {@link Receiver}s who should be
  * notified using the {@link Recipient#notifyReceivers(Object)} method when any
@@ -19,7 +21,7 @@ public abstract class Recipient {
 		receivers = new HashSet<>();
 	}
 
-	public void notifyReceivers(AbstractMessage<?> message) {
+	public void notifyReceivers(Message<?> message) {
 		for (Receiver r : receivers) {
 			r.receive(this, message);
 		}
