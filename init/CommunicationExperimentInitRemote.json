@@ -74,14 +74,14 @@
 	},
 },
 
-~structure : {
-	DefaultUniverse : {
+~structure : [{
+		~environments : DefaultUniverse,
 		~remote : { @port : 10000, @connections : [ "localhost:10001" ] },
 		~agents : [CommunicatingAgent],
-		DefaultEnvironment : { 
-			~agents : [CommunicatingAgent] ,
-			~remote : { @port : 10001 },
-		},
-	}
-}	
+		~structure : [{
+				~environments: DefaultEnvironment,
+				~remote : { @port : 10001 },
+				~agents : [CommunicatingAgent],
+			}],
+		}]
 }

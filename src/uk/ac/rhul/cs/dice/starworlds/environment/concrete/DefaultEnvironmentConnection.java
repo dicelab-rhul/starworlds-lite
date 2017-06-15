@@ -2,7 +2,7 @@ package uk.ac.rhul.cs.dice.starworlds.environment.concrete;
 
 import uk.ac.rhul.cs.dice.starworlds.appearances.EnvironmentAppearance;
 import uk.ac.rhul.cs.dice.starworlds.environment.base.AbstractEnvironmentConnection;
-import uk.ac.rhul.cs.dice.starworlds.environment.base.AbstractMessage;
+import uk.ac.rhul.cs.dice.starworlds.environment.base.interfaces.Message;
 
 public class DefaultEnvironmentConnection extends AbstractEnvironmentConnection {
 
@@ -10,7 +10,7 @@ public class DefaultEnvironmentConnection extends AbstractEnvironmentConnection 
 			DefaultEnvironmentConnection mutualConnector,
 			EnvironmentAppearance appearance) {
 		super(mutualConnector, appearance);
-		//System.out.println("CONNECTED: " + this);
+		// System.out.println("CONNECTED: " + this);
 	}
 
 	public DefaultEnvironmentConnection(EnvironmentAppearance appearance) {
@@ -18,12 +18,12 @@ public class DefaultEnvironmentConnection extends AbstractEnvironmentConnection 
 	}
 
 	@Override
-	public void send(AbstractMessage<?> obj) {
+	public void send(Message<?> obj) {
 		super.send(obj);
 	}
 
 	@Override
-	public void receive(AbstractMessage<?> obj) {
+	public void receive(Message<?> obj) {
 		if (isOpen()) {
 			this.notifyReceivers(obj);
 		}

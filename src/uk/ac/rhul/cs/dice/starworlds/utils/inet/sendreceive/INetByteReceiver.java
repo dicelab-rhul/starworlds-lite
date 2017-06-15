@@ -11,6 +11,10 @@ public class INetByteReceiver implements INetReceiver {
 	private InputStream in;
 	private byte[] readarray;
 
+	public INetByteReceiver() {
+		readarray = new byte[DEFAULTREADSIZE];
+	}
+
 	public INetByteReceiver(InputStream in) {
 		this.in = in;
 		readarray = new byte[DEFAULTREADSIZE];
@@ -30,5 +34,10 @@ public class INetByteReceiver implements INetReceiver {
 			e.printStackTrace();
 			return null;
 		}
+	}
+
+	@Override
+	public void setInputStream(InputStream in) {
+		this.in = in;
 	}
 }

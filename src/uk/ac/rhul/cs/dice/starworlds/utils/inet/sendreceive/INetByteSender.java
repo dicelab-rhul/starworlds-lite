@@ -7,6 +7,9 @@ public class INetByteSender implements INetSender {
 
 	private OutputStream out;
 
+	public INetByteSender() {
+	}
+
 	public INetByteSender(OutputStream out) {
 		this.out = out;
 	}
@@ -23,5 +26,10 @@ public class INetByteSender implements INetSender {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+
+	@Override
+	public void setOutputStream(OutputStream out) {
+		this.out = out;
 	}
 }

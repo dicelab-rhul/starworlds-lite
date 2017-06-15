@@ -15,6 +15,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
+import uk.ac.rhul.cs.dice.starworlds.appearances.EnvironmentAppearance;
 import uk.ac.rhul.cs.dice.starworlds.entities.agents.AbstractAgent;
 import uk.ac.rhul.cs.dice.starworlds.entities.agents.AbstractAgentMind;
 import uk.ac.rhul.cs.dice.starworlds.entities.agents.components.Actuator;
@@ -25,6 +26,11 @@ import uk.ac.rhul.cs.dice.starworlds.environment.base.AbstractState;
 import uk.ac.rhul.cs.dice.starworlds.environment.base.interfaces.Universe;
 import uk.ac.rhul.cs.dice.starworlds.environment.physics.AbstractConnectedPhysics;
 import uk.ac.rhul.cs.dice.starworlds.environment.physics.AbstractPhysics;
+import uk.ac.rhul.cs.dice.starworlds.utils.datastructure.tree.NeighbourhoodNode;
+import uk.ac.rhul.cs.dice.starworlds.utils.datastructure.tree.NeighbourhoodTree;
+import uk.ac.rhul.cs.dice.starworlds.utils.datastructure.tree.Node;
+import uk.ac.rhul.cs.dice.starworlds.utils.datastructure.visitor.Acceptor;
+import uk.ac.rhul.cs.dice.starworlds.utils.datastructure.visitor.Visitor;
 
 public class Parser {
 
@@ -42,9 +48,9 @@ public class Parser {
 	public static final String STRUCTURE = KEYWORDS[8], AGENTS = KEYWORDS[9],
 			REALENVIRONMENTS = KEYWORDS[10];
 
-	private Set<String> environmentkeys;
 	// store for post initialisation phase
-	private ArrayList<AbstractEnvironment> environments = new ArrayList<>();
+	private NeighbourhoodTree<AbstractEnvironment> environments = new NeighbourhoodTree<>();
+
 	private JSONObject total;
 
 	public Parser(String initstructure) throws IOException {
@@ -57,39 +63,34 @@ public class Parser {
 	}
 
 	public Universe parse() throws Exception {
-		JSONObject structure = total.getJSONObject(STRUCTURE);
-		if (structure.keySet().size() == 1) {
-			environmentkeys = total.getJSONObject(REALENVIRONMENTS).keySet();
-			String universekey = (String) structure.keySet().toArray()[0];
-			Universe universe = (Universe) recurseStructure(universekey,
-					structure.getJSONObject(universekey), total);
-			// do post initialisation
-			environments.add((AbstractEnvironment) universe);
-			for (AbstractEnvironment e : environments) {
-				((AbstractConnectedEnvironment) e).initialConnect();
-			}
-			for (AbstractEnvironment e : environments) {
-				e.postInitialisation();
-			}
-			// for (AbstractEnvironment e : environments) {
-			// ((AbstractConnectedEnvironment) e).gatherMessages();
-			// }
+		JSONArray structure = total.getJSONArray(STRUCTURE);
+		if (structure.length() == 1) {
+			JSONObject universeObject = structure.getJSONObject(0);
+			environments.setRoot(recurseStructure(universeObject, total));
+			Universe universe = (Universe) environments.getRoot().getValue();
+			System.out.println(environments);
+			environments.accept(new EnvironmentTreeVisitor());
 			return universe;
-		} else {
-			return null;
 		}
+		return null;
 	}
 
-	private AbstractEnvironment recurseStructure(String key,
-			JSONObject structure, JSONObject total) throws Exception {
-		List<AbstractEnvironment> subenvs = new ArrayList<>();
-		for (String s : structure.keySet()) {
-			if (environmentkeys.contains(s)) {
-				subenvs.add(recurseStructure(s, structure.getJSONObject(s),
-						total));
-			}
+	private Node<AbstractEnvironment> recurseStructure(JSONObject structure,
+			JSONObject total) throws Exception {
+		NeighbourhoodNode<AbstractEnvironment> current = new NeighbourhoodNode<>();
+		String envkey = structure.getString(REALENVIRONMENTS);
+		final List<Node<AbstractEnvironment>> subenvs = new ArrayList<>();
+		if (structure.has(STRUCTURE)) {
+			JSONArray substructarray = structure.getJSONArray(STRUCTURE);
+			substructarray.forEach((Object o) -> {
+				try {
+					subenvs.add(recurseStructure((JSONObject) o, total));
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			});
+			current.setChildren(subenvs);
 		}
-		environments.addAll(subenvs);
 		// create agents
 		JSONArray agentkeys = structure.getJSONArray(AGENTS);
 		Set<AbstractAgent> agents = new HashSet<>();
@@ -98,9 +99,8 @@ public class Parser {
 			agents.add(constructAgent(ak, total.getJSONObject(AGENTS)
 					.getJSONObject(ak), total));
 		}
-
 		JSONObject environmentjson = total.getJSONObject(REALENVIRONMENTS)
-				.getJSONObject(key);
+				.getJSONObject(envkey);
 
 		// create physics
 		// TODO add active bodies and passive bodies
@@ -151,14 +151,17 @@ public class Parser {
 							Integer.valueOf(ap[1]));
 				}
 			}
-			return remoteEnvironment;
+			current.setValue(remoteEnvironment);
+			return current;
 		} else {
 			// use the local constructor.
 			try {
-				return (AbstractEnvironment) environmentclass.getConstructor(
-						Collection.class, AbstractState.class,
-						AbstractConnectedPhysics.class, Collection.class)
-						.newInstance(subenvs, state, physics, possibleactions);
+				current.setValue((AbstractEnvironment) environmentclass
+						.getConstructor(Collection.class, AbstractState.class,
+								AbstractConnectedPhysics.class,
+								Collection.class).newInstance(subenvs, state,
+								physics, possibleactions));
+				return current;
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -229,5 +232,21 @@ public class Parser {
 	public JSONObject getJson(File file) throws IOException {
 		JSONTokener tokener = new JSONTokener(new FileReader(file));
 		return new JSONObject(tokener);
+	}
+
+	// visits each environment and initialises it
+	private static class EnvironmentTreeVisitor implements
+			Visitor<AbstractEnvironment> {
+		@Override
+		public void visit(Acceptor<AbstractEnvironment> acceptor) {
+			Node<AbstractEnvironment> node = (Node<AbstractEnvironment>) acceptor;
+			//System.out.println("VISITING: " + node);
+			if (AbstractConnectedEnvironment.class.isAssignableFrom(node
+					.getClass())) {
+				((AbstractConnectedEnvironment) node.getValue())
+						.initialConnect();
+			}
+			node.getValue().postInitialisation();
+		}
 	}
 }

@@ -32,7 +32,7 @@ public abstract class INetServer extends Observable implements Observer {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		System.out.println("SERVER: " + socket);
+		System.out.println("SERVER: " + socket + " Waiting for connections...");
 		Thread socketthread = new Thread(new Runnable() {
 			@Override
 			public void run() {
@@ -41,7 +41,6 @@ public abstract class INetServer extends Observable implements Observer {
 						Socket socket = INetServer.this.socket.accept();
 						System.out.println("SERVER ACCEPTED: " + socket);
 						INetSlave slave = newSlave(socket);
-						System.out.println("NEW SLAVE: " + slave);
 						initialiseSlave(slave);
 					} catch (IOException e) {
 						e.printStackTrace();
@@ -53,7 +52,7 @@ public abstract class INetServer extends Observable implements Observer {
 	}
 
 	@Override
-	public void update(Observable o, Object arg) {
+	public final void update(Observable o, Object arg) {
 		this.setChanged();
 		this.notifyObservers(new Pair<SocketAddress, Object>(((INetSlave) o)
 				.getSocket().getRemoteSocketAddress(), arg));

@@ -3,14 +3,12 @@ package uk.ac.rhul.cs.dice.starworlds.utils.inet;
 import java.io.IOException;
 import java.net.Socket;
 import java.util.Observable;
-import java.util.concurrent.ConcurrentLinkedQueue;
 
 import uk.ac.rhul.cs.dice.starworlds.utils.inet.sendreceive.INetReceiver;
 import uk.ac.rhul.cs.dice.starworlds.utils.inet.sendreceive.INetSender;
 
 public abstract class INetSlave extends Observable implements Runnable {
 
-	private ConcurrentLinkedQueue<Object> received;
 	private Socket socket;
 	private INetSender sender;
 	private INetReceiver receiver;
@@ -20,7 +18,10 @@ public abstract class INetSlave extends Observable implements Runnable {
 	public INetSlave(String host, int port, INetSender sender,
 			INetReceiver receiver) {
 		try {
-			init(new Socket(host, port), receiver, sender);
+			Socket socket = new Socket(host, port);
+			sender.setOutputStream(socket.getOutputStream());
+			receiver.setInputStream(socket.getInputStream());
+			init(socket, receiver, sender);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -32,7 +33,6 @@ public abstract class INetSlave extends Observable implements Runnable {
 
 	private void init(Socket socket, INetReceiver receiver, INetSender sender) {
 		this.socket = socket;
-		this.received = new ConcurrentLinkedQueue<>();
 		this.receiver = receiver;
 		this.sender = sender;
 	}
@@ -43,7 +43,7 @@ public abstract class INetSlave extends Observable implements Runnable {
 
 	@Override
 	public void run() {
-		System.out.println(this + " LISTENING...");
+		System.out.println(this.socket + " LISTENING...");
 		Thread thread = new Thread(new Runnable() {
 			@Override
 			public void run() {

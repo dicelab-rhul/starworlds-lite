@@ -74,9 +74,13 @@
 	}
 },
 
-~structure : {
-	DefaultUniverse : {
-		~agents : [CommunicatingAgent,CommunicatingAgent],
-	}
-}	
+~structure : [{
+		~environments : DefaultUniverse,
+		~agents : [CommunicatingAgent, CommunicatingAgent],
+	},
+]
 }
+
+
+
+

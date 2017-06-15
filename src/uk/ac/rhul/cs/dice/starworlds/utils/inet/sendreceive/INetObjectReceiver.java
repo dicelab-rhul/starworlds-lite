@@ -1,6 +1,7 @@
 package uk.ac.rhul.cs.dice.starworlds.utils.inet.sendreceive;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.net.Socket;
 
@@ -32,5 +33,14 @@ public class INetObjectReceiver implements INetReceiver {
 
 	public Class<?> getExpectedinclass() {
 		return expectedinclass;
+	}
+
+	@Override
+	public void setInputStream(InputStream in) {
+		try {
+			this.in = new ObjectInputStream(in);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 }

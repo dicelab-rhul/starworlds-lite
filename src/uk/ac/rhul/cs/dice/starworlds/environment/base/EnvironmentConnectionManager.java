@@ -140,9 +140,10 @@ public class EnvironmentConnectionManager implements Receiver, Observer {
 	public synchronized void receive(Recipient recipient, Message<?> message) {
 		// System.out.println("Received: " + System.lineSeparator() + "    "
 		// + recipient + System.lineSeparator() + "        " + message);
-		this.localenvironment.handleMessage(
-				((AbstractEnvironmentConnection) recipient)
-						.getRemoteAppearance(), message);
+		this.localenvironment
+				.handleMessage(
+						(EnvironmentAppearance) ((AbstractEnvironmentConnection) recipient)
+								.getRemoteAppearance(), message);
 		// perhaps this? depends on what messages are received
 		// this.recievedMessages.get(
 		// ((AbstractEnvironmentConnection) recipient)
@@ -159,7 +160,8 @@ public class EnvironmentConnectionManager implements Receiver, Observer {
 				.setSuperEnvironmentConnection(connection);
 		if (connection.getMutualConnector() != null) {
 			this.addSubEnvironmentConnection(connection);
-			recievedMessages.put(connection.getRemoteAppearance(),
+			recievedMessages.put(
+					(EnvironmentAppearance) connection.getRemoteAppearance(),
 					new ArrayList<>());
 			connection.addReciever(EnvironmentConnectionManager.this);
 		} else {
@@ -190,13 +192,10 @@ public class EnvironmentConnectionManager implements Receiver, Observer {
 		// (AbstractConnectedEnvironment) environment);
 	}
 
-	public void addSubEnvironment(String host, int port) {
-
-	}
-
 	public void addSubEnvironmentConnection(
 			AbstractEnvironmentConnection connection) {
-		this.subEnvironmentConnections.put(connection.getRemoteAppearance(),
+		this.subEnvironmentConnections.put(
+				(EnvironmentAppearance) connection.getRemoteAppearance(),
 				connection);
 
 	}
@@ -312,9 +311,6 @@ public class EnvironmentConnectionManager implements Receiver, Observer {
 
 	public void sendToSuperEnvironment(AbstractMessage<?> obj) {
 		superEnvironmentConnection.send(obj);
-	}
-
-	public void setSuperEnvironment(String host, int port) {
 	}
 
 	// utility function TODO move to utils
