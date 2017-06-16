@@ -49,7 +49,7 @@ public abstract class INetSlave extends Observable implements Runnable {
 			public void run() {
 				while (true) {
 					Object received = receiver.receive();
-					System.out.println("RECEIVED: " + received);
+					//System.out.println("RECEIVED: " + received);
 					if (!waiting) {
 						setChanged();
 						notifyObservers(received);
@@ -93,7 +93,6 @@ public abstract class INetSlave extends Observable implements Runnable {
 		while (c - o < timeout) {
 			c = System.currentTimeMillis();
 			if (!waiting) {
-				System.out.println("replied: " + waitReceive);
 				return waitReceive;
 			}
 		}
@@ -104,7 +103,7 @@ public abstract class INetSlave extends Observable implements Runnable {
 	}
 
 	public void send(Object message) {
-		System.out.println("SENDING: " + message);
+		//System.out.println("SENDING: " + message);
 		sender.send(message);
 	}
 

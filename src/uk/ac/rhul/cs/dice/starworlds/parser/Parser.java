@@ -5,6 +5,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -15,12 +16,12 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
-import uk.ac.rhul.cs.dice.starworlds.appearances.EnvironmentAppearance;
 import uk.ac.rhul.cs.dice.starworlds.entities.agents.AbstractAgent;
 import uk.ac.rhul.cs.dice.starworlds.entities.agents.AbstractAgentMind;
 import uk.ac.rhul.cs.dice.starworlds.entities.agents.components.Actuator;
 import uk.ac.rhul.cs.dice.starworlds.entities.agents.components.Sensor;
 import uk.ac.rhul.cs.dice.starworlds.environment.base.AbstractConnectedEnvironment;
+import uk.ac.rhul.cs.dice.starworlds.environment.base.AbstractConnectedEnvironment.AmbientRelation;
 import uk.ac.rhul.cs.dice.starworlds.environment.base.AbstractEnvironment;
 import uk.ac.rhul.cs.dice.starworlds.environment.base.AbstractState;
 import uk.ac.rhul.cs.dice.starworlds.environment.base.interfaces.Universe;
@@ -38,13 +39,14 @@ public class Parser {
 			"@agentminds", "@agentactuators", "@agentsensors",
 			"@possibleactions", "@environments", "@physics", "@states",
 			"~structure", "~agents", "~environments", "~remote",
-			"@connections", "@port" };
+			"@connections", "@port", "@ctype", "@address" };
 	public static final String AGENTBODIES = KEYWORDS[0],
 			AGENTMINDS = KEYWORDS[1], AGENTACTUATORS = KEYWORDS[2],
 			AGENTSENSORS = KEYWORDS[3], POSSIBLEACTIONS = KEYWORDS[4],
 			ENVIRONMENTS = KEYWORDS[5], PHYSICS = KEYWORDS[6],
 			STATES = KEYWORDS[7], REMOTE = KEYWORDS[11],
-			CONNECTIONS = KEYWORDS[12], PORT = KEYWORDS[13];
+			CONNECTIONS = KEYWORDS[12], PORT = KEYWORDS[13],
+			CONNECTIONTYPE = KEYWORDS[14], ADDRESS = KEYWORDS[15];
 	public static final String STRUCTURE = KEYWORDS[8], AGENTS = KEYWORDS[9],
 			REALENVIRONMENTS = KEYWORDS[10];
 
@@ -69,7 +71,9 @@ public class Parser {
 			environments.setRoot(recurseStructure(universeObject, total));
 			Universe universe = (Universe) environments.getRoot().getValue();
 			System.out.println(environments);
-			environments.accept(new EnvironmentTreeVisitor());
+			environments.accept(new InitialConnectVisitor());
+			environments.accept(new PostInitialisationVisitor());
+
 			return universe;
 		}
 		return null;
@@ -146,9 +150,8 @@ public class Parser {
 			if (remote.keySet().contains(CONNECTIONS)) {
 				JSONArray connections = remote.getJSONArray(CONNECTIONS);
 				for (int i = 0; i < connections.length(); i++) {
-					String[] ap = connections.getString(i).split(":");
-					remoteEnvironment.addInitialConnection(ap[0],
-							Integer.valueOf(ap[1]));
+					addInitialConnection(connections.getJSONObject(i),
+							remoteEnvironment);
 				}
 			}
 			current.setValue(remoteEnvironment);
@@ -156,10 +159,12 @@ public class Parser {
 		} else {
 			// use the local constructor.
 			try {
+				ArrayList<AbstractEnvironment> subs = new ArrayList<>();
+				subenvs.forEach((n) -> subs.add(n.getValue()));
 				current.setValue((AbstractEnvironment) environmentclass
 						.getConstructor(Collection.class, AbstractState.class,
 								AbstractConnectedPhysics.class,
-								Collection.class).newInstance(subenvs, state,
+								Collection.class).newInstance(subs, state,
 								physics, possibleactions));
 				return current;
 			} catch (Exception e) {
@@ -167,6 +172,26 @@ public class Parser {
 			}
 		}
 		return null;
+	}
+
+	private void addInitialConnection(JSONObject connection,
+			AbstractConnectedEnvironment env) {
+
+		AmbientRelation relation = getConnectionRelation(connection
+				.getString(CONNECTIONTYPE));
+		String[] ap = connection.getString(ADDRESS).split(":");
+		env.addInitialConnection(ap[0], Integer.valueOf(ap[1]), relation);
+	}
+
+	private AmbientRelation getConnectionRelation(String ctype) {
+		try {
+			return AmbientRelation.valueOf(AmbientRelation.class, ctype);
+		} catch (IllegalArgumentException e) {
+			throw new IllegalArgumentException(ctype + " is not a valid "
+					+ CONNECTIONTYPE + System.lineSeparator() + "Valid: "
+					+ CONNECTIONTYPE + "s are: "
+					+ Arrays.toString(AmbientRelation.values()));
+		}
 	}
 
 	private AbstractAgent constructAgent(String key, JSONObject agentjson,
@@ -234,19 +259,35 @@ public class Parser {
 		return new JSONObject(tokener);
 	}
 
-	// visits each environment and initialises it
-	private static class EnvironmentTreeVisitor implements
+	// visits each environment and connects any networked environments
+	private static class InitialConnectVisitor implements
 			Visitor<AbstractEnvironment> {
 		@Override
 		public void visit(Acceptor<AbstractEnvironment> acceptor) {
-			Node<AbstractEnvironment> node = (Node<AbstractEnvironment>) acceptor;
-			//System.out.println("VISITING: " + node);
-			if (AbstractConnectedEnvironment.class.isAssignableFrom(node
-					.getClass())) {
-				((AbstractConnectedEnvironment) node.getValue())
-						.initialConnect();
-			}
-			node.getValue().postInitialisation();
+			((AbstractConnectedEnvironment) ((Node<AbstractEnvironment>) acceptor)
+					.getValue()).initialConnect();
+		}
+	}
+
+	// visits each environment and initialises it
+	private static class PostInitialisationVisitor implements
+			Visitor<AbstractEnvironment> {
+		@Override
+		public void visit(Acceptor<AbstractEnvironment> acceptor) {
+			((Node<AbstractEnvironment>) acceptor).getValue()
+					.postInitialisation();
+		}
+	}
+
+	// visits each environment and prints information about it. e.g. all its
+	// connections, appearance etc.
+	private static class InfoPrintVisitor implements
+			Visitor<AbstractEnvironment> {
+		@Override
+		public void visit(Acceptor<AbstractEnvironment> acceptor) {
+			System.out
+					.println(((AbstractConnectedEnvironment) ((Node<AbstractEnvironment>) acceptor)
+							.getValue()).getConnectedEnvironmentManager());
 		}
 	}
 }

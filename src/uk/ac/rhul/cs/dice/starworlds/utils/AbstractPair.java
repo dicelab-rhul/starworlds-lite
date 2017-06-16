@@ -14,6 +14,14 @@ public abstract class AbstractPair<T1, T2> implements Serializable {
 		this.second = second;
 	}
 
+	public void setSecond(T2 second) {
+		this.second = second;
+	}
+
+	public void setFirst(T1 first) {
+		this.first = first;
+	}
+
 	public T1 getFirst() {
 		return this.first;
 	}

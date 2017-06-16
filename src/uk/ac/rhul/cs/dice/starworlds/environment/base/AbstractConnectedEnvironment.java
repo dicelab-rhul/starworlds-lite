@@ -1,10 +1,10 @@
 package uk.ac.rhul.cs.dice.starworlds.environment.base;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import uk.ac.rhul.cs.dice.starworlds.actions.Action;
@@ -15,6 +15,7 @@ import uk.ac.rhul.cs.dice.starworlds.appearances.ActiveBodyAppearance;
 import uk.ac.rhul.cs.dice.starworlds.appearances.Appearance;
 import uk.ac.rhul.cs.dice.starworlds.appearances.EnvironmentAppearance;
 import uk.ac.rhul.cs.dice.starworlds.entities.agents.components.Sensor;
+import uk.ac.rhul.cs.dice.starworlds.environment.base.interfaces.CommandMessage;
 import uk.ac.rhul.cs.dice.starworlds.environment.base.interfaces.Environment;
 import uk.ac.rhul.cs.dice.starworlds.environment.base.interfaces.Message;
 import uk.ac.rhul.cs.dice.starworlds.environment.base.interfaces.State;
@@ -28,6 +29,29 @@ import uk.ac.rhul.cs.dice.starworlds.utils.Pair;
 
 public abstract class AbstractConnectedEnvironment extends AbstractEnvironment {
 
+	// Defines the relation between ambient's
+	public static enum AmbientRelation {
+		SUPER() {
+			@Override
+			public AmbientRelation inverse() {
+				return SUB;
+			}
+		},
+		SUB() {
+			@Override
+			public AmbientRelation inverse() {
+				return SUPER;
+			}
+		},
+		NEIGHBOUR() {
+			@Override
+			public AmbientRelation inverse() {
+				return NEIGHBOUR;
+			}
+		};
+		public abstract AmbientRelation inverse();
+	}
+
 	private static final Collection<Class<? extends AbstractEnvironmentalAction>> DEFAULTSUBSCRIPTIONACTIONS = new ArrayList<>();
 	static {
 		DEFAULTSUBSCRIPTIONACTIONS.add(SensingAction.class);
@@ -39,7 +63,7 @@ public abstract class AbstractConnectedEnvironment extends AbstractEnvironment {
 
 	protected Map<String, MessageProcessor> messageProcessors;
 	protected EnvironmentConnectionManager envconManager;
-	protected List<Pair<String, Integer>> initialConnections;
+	protected Map<Pair<String, Integer>, AmbientRelation> initialConnections;
 
 	/**
 	 * Constructor. This constructor assumes that all
@@ -72,7 +96,6 @@ public abstract class AbstractConnectedEnvironment extends AbstractEnvironment {
 			EnvironmentAppearance appearance,
 			Collection<Class<? extends AbstractEnvironmentalAction>> possibleActions) {
 		super(subscriber, state, physics, bounded, appearance, possibleActions);
-		System.out.println("LOCAL ENVIRONMENT INITIALISATION");
 		this.envconManager = new EnvironmentConnectionManager(this,
 				subenvironments, neighbouringenvironments);
 		physics.initSynchroniser(subenvironments, neighbouringenvironments);
@@ -111,11 +134,10 @@ public abstract class AbstractConnectedEnvironment extends AbstractEnvironment {
 			EnvironmentAppearance appearance,
 			Collection<Class<? extends AbstractEnvironmentalAction>> possibleActions) {
 		super(subscriber, state, physics, bounded, appearance, possibleActions);
-		System.out.println("REMOTE ENVIRONMENT INITIALISATION");
 		this.envconManager = new EnvironmentConnectionManager(this, port);
 		physics.initSynchroniser();
 		initialiseMessageProcessors();
-		initialConnections = new ArrayList<>();
+		initialConnections = new HashMap<>();
 	}
 
 	/**
@@ -161,7 +183,7 @@ public abstract class AbstractConnectedEnvironment extends AbstractEnvironment {
 				superenvironment, subenvironments, neighbouringenvironments,
 				port);
 		physics.initSynchroniser(subenvironments, neighbouringenvironments);
-		initialConnections = new ArrayList<>();
+		initialConnections = new HashMap<>();
 	}
 
 	protected void initialiseMessageProcessors() {
@@ -173,10 +195,12 @@ public abstract class AbstractConnectedEnvironment extends AbstractEnvironment {
 
 	public void handleMessage(EnvironmentAppearance appearance,
 			Message<?> message) {
-		if (DefaultMessage.class.isAssignableFrom(message.getClass())) {
-			DefaultMessage<?> dm = (DefaultMessage<?>) message;
-			messageProcessors.get(dm.getCommand()).process(appearance,
-					dm.getCommandPayload());
+		System.out.println("HANDLE MESSAGE: " + message
+				+ System.lineSeparator() + "   FROM: " + appearance);
+		if (CommandMessage.class.isAssignableFrom(message.getClass())) {
+			CommandMessage<?> cm = (CommandMessage<?>) message;
+			messageProcessors.get(cm.getCommand()).process(appearance,
+					cm.getCommandPayload());
 		} else {
 			handleCustomMessage(appearance, message);
 		}
@@ -184,8 +208,7 @@ public abstract class AbstractConnectedEnvironment extends AbstractEnvironment {
 
 	/**
 	 * This method should process any messages that the default processor cannot
-	 * handle. I.e. any message that is other than {@link DefaultMessage} or
-	 * {@link INetDefaultMessage}.
+	 * handle. I.e. any message that is other than {@link CommandMessage}.
 	 * 
 	 * @param appearance
 	 * @param message
@@ -200,19 +223,18 @@ public abstract class AbstractConnectedEnvironment extends AbstractEnvironment {
 
 	public void initialConnect() {
 		if (initialConnections != null) {
-			System.out.println(initialConnections);
 			// perform all initial remote connections
-			for (Pair<String, Integer> p : initialConnections) {
-				System.out.println("connect: " + p);
-				this.envconManager.connectToEnvironment(p.getFirst(),
-						p.getSecond());
-			}
+			initialConnections.forEach((addr, relation) -> {
+				this.envconManager.connectToEnvironment(addr.getFirst(),
+						addr.getSecond(), relation);
+			});
 		}
 		initialConnections = null;
 	}
 
-	public void addInitialConnection(String addr, Integer port) {
-		this.initialConnections.add(new Pair<>(addr, port));
+	public void addInitialConnection(String addr, Integer port,
+			AmbientRelation relation) {
+		this.initialConnections.put(new Pair<>(addr, port), relation);
 	}
 
 	public void clearAndUpdateActionsAfterPropagation() {
@@ -250,8 +272,8 @@ public abstract class AbstractConnectedEnvironment extends AbstractEnvironment {
 						.sendToEnvironment(
 								environment,
 								new DefaultMessage<Pair<AbstractEnvironmentalAction, Collection<AbstractPerception<?>>>>(
-										appearance, PERCEPTION, new Pair<>(
-												action, perceptions)));
+										PERCEPTION, new Pair<>(action,
+												perceptions)));
 			}
 		}
 	}
@@ -271,8 +293,10 @@ public abstract class AbstractConnectedEnvironment extends AbstractEnvironment {
 	 * {@link Environment} should not subscribe to all the prior mentioned
 	 * {@link Environment}s the
 	 * {@link AbstractConnectedEnvironment#initialActionSubscribe()} should be
-	 * Overridden. The default {@link Action}s to subscribe are
-	 * {@link SensingAction} and {@link CommunicationAction}.
+	 * overridden. The default {@link Action}s to subscribe are
+	 * {@link SensingAction} and {@link CommunicationAction}. </br> If the
+	 * subscription is going to happen over network, the return collection must
+	 * be {@link Serializable}.
 	 * 
 	 * @return a {@link Collection} of default
 	 *         {@link AbstractConnectedEnvironment} {@link Class}es to subscribe
@@ -292,8 +316,8 @@ public abstract class AbstractConnectedEnvironment extends AbstractEnvironment {
 	 * overriding this method in a subclass.
 	 */
 	protected void initialActionSubscribe() {
-		DefaultMessage<Collection<Class<? extends AbstractEnvironmentalAction>>> sub = new DefaultMessage<>(
-				this.getAppearance(), SUBSCRIBE, getInitialActionsToSubscribe());
+		INetDefaultMessage sub = new INetDefaultMessage(SUBSCRIBE,
+				(Serializable) getInitialActionsToSubscribe());
 		// this.connectedEnvironmentManager.sendToAllNeighbouringEnvironments(sub);
 		this.envconManager.sendToAllSubEnvironments(sub);
 		this.envconManager.sendToSuperEnvironment(sub);
@@ -313,7 +337,7 @@ public abstract class AbstractConnectedEnvironment extends AbstractEnvironment {
 				// dont send to the environment that the action originated from!
 				toSend.remove(action.getLocalEnvironment());
 				this.envconManager.sendToEnvironments(toSend,
-						new DefaultMessage<T>(this.appearance, ACTION, action));
+						new DefaultMessage<T>(ACTION, action));
 			}
 		}
 	}
@@ -328,8 +352,7 @@ public abstract class AbstractConnectedEnvironment extends AbstractEnvironment {
 				if (toSend != null) {
 					// TODO check not sending to the sender?
 					this.envconManager.sendToEnvironments(toSend,
-							new DefaultMessage<Collection<T>>(this.appearance,
-									ACTION, actions));
+							new DefaultMessage<Collection<T>>(ACTION, actions));
 				}
 			}
 		}

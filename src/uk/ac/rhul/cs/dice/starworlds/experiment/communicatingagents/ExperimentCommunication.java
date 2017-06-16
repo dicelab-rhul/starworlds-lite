@@ -11,7 +11,7 @@ class ExperimentCommunication {
 	private static Parser PARSER;
 
 	public static void main(String[] args) throws Exception {
-		PARSER = new Parser(INITFILEREMOTE);
+		PARSER = new Parser(INITFILEMULTI);
 		Universe universe = PARSER.parse();
 		universe.simulate();
 	}

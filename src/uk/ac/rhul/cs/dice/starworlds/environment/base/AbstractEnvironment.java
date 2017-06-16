@@ -210,4 +210,9 @@ public abstract class AbstractEnvironment implements Environment, Container {
 	public void setId(String id) {
 		this.id = id;
 	}
+
+	@Override
+	public String toString() {
+		return this.appearance.toString();
+	}
 }

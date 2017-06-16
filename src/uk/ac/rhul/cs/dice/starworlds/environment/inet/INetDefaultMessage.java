@@ -2,12 +2,11 @@ package uk.ac.rhul.cs.dice.starworlds.environment.inet;
 
 import java.io.Serializable;
 
-import uk.ac.rhul.cs.dice.starworlds.environment.base.AbstractMessage;
 import uk.ac.rhul.cs.dice.starworlds.environment.base.interfaces.CommandMessage;
 import uk.ac.rhul.cs.dice.starworlds.utils.Pair;
 
 public class INetDefaultMessage extends
-		AbstractMessage<Pair<String, Serializable>> implements
+		INetAbstractMessage<Pair<String, Serializable>> implements
 		CommandMessage<Serializable>, Serializable {
 
 	private static final long serialVersionUID = -2656016119798671723L;
@@ -18,11 +17,11 @@ public class INetDefaultMessage extends
 
 	@Override
 	public String getCommand() {
-		return this.payload.getFirst();
+		return this.getPayload().getFirst();
 	}
 
 	@Override
 	public Serializable getCommandPayload() {
-		return this.payload.getSecond();
+		return this.getPayload().getSecond();
 	}
 }

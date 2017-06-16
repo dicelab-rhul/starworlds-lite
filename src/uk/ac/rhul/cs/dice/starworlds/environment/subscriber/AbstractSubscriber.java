@@ -84,10 +84,8 @@ public abstract class AbstractSubscriber {
 			col.addAll(actions);
 		}
 		System.out.println("ENVIRONMENT SUBSCRIBE: " + environment + " "
-				+ actions);
-		System.out.println("SUBSCRIPTIONS: " + this.environmentSubscriptions);
-		System.out.println("INVERSE SUBSCRIPTIONS: "
-				+ this.inverseEnvironmentSubscriptions);
+				+ actions + System.lineSeparator() + "   "
+				+ this.environmentSubscriptions);
 	}
 
 	public void setPossibleActions(

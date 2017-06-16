@@ -4,10 +4,6 @@ import java.util.Collection;
 import java.util.Set;
 
 import uk.ac.rhul.cs.dice.starworlds.actions.Action;
-import uk.ac.rhul.cs.dice.starworlds.actions.environmental.AbstractEnvironmentalAction;
-import uk.ac.rhul.cs.dice.starworlds.actions.environmental.CommunicationAction;
-import uk.ac.rhul.cs.dice.starworlds.actions.environmental.SensingAction;
-import uk.ac.rhul.cs.dice.starworlds.appearances.EnvironmentAppearance;
 import uk.ac.rhul.cs.dice.starworlds.entities.ActiveBody;
 import uk.ac.rhul.cs.dice.starworlds.entities.Agent;
 import uk.ac.rhul.cs.dice.starworlds.entities.PassiveBody;
@@ -15,7 +11,6 @@ import uk.ac.rhul.cs.dice.starworlds.entities.agents.AbstractAgent;
 import uk.ac.rhul.cs.dice.starworlds.environment.base.AbstractConnectedEnvironment;
 import uk.ac.rhul.cs.dice.starworlds.environment.base.interfaces.Environment;
 import uk.ac.rhul.cs.dice.starworlds.environment.base.interfaces.Simulator;
-import uk.ac.rhul.cs.dice.starworlds.environment.concrete.DefaultMessage;
 import uk.ac.rhul.cs.dice.starworlds.environment.physics.time.LocalSynchroniser;
 import uk.ac.rhul.cs.dice.starworlds.environment.physics.time.SuperSynchroniser;
 

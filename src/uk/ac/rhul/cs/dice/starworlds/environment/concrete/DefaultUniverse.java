@@ -1,5 +1,6 @@
 package uk.ac.rhul.cs.dice.starworlds.environment.concrete;
 
+import java.io.Serializable;
 import java.util.Collection;
 
 import uk.ac.rhul.cs.dice.starworlds.actions.environmental.AbstractEnvironmentalAction;
@@ -7,6 +8,7 @@ import uk.ac.rhul.cs.dice.starworlds.appearances.EnvironmentAppearance;
 import uk.ac.rhul.cs.dice.starworlds.environment.base.AbstractConnectedEnvironment;
 import uk.ac.rhul.cs.dice.starworlds.environment.base.AbstractState;
 import uk.ac.rhul.cs.dice.starworlds.environment.base.interfaces.Universe;
+import uk.ac.rhul.cs.dice.starworlds.environment.inet.INetDefaultMessage;
 import uk.ac.rhul.cs.dice.starworlds.environment.physics.AbstractConnectedPhysics;
 import uk.ac.rhul.cs.dice.starworlds.initialisation.IDFactory;
 
@@ -77,10 +79,10 @@ public class DefaultUniverse extends ComplexEnvironment implements Universe {
 
 	@Override
 	protected void initialActionSubscribe() {
-		DefaultMessage<Collection<Class<? extends AbstractEnvironmentalAction>>> sub = new DefaultMessage<>(
-				this.getAppearance(), SUBSCRIBE, getInitialActionsToSubscribe());
+		INetDefaultMessage sub = new INetDefaultMessage(SUBSCRIBE,
+				(Serializable) getInitialActionsToSubscribe());
 		// this.connectedEnvironmentManager.sendToAllNeighbouringEnvironments(sub);
-		// //?
+		// ?
 		this.envconManager.sendToAllSubEnvironments(sub);
 	}
 

@@ -8,11 +8,13 @@ import java.util.Observable;
 import java.util.Observer;
 
 import uk.ac.rhul.cs.dice.starworlds.appearances.EnvironmentAppearance;
+import uk.ac.rhul.cs.dice.starworlds.environment.base.AbstractConnectedEnvironment.AmbientRelation;
 import uk.ac.rhul.cs.dice.starworlds.environment.base.interfaces.Environment;
 import uk.ac.rhul.cs.dice.starworlds.environment.base.interfaces.Message;
 import uk.ac.rhul.cs.dice.starworlds.environment.concrete.DefaultEnvironmentConnection;
-import uk.ac.rhul.cs.dice.starworlds.environment.concrete.INetEnvironmentConnection;
 import uk.ac.rhul.cs.dice.starworlds.environment.inet.INetDefaultServer;
+import uk.ac.rhul.cs.dice.starworlds.environment.inet.INetEnvironmentConnection;
+import uk.ac.rhul.cs.dice.starworlds.environment.inet.InitialisationMessage;
 import uk.ac.rhul.cs.dice.starworlds.utils.inet.INetServer;
 import uk.ac.rhul.cs.dice.starworlds.utils.inet.INetSlave;
 
@@ -24,7 +26,7 @@ public class EnvironmentConnectionManager implements Receiver, Observer {
 	protected AbstractEnvironmentConnection superEnvironmentConnection;
 
 	protected INetServer server;
-	protected Map<EnvironmentAppearance, Collection<AbstractMessage<?>>> recievedMessages;
+	protected Map<EnvironmentAppearance, Collection<Message<?>>> recievedMessages;
 
 	/**
 	 * Constructor specifically for mixed connections.
@@ -100,12 +102,12 @@ public class EnvironmentConnectionManager implements Receiver, Observer {
 	/**
 	 * unused?
 	 */
-	public Map<EnvironmentAppearance, Collection<AbstractMessage<?>>> flushMessages() {
-		Map<EnvironmentAppearance, Collection<AbstractMessage<?>>> result = new HashMap<>();
+	public Map<EnvironmentAppearance, Collection<Message<?>>> flushMessages() {
+		Map<EnvironmentAppearance, Collection<Message<?>>> result = new HashMap<>();
 		// TODO if a message is received while this is happening? will it fail?
 		// i dont know!
 		recievedMessages.forEach((EnvironmentAppearance app,
-				Collection<AbstractMessage<?>> messages) -> {
+				Collection<Message<?>> messages) -> {
 			if (!messages.isEmpty()) {
 				result.put(app, messages);
 				recievedMessages.put(app, new ArrayList<>());
@@ -125,29 +127,60 @@ public class EnvironmentConnectionManager implements Receiver, Observer {
 		if (INetServer.class.isAssignableFrom(obs.getClass())) {
 			if (INetSlave.class.isAssignableFrom(arg.getClass())) {
 				System.out.println("ADDING NEW CONNECTION!");
-				INetEnvironmentConnection connection = new INetEnvironmentConnection(
-						this.localenvironment.getAppearance(), (INetSlave) arg);
+				new INetEnvironmentConnection(
+						this.localenvironment.getAppearance(), (INetSlave) arg)
+						.addReciever(this);
 			}
 		}
 	}
 
-	public void connectToEnvironment(String host, Integer port) {
+	public void connectToEnvironment(String host, Integer port,
+			AmbientRelation relation) {
 		INetEnvironmentConnection connection = new INetEnvironmentConnection(
-				this.localenvironment.getAppearance(), server, host, port);
+				this.localenvironment.getAppearance(), relation, server, host,
+				port);
+		connection.addReciever(this);
+		addRemoteEnvironment(connection);
+	}
+
+	public void addRemoteEnvironment(INetEnvironmentConnection connection) {
+		AmbientRelation remoteRelation = connection.getRelationship()
+				.getSecond();
+		// TODO optimise, handle matching sub/neighbours
+		if (remoteRelation.equals(AmbientRelation.SUB)) {
+			this.subEnvironmentConnections.put(
+					(EnvironmentAppearance) connection.getRemoteAppearance(),
+					connection);
+		} else if (remoteRelation.equals(AmbientRelation.NEIGHBOUR)) {
+			this.neighbouringEnvironmentsConnections.put(
+					(EnvironmentAppearance) connection.getRemoteAppearance(),
+					connection);
+		} else if (remoteRelation.equals(AmbientRelation.SUPER)) {
+			if (this.superEnvironmentConnection == null) {
+				this.superEnvironmentConnection = connection;
+			} else {
+				String c = Environment.class.getSimpleName();
+				System.err.println("Inconsistant " + c + " heirarchy, an " + c
+						+ " cannot have multiple super " + c + "s: "
+						+ this.superEnvironmentConnection + "," + connection);
+				// TODO throw a custom exception?
+			}
+		}
 	}
 
 	@Override
 	public synchronized void receive(Recipient recipient, Message<?> message) {
-		// System.out.println("Received: " + System.lineSeparator() + "    "
-		// + recipient + System.lineSeparator() + "        " + message);
-		this.localenvironment
-				.handleMessage(
-						(EnvironmentAppearance) ((AbstractEnvironmentConnection) recipient)
-								.getRemoteAppearance(), message);
-		// perhaps this? depends on what messages are received
-		// this.recievedMessages.get(
-		// ((AbstractEnvironmentConnection) recipient)
-		// .getRemoteAppearance()).add(message);
+		if (InitialisationMessage.class.isAssignableFrom(message.getClass())) {
+			if (INetEnvironmentConnection.class.isAssignableFrom(recipient
+					.getClass())) {
+				addRemoteEnvironment((INetEnvironmentConnection) recipient);
+			}
+		} else {
+			this.localenvironment
+					.handleMessage(
+							(EnvironmentAppearance) ((AbstractEnvironmentConnection) recipient)
+									.getRemoteAppearance(), message);
+		}
 	}
 
 	public void addSubEnviroment(AbstractEnvironment environment) {
@@ -242,14 +275,14 @@ public class EnvironmentConnectionManager implements Receiver, Observer {
 		return this.superEnvironmentConnection;
 	}
 
-	public void sendToAllNeighbouringEnvironments(AbstractMessage<?> obj) {
+	public void sendToAllNeighbouringEnvironments(Message<?> obj) {
 		neighbouringEnvironmentsConnections.values().forEach(
 				(AbstractEnvironmentConnection c) -> {
 					c.send(obj);
 				});
 	}
 
-	public void sendToAllSubEnvironments(AbstractMessage<?> obj) {
+	public void sendToAllSubEnvironments(Message<?> obj) {
 		subEnvironmentConnections.values().forEach(
 				(AbstractEnvironmentConnection c) -> {
 					c.send(obj);
@@ -257,7 +290,7 @@ public class EnvironmentConnectionManager implements Receiver, Observer {
 	}
 
 	public void sendToEnvironment(EnvironmentAppearance environment,
-			AbstractMessage<?> obj) {
+			Message<?> obj) {
 		AbstractEnvironmentConnection con;
 		if ((con = subEnvironmentConnections.get(environment)) != null) {
 			con.send(obj);
@@ -273,8 +306,7 @@ public class EnvironmentConnectionManager implements Receiver, Observer {
 	}
 
 	public void sendToEnvironments(
-			Collection<EnvironmentAppearance> environments,
-			AbstractMessage<?> obj) {
+			Collection<EnvironmentAppearance> environments, Message<?> obj) {
 		if (environments != null) {
 			// System.out.println("SEND: " + obj);
 			if (subEnvironmentConnections != null) {
@@ -300,16 +332,16 @@ public class EnvironmentConnectionManager implements Receiver, Observer {
 	}
 
 	public void sendToNeighbouringEnvironment(EnvironmentAppearance appearance,
-			AbstractMessage<?> obj) {
+			Message<?> obj) {
 		neighbouringEnvironmentsConnections.get(appearance).send(obj);
 	}
 
 	public void sendToSubEnvironment(EnvironmentAppearance appearance,
-			AbstractMessage<?> obj) {
+			Message<?> obj) {
 		subEnvironmentConnections.get(appearance).send(obj);
 	}
 
-	public void sendToSuperEnvironment(AbstractMessage<?> obj) {
+	public void sendToSuperEnvironment(Message<?> obj) {
 		superEnvironmentConnection.send(obj);
 	}
 
@@ -318,5 +350,21 @@ public class EnvironmentConnectionManager implements Receiver, Observer {
 		Map<K, V> newMap = new HashMap<K, V>(map);
 		newMap.keySet().retainAll(keys);
 		return newMap.values();
+	}
+
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder(this.getClass()
+				.getSimpleName() + System.lineSeparator());
+		builder.append("  LOCAL: " + this.localenvironment
+				+ System.lineSeparator());
+		builder.append("  SUPER: " + this.superEnvironmentConnection
+				+ System.lineSeparator() + "  SUB: " + System.lineSeparator());
+		this.subEnvironmentConnections.values().forEach(
+				(con) -> builder.append("    " + con + System.lineSeparator()));
+		builder.append("  NEIGHBOUR: " + System.lineSeparator());
+		this.neighbouringEnvironmentsConnections.values().forEach(
+				(con) -> builder.append("    " + con + System.lineSeparator()));
+		return builder.toString();
 	}
 }

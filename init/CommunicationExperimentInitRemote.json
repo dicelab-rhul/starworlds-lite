@@ -76,7 +76,10 @@
 
 ~structure : [{
 		~environments : DefaultUniverse,
-		~remote : { @port : 10000, @connections : [ "localhost:10001" ] },
+		~remote : { @port : 10000, 
+					@connections : [ 
+						{ @address : "localhost:10001", @ctype : "SUPER" },
+					]},
 		~agents : [CommunicatingAgent],
 		~structure : [{
 				~environments: DefaultEnvironment,

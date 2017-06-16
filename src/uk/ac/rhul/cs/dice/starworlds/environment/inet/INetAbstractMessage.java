@@ -28,4 +28,9 @@ public abstract class INetAbstractMessage<T extends Serializable> implements
 	public void setPayload(T payload) {
 		this.payload = payload;
 	}
+
+	@Override
+	public String toString() {
+		return this.getClass().getSimpleName() + " : " + this.getPayload();
+	}
 }
