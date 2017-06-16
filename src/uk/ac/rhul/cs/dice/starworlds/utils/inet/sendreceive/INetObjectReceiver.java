@@ -8,13 +8,11 @@ import java.net.Socket;
 public class INetObjectReceiver implements INetReceiver {
 
 	protected ObjectInputStream in;
-	protected Class<?> expectedinclass;
 
-	public INetObjectReceiver(Socket socket, Class<?> expectedinclass) {
+	public INetObjectReceiver(Socket socket) {
 		try {
 			INetObjectReceiver.this.in = new ObjectInputStream(
 					socket.getInputStream());
-			this.expectedinclass = expectedinclass;
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -29,10 +27,6 @@ public class INetObjectReceiver implements INetReceiver {
 			e.printStackTrace();
 			return null;
 		}
-	}
-
-	public Class<?> getExpectedinclass() {
-		return expectedinclass;
 	}
 
 	@Override

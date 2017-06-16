@@ -1,5 +1,6 @@
 package uk.ac.rhul.cs.dice.starworlds.parser;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -14,7 +15,6 @@ import java.util.Set;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.json.JSONTokener;
 
 import uk.ac.rhul.cs.dice.starworlds.entities.agents.AbstractAgent;
 import uk.ac.rhul.cs.dice.starworlds.entities.agents.AbstractAgentMind;
@@ -255,8 +255,14 @@ public class Parser {
 	}
 
 	public JSONObject getJson(File file) throws IOException {
-		JSONTokener tokener = new JSONTokener(new FileReader(file));
-		return new JSONObject(tokener);
+		BufferedReader reader = new BufferedReader(new FileReader(file));
+		StringBuilder builder = new StringBuilder();
+		String line = null;
+		while ((line = reader.readLine()) != null) {
+			builder.append(line);
+		}
+		reader.close();
+		return new JSONObject(builder.toString());
 	}
 
 	// visits each environment and connects any networked environments
@@ -281,6 +287,7 @@ public class Parser {
 
 	// visits each environment and prints information about it. e.g. all its
 	// connections, appearance etc.
+	@SuppressWarnings("unused")
 	private static class InfoPrintVisitor implements
 			Visitor<AbstractEnvironment> {
 		@Override
