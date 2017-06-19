@@ -1,5 +1,7 @@
 package uk.ac.rhul.cs.dice.starworlds.actions.environmental;
 
+import java.util.Arrays;
+
 import uk.ac.rhul.cs.dice.starworlds.appearances.ActiveBodyAppearance;
 import uk.ac.rhul.cs.dice.starworlds.appearances.EnvironmentAppearance;
 import uk.ac.rhul.cs.dice.starworlds.entities.Actor;
@@ -21,6 +23,8 @@ import uk.ac.rhul.cs.dice.starworlds.perception.NullPerception;
  */
 public abstract class AbstractEnvironmentalAction implements
 		EnvironmentalAction {
+
+	private static final long serialVersionUID = 1L;
 
 	// All actions may return a null perception
 	@SensiblePerception
@@ -103,5 +107,10 @@ public abstract class AbstractEnvironmentalAction implements
 
 	public void setLocalEnvironment(EnvironmentAppearance localEnvironment) {
 		this.localEnvironment = localEnvironment;
+	}
+
+	@Override
+	public String toString() {
+		return this.getClass().getSimpleName() + ":" + id;
 	}
 }

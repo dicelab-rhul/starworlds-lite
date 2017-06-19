@@ -81,8 +81,7 @@ public class DefaultUniverse extends ComplexEnvironment implements Universe {
 	protected void initialActionSubscribe() {
 		INetDefaultMessage sub = new INetDefaultMessage(SUBSCRIBE,
 				(Serializable) getInitialActionsToSubscribe());
-		// this.connectedEnvironmentManager.sendToAllNeighbouringEnvironments(sub);
-		// ?
+		this.envconManager.sendToAllNeighbouringEnvironments(sub);
 		this.envconManager.sendToAllSubEnvironments(sub);
 	}
 

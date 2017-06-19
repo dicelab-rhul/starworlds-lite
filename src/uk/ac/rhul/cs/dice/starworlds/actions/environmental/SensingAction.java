@@ -3,7 +3,6 @@ package uk.ac.rhul.cs.dice.starworlds.actions.environmental;
 import java.util.Arrays;
 
 import uk.ac.rhul.cs.dice.starworlds.environment.subscriber.AbstractSubscriber.SensiblePerception;
-import uk.ac.rhul.cs.dice.starworlds.perception.CommunicationPerception;
 import uk.ac.rhul.cs.dice.starworlds.perception.DefaultPerception;
 
 /**
@@ -20,6 +19,8 @@ import uk.ac.rhul.cs.dice.starworlds.perception.DefaultPerception;
  */
 public class SensingAction extends AbstractEnvironmentalAction {
 
+	private static final long serialVersionUID = 4695622233320564044L;
+
 	@SensiblePerception
 	public static final Class<?> POSSIBLEPERCEPTION = DefaultPerception.class;
 
@@ -35,6 +36,6 @@ public class SensingAction extends AbstractEnvironmentalAction {
 
 	@Override
 	public String toString() {
-		return this.getClass().getSimpleName() + Arrays.toString(this.keys);
+		return super.toString() + " : " + Arrays.toString(this.keys);
 	}
 }

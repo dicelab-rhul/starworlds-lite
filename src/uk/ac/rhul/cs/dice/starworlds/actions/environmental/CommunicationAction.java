@@ -24,13 +24,19 @@ import uk.ac.rhul.cs.dice.starworlds.perception.CommunicationPerception;
 public class CommunicationAction<T extends Serializable> extends
 		AbstractEnvironmentalAction {
 
+	private static final long serialVersionUID = 1L;
+
 	@SensiblePerception
 	public static final Class<?> POSSIBLEPERCEPTION = CommunicationPerception.class;
 
-	private static final String ANONYMOUSSENDER = "Anonymous";
-
 	private List<String> recipientsIds;
 	private Payload<T> payload;
+
+	/**
+	 * Constructor.
+	 */
+	public CommunicationAction() {
+	}
 
 	/**
 	 * Constructor.
@@ -79,6 +85,6 @@ public class CommunicationAction<T extends Serializable> extends
 
 	@Override
 	public String toString() {
-		return "MESSAGE: " + payload;
+		return "MESSAGE: " + payload + " TO: " + recipientsIds;
 	}
 }

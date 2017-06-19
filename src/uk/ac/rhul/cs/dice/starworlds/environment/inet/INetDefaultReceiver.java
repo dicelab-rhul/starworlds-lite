@@ -6,8 +6,8 @@ import uk.ac.rhul.cs.dice.starworlds.utils.inet.sendreceive.INetObjectReceiver;
 
 public class INetDefaultReceiver extends INetObjectReceiver {
 
-	public INetDefaultReceiver(Socket socket, Class<?> expectedinclass) {
-		super(socket, expectedinclass);
+	public INetDefaultReceiver(Socket socket) {
+		super(socket);
 	}
 
 }

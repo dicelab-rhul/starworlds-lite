@@ -18,11 +18,13 @@ import uk.ac.rhul.cs.dice.starworlds.perception.AbstractPerception;
  */
 public abstract class PhysicalAction extends AbstractEnvironmentalAction {
 
-	public abstract Set<AbstractPerception<?>> getAgentPerceptions(Physics physics,
-			State context);
+	private static final long serialVersionUID = -2173942461694544160L;
 
-	public abstract Set<AbstractPerception<?>> getOthersPerceptions(Physics physics,
-			State context);
+	public abstract Set<AbstractPerception<?>> getAgentPerceptions(
+			Physics physics, State context);
+
+	public abstract Set<AbstractPerception<?>> getOthersPerceptions(
+			Physics physics, State context);
 
 	public abstract boolean perform(Physics physics, State context);
 

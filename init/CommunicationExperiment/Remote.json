@@ -74,17 +74,15 @@
 	},
 },
 
-~structure : [{
-		~environments : DefaultUniverse,
+~structure : [{ ~environments : DefaultUniverse,
 		~remote : { @port : 10000, 
 					@connections : [ 
-						{ @address : "localhost:10001", @ctype : "SUPER" },
+						{ @address : "localhost:10001", @ctype : "NEIGHBOUR" },
 					]},
 		~agents : [CommunicatingAgent],
-		~structure : [{
-				~environments: DefaultEnvironment,
-				~remote : { @port : 10001 },
-				~agents : [CommunicatingAgent],
-			}],
+		}, {
+		~environments: DefaultUniverse,
+		~remote : { @port : 10001 },
+		~agents : [CommunicatingAgent],
 		}]
 }

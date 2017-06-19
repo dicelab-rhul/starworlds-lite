@@ -1,5 +1,7 @@
 package uk.ac.rhul.cs.dice.starworlds.actions.environmental;
 
+import java.io.Serializable;
+
 import uk.ac.rhul.cs.dice.starworlds.actions.Action;
 import uk.ac.rhul.cs.dice.starworlds.utils.Identifiable;
 
@@ -15,6 +17,6 @@ import uk.ac.rhul.cs.dice.starworlds.utils.Identifiable;
  * @author Kostas Stathis
  *
  */
-public interface EnvironmentalAction extends Action, Identifiable {
+public interface EnvironmentalAction extends Action, Identifiable, Serializable {
 
 }

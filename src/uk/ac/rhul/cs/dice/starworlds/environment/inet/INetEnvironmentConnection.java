@@ -11,6 +11,7 @@ import uk.ac.rhul.cs.dice.starworlds.environment.base.AbstractEnvironmentConnect
 import uk.ac.rhul.cs.dice.starworlds.environment.base.interfaces.Environment;
 import uk.ac.rhul.cs.dice.starworlds.environment.base.interfaces.EnvironmentConnection;
 import uk.ac.rhul.cs.dice.starworlds.environment.base.interfaces.Message;
+import uk.ac.rhul.cs.dice.starworlds.environment.physics.time.RemoteSynchroniser;
 import uk.ac.rhul.cs.dice.starworlds.utils.Pair;
 import uk.ac.rhul.cs.dice.starworlds.utils.inet.INetServer;
 import uk.ac.rhul.cs.dice.starworlds.utils.inet.INetSlave;
@@ -20,6 +21,10 @@ public class INetEnvironmentConnection extends AbstractEnvironmentConnection
 
 	private INetSlave slave;
 	private Appearance remoteAppearance;
+	// this connection should notify the synchroniser when it receives sync
+	// messages
+	private RemoteSynchroniser synchroniser;
+
 	/*
 	 * The relationship is as follows: local -> remote. For example, if this is
 	 * a super environment of the remote the relationship will be: <SUPER,SUB>
@@ -110,8 +115,17 @@ public class INetEnvironmentConnection extends AbstractEnvironmentConnection
 		slave.send(message);
 	}
 
+	public Message<?> sendAndWaitForReply(Message<?> message) {
+		return (Message<?>) slave.sendAndWaitForReply(message);
+	}
+
+	public Message<?> sendAndWaitForReply(Message<?> message, Long timeout) {
+		return (Message<?>) slave.sendAndWaitForReply(message, timeout);
+	}
+
 	@Override
 	public void receive(Message<?> message) {
+		// TODO optimise
 		if (InitialisationMessage.class.isAssignableFrom(message.getClass())) {
 			InitialisationMessage imessage = (InitialisationMessage) message;
 			if (checkValidInitialisationMessage(imessage)) {
@@ -123,6 +137,11 @@ public class INetEnvironmentConnection extends AbstractEnvironmentConnection
 				slave.send(new InitialisationMessage(this.getAppearance(),
 						imessage.getRelation().inverse()));
 			}
+		} else if (SynchronisationMessage.class.isAssignableFrom(message
+				.getClass())) {
+			SynchronisationMessage smessage = (SynchronisationMessage) message;
+			synchroniser.receiveSyncMessage(smessage.getPayload());
+			return;
 		}
 		notifyReceivers(message);
 	}
@@ -178,5 +197,13 @@ public class INetEnvironmentConnection extends AbstractEnvironmentConnection
 	public String toString() {
 		return this.getClass().getSimpleName() + " RELATION: " + relationship
 				+ " -> " + remoteAppearance;
+	}
+
+	public RemoteSynchroniser getSynchroniser() {
+		return synchroniser;
+	}
+
+	public void setSynchroniser(RemoteSynchroniser synchroniser) {
+		this.synchroniser = synchroniser;
 	}
 }

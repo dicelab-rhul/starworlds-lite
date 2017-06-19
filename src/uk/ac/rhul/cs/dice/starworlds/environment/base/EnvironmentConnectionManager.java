@@ -22,7 +22,7 @@ public class EnvironmentConnectionManager implements Receiver, Observer {
 
 	protected AbstractConnectedEnvironment localenvironment;
 	protected Map<EnvironmentAppearance, AbstractEnvironmentConnection> subEnvironmentConnections;
-	protected Map<EnvironmentAppearance, AbstractEnvironmentConnection> neighbouringEnvironmentsConnections;
+	protected Map<EnvironmentAppearance, AbstractEnvironmentConnection> neighbouringEnvironmentConnections;
 	protected AbstractEnvironmentConnection superEnvironmentConnection;
 
 	protected INetServer server;
@@ -75,7 +75,7 @@ public class EnvironmentConnectionManager implements Receiver, Observer {
 		this.recievedMessages = new HashMap<>();
 		this.localenvironment = localenvironment;
 		subEnvironmentConnections = new HashMap<>();
-		neighbouringEnvironmentsConnections = new HashMap<>();
+		neighbouringEnvironmentConnections = new HashMap<>();
 		initialiseLocalEnvironments(localsubenvironments,
 				localneighbouringenvironments);
 	}
@@ -93,7 +93,7 @@ public class EnvironmentConnectionManager implements Receiver, Observer {
 			AbstractConnectedEnvironment localenvironment, Integer port) {
 		this.recievedMessages = new HashMap<>();
 		subEnvironmentConnections = new HashMap<>();
-		neighbouringEnvironmentsConnections = new HashMap<>();
+		neighbouringEnvironmentConnections = new HashMap<>();
 		this.localenvironment = localenvironment;
 		this.server = new INetDefaultServer(port);
 		this.server.addObserver(this);
@@ -146,13 +146,18 @@ public class EnvironmentConnectionManager implements Receiver, Observer {
 	public void addRemoteEnvironment(INetEnvironmentConnection connection) {
 		AmbientRelation remoteRelation = connection.getRelationship()
 				.getSecond();
+		System.out.println(this.localenvironment + " CONNECTED TO: "
+				+ connection);
+		// set the synchroniser
+		connection.setSynchroniser(this.localenvironment.getPhysics()
+				.getSynchroniser().addRemoteSynchroniser(connection));
 		// TODO optimise, handle matching sub/neighbours
 		if (remoteRelation.equals(AmbientRelation.SUB)) {
 			this.subEnvironmentConnections.put(
 					(EnvironmentAppearance) connection.getRemoteAppearance(),
 					connection);
 		} else if (remoteRelation.equals(AmbientRelation.NEIGHBOUR)) {
-			this.neighbouringEnvironmentsConnections.put(
+			this.neighbouringEnvironmentConnections.put(
 					(EnvironmentAppearance) connection.getRemoteAppearance(),
 					connection);
 		} else if (remoteRelation.equals(AmbientRelation.SUPER)) {
@@ -184,8 +189,6 @@ public class EnvironmentConnectionManager implements Receiver, Observer {
 	}
 
 	public void addSubEnviroment(AbstractEnvironment environment) {
-		System.out.println("ADDING SUB ENVIRONMENT: "
-				+ environment.getAppearance());
 		DefaultEnvironmentConnection connection = new DefaultEnvironmentConnection(
 				localenvironment.getAppearance());
 		((AbstractConnectedEnvironment) environment)
@@ -219,10 +222,10 @@ public class EnvironmentConnectionManager implements Receiver, Observer {
 	}
 
 	public void addNeighbouringEnvironmentConnection(
-			AbstractEnvironmentConnection mutualConnector) {
-		// this.subEnvironments.put(environment.getAppearance(),
-		// new DefaultEnvironmentConnection(
-		// (AbstractConnectedEnvironment) environment);
+			AbstractEnvironmentConnection connection) {
+		this.neighbouringEnvironmentConnections.put(
+				(EnvironmentAppearance) connection.getRemoteAppearance(),
+				connection);
 	}
 
 	public void addSubEnvironmentConnection(
@@ -230,7 +233,6 @@ public class EnvironmentConnectionManager implements Receiver, Observer {
 		this.subEnvironmentConnections.put(
 				(EnvironmentAppearance) connection.getRemoteAppearance(),
 				connection);
-
 	}
 
 	/**
@@ -252,11 +254,11 @@ public class EnvironmentConnectionManager implements Receiver, Observer {
 	}
 
 	public Collection<EnvironmentAppearance> getNeighbouringEnvironmentAppearances() {
-		return this.neighbouringEnvironmentsConnections.keySet();
+		return this.neighbouringEnvironmentConnections.keySet();
 	}
 
 	public Collection<AbstractEnvironmentConnection> getNeighbouringEnvironmentConnections() {
-		return this.neighbouringEnvironmentsConnections.values();
+		return this.neighbouringEnvironmentConnections.values();
 	}
 
 	public Collection<EnvironmentAppearance> getSubEnvironmentAppearances() {
@@ -276,7 +278,7 @@ public class EnvironmentConnectionManager implements Receiver, Observer {
 	}
 
 	public void sendToAllNeighbouringEnvironments(Message<?> obj) {
-		neighbouringEnvironmentsConnections.values().forEach(
+		neighbouringEnvironmentConnections.values().forEach(
 				(AbstractEnvironmentConnection c) -> {
 					c.send(obj);
 				});
@@ -294,7 +296,7 @@ public class EnvironmentConnectionManager implements Receiver, Observer {
 		AbstractEnvironmentConnection con;
 		if ((con = subEnvironmentConnections.get(environment)) != null) {
 			con.send(obj);
-		} else if ((con = neighbouringEnvironmentsConnections.get(environment)) != null) {
+		} else if ((con = neighbouringEnvironmentConnections.get(environment)) != null) {
 			con.send(obj);
 		} else if (environment.equals(superEnvironmentConnection
 				.getRemoteAppearance())) {
@@ -308,21 +310,19 @@ public class EnvironmentConnectionManager implements Receiver, Observer {
 	public void sendToEnvironments(
 			Collection<EnvironmentAppearance> environments, Message<?> obj) {
 		if (environments != null) {
-			// System.out.println("SEND: " + obj);
+			System.out.println(localenvironment + " SEND: " + obj + " TO: "
+					+ environments);
 			if (subEnvironmentConnections != null) {
 				Collection<AbstractEnvironmentConnection> envs = getAll(
 						this.subEnvironmentConnections, environments);
-				// System.out.println("THIS: " + localenvironment.getId());
-				// System.out.println("CHECK: " +
-				// this.subEnvironmentConnections);
-				// System.out.println("MENT FOR: " + environments);
-				// System.out.println("TO: " + envs);
+				envs.forEach((AbstractEnvironmentConnection c) -> c.send(obj));
+			}
+			if (neighbouringEnvironmentConnections != null) {
+				Collection<AbstractEnvironmentConnection> envs = getAll(
+						this.neighbouringEnvironmentConnections, environments);
 				envs.forEach((AbstractEnvironmentConnection c) -> c.send(obj));
 			}
 			if (superEnvironmentConnection != null) {
-				// System.out.println("MENT FOR: " + environments);
-				// System.out.println("CHECK: " +
-				// this.superEnvironmentConnection);
 				if (environments.contains(superEnvironmentConnection
 						.getRemoteAppearance())) {
 					superEnvironmentConnection.send(obj);
@@ -333,7 +333,7 @@ public class EnvironmentConnectionManager implements Receiver, Observer {
 
 	public void sendToNeighbouringEnvironment(EnvironmentAppearance appearance,
 			Message<?> obj) {
-		neighbouringEnvironmentsConnections.get(appearance).send(obj);
+		neighbouringEnvironmentConnections.get(appearance).send(obj);
 	}
 
 	public void sendToSubEnvironment(EnvironmentAppearance appearance,
@@ -363,7 +363,7 @@ public class EnvironmentConnectionManager implements Receiver, Observer {
 		this.subEnvironmentConnections.values().forEach(
 				(con) -> builder.append("    " + con + System.lineSeparator()));
 		builder.append("  NEIGHBOUR: " + System.lineSeparator());
-		this.neighbouringEnvironmentsConnections.values().forEach(
+		this.neighbouringEnvironmentConnections.values().forEach(
 				(con) -> builder.append("    " + con + System.lineSeparator()));
 		return builder.toString();
 	}

@@ -10,8 +10,7 @@ import java.io.Serializable;
  * @author Ben
  *
  */
-public class NullPerception extends AbstractPerception<Serializable> implements
-		Serializable {
+public class NullPerception extends AbstractPerception<Serializable> {
 
 	private static final long serialVersionUID = 4623562094859605577L;
 

@@ -17,7 +17,7 @@ public class INetDefaultServer extends INetServer {
 	@Override
 	public INetSlave newSlave(Socket socket) {
 		try {
-			return new INetDefaultSlave(socket, INetDefaultMessage.class);
+			return new INetDefaultSlave(socket);
 		} catch (IOException e) {
 			e.printStackTrace();
 			return null;

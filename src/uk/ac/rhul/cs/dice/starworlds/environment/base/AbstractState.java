@@ -202,7 +202,7 @@ public abstract class AbstractState implements State {
 			perceptions.add(new Pair<String, Object>(key, result));
 			// perceptions.add(null);
 		}
-		System.out.println("PERCEPTIONS: " + perceptions);
+		//System.out.println("PERCEPTIONS: " + perceptions);
 		return perceptions;
 	}
 

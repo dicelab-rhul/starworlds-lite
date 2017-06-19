@@ -7,9 +7,9 @@ import uk.ac.rhul.cs.dice.starworlds.utils.inet.INetSlave;
 
 public class INetDefaultSlave extends INetSlave {
 
-	public INetDefaultSlave(Socket socket, Class<?> expectedin)
+	public INetDefaultSlave(Socket socket)
 			throws IOException {
 		super(socket, new INetDefaultSender(socket), new INetDefaultReceiver(
-				socket, expectedin));
+				socket));
 	}
 }

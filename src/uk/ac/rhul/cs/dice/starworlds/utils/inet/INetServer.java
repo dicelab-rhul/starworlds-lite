@@ -52,7 +52,7 @@ public abstract class INetServer extends Observable implements Observer {
 	}
 
 	@Override
-	public final void update(Observable o, Object arg) {
+	public void update(Observable o, Object arg) {
 		this.setChanged();
 		this.notifyObservers(new Pair<SocketAddress, Object>(((INetSlave) o)
 				.getSocket().getRemoteSocketAddress(), arg));

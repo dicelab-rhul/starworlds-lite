@@ -71,16 +71,19 @@
 		@possibleactions : [communicationaction, sensingaction],
 		@physics : dcphysics,
 		@states : dstate,
-	}
+	},
 },
 
 ~structure : [{
 		~environments : DefaultUniverse,
-		~agents : [CommunicatingAgent, CommunicatingAgent],
-	},
-]
+		~agents : [CommunicatingAgent],
+		~structure : [{
+				~environments : DefaultEnvironment,
+				~agents : [CommunicatingAgent],
+				~structure : [{
+						~environments : DefaultEnvironment,
+						~agents : [CommunicatingAgent],
+				}],
+		}],
+}],
 }
-
-
-
-

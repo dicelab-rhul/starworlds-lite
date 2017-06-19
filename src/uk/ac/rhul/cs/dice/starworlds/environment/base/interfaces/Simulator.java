@@ -8,11 +8,20 @@ package uk.ac.rhul.cs.dice.starworlds.environment.base.interfaces;
  * @author Ben
  *
  */
-public interface Simulator {
+public interface Simulator extends Runnable {
 
 	/**
-	 * Starts an agent simulation.
+	 * Starts a simulation.
 	 */
 	public void simulate();
+
+	/**
+	 * Runs a simulation. Calling run is equivalent to calling
+	 * {@link Simulator#simulate()}.
+	 */
+	@Override
+	public default void run() {
+		simulate();
+	}
 
 }

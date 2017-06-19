@@ -7,8 +7,8 @@ import java.lang.reflect.Constructor;
  * A concrete implementation of {@link Perception}. Specifically for
  * {@link Perception}s that will be sent over network. This class ensures that
  * the content of the {@link Perception} is {@link Serializable}. An
- * {@link Abstract} may be converted to a {@link SerializablePerception} using
- * the static method
+ * {@link AbstractPerception} may be converted to a
+ * {@link SerializablePerception} using the static method
  * {@link SerializablePerception#convertToSerializable(AbstractPerception)} as
  * long as the content of the given {@link AbstractPerception} is
  * {@link Serializable}. After converting to a {@link SerializablePerception}
@@ -23,6 +23,8 @@ import java.lang.reflect.Constructor;
 
 public class SerializablePerception<T extends Serializable> extends
 		DefaultPerception<T> {
+
+	private static final long serialVersionUID = -2237519201832565042L;
 
 	private Class<?> oldclass = null;
 

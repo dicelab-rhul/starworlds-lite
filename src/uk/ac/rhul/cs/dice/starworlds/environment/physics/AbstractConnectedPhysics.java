@@ -34,7 +34,11 @@ public class AbstractConnectedPhysics extends AbstractPhysics {
 	 * that is subscribed to that {@link Action}.
 	 */
 	public void propagateActions() {
-		System.out.println("PROPAGATE ACTIONS: " + this.getId());
+		System.out.println("PROPAGATE ACTIONS: " + this.getId()
+				+ System.lineSeparator() + "   "
+				+ environment.getState().getCommunicationActions()
+				+ System.lineSeparator() + "   "
+				+ environment.getState().getSensingActions());
 		this.getEnvironment().sendActions(
 				environment.getState().getCommunicationActions());
 		this.getEnvironment().sendActions(
@@ -44,8 +48,15 @@ public class AbstractConnectedPhysics extends AbstractPhysics {
 
 	@Override
 	public void executeActions() {
+
 		this.getEnvironment().clearAndUpdateActionsAfterPropagation();
+		System.out.println("EXECUTE ACTIONS: " + this.getId()
+				+ System.lineSeparator() + "   "
+				+ environment.getState().getCommunicationActions()
+				+ System.lineSeparator() + "   "
+				+ environment.getState().getSensingActions());
 		super.executeActions();
+
 	}
 
 	/**

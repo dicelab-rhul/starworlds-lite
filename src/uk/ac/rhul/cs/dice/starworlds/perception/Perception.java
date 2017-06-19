@@ -1,5 +1,7 @@
 package uk.ac.rhul.cs.dice.starworlds.perception;
 
+import java.io.Serializable;
+
 /**
  * The interface for perceptions.<br/>
  * <br/>
@@ -13,7 +15,7 @@ package uk.ac.rhul.cs.dice.starworlds.perception;
  * @param <T>
  *            the type of the content of the perception
  */
-public interface Perception<T> {
+public interface Perception<T> extends Serializable {
 
 	/**
 	 * Getter for the content of this {@link Perception}.

@@ -50,9 +50,6 @@ public class Parser {
 	public static final String STRUCTURE = KEYWORDS[8], AGENTS = KEYWORDS[9],
 			REALENVIRONMENTS = KEYWORDS[10];
 
-	// store for post initialisation phase
-	private NeighbourhoodTree<AbstractEnvironment> environments = new NeighbourhoodTree<>();
-
 	private JSONObject total;
 
 	public Parser(String initstructure) throws IOException {
@@ -64,19 +61,22 @@ public class Parser {
 		}
 	}
 
-	public Universe parse() throws Exception {
+	public Collection<Universe> parse() throws Exception {
 		JSONArray structure = total.getJSONArray(STRUCTURE);
-		if (structure.length() == 1) {
-			JSONObject universeObject = structure.getJSONObject(0);
-			environments.setRoot(recurseStructure(universeObject, total));
-			Universe universe = (Universe) environments.getRoot().getValue();
-			System.out.println(environments);
-			environments.accept(new InitialConnectVisitor());
-			environments.accept(new PostInitialisationVisitor());
-
-			return universe;
+		List<NeighbourhoodTree<AbstractEnvironment>> trees = new ArrayList<>();
+		for (int i = 0; i < structure.length(); i++) {
+			trees.add(new NeighbourhoodTree<AbstractEnvironment>(
+					(NeighbourhoodNode<AbstractEnvironment>) recurseStructure(
+							structure.getJSONObject(i), total)));
 		}
-		return null;
+		List<Universe> multiverse = new ArrayList<>();
+		for (NeighbourhoodTree<AbstractEnvironment> t : trees) {
+			System.out.println(t);
+			t.accept(new InitialConnectVisitor());
+			t.accept(new PostInitialisationVisitor());
+			multiverse.add((Universe) t.getRoot().getValue());
+		}
+		return multiverse;
 	}
 
 	private Node<AbstractEnvironment> recurseStructure(JSONObject structure,
@@ -86,13 +86,14 @@ public class Parser {
 		final List<Node<AbstractEnvironment>> subenvs = new ArrayList<>();
 		if (structure.has(STRUCTURE)) {
 			JSONArray substructarray = structure.getJSONArray(STRUCTURE);
-			substructarray.forEach((Object o) -> {
+			for (int i = 0; i < substructarray.length(); i++) {
 				try {
-					subenvs.add(recurseStructure((JSONObject) o, total));
+					subenvs.add(recurseStructure(
+							substructarray.getJSONObject(i), total));
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
-			});
+			}
 			current.setChildren(subenvs);
 		}
 		// create agents

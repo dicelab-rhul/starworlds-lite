@@ -1,18 +1,26 @@
 package uk.ac.rhul.cs.dice.starworlds.experiment.communicatingagents;
 
+import java.util.Collection;
+
 import uk.ac.rhul.cs.dice.starworlds.environment.base.interfaces.Universe;
 import uk.ac.rhul.cs.dice.starworlds.parser.Parser;
 
 class ExperimentCommunication {
 
-	private static final String INITFILESINGLE = "init/CommunicationExperimentSingleInit.json";
-	private static final String INITFILEMULTI = "init/CommunicationExperimentInit.json";
-	private static final String INITFILEREMOTE = "init/CommunicationExperimentInitRemote.json";
+	private static final String PATH = "init/CommunicationExperiment/";
+
+	private static final String SINGLE = "Single.json";
+	private static final String MULTIPLECHAIN = "MultipleChain.json";
+	private static final String MULTIPLETREE = "MultipleTree.json";
+	private static final String REMOTE = "Remote.json";
+
 	private static Parser PARSER;
 
 	public static void main(String[] args) throws Exception {
-		PARSER = new Parser(INITFILEMULTI);
-		Universe universe = PARSER.parse();
-		universe.simulate();
+		PARSER = new Parser(PATH + SINGLE);
+		Collection<Universe> multiverse = PARSER.parse();
+		for (Universe u : multiverse) {
+			new Thread(u).start();
+		}
 	}
 }

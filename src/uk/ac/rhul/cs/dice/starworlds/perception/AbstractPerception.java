@@ -3,7 +3,7 @@ package uk.ac.rhul.cs.dice.starworlds.perception;
 /**
  * An abstract implementation of {@link Perception}. All {@link Perception}s
  * should extend this class. </br> Implements: {@link Perception} </br> Known
- * subclasses: {@link DefaultPerception}, {@link CommunicationPerception}
+ * direct subclasses: {@link DefaultPerception}, {@link CommunicationPerception}
  * 
  * @author Ben
  *
@@ -11,6 +11,8 @@ package uk.ac.rhul.cs.dice.starworlds.perception;
  *            the type of the content of this {@link Perception}.
  */
 public abstract class AbstractPerception<T> implements Perception<T> {
+
+	private static final long serialVersionUID = 1L;
 
 	private T content;
 

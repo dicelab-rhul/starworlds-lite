@@ -83,9 +83,8 @@ public abstract class AbstractSubscriber {
 		} else {
 			col.addAll(actions);
 		}
-		System.out.println("ENVIRONMENT SUBSCRIBE: " + environment + " "
-				+ actions + System.lineSeparator() + "   "
-				+ this.environmentSubscriptions);
+		System.out.println("ENVIRONMENT SUBSCRIBE: " + environment + "->"
+				+ actions);
 	}
 
 	public void setPossibleActions(
@@ -121,7 +120,6 @@ public abstract class AbstractSubscriber {
 
 	public Map<Class<? extends AbstractPerception>, Set<AbstractSensor>> findSensors(
 			ActiveBodyAppearance body, AbstractEnvironmentalAction action) {
-		System.out.println(body.getName());
 		Map<Class<? extends AbstractSensor>, AbstractSensor> sensormap = subscribedSensors
 				.get(body.getName());
 		Map<Class<? extends AbstractPerception>, Set<AbstractSensor>> sensors = new HashMap<>();

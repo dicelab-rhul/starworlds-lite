@@ -19,7 +19,6 @@ import uk.ac.rhul.cs.dice.starworlds.environment.base.interfaces.CommandMessage;
 import uk.ac.rhul.cs.dice.starworlds.environment.base.interfaces.Environment;
 import uk.ac.rhul.cs.dice.starworlds.environment.base.interfaces.Message;
 import uk.ac.rhul.cs.dice.starworlds.environment.base.interfaces.State;
-import uk.ac.rhul.cs.dice.starworlds.environment.concrete.DefaultMessage;
 import uk.ac.rhul.cs.dice.starworlds.environment.inet.INetDefaultMessage;
 import uk.ac.rhul.cs.dice.starworlds.environment.physics.AbstractConnectedPhysics;
 import uk.ac.rhul.cs.dice.starworlds.environment.physics.Physics;
@@ -64,6 +63,7 @@ public abstract class AbstractConnectedEnvironment extends AbstractEnvironment {
 	protected Map<String, MessageProcessor> messageProcessors;
 	protected EnvironmentConnectionManager envconManager;
 	protected Map<Pair<String, Integer>, AmbientRelation> initialConnections;
+	protected ActionMessageProcessor actionProcessor;
 
 	/**
 	 * Constructor. This constructor assumes that all
@@ -189,14 +189,17 @@ public abstract class AbstractConnectedEnvironment extends AbstractEnvironment {
 	protected void initialiseMessageProcessors() {
 		messageProcessors = new HashMap<>();
 		messageProcessors.put(SUBSCRIBE, new SubscriptionMessageProcessor());
-		messageProcessors.put(ACTION, new ActionMessageProcessor());
+		ActionMessageProcessor amp = new ActionMessageProcessor();
+		actionProcessor = amp;
+		messageProcessors.put(ACTION, amp);
 		messageProcessors.put(PERCEPTION, new PerceptionMessageProcessor());
+
 	}
 
 	public void handleMessage(EnvironmentAppearance appearance,
 			Message<?> message) {
-		System.out.println("HANDLE MESSAGE: " + message
-				+ System.lineSeparator() + "   FROM: " + appearance);
+		// System.out.println(this.appearance + " HANDLE MESSAGE: " + message
+		// + System.lineSeparator() + "   FROM: " + appearance);
 		if (CommandMessage.class.isAssignableFrom(message.getClass())) {
 			CommandMessage<?> cm = (CommandMessage<?>) message;
 			messageProcessors.get(cm.getCommand()).process(appearance,
@@ -246,12 +249,15 @@ public abstract class AbstractConnectedEnvironment extends AbstractEnvironment {
 	public void notify(AbstractEnvironmentalAction action,
 			ActiveBodyAppearance bodyappearance,
 			Collection<AbstractPerception<?>> perceptions, State context) {
-		System.out.println("NOTIFY: " + perceptions);
+		System.out.println("   " + this + ":NOTIFY: " + perceptions);
 		if (!this.appearance.equals(action.getLocalEnvironment())) {
-			System.out
-					.println("Action result destined for another environment");
+			System.out.println("     Perception(s): " + System.lineSeparator()
+					+ "        " + perceptions + System.lineSeparator()
+					+ "        are destined for another environment -> "
+					+ action.getLocalEnvironment());
 			// send it to another environment
-			sendPerception(action.getLocalEnvironment(), action, perceptions);
+			sendPerception(actionProcessor.getSender(action), action,
+					perceptions);
 		} else {
 			super.notify(action, bodyappearance, perceptions, context);
 		}
@@ -268,12 +274,9 @@ public abstract class AbstractConnectedEnvironment extends AbstractEnvironment {
 			Collection<AbstractPerception<?>> perceptions) {
 		if (perceptions != null) {
 			if (!perceptions.isEmpty()) {
-				this.envconManager
-						.sendToEnvironment(
-								environment,
-								new DefaultMessage<Pair<AbstractEnvironmentalAction, Collection<AbstractPerception<?>>>>(
-										PERCEPTION, new Pair<>(action,
-												perceptions)));
+				this.envconManager.sendToEnvironment(environment,
+						new INetDefaultMessage(PERCEPTION, new Pair<>(action,
+								perceptions)));
 			}
 		}
 	}
@@ -318,7 +321,7 @@ public abstract class AbstractConnectedEnvironment extends AbstractEnvironment {
 	protected void initialActionSubscribe() {
 		INetDefaultMessage sub = new INetDefaultMessage(SUBSCRIBE,
 				(Serializable) getInitialActionsToSubscribe());
-		// this.connectedEnvironmentManager.sendToAllNeighbouringEnvironments(sub);
+		this.envconManager.sendToAllNeighbouringEnvironments(sub);
 		this.envconManager.sendToAllSubEnvironments(sub);
 		this.envconManager.sendToSuperEnvironment(sub);
 	}
@@ -336,8 +339,11 @@ public abstract class AbstractConnectedEnvironment extends AbstractEnvironment {
 			if (toSend != null) {
 				// dont send to the environment that the action originated from!
 				toSend.remove(action.getLocalEnvironment());
-				this.envconManager.sendToEnvironments(toSend,
-						new DefaultMessage<T>(ACTION, action));
+				if (!toSend.isEmpty()) {
+					this.envconManager.sendToEnvironments(toSend,
+							new INetDefaultMessage(ACTION,
+									(Serializable) action));
+				}
 			}
 		}
 	}
@@ -350,9 +356,13 @@ public abstract class AbstractConnectedEnvironment extends AbstractEnvironment {
 						.getEnvironmentsFromSubscribedAction(actions.iterator()
 								.next().getClass());
 				if (toSend != null) {
-					// TODO check not sending to the sender?
-					this.envconManager.sendToEnvironments(toSend,
-							new DefaultMessage<Collection<T>>(ACTION, actions));
+					if (!toSend.isEmpty()) {
+						// TODO dont send to environments that have already
+						// received it
+						this.envconManager.sendToEnvironments(toSend,
+								new INetDefaultMessage(ACTION,
+										(Serializable) actions));
+					}
 				}
 			}
 		}
@@ -367,7 +377,6 @@ public abstract class AbstractConnectedEnvironment extends AbstractEnvironment {
 		@SuppressWarnings("unchecked")
 		@Override
 		public void process(EnvironmentAppearance appearance, Object payload) {
-			System.out.println("PROCESSING PERCEPTION");
 			// TODO chain forward!
 			Pair<?, ?> pair = (Pair<?, ?>) payload;
 			AbstractEnvironmentalAction action = (AbstractEnvironmentalAction) pair
@@ -382,10 +391,14 @@ public abstract class AbstractConnectedEnvironment extends AbstractEnvironment {
 
 	private class ActionMessageProcessor implements MessageProcessor {
 
+		// all of the actions received after action propagation
 		private Map<String, AbstractEnvironmentalAction> actions;
+		// where to send the resulting perceptions
+		private Map<String, EnvironmentAppearance> actionReceiveMap;
 
 		public ActionMessageProcessor() {
 			actions = new HashMap<>();
+			actionReceiveMap = new HashMap<>();
 		}
 
 		@Override
@@ -393,28 +406,40 @@ public abstract class AbstractConnectedEnvironment extends AbstractEnvironment {
 			if (payload != null) {
 				if (Collection.class.isAssignableFrom(payload.getClass())) {
 					Collection<?> actions = (Collection<?>) payload;
-					actions.forEach((Object o) -> handleAction((AbstractEnvironmentalAction) o));
+					actions.forEach((Object o) -> handleAction(
+							(AbstractEnvironmentalAction) o, appearance));
 				} else {
-					handleAction((AbstractEnvironmentalAction) payload);
+					handleAction((AbstractEnvironmentalAction) payload,
+							appearance);
 				}
 			}
 		}
 
-		private void handleAction(AbstractEnvironmentalAction action) {
+		private void handleAction(AbstractEnvironmentalAction action,
+				EnvironmentAppearance sender) {
 			if (!actions.containsKey(action.getId())) {
 				this.actions.put(action.getId(), action);
+				this.actionReceiveMap.put(action.getId(), sender);
 				AbstractConnectedEnvironment.this.sendAction(action);
 			}
 		}
 
 		protected void clearAndUpdateActions() {
 			// TODO optimise
-			System.out.println("UPDATE ACTIONS: " + actions);
 			actions.values()
 					.forEach(
 							(AbstractEnvironmentalAction a) -> AbstractConnectedEnvironment.super
 									.updateState(a));
 			actions.clear();
+		}
+
+		protected EnvironmentAppearance getSender(
+				AbstractEnvironmentalAction action) {
+			return this.actionReceiveMap.get(action.getId());
+		}
+
+		protected Map<String, EnvironmentAppearance> getActionReceiveMap() {
+			return actionReceiveMap;
 		}
 	}
 
