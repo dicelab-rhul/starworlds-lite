@@ -10,14 +10,15 @@ class ExperimentCommunication {
 	private static final String PATH = "init/CommunicationExperiment/";
 
 	private static final String SINGLE = "Single.json";
-	private static final String MULTIPLECHAIN = "MultipleChain.json";
-	private static final String MULTIPLETREE = "MultipleTree.json";
+	private static final String MCHAIN = "MultipleChain.json";
+	private static final String MTREE = "MultipleTree.json";
 	private static final String REMOTE = "Remote.json";
+	private static final String MASTERSLAVE = "MasterSlave.json";
 
 	private static Parser PARSER;
 
 	public static void main(String[] args) throws Exception {
-		PARSER = new Parser(PATH + SINGLE);
+		PARSER = new Parser(PATH + REMOTE);
 		Collection<Universe> multiverse = PARSER.parse();
 		for (Universe u : multiverse) {
 			new Thread(u).start();

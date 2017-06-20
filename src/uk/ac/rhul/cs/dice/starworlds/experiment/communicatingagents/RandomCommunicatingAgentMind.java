@@ -19,8 +19,8 @@ import uk.ac.rhul.cs.dice.starworlds.utils.Pair;
 
 public class RandomCommunicatingAgentMind extends AbstractAgentMind {
 
-	private boolean start = true;
-	private List<String> otheragents = new ArrayList<>();
+	protected boolean start = true;
+	protected List<String> otheragents = new ArrayList<>();
 
 	@Override
 	public Perception<?> perceive(Object... parameters) {
@@ -73,10 +73,12 @@ public class RandomCommunicatingAgentMind extends AbstractAgentMind {
 	@Override
 	public Action execute(Object... parameters) {
 		Collection<?> actions = (Collection<?>) parameters[0];
-		Action action = doAct((AbstractEnvironmentalAction) actions.stream()
-				.findFirst().get());
-		// System.out.println(this + " EXECUTE: " + action);
-		return action;
+		Action[] act = actions.toArray(new Action[] {});
+		if (act.length > 0) {
+			Action action = doAct((AbstractEnvironmentalAction) act[0]);
+			return action;
+		}
+		return null;
 	}
 
 	private Collection<Appearance> unpackAppearances(Perception<?> percept) {

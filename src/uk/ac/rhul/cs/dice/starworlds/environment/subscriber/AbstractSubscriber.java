@@ -26,6 +26,19 @@ public abstract class AbstractSubscriber {
 	public @interface SensiblePerception {
 	}
 
+	@Retention(RetentionPolicy.RUNTIME)
+	public @interface ActionPermeability {
+	}
+
+	public static enum Permeability {
+		
+		GLOBAL() {
+			
+		}, NEIGHBOUR, SUB, SUPER
+		
+		
+	}
+
 	// map: agentid -> map: sensorclass -> sensor
 	protected Map<String, Map<Class<? extends AbstractSensor>, AbstractSensor>> subscribedSensors;
 	protected Map<Class<? extends AbstractPerception>, Set<Class<? extends AbstractSensor>>> perceptionSensors;

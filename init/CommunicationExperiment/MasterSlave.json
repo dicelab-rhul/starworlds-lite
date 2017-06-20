@@ -26,7 +26,9 @@
 
 @agentminds : {
 	dagentmind : uk.ac.rhul.cs.dice.starworlds.entities.agents.concrete.DefaultAgentMind,
-	cagentmind :  uk.ac.rhul.cs.dice.starworlds.experiment.communicatingagents.RandomCommunicatingAgentMind
+	cagentmind :  uk.ac.rhul.cs.dice.starworlds.experiment.communicatingagents.RandomCommunicatingAgentMind,
+	master : uk.ac.rhul.cs.dice.starworlds.experiment.communicatingagents.MasterOfCommunicationAgentMind,
+	slave : uk.ac.rhul.cs.dice.starworlds.experiment.communicatingagents.SlaveOfCommunicationAgentMind
 },
 
 @agentbodies : {
@@ -44,15 +46,15 @@
 },
 
 ~agents : {
-	DefaultAgent : {
+	Master : {
 		@agentbodies : dagent,
-		@agentminds : dagentmind,
+		@agentminds : master,
 		@agentsensors : [listeningsensor, seeingsensor],
-		@agentactuators : [physicalactuator, speechactuator],
+		@agentactuators : [speechactuator],
 	},
-	CommunicatingAgent : {
+	Slave : {
 		@agentbodies : dagent,
-		@agentminds : cagentmind,
+		@agentminds : slave,
 		@agentsensors : [listeningsensor, seeingsensor],
 		@agentactuators : [speechactuator],
 	},
@@ -76,16 +78,16 @@
 
 ~structure : [{
 		~environments : DefaultUniverse,
-		~agents : [CommunicatingAgent],
+		~agents : [Master],
 		~structure : [{
 				~environments : DefaultEnvironment,
-				~agents : [CommunicatingAgent],
+				~agents : [Slave],
 				~structure : [{
 						~environments : DefaultEnvironment,
-						~agents : [CommunicatingAgent],
+						~agents : [Slave],
 					~structure : [{
 							~environments : DefaultEnvironment,
-							~agents : [CommunicatingAgent],
+							~agents : [Slave],
 					}],
 				}],
 		}],

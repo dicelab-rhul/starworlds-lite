@@ -338,7 +338,7 @@ public abstract class AbstractConnectedEnvironment extends AbstractEnvironment {
 					.getEnvironmentsFromSubscribedAction(action.getClass());
 			if (toSend != null) {
 				// dont send to the environment that the action originated from!
-				toSend.remove(action.getLocalEnvironment());
+				toSend.remove(actionProcessor.getSender(action));
 				if (!toSend.isEmpty()) {
 					this.envconManager.sendToEnvironments(toSend,
 							new INetDefaultMessage(ACTION,

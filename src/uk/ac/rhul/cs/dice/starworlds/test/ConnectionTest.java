@@ -1,8 +1,10 @@
 package uk.ac.rhul.cs.dice.starworlds.test;
 
 import java.io.IOException;
+import java.net.InetAddress;
 import java.net.Socket;
 import java.net.SocketAddress;
+import java.net.UnknownHostException;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -11,18 +13,19 @@ import uk.ac.rhul.cs.dice.starworlds.utils.inet.INetSlave;
 import uk.ac.rhul.cs.dice.starworlds.utils.inet.sendreceive.INetByteReceiver;
 import uk.ac.rhul.cs.dice.starworlds.utils.inet.sendreceive.INetByteSender;
 
-public class JoseTest implements Observer {
+public class ConnectionTest implements Observer {
 
-	public static void main(String[] args) {
-		JoseTest t = new JoseTest();
-		ViewServer s1 = t.new ViewServer(10001);
-		ViewServer s2 = t.new ViewServer(10002); //delete
+	private static String host = "localhost";
+	private static Integer port = 80;
+	private static Integer localport = 10001;
 
+	public static void main(String[] args) throws UnknownHostException {
+		System.out.println("MY ADDRESS: "
+				+ InetAddress.getLocalHost().getHostAddress());
+		ViewServer s1 = new ViewServer(localport);
+		ViewServer s2 = new ViewServer(port);
 		try {
-			SocketAddress addr = s1.connect("localhost", 10002);
-			s2.getClientAddresses().forEach((SocketAddress s) -> {
-				s2.getSlave(s).addObserver(t);
-			});
+			SocketAddress addr = s1.connect(host, port);
 			s1.send(addr, "hello".getBytes());
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -35,7 +38,7 @@ public class JoseTest implements Observer {
 		System.out.println(new String(m));
 	}
 
-	public class ViewServer extends INetServer {
+	public static class ViewServer extends INetServer {
 
 		public ViewServer(int port) {
 			super(port);
@@ -57,7 +60,7 @@ public class JoseTest implements Observer {
 		}
 	}
 
-	public class ViewSlave extends INetSlave {
+	public static class ViewSlave extends INetSlave {
 
 		public ViewSlave(Socket socket) throws IOException {
 			super(socket, new INetByteSender(socket.getOutputStream()),
