@@ -8,6 +8,8 @@ import uk.ac.rhul.cs.dice.starworlds.utils.Pair;
 
 public class MovePerception extends DefaultPerception<Object[]> {
 
+	private static final long serialVersionUID = 7629279953466113737L;
+
 	public MovePerception(ActiveBodyAppearance activebody,
 			Pair<Integer, Integer> movedFrom, Pair<Integer, Integer> movedTo) {
 		super(new Object[] { activebody, movedFrom, movedTo });

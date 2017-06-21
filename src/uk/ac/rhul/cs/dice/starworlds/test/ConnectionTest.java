@@ -15,15 +15,14 @@ import uk.ac.rhul.cs.dice.starworlds.utils.inet.sendreceive.INetByteSender;
 
 public class ConnectionTest implements Observer {
 
-	private static String host = "localhost";
-	private static Integer port = 80;
-	private static Integer localport = 10001;
+	private static String host = "10.2.91.240";
+	private static Integer port = 10001;
+	private static Integer localport = 10000;
 
 	public static void main(String[] args) throws UnknownHostException {
 		System.out.println("MY ADDRESS: "
 				+ InetAddress.getLocalHost().getHostAddress());
 		ViewServer s1 = new ViewServer(localport);
-		ViewServer s2 = new ViewServer(port);
 		try {
 			SocketAddress addr = s1.connect(host, port);
 			s1.send(addr, "hello".getBytes());

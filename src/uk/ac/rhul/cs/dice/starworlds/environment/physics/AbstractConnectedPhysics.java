@@ -48,7 +48,6 @@ public class AbstractConnectedPhysics extends AbstractPhysics {
 
 	@Override
 	public void executeActions() {
-
 		this.getEnvironment().clearAndUpdateActionsAfterPropagation();
 		System.out.println("EXECUTE ACTIONS: " + this.getId()
 				+ System.lineSeparator() + "   "

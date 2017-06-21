@@ -8,14 +8,18 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import uk.ac.rhul.cs.dice.starworlds.actions.Action;
+import uk.ac.rhul.cs.dice.starworlds.actions.environmental.PhysicalAction;
 import uk.ac.rhul.cs.dice.starworlds.entities.agents.AbstractAgent;
 import uk.ac.rhul.cs.dice.starworlds.entities.agents.AbstractAgentMind;
 import uk.ac.rhul.cs.dice.starworlds.entities.agents.components.Actuator;
@@ -27,6 +31,7 @@ import uk.ac.rhul.cs.dice.starworlds.environment.base.AbstractState;
 import uk.ac.rhul.cs.dice.starworlds.environment.base.interfaces.Universe;
 import uk.ac.rhul.cs.dice.starworlds.environment.physics.AbstractConnectedPhysics;
 import uk.ac.rhul.cs.dice.starworlds.environment.physics.AbstractPhysics;
+import uk.ac.rhul.cs.dice.starworlds.environment.physics.Physics;
 import uk.ac.rhul.cs.dice.starworlds.utils.datastructure.tree.NeighbourhoodNode;
 import uk.ac.rhul.cs.dice.starworlds.utils.datastructure.tree.NeighbourhoodTree;
 import uk.ac.rhul.cs.dice.starworlds.utils.datastructure.tree.Node;
@@ -35,22 +40,32 @@ import uk.ac.rhul.cs.dice.starworlds.utils.datastructure.visitor.Visitor;
 
 public class Parser {
 
-	public static final String[] KEYWORDS = new String[] { "@agentbodies",
+	public static final String[] CLASSKEYS = new String[] { "@agentbodies",
 			"@agentminds", "@agentactuators", "@agentsensors",
-			"@possibleactions", "@environments", "@physics", "@states",
-			"~structure", "~agents", "~environments", "~remote",
+			"@possibleactions", "@environments", "@physics", "@states" };
+	public static final String AGENTBODIES = CLASSKEYS[0],
+			AGENTMINDS = CLASSKEYS[1], AGENTACTUATORS = CLASSKEYS[2],
+			AGENTSENSORS = CLASSKEYS[3], POSSIBLEACTIONS = CLASSKEYS[4],
+			ENVIRONMENTS = CLASSKEYS[5], PHYSICS = CLASSKEYS[6],
+			STATES = CLASSKEYS[7];
+
+	public static final String[] INSTANCEKEYS = new String[] { "~structure",
+			"~agents", "~environments" };
+	public static final String STRUCTURE = INSTANCEKEYS[0],
+			AGENTINSTANCES = INSTANCEKEYS[1],
+			ENVIRONMENTINSTANCES = INSTANCEKEYS[2];
+
+	public static final String[] PROPERTYKEYS = new String[] { "@remote",
 			"@connections", "@port", "@ctype", "@address" };
-	public static final String AGENTBODIES = KEYWORDS[0],
-			AGENTMINDS = KEYWORDS[1], AGENTACTUATORS = KEYWORDS[2],
-			AGENTSENSORS = KEYWORDS[3], POSSIBLEACTIONS = KEYWORDS[4],
-			ENVIRONMENTS = KEYWORDS[5], PHYSICS = KEYWORDS[6],
-			STATES = KEYWORDS[7], REMOTE = KEYWORDS[11],
-			CONNECTIONS = KEYWORDS[12], PORT = KEYWORDS[13],
-			CONNECTIONTYPE = KEYWORDS[14], ADDRESS = KEYWORDS[15];
-	public static final String STRUCTURE = KEYWORDS[8], AGENTS = KEYWORDS[9],
-			REALENVIRONMENTS = KEYWORDS[10];
+
+	public static final String REMOTE = PROPERTYKEYS[0],
+			CONNECTIONS = PROPERTYKEYS[1], PORT = PROPERTYKEYS[2],
+			CONNECTIONTYPE = PROPERTYKEYS[3], ADDRESS = PROPERTYKEYS[4];
 
 	private JSONObject total;
+
+	// TODO optimise the parser
+	private Map<String, Class<?>> classmap = new HashMap<>();
 
 	public Parser(String initstructure) throws IOException {
 		File sf = new File(initstructure);
@@ -62,6 +77,7 @@ public class Parser {
 	}
 
 	public Collection<Universe> parse() throws Exception {
+		validate(total);
 		JSONArray structure = total.getJSONArray(STRUCTURE);
 		List<NeighbourhoodTree<AbstractEnvironment>> trees = new ArrayList<>();
 		for (int i = 0; i < structure.length(); i++) {
@@ -79,10 +95,104 @@ public class Parser {
 		return multiverse;
 	}
 
+	public void addToClassMap(JSONObject json, String superkey) {
+		JSONObject superObject = json.getJSONObject(superkey);
+		superObject.keySet().forEach(
+				(key) -> this.classmap.put(key, ReflectiveMethodStore
+						.getClassFromString(superObject.getString(key))));
+	}
+
+	public void validate(JSONObject json) {
+		System.out.println("VALIDATING CONFIGURATION... ");
+		for (String key : CLASSKEYS) {
+			addToClassMap(json, key);
+		}
+		System.out.println("   FOUND CLASSES: ");
+		classmap.forEach((s, c) -> System.out.println("       " + s + "->" + c));
+		System.out.println("   VALIDATING REFLECTIVE METHODS...");
+		validateActionMethods(json);
+		System.out.println("   FOUND ALL ACTION METHODS");
+		validatePerceivableMethods(json);
+		System.out.println("   FOUND ALL PERCEIVABLE METHODS");
+		System.out.println("DONE!");
+	}
+
+	private void validatePerceivableMethods(JSONObject json) {
+
+		JSONArray struct = json.getJSONArray(STRUCTURE);
+		Map<String, Set<String>> map = validateRecurseStruct(struct);
+		map.forEach((physics, agents) -> {
+			Set<Class<? extends Sensor>> usensors = new HashSet<>();
+			agents.forEach((agent) -> {
+				JSONArray sensors = json.getJSONObject(AGENTINSTANCES)
+						.getJSONObject(agent).getJSONArray(AGENTSENSORS);
+				for (int i = 0; i < sensors.length(); i++) {
+					usensors.add(classmap.get(sensors.getString(i)).asSubclass(
+							Sensor.class));
+				}
+			});
+			ReflectiveMethodStore.validateReflectiveSensors(
+					classmap.get(physics).asSubclass(Physics.class), usensors);
+		});
+	}
+
+	private Map<String, Set<String>> validateRecurseStruct(JSONArray struct) {
+		// map physics to agents
+		Map<String, Set<String>> pamap = new HashMap<>();
+		for (int i = 0; i < struct.length(); i++) {
+			JSONObject structobj = struct.getJSONObject(i);
+			if (structobj.has(STRUCTURE)) {
+				Map<String, Set<String>> sub = validateRecurseStruct(structobj
+						.getJSONArray(STRUCTURE));
+				sub.forEach((physics, agents) -> {
+					Set<String> lagents = pamap.putIfAbsent(physics, agents);
+					if (lagents != null) {
+						lagents.addAll(agents);
+					}
+				});
+			}
+			String physics = total.getJSONObject(ENVIRONMENTINSTANCES)
+					.getJSONObject(structobj.getString(ENVIRONMENTINSTANCES))
+					.getString(PHYSICS);
+			pamap.putIfAbsent(physics, new HashSet<>());
+			JSONArray agents = structobj.getJSONArray(AGENTINSTANCES);
+			for (int j = 0; j < agents.length(); j++) {
+				pamap.get(physics).add(agents.getString(j));
+			}
+		}
+		return pamap;
+	}
+
+	private void validateActionMethods(JSONObject json) {
+		JSONObject environments = json.getJSONObject(ENVIRONMENTINSTANCES);
+		environments
+				.keySet()
+				.forEach(
+						(key) -> {
+							JSONObject instance = environments
+									.getJSONObject(key);
+							Class<? extends Physics> physics = classmap.get(
+									instance.getString(PHYSICS)).asSubclass(
+									Physics.class);
+							JSONArray possibleactions = instance
+									.getJSONArray(POSSIBLEACTIONS);
+							Collection<Class<? extends Action>> toValidate = new HashSet<>();
+							for (int i = 0; i < possibleactions.length(); i++) {
+								Class<?> a = classmap.get(possibleactions
+										.getString(i));
+								if (PhysicalAction.class.isAssignableFrom(a)) {
+									toValidate.add(a.asSubclass(Action.class));
+								}
+							}
+							ReflectiveMethodStore.validateReflectiveActions(
+									physics, toValidate);
+						});
+	}
+
 	private Node<AbstractEnvironment> recurseStructure(JSONObject structure,
 			JSONObject total) throws Exception {
 		NeighbourhoodNode<AbstractEnvironment> current = new NeighbourhoodNode<>();
-		String envkey = structure.getString(REALENVIRONMENTS);
+		String envkey = structure.getString(ENVIRONMENTINSTANCES);
 		final List<Node<AbstractEnvironment>> subenvs = new ArrayList<>();
 		if (structure.has(STRUCTURE)) {
 			JSONArray substructarray = structure.getJSONArray(STRUCTURE);
@@ -97,23 +207,21 @@ public class Parser {
 			current.setChildren(subenvs);
 		}
 		// create agents
-		JSONArray agentkeys = structure.getJSONArray(AGENTS);
+		JSONArray agentkeys = structure.getJSONArray(AGENTINSTANCES);
 		Set<AbstractAgent> agents = new HashSet<>();
 		for (int i = 0; i < agentkeys.length(); i++) {
 			String ak = agentkeys.getString(i);
-			agents.add(constructAgent(ak, total.getJSONObject(AGENTS)
+			agents.add(constructAgent(ak, total.getJSONObject(AGENTINSTANCES)
 					.getJSONObject(ak), total));
 		}
-		JSONObject environmentjson = total.getJSONObject(REALENVIRONMENTS)
+		JSONObject environmentjson = total.getJSONObject(ENVIRONMENTINSTANCES)
 				.getJSONObject(envkey);
 
 		// create physics
 		// TODO add active bodies and passive bodies
 		AbstractPhysics physics = null;
-
 		Class<?> physicsclass = getClassFromJson(PHYSICS,
 				environmentjson.getString(PHYSICS), total);
-
 		physics = (AbstractPhysics) physicsclass.getConstructor(Set.class,
 				Set.class, Set.class).newInstance(agents, null, null);
 

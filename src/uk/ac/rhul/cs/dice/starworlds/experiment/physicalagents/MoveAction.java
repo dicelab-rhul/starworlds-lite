@@ -11,6 +11,8 @@ import uk.ac.rhul.cs.dice.starworlds.utils.Pair;
 
 public class MoveAction extends PhysicalAction {
 
+	private static final long serialVersionUID = 4286281855759144411L;
+
 	@SensiblePerception
 	public static final Class<?> POSSIBLEPERCEPTION = MovePerception.class;
 
@@ -22,16 +24,9 @@ public class MoveAction extends PhysicalAction {
 	}
 
 	@Override
-	public Set<AbstractPerception<?>> getAgentPerceptions(Physics physics,
+	public Set<AbstractPerception<?>> getOtherPerceptions(Physics physics,
 			State context) {
-		return ((PhysicalPhysics) physics).getAgentPerceptions(this,
-				(PhysicalState) context);
-	}
-
-	@Override
-	public Set<AbstractPerception<?>> getOthersPerceptions(Physics physics,
-			State context) {
-		return ((PhysicalPhysics) physics).getOthersPerceptions(this,
+		return ((PhysicalPhysics) physics).getOtherPerceptions(this,
 				(PhysicalState) context);
 	}
 

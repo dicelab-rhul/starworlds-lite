@@ -18,7 +18,7 @@ class ExperimentCommunication {
 	private static Parser PARSER;
 
 	public static void main(String[] args) throws Exception {
-		PARSER = new Parser(PATH + REMOTE);
+		PARSER = new Parser(PATH + MTREE);
 		Collection<Universe> multiverse = PARSER.parse();
 		for (Universe u : multiverse) {
 			new Thread(u).start();

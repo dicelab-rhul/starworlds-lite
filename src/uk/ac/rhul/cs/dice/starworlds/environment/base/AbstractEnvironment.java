@@ -20,6 +20,7 @@ import uk.ac.rhul.cs.dice.starworlds.environment.base.interfaces.State;
 import uk.ac.rhul.cs.dice.starworlds.environment.physics.AbstractPhysics;
 import uk.ac.rhul.cs.dice.starworlds.environment.physics.Physics;
 import uk.ac.rhul.cs.dice.starworlds.environment.subscriber.AbstractSubscriber;
+import uk.ac.rhul.cs.dice.starworlds.parser.ReflectiveMethodStore;
 import uk.ac.rhul.cs.dice.starworlds.perception.AbstractPerception;
 
 /**
@@ -106,10 +107,10 @@ public abstract class AbstractEnvironment implements Environment, Container {
 	}
 
 	public void notify(AbstractEnvironmentalAction action,
-			ActiveBodyAppearance bodyappearance,
+			ActiveBodyAppearance toNotify,
 			Collection<AbstractPerception<?>> perceptions, State context) {
 		Map<Class<? extends AbstractPerception>, Set<AbstractSensor>> sensors = subscriber
-				.findSensors(bodyappearance, action);
+				.findSensors(toNotify, action);
 		for (AbstractPerception<?> perception : perceptions) {
 			Set<AbstractSensor> ss = sensors.get(perception.getClass());
 			if (ss != null) {
@@ -182,23 +183,31 @@ public abstract class AbstractEnvironment implements Environment, Container {
 			return (boolean) this
 					.getPhysics()
 					.getClass()
-					.getMethod("perceivable", sensor.getClass(),
-							AbstractPerception.class, State.class)
+					.getMethod(ReflectiveMethodStore.PERCEIVABLE,
+							sensor.getClass(), AbstractPerception.class,
+							State.class)
 					.invoke(this.getPhysics(), sensor, perception, context);
 		} catch (NoSuchMethodException | SecurityException
-				| IllegalAccessException | IllegalArgumentException
-				| InvocationTargetException e) {
-			System.err.println("A Perceivable method must be defined in: "
-					+ this.getPhysics().getClass().getSimpleName()
-					+ " and be accessible to: "
-					+ this.getClass().getSimpleName() + System.lineSeparator()
-					+ "It must have the signature: " + System.lineSeparator()
-					+ "perceivable(" + sensor.getClass().getSimpleName() + ","
-					+ AbstractPerception.class.getSimpleName() + ","
-					+ State.class.getSimpleName() + ")");
+				| IllegalAccessException | IllegalArgumentException e) {
+			System.err
+					.println("A Perceivable method must be defined in the class: "
+							+ this.getPhysics().getClass().getSimpleName()
+							+ " and be accessible to the class: "
+							+ this.getClass().getSimpleName()
+							+ System.lineSeparator()
+							+ "   It must have the signature: "
+							+ System.lineSeparator()
+							+ "   perceivable("
+							+ sensor.getClass().getSimpleName()
+							+ ","
+							+ AbstractPerception.class.getSimpleName()
+							+ ","
+							+ State.class.getSimpleName() + ")");
 			e.printStackTrace();
-			return false;
+		} catch (InvocationTargetException e) {
+			e.getTargetException().printStackTrace();
 		}
+		return false;
 	}
 
 	@Override

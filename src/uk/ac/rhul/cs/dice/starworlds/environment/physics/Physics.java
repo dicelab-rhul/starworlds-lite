@@ -1,11 +1,13 @@
 package uk.ac.rhul.cs.dice.starworlds.environment.physics;
 
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Set;
 
 import uk.ac.rhul.cs.dice.starworlds.actions.environmental.CommunicationAction;
 import uk.ac.rhul.cs.dice.starworlds.actions.environmental.PhysicalAction;
 import uk.ac.rhul.cs.dice.starworlds.actions.environmental.SensingAction;
+import uk.ac.rhul.cs.dice.starworlds.appearances.ActiveBodyAppearance;
 import uk.ac.rhul.cs.dice.starworlds.entities.ActiveBody;
 import uk.ac.rhul.cs.dice.starworlds.entities.PassiveBody;
 import uk.ac.rhul.cs.dice.starworlds.entities.agents.AbstractAgent;
@@ -16,6 +18,8 @@ import uk.ac.rhul.cs.dice.starworlds.entities.agents.components.concrete.SeeingS
 import uk.ac.rhul.cs.dice.starworlds.environment.base.AbstractEnvironment;
 import uk.ac.rhul.cs.dice.starworlds.environment.base.interfaces.Environment;
 import uk.ac.rhul.cs.dice.starworlds.environment.base.interfaces.State;
+import uk.ac.rhul.cs.dice.starworlds.experiment.physicalagents.MoveAction;
+import uk.ac.rhul.cs.dice.starworlds.experiment.physicalagents.MovePerception;
 import uk.ac.rhul.cs.dice.starworlds.perception.AbstractPerception;
 import uk.ac.rhul.cs.dice.starworlds.perception.Perception;
 import uk.ac.rhul.cs.dice.starworlds.utils.Identifiable;
@@ -53,6 +57,16 @@ public interface Physics extends Identifiable {
 	public boolean isPossible(PhysicalAction action, State context);
 
 	public boolean verify(PhysicalAction action, State context);
+
+	public default Collection<AbstractPerception<?>> getAgentPerceptions(
+			PhysicalAction action, State context) {
+		return null;
+	}
+
+	public default Collection<AbstractPerception<?>> getOtherPerceptions(
+			PhysicalAction action, State context) {
+		return null;
+	}
 
 	// METHODS TO HANDLE COMMUNICATION ACTIONS //
 

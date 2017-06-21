@@ -9,7 +9,7 @@ import uk.ac.rhul.cs.dice.starworlds.actions.environmental.AbstractEnvironmental
 import uk.ac.rhul.cs.dice.starworlds.entities.agents.AbstractAgentMind;
 import uk.ac.rhul.cs.dice.starworlds.perception.Perception;
 
-class RandomPhysicalAgentMind extends AbstractAgentMind {
+public class RandomPhysicalAgentMind extends AbstractAgentMind {
 
 	private Random r = new Random();
 	private boolean start = true;
@@ -27,7 +27,7 @@ class RandomPhysicalAgentMind extends AbstractAgentMind {
 		Collection<Action> actions = new HashSet<>();
 		actions.add(new MoveAction(r.nextInt(3) - 1, r.nextInt(3) - 1));
 		// actions.add(new SensingAction("GRID.LOCAL"));
-		System.out.println(this.getId() + ":ACTIONS: " + actions);
+		System.out.println(this.getId() + " :ACTIONS: " + actions);
 		return actions;
 	}
 

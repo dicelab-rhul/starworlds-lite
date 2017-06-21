@@ -219,6 +219,10 @@ public abstract class AbstractConnectedEnvironment extends AbstractEnvironment {
 	public abstract void handleCustomMessage(EnvironmentAppearance appearance,
 			Message<?> message);
 
+	/**
+	 * This method is called after all environments have been created and are
+	 * connected. It should be used for setting parameters in the state etc.
+	 */
 	@Override
 	public void postInitialisation() {
 		this.initialActionSubscribe();
@@ -247,9 +251,10 @@ public abstract class AbstractConnectedEnvironment extends AbstractEnvironment {
 
 	@Override
 	public void notify(AbstractEnvironmentalAction action,
-			ActiveBodyAppearance bodyappearance,
+			ActiveBodyAppearance toNotify,
 			Collection<AbstractPerception<?>> perceptions, State context) {
-		System.out.println("   " + this + ":NOTIFY: " + perceptions);
+		System.out.println("   " + this + ":NOTIFY ATTEMPT: " + toNotify + " WITH: "
+				+ perceptions);
 		if (!this.appearance.equals(action.getLocalEnvironment())) {
 			System.out.println("     Perception(s): " + System.lineSeparator()
 					+ "        " + perceptions + System.lineSeparator()
@@ -259,7 +264,7 @@ public abstract class AbstractConnectedEnvironment extends AbstractEnvironment {
 			sendPerception(actionProcessor.getSender(action), action,
 					perceptions);
 		} else {
-			super.notify(action, bodyappearance, perceptions, context);
+			super.notify(action, toNotify, perceptions, context);
 		}
 	}
 

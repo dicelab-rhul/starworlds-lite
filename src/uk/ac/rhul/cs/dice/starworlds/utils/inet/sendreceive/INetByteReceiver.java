@@ -29,7 +29,12 @@ public class INetByteReceiver implements INetReceiver {
 	public byte[] receive() {
 		try {
 			int read = in.read(readarray);
-			return Arrays.copyOfRange(readarray, 0, read);
+			if (read > 0) {
+				return Arrays.copyOfRange(readarray, 0, read);
+			} else {
+				System.out.println("Disconnection?");
+				return null;
+			}
 		} catch (IOException e) {
 			e.printStackTrace();
 			return null;

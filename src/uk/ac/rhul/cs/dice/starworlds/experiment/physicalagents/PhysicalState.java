@@ -21,34 +21,54 @@ public class PhysicalState extends AbstractState {
 	private static final String LOCALKEY = "LOCAL";
 	private static final String LOCALAGENT = "LOCALAGENT";
 
-	private int dimension;
-	private Map<ActiveBody, Pair<Integer, Integer>> grid = new HashMap<>();
-	private Map<Pair<Integer, Integer>, ActiveBody> inversegrid = new HashMap<>();
+	private Integer dimension;
 
-	public PhysicalState(AbstractPhysics physics, int dimension) {
+	private Map<ActiveBodyAppearance, Pair<Integer, Integer>> grid = new HashMap<>();
+	private Map<Pair<Integer, Integer>, ActiveBodyAppearance> inversegrid = new HashMap<>();
+
+	public PhysicalState(AbstractPhysics physics) {
 		super(physics);
-		this.dimension = dimension;
-		// add the environment variables
 		super.addEnvironmentVariable(GRIDKEY, this.grid);
-		super.addEnvironmentVariable(DIMENSIONKEY, dimension);
 		super.addFilter(LOCALKEY, new LocalFilter());
 		super.addFilter(LOCALAGENT, new LocalAgentFilter());
+	}
 
-		physics.getAgents().forEach(
-				(AbstractAgent a) -> {
-					Set<Pair<Integer, Integer>> filled = new HashSet<>();
-					Pair<Integer, Integer> position = new Pair<>((int) (Math
-							.random() * this.dimension),
-							(int) (Math.random() * this.dimension));
-					while (filled.contains(position)) {
-						position = new Pair<>(
+	/**
+	 * An initialisation method that called by the
+	 * {@link PhysicalEnvironment#postInitialisation()} method (and only by that
+	 * method) to set up the dimension of this {@link PhysicalState}.
+	 * 
+	 * @param dimension
+	 *            to set
+	 * @throws IllegalStateException
+	 *             if multiple attempts are made to change the dimension (i.e.
+	 *             if this method is called more than once)
+	 */
+	public void setDimension(int dimension) {
+		if (this.dimension == null) {
+			super.addEnvironmentVariable(DIMENSIONKEY, dimension);
+			this.dimension = dimension;
+			physics.getAgents().forEach(
+					(AbstractAgent a) -> {
+						Set<Pair<Integer, Integer>> filled = new HashSet<>();
+						Pair<Integer, Integer> position = new Pair<>(
 								(int) (Math.random() * this.dimension),
 								(int) (Math.random() * this.dimension));
-					}
-					grid.put(a, position);
-					inversegrid.put(position, a);
-				});
-		printGrid();
+						while (filled.contains(position)) {
+							position = new Pair<>(
+									(int) (Math.random() * this.dimension),
+									(int) (Math.random() * this.dimension));
+						}
+						grid.put(a.getAppearance(), position);
+						inversegrid.put(position, a.getAppearance());
+					});
+			printGrid();
+		} else {
+			throw new IllegalStateException("Cannot reset dimension: "
+					+ this.getDimension() + " to: " + dimension + " for: "
+					+ this.getClass().getSimpleName()
+					+ " after it has been set.");
+		}
 	}
 
 	public void printGrid() {
@@ -64,17 +84,19 @@ public class PhysicalState extends AbstractState {
 					int start = ((pair.getSecond() * this.dimension + pair
 							.getFirst()) * 3) + pair.getSecond() * 2;
 					int end = start + 3;
-					builder.replace(start, end, "[o]");
+					builder.replace(start, end, "["
+							+ inversegrid.get(pair).getName() + "]");
 					System.out.println(pair);
 				});
 		System.out.println(builder.toString());
 	}
 
-	public Map<ActiveBody, Pair<Integer, Integer>> getGrid() {
+	public Map<ActiveBodyAppearance, Pair<Integer, Integer>> getGrid() {
 		return grid;
 	}
 
-	public void updateGrid(Pair<Integer, Integer> position, ActiveBody body) {
+	public void updateGrid(Pair<Integer, Integer> position,
+			ActiveBodyAppearance body) {
 		inversegrid.remove(grid.get(body));
 		grid.put(body, position);
 		inversegrid.put(position, body);
@@ -88,17 +110,17 @@ public class PhysicalState extends AbstractState {
 		return dimension;
 	}
 
-	public ActiveBody getAgentAt(Pair<Integer, Integer> position) {
+	public ActiveBodyAppearance getAgentAt(Pair<Integer, Integer> position) {
 		return inversegrid.get(position);
 	}
 
 	public Pair<Integer, Integer> getPositionOfAgent(ActiveBody body) {
-		return this.grid.get(body);
+		return this.grid.get(body.getAppearance());
 	}
 
 	public Pair<Integer, Integer> getPositionOfAgent(
 			ActiveBodyAppearance appearance) {
-		return this.grid.get(this.physics.getAgent(appearance));
+		return this.grid.get(appearance);
 	}
 
 	public class LocalAgentFilter extends AppearanceFilter {
@@ -107,8 +129,7 @@ public class PhysicalState extends AbstractState {
 			Set<Appearance> result = new HashSet<>();
 			Set<?> pairs = (Set<?>) args[0];
 			pairs.forEach((Object o) -> {
-				result.add((inversegrid.get((Pair<?, ?>) o))
-						.getAppearance());
+				result.add((inversegrid.get(o)));
 			});
 			result.remove(null);
 			return result;
