@@ -1,13 +1,9 @@
 package uk.ac.rhul.cs.dice.starworlds.environment.physics;
 
 import java.util.Collection;
-import java.util.Set;
 
 import uk.ac.rhul.cs.dice.starworlds.actions.Action;
-import uk.ac.rhul.cs.dice.starworlds.entities.ActiveBody;
 import uk.ac.rhul.cs.dice.starworlds.entities.Agent;
-import uk.ac.rhul.cs.dice.starworlds.entities.PassiveBody;
-import uk.ac.rhul.cs.dice.starworlds.entities.agents.AbstractAgent;
 import uk.ac.rhul.cs.dice.starworlds.environment.base.AbstractConnectedEnvironment;
 import uk.ac.rhul.cs.dice.starworlds.environment.base.interfaces.Environment;
 import uk.ac.rhul.cs.dice.starworlds.environment.base.interfaces.Simulator;
@@ -18,9 +14,8 @@ public class AbstractConnectedPhysics extends AbstractPhysics {
 
 	private LocalSynchroniser synchroniser;
 
-	public AbstractConnectedPhysics(Set<AbstractAgent> agents,
-			Set<ActiveBody> activeBodies, Set<PassiveBody> passiveBodies) {
-		super(agents, activeBodies, passiveBodies);
+	public AbstractConnectedPhysics() {
+		super();
 	}
 
 	@Override

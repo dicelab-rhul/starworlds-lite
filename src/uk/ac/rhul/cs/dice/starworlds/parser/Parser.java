@@ -118,7 +118,6 @@ public class Parser {
 	}
 
 	private void validatePerceivableMethods(JSONObject json) {
-
 		JSONArray struct = json.getJSONArray(STRUCTURE);
 		Map<String, Set<String>> map = validateRecurseStruct(struct);
 		map.forEach((physics, agents) -> {
@@ -222,15 +221,14 @@ public class Parser {
 		AbstractPhysics physics = null;
 		Class<?> physicsclass = getClassFromJson(PHYSICS,
 				environmentjson.getString(PHYSICS), total);
-		physics = (AbstractPhysics) physicsclass.getConstructor(Set.class,
-				Set.class, Set.class).newInstance(agents, null, null);
-
+		physics = (AbstractPhysics) physicsclass.newInstance();
 		// create state
 		AbstractState state = null;
 		try {
 			state = (AbstractState) getClassFromJson(STATES,
 					environmentjson.getString(STATES), total).getConstructor(
-					AbstractPhysics.class).newInstance(physics);
+					Set.class, Set.class, Set.class).newInstance(agents, null,
+					null);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

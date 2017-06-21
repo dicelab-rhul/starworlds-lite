@@ -9,6 +9,7 @@ import uk.ac.rhul.cs.dice.starworlds.actions.environmental.SensingAction;
 import uk.ac.rhul.cs.dice.starworlds.appearances.ActiveBodyAppearance;
 import uk.ac.rhul.cs.dice.starworlds.appearances.Appearance;
 import uk.ac.rhul.cs.dice.starworlds.entities.ActiveBody;
+import uk.ac.rhul.cs.dice.starworlds.entities.PassiveBody;
 import uk.ac.rhul.cs.dice.starworlds.entities.agents.AbstractAgent;
 import uk.ac.rhul.cs.dice.starworlds.environment.base.AbstractState;
 import uk.ac.rhul.cs.dice.starworlds.environment.physics.AbstractPhysics;
@@ -26,8 +27,9 @@ public class PhysicalState extends AbstractState {
 	private Map<ActiveBodyAppearance, Pair<Integer, Integer>> grid = new HashMap<>();
 	private Map<Pair<Integer, Integer>, ActiveBodyAppearance> inversegrid = new HashMap<>();
 
-	public PhysicalState(AbstractPhysics physics) {
-		super(physics);
+	public PhysicalState(Set<AbstractAgent> agents,
+			Set<ActiveBody> activeBodies, Set<PassiveBody> passiveBodies) {
+		super(agents, activeBodies, passiveBodies);
 		super.addEnvironmentVariable(GRIDKEY, this.grid);
 		super.addFilter(LOCALKEY, new LocalFilter());
 		super.addFilter(LOCALAGENT, new LocalAgentFilter());
@@ -48,7 +50,7 @@ public class PhysicalState extends AbstractState {
 		if (this.dimension == null) {
 			super.addEnvironmentVariable(DIMENSIONKEY, dimension);
 			this.dimension = dimension;
-			physics.getAgents().forEach(
+			this.getAgents().forEach(
 					(AbstractAgent a) -> {
 						Set<Pair<Integer, Integer>> filled = new HashSet<>();
 						Pair<Integer, Integer> position = new Pair<>(

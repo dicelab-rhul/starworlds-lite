@@ -21,6 +21,7 @@ import uk.ac.rhul.cs.dice.starworlds.entities.agents.components.AbstractSensor;
 import uk.ac.rhul.cs.dice.starworlds.entities.agents.components.concrete.ListeningSensor;
 import uk.ac.rhul.cs.dice.starworlds.entities.agents.components.concrete.SeeingSensor;
 import uk.ac.rhul.cs.dice.starworlds.environment.base.AbstractEnvironment;
+import uk.ac.rhul.cs.dice.starworlds.environment.base.AbstractState;
 import uk.ac.rhul.cs.dice.starworlds.environment.base.interfaces.Environment;
 import uk.ac.rhul.cs.dice.starworlds.environment.base.interfaces.Simulator;
 import uk.ac.rhul.cs.dice.starworlds.environment.base.interfaces.State;
@@ -52,21 +53,13 @@ public abstract class AbstractPhysics implements Physics, Simulator {
 
 	private static final long FRAMELENGTH = 1000;
 
-	private String id;
 	protected AbstractEnvironment environment;
-	protected Map<String, AbstractAgent> agents;
-	protected Map<String, ActiveBody> activeBodies;
-	protected Map<String, PassiveBody> passiveBodies;
+	protected AbstractState state;
+
 	// TODO change to not default
 	private TimeState timestate = new TimeStateSerial();
 
-	public AbstractPhysics(Set<AbstractAgent> agents,
-			Set<ActiveBody> activeBodies, Set<PassiveBody> passiveBodies) {
-		this.agents = (agents != null) ? setToMap(agents) : new HashMap<>();
-		this.activeBodies = (activeBodies != null) ? setToMap(activeBodies)
-				: new HashMap<>();
-		this.passiveBodies = (passiveBodies != null) ? setToMap(passiveBodies)
-				: new HashMap<>();
+	public AbstractPhysics() {
 	}
 
 	public void simulate() {
@@ -148,7 +141,7 @@ public abstract class AbstractPhysics implements Physics, Simulator {
 				.getOtherPerceptions(this, context);
 		environment
 				.notify(action, action.getActor(), agentPerceptions, context);
-		for (ActiveBody a : this.getAgents()) {
+		for (ActiveBody a : state.getAgents()) {
 			if (!a.getAppearance().equals(action.getActor())) {
 				environment.notify(action, a.getAppearance(), otherPerceptions,
 						context);
@@ -170,8 +163,6 @@ public abstract class AbstractPhysics implements Physics, Simulator {
 	public boolean verify(PhysicalAction action, State context) {
 		return action.verify(this, context);
 	}
-	
-	
 
 	// ***************************************************** //
 	// ****************** SENSING ACTIONS ****************** //
@@ -251,7 +242,7 @@ public abstract class AbstractPhysics implements Physics, Simulator {
 		if (action.getRecipientsIds().isEmpty()) {
 			// send to all agents except the sender.
 			Collection<AbstractAgent> recipients = new HashSet<>(
-					this.getAgents());
+					state.getAgents());
 			recipients.remove(action.getActor());
 			recipients
 					.forEach((AbstractAgent a) -> {
@@ -269,7 +260,7 @@ public abstract class AbstractPhysics implements Physics, Simulator {
 		action.getRecipientsIds()
 				.forEach(
 						(String s) -> {
-							AbstractAgent agent = agents.get(s);
+							AbstractAgent agent = state.getAgent(s);
 							if (agent != null) {
 								ActiveBodyAppearance appearance = agent
 										.getAppearance();
@@ -298,30 +289,11 @@ public abstract class AbstractPhysics implements Physics, Simulator {
 		return true;
 	}
 
-	public ActiveBody getAgent(ActiveBodyAppearance appearance) {
-		return this.agents.get(appearance.getName());
-	}
-
-	@Override
-	public Collection<AbstractAgent> getAgents() {
-		return this.agents.values();
-	}
-
-	@Override
-	public Collection<ActiveBody> getActiveBodies() {
-		return this.activeBodies.values();
-	}
-
-	@Override
-	public Collection<PassiveBody> getPassiveBodies() {
-		return this.passiveBodies.values();
-	}
-
 	@Override
 	public void setEnvironment(AbstractEnvironment environment) {
 		if (this.environment == null) {
 			this.environment = environment;
-			this.setId(environment.getId());
+			this.state = environment.getState();
 		}
 	}
 
@@ -354,7 +326,7 @@ public abstract class AbstractPhysics implements Physics, Simulator {
 	protected class TimeStateSerial implements TimeState {
 
 		public void simulate() {
-			agents.values().forEach((AbstractAgent a) -> {
+			state.getAgents().forEach((AbstractAgent a) -> {
 				a.run();
 			});
 		}
@@ -383,7 +355,7 @@ public abstract class AbstractPhysics implements Physics, Simulator {
 		public void simulate() {
 			// split into threads
 			Collection<Thread> threads = new ArrayList<>();
-			agents.values().forEach((AbstractAgent a) -> {
+			state.getAgents().forEach((AbstractAgent a) -> {
 				Thread t = new Thread(a);
 				threads.add(t);
 				t.start();
@@ -430,14 +402,23 @@ public abstract class AbstractPhysics implements Physics, Simulator {
 				.getClass());
 	}
 
+	/**
+	 * Returns the id: "P" + {@link Environment} id that this {@link Physics}
+	 * resides in.
+	 * 
+	 * @return the inherited id
+	 */
 	@Override
 	public String getId() {
-		return this.id;
+		return "P" + environment.getId();
 	}
 
+	/**
+	 * Unused, a physics inherits its id from its {@link Environment}.
+	 */
 	@Override
 	public void setId(String id) {
-		this.id = id;
+		// cannot set the id of a physics
 	}
 
 	protected void setTimeState(boolean serial) {
@@ -447,14 +428,4 @@ public abstract class AbstractPhysics implements Physics, Simulator {
 			timestate = new TimeStateParallel();
 		}
 	}
-
-	private <T extends Entity> Map<String, T> setToMap(Set<T> set) {
-		Map<String, T> map = new HashMap<>();
-		set.forEach((T t) -> {
-			;
-			map.put((String) t.getId(), t);
-		});
-		return map;
-	}
-
 }

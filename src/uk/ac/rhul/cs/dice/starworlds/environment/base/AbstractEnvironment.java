@@ -80,11 +80,11 @@ public abstract class AbstractEnvironment implements Environment, Container {
 		this.physics.setEnvironment(this);
 		this.subscriber = subscriber;
 		this.subscriber.setPossibleActions(possibleActions);
-		this.physics.getAgents().forEach((AbstractAgent agent) -> {
+		this.state.getAgents().forEach((AbstractAgent agent) -> {
 			agent.setEnvironment(this);
 			this.subscribe(agent, representSensors(agent.getSensors()));
 		});
-		this.physics.getActiveBodies().forEach((ActiveBody body) -> {
+		this.state.getActiveBodies().forEach((ActiveBody body) -> {
 			body.setEnvironment(this);
 			this.subscribe(body, representSensors(body.getSensors()));
 		});

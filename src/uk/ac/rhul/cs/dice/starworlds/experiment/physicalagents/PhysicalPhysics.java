@@ -4,9 +4,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 import uk.ac.rhul.cs.dice.starworlds.appearances.ActiveBodyAppearance;
-import uk.ac.rhul.cs.dice.starworlds.entities.ActiveBody;
-import uk.ac.rhul.cs.dice.starworlds.entities.PassiveBody;
-import uk.ac.rhul.cs.dice.starworlds.entities.agents.AbstractAgent;
 import uk.ac.rhul.cs.dice.starworlds.environment.base.interfaces.State;
 import uk.ac.rhul.cs.dice.starworlds.environment.physics.AbstractConnectedPhysics;
 import uk.ac.rhul.cs.dice.starworlds.perception.AbstractPerception;
@@ -14,9 +11,8 @@ import uk.ac.rhul.cs.dice.starworlds.utils.Pair;
 
 public class PhysicalPhysics extends AbstractConnectedPhysics {
 
-	public PhysicalPhysics(Set<AbstractAgent> agents,
-			Set<ActiveBody> activeBodies, Set<PassiveBody> passiveBodies) {
-		super(agents, activeBodies, passiveBodies);
+	public PhysicalPhysics() {
+		super();
 	}
 
 	public Set<AbstractPerception<?>> getAgentPerceptions(MoveAction action,

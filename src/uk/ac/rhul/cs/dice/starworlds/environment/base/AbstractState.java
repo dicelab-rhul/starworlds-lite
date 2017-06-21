@@ -7,6 +7,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
@@ -18,12 +19,13 @@ import uk.ac.rhul.cs.dice.starworlds.appearances.Appearance;
 import uk.ac.rhul.cs.dice.starworlds.appearances.PhysicalBodyAppearance;
 import uk.ac.rhul.cs.dice.starworlds.entities.ActiveBody;
 import uk.ac.rhul.cs.dice.starworlds.entities.Agent;
+import uk.ac.rhul.cs.dice.starworlds.entities.Entity;
 import uk.ac.rhul.cs.dice.starworlds.entities.PassiveBody;
 import uk.ac.rhul.cs.dice.starworlds.entities.PhysicalBody;
+import uk.ac.rhul.cs.dice.starworlds.entities.agents.AbstractAgent;
 import uk.ac.rhul.cs.dice.starworlds.entities.agents.components.Actuator;
 import uk.ac.rhul.cs.dice.starworlds.entities.agents.components.Sensor;
 import uk.ac.rhul.cs.dice.starworlds.environment.base.interfaces.State;
-import uk.ac.rhul.cs.dice.starworlds.environment.physics.AbstractPhysics;
 import uk.ac.rhul.cs.dice.starworlds.environment.physics.Physics;
 import uk.ac.rhul.cs.dice.starworlds.utils.Pair;
 
@@ -40,16 +42,24 @@ public abstract class AbstractState implements State {
 	private List<SensingAction> sensingActions;
 	private List<PhysicalAction> physicalActions;
 	private List<CommunicationAction<?>> communicationActions;
-	protected AbstractPhysics physics;
 
-	public AbstractState(AbstractPhysics physics) {
+	protected Map<String, AbstractAgent> agents;
+	protected Map<String, ActiveBody> activeBodies;
+	protected Map<String, PassiveBody> passiveBodies;
+
+	public AbstractState(Set<AbstractAgent> agents,
+			Set<ActiveBody> activeBodies, Set<PassiveBody> passiveBodies) {
+		this.agents = (agents != null) ? setToMap(agents) : new HashMap<>();
+		this.activeBodies = (activeBodies != null) ? setToMap(activeBodies)
+				: new HashMap<>();
+		this.passiveBodies = (passiveBodies != null) ? setToMap(passiveBodies)
+				: new HashMap<>();
 		this.sensingActions = new ArrayList<>();
 		this.physicalActions = new ArrayList<>();
 		this.communicationActions = new ArrayList<>();
 		this.environmentVariables = new HashMap<>();
 		this.filters = new HashMap<>();
-		initialiseEnvironmentVariables(physics);
-		this.physics = physics;
+		initialiseEnvironmentVariables(agents, activeBodies, passiveBodies);
 	}
 
 	/**
@@ -59,13 +69,41 @@ public abstract class AbstractState implements State {
 	 * adding more use the {@link State#addEnvironmentVariable(String, Object)}
 	 * method.
 	 */
-	protected void initialiseEnvironmentVariables(AbstractPhysics physics) {
-		environmentVariables.put(AGENTSKEY, physics.getAgents());
-		environmentVariables.put(ACTIVEBODIESKEY, physics.getActiveBodies());
-		environmentVariables.put(PASSIVEBODIESKEY, physics.getPassiveBodies());
+	protected void initialiseEnvironmentVariables(Set<AbstractAgent> agents,
+			Set<ActiveBody> activeBodies, Set<PassiveBody> passiveBodies) {
+		environmentVariables.put(AGENTSKEY, agents);
+		environmentVariables.put(ACTIVEBODIESKEY, activeBodies);
+		environmentVariables.put(PASSIVEBODIESKEY, passiveBodies);
 		filters.put(RANDOM, new RandomEnvironmentVariable());
 		filters.put(SELF, new SelfFilter());
 		filters.put(APPEARANCEFILTER, new AppearanceFilter());
+	}
+
+	public AbstractAgent getAgent(String id) {
+		return this.agents.get(id);
+	}
+
+	public ActiveBody getActiveBody(String id) {
+		return this.activeBodies.get(id);
+	}
+
+	public PassiveBody getPassiveBody(String id) {
+		return this.passiveBodies.get(id);
+	}
+
+	@Override
+	public Collection<AbstractAgent> getAgents() {
+		return this.agents.values();
+	}
+
+	@Override
+	public Collection<ActiveBody> getActiveBodies() {
+		return this.activeBodies.values();
+	}
+
+	@Override
+	public Collection<PassiveBody> getPassiveBodies() {
+		return this.passiveBodies.values();
 	}
 
 	@Override
@@ -202,7 +240,7 @@ public abstract class AbstractState implements State {
 			perceptions.add(new Pair<String, Object>(key, result));
 			// perceptions.add(null);
 		}
-		//System.out.println("PERCEPTIONS: " + perceptions);
+		// System.out.println("PERCEPTIONS: " + perceptions);
 		return perceptions;
 	}
 
@@ -293,5 +331,14 @@ public abstract class AbstractState implements State {
 
 	private void variablemissuse(Filter fev) {
 		System.err.println("MISSUSE OF FUNCTIONAL ENVIRONMENT VARIABLE " + fev);
+	}
+
+	private <T extends Entity> Map<String, T> setToMap(Set<T> set) {
+		Map<String, T> map = new HashMap<>();
+		set.forEach((T t) -> {
+			;
+			map.put((String) t.getId(), t);
+		});
+		return map;
 	}
 }

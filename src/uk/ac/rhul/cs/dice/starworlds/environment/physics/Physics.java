@@ -42,12 +42,6 @@ public interface Physics extends Identifiable {
 
 	public void executeActions();
 
-	public Collection<AbstractAgent> getAgents();
-
-	public Collection<ActiveBody> getActiveBodies();
-
-	public Collection<PassiveBody> getPassiveBodies();
-
 	// METHODS TO HANDLE PHYSICAL ACTIONS //
 
 	public boolean execute(PhysicalAction action, State context);

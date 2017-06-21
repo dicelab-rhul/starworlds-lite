@@ -8,6 +8,11 @@ import uk.ac.rhul.cs.dice.starworlds.actions.environmental.AbstractEnvironmental
 import uk.ac.rhul.cs.dice.starworlds.actions.environmental.CommunicationAction;
 import uk.ac.rhul.cs.dice.starworlds.actions.environmental.PhysicalAction;
 import uk.ac.rhul.cs.dice.starworlds.actions.environmental.SensingAction;
+import uk.ac.rhul.cs.dice.starworlds.appearances.ActiveBodyAppearance;
+import uk.ac.rhul.cs.dice.starworlds.appearances.Appearance;
+import uk.ac.rhul.cs.dice.starworlds.entities.ActiveBody;
+import uk.ac.rhul.cs.dice.starworlds.entities.PassiveBody;
+import uk.ac.rhul.cs.dice.starworlds.entities.agents.AbstractAgent;
 import uk.ac.rhul.cs.dice.starworlds.environment.base.AbstractState;
 import uk.ac.rhul.cs.dice.starworlds.environment.base.AbstractState.Filter;
 import uk.ac.rhul.cs.dice.starworlds.environment.physics.Physics;
@@ -47,6 +52,12 @@ public interface State {
 	public Set<Pair<String, Object>> filterActivePerception(String[] keys,
 			SensingAction action);
 
+	public Collection<AbstractAgent> getAgents();
+
+	public Collection<ActiveBody> getActiveBodies();
+
+	public Collection<PassiveBody> getPassiveBodies();
+
 	public boolean addEnvironmentVariable(String key, Object variable);
 
 	public boolean filterExists(String key);
@@ -70,7 +81,7 @@ public interface State {
 	public void addPhysicalAction(PhysicalAction action);
 
 	public void addCommunicationAction(CommunicationAction<?> action);
-	
+
 	public Collection<SensingAction> flushSensingActions();
 
 	public Collection<PhysicalAction> flushPhysicalActions();
