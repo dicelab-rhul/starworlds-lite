@@ -36,7 +36,7 @@ public class RandomCommunicatingAgentMind extends AbstractAgentMind {
 				if (p.getPerception() != null) {
 					Collection<Appearance> appearances = unpackAppearances(p);
 					for (Appearance a : appearances) {
-						this.otheragents.add(a.getName());
+						this.otheragents.add(a.getId());
 					}
 				}
 			}

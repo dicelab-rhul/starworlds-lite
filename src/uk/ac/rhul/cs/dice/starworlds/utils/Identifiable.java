@@ -2,12 +2,14 @@ package uk.ac.rhul.cs.dice.starworlds.utils;
 
 /**
  * An interface that should be implemented by any class whose instances should
- * be indentifiable.
+ * be identifiable.
  * 
  * @author Ben
  *
  */
 public interface Identifiable {
+	
+	public static final String NULLID = "NULLID";
 
 	/**
 	 * Returns the unique ID of the entity.

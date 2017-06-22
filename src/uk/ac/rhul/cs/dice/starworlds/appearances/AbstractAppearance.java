@@ -1,10 +1,11 @@
 package uk.ac.rhul.cs.dice.starworlds.appearances;
 
 import uk.ac.rhul.cs.dice.starworlds.entities.Body;
+import uk.ac.rhul.cs.dice.starworlds.entities.Entity;
+import uk.ac.rhul.cs.dice.starworlds.utils.Identifiable;
 
 /**
- * The {@link Appearance} of some entity. Contains only the name (which may be
- * the id) of the entity. <br/>
+ * The {@link Appearance} of some {@link Entity}. Contains only the id.
  * 
  * 
  * @author cloudstrife9999 a.k.a. Emanuele Uliana
@@ -18,31 +19,31 @@ public abstract class AbstractAppearance implements Appearance {
 
 	protected static final String REPSEP = " ";
 
-	private String name;
+	private String id;
 
 	/**
-	 * Constructor with a {@link String} name.
+	 * Constructor with a {@link String} id.
 	 * 
-	 * @param name
-	 *            : the name of the {@link Body}.
+	 * @param id
+	 *            : the id of the {@link Body}.
 	 */
-	public AbstractAppearance(String name) {
-		this.name = name;
+	public AbstractAppearance(String id) {
+		this.id = id;
 	}
 
 	@Override
-	public String getName() {
-		return this.name;
+	public String getId() {
+		return this.id;
 	}
 
 	@Override
-	public void setName(String bodyName) {
-		this.name = bodyName;
+	public void setId(String id) {
+		this.id = (id != null) ? id : Identifiable.NULLID;
 	}
 
 	@Override
 	public String represent() {
-		return this.getClass().getSimpleName() + REPSEP + this.name;
+		return this.getClass().getSimpleName() + REPSEP + this.id;
 	}
 
 	@Override
@@ -54,7 +55,7 @@ public abstract class AbstractAppearance implements Appearance {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((name == null) ? 0 : name.hashCode());
+		result = prime * result + ((id == null) ? 0 : id.hashCode());
 		return result;
 	}
 
@@ -67,10 +68,10 @@ public abstract class AbstractAppearance implements Appearance {
 		if (getClass() != obj.getClass())
 			return false;
 		AbstractAppearance other = (AbstractAppearance) obj;
-		if (name == null) {
-			if (other.name != null)
+		if (id == null) {
+			if (other.id != null)
 				return false;
-		} else if (!name.equals(other.name))
+		} else if (!id.equals(other.id))
 			return false;
 		return true;
 	}

@@ -87,7 +87,7 @@ public abstract class AbstractEnvironment implements Environment, Container {
 		this.physics = physics;
 		this.bounded = bounded;
 		this.appearance = appearance;
-		this.id = this.appearance.getName(); // TODO should this be true?
+		this.id = this.appearance.getId(); // TODO should this be true?
 		this.physics.setEnvironment(this);
 		this.subscriber = subscriber;
 		this.subscriber.setPossibleActions(possibleActions);

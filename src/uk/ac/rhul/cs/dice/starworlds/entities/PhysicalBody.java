@@ -4,7 +4,6 @@ import java.util.Objects;
 
 import uk.ac.rhul.cs.dice.starworlds.appearances.Appearance;
 import uk.ac.rhul.cs.dice.starworlds.appearances.PhysicalBodyAppearance;
-import uk.ac.rhul.cs.dice.starworlds.initialisation.IDFactory;
 
 /**
  * The most generic class for physical bodies implementing {@link Body}. It
@@ -21,15 +20,13 @@ import uk.ac.rhul.cs.dice.starworlds.initialisation.IDFactory;
  */
 public abstract class PhysicalBody implements Body {
 
-	private String id;
-	private Appearance appearance;
+	private PhysicalBodyAppearance appearance;
 
 	/**
 	 * Constructor.
 	 */
 	public PhysicalBody() {
-		this.id = IDFactory.getInstance().getNewID();
-		this.appearance = new PhysicalBodyAppearance(this);
+		this.appearance = new PhysicalBodyAppearance(this.getClass());
 	}
 
 	/**
@@ -38,7 +35,7 @@ public abstract class PhysicalBody implements Body {
 	 * @param appearance
 	 *            : the external {@link Appearance} of the {@link PhysicalBody}.
 	 */
-	public PhysicalBody(Appearance appearance) {
+	public PhysicalBody(PhysicalBodyAppearance appearance) {
 		this.appearance = appearance;
 	}
 
@@ -52,13 +49,13 @@ public abstract class PhysicalBody implements Body {
 	}
 
 	/**
-	 * Sets the external {@link Appearance} of the {@link PhysicalBody}.
+	 * Sets the {@link Appearance} of the {@link PhysicalBody}.
 	 * 
-	 * @param externalAppearance
-	 *            : the external {@link Appearance} of the {@link PhysicalBody}.
+	 * @param appearance
+	 *            : the {@link Appearance} of the {@link PhysicalBody}.
 	 */
-	public void setExternalAppearance(Appearance externalAppearance) {
-		this.appearance = externalAppearance;
+	public void setAppearance(PhysicalBodyAppearance appearance) {
+		this.appearance = appearance;
 	}
 
 	@Override
@@ -66,7 +63,7 @@ public abstract class PhysicalBody implements Body {
 		if (obj != null) {
 			if (obj instanceof PhysicalBody) {
 				PhysicalBody b = (PhysicalBody) obj;
-				return this.id.equals(b.getId());
+				return this.appearance.getId().equals(b.getId());
 			}
 		}
 		return false;
@@ -74,20 +71,19 @@ public abstract class PhysicalBody implements Body {
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(id);
+		return Objects.hash(appearance.getId());
 	}
 
 	@Override
 	public void setId(String id) {
-		this.id = (id != null) ? id : "NULLID";
 		if (this.appearance != null) {
-			this.appearance.setName(this.id);
+			this.appearance.setId(id);
 		}
 	}
 
 	@Override
 	public String getId() {
-		return this.id;
+		return this.appearance.getId();
 	}
 
 	@Override

@@ -1,6 +1,6 @@
 package uk.ac.rhul.cs.dice.starworlds.entities;
 
-import uk.ac.rhul.cs.dice.starworlds.appearances.Appearance;
+import uk.ac.rhul.cs.dice.starworlds.appearances.PhysicalBodyAppearance;
 
 /**
  * A subclass of {@link PhysicalBody} which implements {@link ObjectInterface}.<br/>
@@ -21,7 +21,7 @@ public abstract class PassiveBody extends PhysicalBody {
 	 * @param externalAppearance
 	 *            : the {@link PassiveBodyAppearance}.
 	 */
-	public PassiveBody(Appearance appearance) {
+	public PassiveBody(PhysicalBodyAppearance appearance) {
 		super(appearance);
 	}
 }

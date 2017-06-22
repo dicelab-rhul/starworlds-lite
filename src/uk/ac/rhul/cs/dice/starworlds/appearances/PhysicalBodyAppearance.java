@@ -1,6 +1,7 @@
 package uk.ac.rhul.cs.dice.starworlds.appearances;
 
 import uk.ac.rhul.cs.dice.starworlds.entities.PhysicalBody;
+import uk.ac.rhul.cs.dice.starworlds.initialisation.IDFactory;
 
 public class PhysicalBodyAppearance extends AbstractAppearance {
 
@@ -13,9 +14,9 @@ public class PhysicalBodyAppearance extends AbstractAppearance {
 		this.body = body;
 	}
 
-	public PhysicalBodyAppearance(PhysicalBody body) {
-		super(body.getId());
-		this.body = body.getClass();
+	public PhysicalBodyAppearance(Class<? extends PhysicalBody> body) {
+		super(IDFactory.getInstance().getNewID());
+		this.body = body;
 	}
 
 	public Class<? extends PhysicalBody> getBody() {

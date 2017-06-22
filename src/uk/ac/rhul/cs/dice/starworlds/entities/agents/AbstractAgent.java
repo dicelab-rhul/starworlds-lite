@@ -6,18 +6,16 @@ import java.util.List;
 import uk.ac.rhul.cs.dice.starworlds.actions.Action;
 import uk.ac.rhul.cs.dice.starworlds.actions.MentalAction;
 import uk.ac.rhul.cs.dice.starworlds.actions.environmental.AbstractEnvironmentalAction;
-import uk.ac.rhul.cs.dice.starworlds.appearances.AbstractAppearance;
+import uk.ac.rhul.cs.dice.starworlds.appearances.ActiveBodyAppearance;
 import uk.ac.rhul.cs.dice.starworlds.entities.ActiveBody;
 import uk.ac.rhul.cs.dice.starworlds.entities.Agent;
-import uk.ac.rhul.cs.dice.starworlds.entities.agents.components.AbstractSensor;
 import uk.ac.rhul.cs.dice.starworlds.entities.agents.components.Actuator;
 import uk.ac.rhul.cs.dice.starworlds.entities.agents.components.Sensor;
-import uk.ac.rhul.cs.dice.starworlds.environment.base.AbstractEnvironment;
 import uk.ac.rhul.cs.dice.starworlds.perception.Perception;
 
 /**
- * A subclass of {@link ActiveBody} implementing the {@link Agent} interface. It
- * contains a {@link Brain} and a {@link Mind}.<br/>
+ * A subclass of {@link ActiveBody} implementing the {@link Agent} interface.
+ * {@link Mind}.<br/>
  * <br/>
  * 
  * Known direct subclasses: {@link AutonomousAgent}, {@link Avatar}.
@@ -40,32 +38,28 @@ public abstract class AbstractAgent extends ActiveBody implements Agent {
 	 *            : a {@link List} of {@link Actuator} instances.
 	 * @param mind
 	 *            : the {@link AbstractAgentMind}.
-	 * @param brain
-	 *            : the {@link AbstractAgentBrain}.
 	 * 
 	 */
 	public AbstractAgent(List<Sensor> sensors, List<Actuator> actuators,
 			AbstractAgentMind mind) {
-		super(sensors, actuators);
+		super(null, sensors, actuators);
 		init(mind);
+		this.setAppearance(new ActiveBodyAppearance(this));
 	}
 
 	/**
 	 * Constructor.
 	 * 
 	 * @param appearance
-	 *            : the {@link AbstractAgentAppearance}.
+	 *            : the {@link ActiveBodyAppearance}.
 	 * @param sensors
 	 *            : a {@link List} of {@link Sensor} instances.
 	 * @param actuators
 	 *            : a {@link List} of {@link Actuator} instances.
 	 * @param mind
 	 *            : the {@link AbstractAgentMind}.
-	 * @param brain
-	 *            : the {@link AbstractAgentBrain}.
-	 * 
 	 */
-	public AbstractAgent(AbstractAppearance appearance, List<Sensor> sensors,
+	public AbstractAgent(ActiveBodyAppearance appearance, List<Sensor> sensors,
 			List<Actuator> actuators, AbstractAgentMind mind) {
 		super(appearance, sensors, actuators);
 		init(mind);

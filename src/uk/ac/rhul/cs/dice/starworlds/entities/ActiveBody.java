@@ -8,7 +8,6 @@ import java.util.Set;
 
 import uk.ac.rhul.cs.dice.starworlds.actions.environmental.AbstractEnvironmentalAction;
 import uk.ac.rhul.cs.dice.starworlds.actions.environmental.EnvironmentalAction;
-import uk.ac.rhul.cs.dice.starworlds.appearances.AbstractAppearance;
 import uk.ac.rhul.cs.dice.starworlds.appearances.ActiveBodyAppearance;
 import uk.ac.rhul.cs.dice.starworlds.appearances.Appearance;
 import uk.ac.rhul.cs.dice.starworlds.entities.agents.AbstractAgent;
@@ -61,22 +60,22 @@ public abstract class ActiveBody extends PhysicalBody implements Actor {
 	 *            : a {@link List} of {@link Actuator} instances.
 	 */
 	public ActiveBody(List<Sensor> sensors, List<Actuator> actuators) {
-		super();
+		super(null);
 		init(sensors, actuators);
-		this.setExternalAppearance(new ActiveBodyAppearance(this));
+		this.setAppearance(new ActiveBodyAppearance(this));
 	}
 
 	/**
 	 * Constructor.
 	 * 
 	 * @param appearance
-	 *            : the {@link AbstractAppearance} of the {@link ActiveBody}.
+	 *            : the {@link Appearance} of the {@link ActiveBody}.
 	 * @param sensors
 	 *            : a {@link List} of {@link Sensor} instances.
 	 * @param actuators
 	 *            : a {@link List} of {@link Actuator} instances.
 	 */
-	public ActiveBody(AbstractAppearance appearance, List<Sensor> sensors,
+	public ActiveBody(ActiveBodyAppearance appearance, List<Sensor> sensors,
 			List<Actuator> actuators) {
 		super(appearance);
 		init(sensors, actuators);
@@ -156,7 +155,6 @@ public abstract class ActiveBody extends PhysicalBody implements Actor {
 	 */
 	public void addActuator(Actuator actuator) {
 		actuator.setBody(this);
-		actuator.setId(this.getId() + ":" + actuators.size());
 		this.actuators.add(actuator);
 	}
 

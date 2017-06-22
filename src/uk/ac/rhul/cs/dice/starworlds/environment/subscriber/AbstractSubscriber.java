@@ -134,7 +134,7 @@ public abstract class AbstractSubscriber {
 	public Map<Class<? extends AbstractPerception>, Set<AbstractSensor>> findSensors(
 			ActiveBodyAppearance body, AbstractEnvironmentalAction action) {
 		Map<Class<? extends AbstractSensor>, AbstractSensor> sensormap = subscribedSensors
-				.get(body.getName());
+				.get(body.getId());
 		Map<Class<? extends AbstractPerception>, Set<AbstractSensor>> sensors = new HashMap<>();
 		actionPerceptions.get(action.getClass()).forEach(
 				(Class<? extends AbstractPerception> p) -> {

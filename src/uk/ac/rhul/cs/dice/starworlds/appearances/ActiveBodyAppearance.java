@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.Collections;
 
 import uk.ac.rhul.cs.dice.starworlds.entities.ActiveBody;
+import uk.ac.rhul.cs.dice.starworlds.entities.PhysicalBody;
 import uk.ac.rhul.cs.dice.starworlds.entities.agents.components.Actuator;
 import uk.ac.rhul.cs.dice.starworlds.entities.agents.components.Sensor;
 
@@ -15,15 +16,25 @@ public class ActiveBodyAppearance extends PhysicalBodyAppearance {
 	private Collection<Class<? extends Sensor>> sensors;
 	private Collection<Class<? extends Actuator>> actuators;
 
+	public ActiveBodyAppearance(String id, Class<? extends PhysicalBody> body,
+			Collection<Sensor> sensors, Collection<Actuator> actuators) {
+		super(id, body);
+		init(sensors, actuators);
+	}
+
 	public ActiveBodyAppearance(ActiveBody body) {
-		super(body);
-		actuators = new ArrayList<>();
-		sensors = new ArrayList<>();
-		for (Actuator a : body.getActuators()) {
-			actuators.add(a.getClass());
+		super(body.getClass());
+		init(body.getSensors(), body.getActuators());
+	}
+
+	private void init(Collection<Sensor> sensors, Collection<Actuator> actuators) {
+		this.actuators = new ArrayList<>();
+		this.sensors = new ArrayList<>();
+		for (Actuator a : actuators) {
+			this.actuators.add(a.getClass());
 		}
-		for (Sensor s : body.getSensors()) {
-			sensors.add(s.getClass());
+		for (Sensor s : sensors) {
+			this.sensors.add(s.getClass());
 		}
 	}
 

@@ -4,7 +4,11 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import uk.ac.rhul.cs.dice.starworlds.actions.Action;
+import uk.ac.rhul.cs.dice.starworlds.entities.Agent;
+import uk.ac.rhul.cs.dice.starworlds.entities.agents.Mind;
 import uk.ac.rhul.cs.dice.starworlds.environment.base.AbstractConnectedEnvironment;
+import uk.ac.rhul.cs.dice.starworlds.environment.base.interfaces.Environment;
 import uk.ac.rhul.cs.dice.starworlds.environment.inet.INetEnvironmentConnection;
 import uk.ac.rhul.cs.dice.starworlds.environment.physics.AbstractConnectedPhysics;
 import uk.ac.rhul.cs.dice.starworlds.environment.physics.time.RemoteSynchroniser.SyncPoint;
@@ -39,8 +43,7 @@ public class LocalSynchroniser implements Synchroniser {
 
 	public RemoteSynchroniser addRemoteSynchroniser(
 			INetEnvironmentConnection remoteEnvironment) {
-		RemoteSynchroniser sync = new RemoteSynchroniser(
-				environment.getConnectedEnvironmentManager(), remoteEnvironment);
+		RemoteSynchroniser sync = new RemoteSynchroniser(remoteEnvironment);
 		remoteSynchronisers.add(sync);
 		return sync;
 	}
@@ -59,6 +62,13 @@ public class LocalSynchroniser implements Synchroniser {
 		}
 	}
 
+	/**
+	 * Calls the {@link Agent#run()} method for all {@link Agent}s in the
+	 * system. Each {@link Agent} performs its {@link Mind#cycle(Object...)
+	 * cycle(Object...)} procedure here. Calls to sub {@link Environment}
+	 * {@link LocalSynchroniser}s are made recursively down the hierarchy, with
+	 * the lower {@link LocalSynchroniser}s executing first.
+	 */
 	@Override
 	public void runagents() {
 		// TODO multithreaded
@@ -72,6 +82,12 @@ public class LocalSynchroniser implements Synchroniser {
 		wait(syncWithRemoteEnvironments(SyncPoint.RUNAGENTS));
 	}
 
+	/**
+	 * Propagates {@link Action}s between {@link Environment}s local or remote.
+	 * Calls to sub {@link Environment} {@link LocalSynchroniser}s are made
+	 * recursively down the hierarchy, with the lower {@link LocalSynchroniser}s
+	 * executing first.
+	 */
 	@Override
 	public void propagateActions() {
 		// TODO multithreaded
@@ -85,6 +101,12 @@ public class LocalSynchroniser implements Synchroniser {
 		wait(syncWithRemoteEnvironments(SyncPoint.PROPAGATEACTIONS));
 	}
 
+	/**
+	 * Executes {@link Action}s that have been received by all
+	 * {@link Environment} after actions have been propagated. Calls to sub
+	 * {@link Environment} {@link LocalSynchroniser}s are made recursively down
+	 * the hierarchy, with the lower {@link LocalSynchroniser}s executing first.
+	 */
 	@Override
 	public void executeactions() {
 		// TODO multithreaded

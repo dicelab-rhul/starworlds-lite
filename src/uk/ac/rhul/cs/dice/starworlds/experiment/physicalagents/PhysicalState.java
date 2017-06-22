@@ -12,7 +12,6 @@ import uk.ac.rhul.cs.dice.starworlds.entities.ActiveBody;
 import uk.ac.rhul.cs.dice.starworlds.entities.PassiveBody;
 import uk.ac.rhul.cs.dice.starworlds.entities.agents.AbstractAgent;
 import uk.ac.rhul.cs.dice.starworlds.environment.base.AbstractState;
-import uk.ac.rhul.cs.dice.starworlds.environment.physics.AbstractPhysics;
 import uk.ac.rhul.cs.dice.starworlds.utils.Pair;
 
 public class PhysicalState extends AbstractState {
@@ -87,7 +86,7 @@ public class PhysicalState extends AbstractState {
 							.getFirst()) * 3) + pair.getSecond() * 2;
 					int end = start + 3;
 					builder.replace(start, end, "["
-							+ inversegrid.get(pair).getName() + "]");
+							+ inversegrid.get(pair).getId() + "]");
 					System.out.println(pair);
 				});
 		System.out.println(builder.toString());
