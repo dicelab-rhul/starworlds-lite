@@ -8,6 +8,11 @@ public class PhysicalBodyAppearance extends AbstractAppearance {
 
 	private Class<? extends PhysicalBody> body;
 
+	public PhysicalBodyAppearance(String id, Class<? extends PhysicalBody> body) {
+		super(id);
+		this.body = body;
+	}
+
 	public PhysicalBodyAppearance(PhysicalBody body) {
 		super(body.getId());
 		this.body = body.getClass();

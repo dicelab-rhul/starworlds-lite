@@ -2,12 +2,9 @@ package uk.ac.rhul.cs.dice.starworlds.parser;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-
-import org.json.JSONException;
 
 import uk.ac.rhul.cs.dice.starworlds.actions.Action;
 import uk.ac.rhul.cs.dice.starworlds.actions.environmental.PhysicalAction;
@@ -135,6 +132,10 @@ public final class ReflectiveMethodStore {
 
 	private static Map<Class<? extends Action>, Map<String, Method>> actionmethods = new HashMap<>();
 
+	public static Method getActionMethod(Action action, String methodname) {
+		return actionmethods.get(action.getClass()).get(methodname);
+	}
+
 	/**
 	 * This method should be called during the parse of the system configuration
 	 * to ensure that the required methods are present in an application.
@@ -156,7 +157,8 @@ public final class ReflectiveMethodStore {
 					}
 				}
 			}
-			throw new IllegalConfigurationException(m, physics);
+			throw new IllegalConfigurationException(PERCEIVABLE, boolean.class,
+					PERCEIVABLEPARAMS, physics);
 		}
 	}
 
@@ -184,6 +186,7 @@ public final class ReflectiveMethodStore {
 					COMPAREISPOSSIBLE, methodmap);
 			doActionMethod(physics, VERIFY, ACTIONPARAMS, COMPAREVERIFY,
 					methodmap);
+			System.out.println(actionmethods);
 		}
 	}
 
@@ -196,13 +199,14 @@ public final class ReflectiveMethodStore {
 				return;
 			}
 		}
-		throw new IllegalConfigurationException(m, physics);
+		throw new IllegalConfigurationException(name,
+				compare.getGenericReturnType(), params, physics);
 	}
 
 	private static boolean compareReturnTypes(Method submethod,
 			Method supermethod) {
 		Class<?> r1 = submethod.getReturnType();
-		Class<?> r2 = submethod.getReturnType();
+		Class<?> r2 = supermethod.getReturnType();
 		if (r1.equals(Void.TYPE)) {
 			return r2.equals(Void.TYPE);
 		}
@@ -244,10 +248,20 @@ public final class ReflectiveMethodStore {
 
 	private static String methodToString(Class<?> getFrom, String name,
 			Class<?>[] params) {
-		StringBuilder b = new StringBuilder(getFrom.getSimpleName() + " -> "
+		StringBuilder b = new StringBuilder(getFrom.getSimpleName() + " : "
 				+ name + "(");
 		for (int i = 0; i < params.length - 1; i++) {
-			b.append(params[i].getSimpleName() + ",");
+			b.append(params[i] + ",");
+		}
+		b.append(params[params.length - 1] + ")");
+		return b.toString();
+	}
+
+	private static String methodToString(Type returntype, String name,
+			Class<?>[] params) {
+		StringBuilder b = new StringBuilder(returntype + " " + name + "(");
+		for (int i = 0; i < params.length - 1; i++) {
+			b.append(params[i] + ",");
 		}
 		b.append(params[params.length - 1] + ")");
 		return b.toString();
@@ -257,9 +271,12 @@ public final class ReflectiveMethodStore {
 
 		private static final long serialVersionUID = -340309113871139773L;
 
-		public IllegalConfigurationException(Method method, Class<?> missingFrom) {
+		public IllegalConfigurationException(String method, Type returntype,
+				Class<?>[] params, Class<?> missingFrom) {
 			super(System.lineSeparator() + "The method: "
-					+ System.lineSeparator() + method + System.lineSeparator()
+					+ System.lineSeparator()
+					+ methodToString(returntype, method, params)
+					+ System.lineSeparator()
 					+ "is required and is missing from: " + missingFrom);
 		}
 

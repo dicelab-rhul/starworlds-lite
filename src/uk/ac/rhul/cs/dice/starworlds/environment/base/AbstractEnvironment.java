@@ -20,6 +20,8 @@ import uk.ac.rhul.cs.dice.starworlds.environment.base.interfaces.State;
 import uk.ac.rhul.cs.dice.starworlds.environment.physics.AbstractPhysics;
 import uk.ac.rhul.cs.dice.starworlds.environment.physics.Physics;
 import uk.ac.rhul.cs.dice.starworlds.environment.subscriber.AbstractSubscriber;
+import uk.ac.rhul.cs.dice.starworlds.environment.subscriber.Subscriber;
+import uk.ac.rhul.cs.dice.starworlds.initialisation.IDFactory;
 import uk.ac.rhul.cs.dice.starworlds.parser.ReflectiveMethodStore;
 import uk.ac.rhul.cs.dice.starworlds.perception.AbstractPerception;
 
@@ -39,6 +41,15 @@ public abstract class AbstractEnvironment implements Environment, Container {
 	protected Boolean bounded;
 	protected EnvironmentAppearance appearance;
 	protected AbstractSubscriber subscriber;
+
+	public AbstractEnvironment(
+			AbstractState state,
+			AbstractPhysics physics,
+			Collection<Class<? extends AbstractEnvironmentalAction>> possibleActions) {
+		init(new Subscriber(), state, physics, false,
+				new EnvironmentAppearance(IDFactory.getInstance().getNewID(),
+						false, true), possibleActions);
+	}
 
 	/**
 	 * Constructor.

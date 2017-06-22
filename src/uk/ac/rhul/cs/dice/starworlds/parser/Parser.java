@@ -266,13 +266,28 @@ public class Parser {
 		} else {
 			// use the local constructor.
 			try {
-				ArrayList<AbstractEnvironment> subs = new ArrayList<>();
-				subenvs.forEach((n) -> subs.add(n.getValue()));
-				current.setValue((AbstractEnvironment) environmentclass
-						.getConstructor(Collection.class, AbstractState.class,
-								AbstractConnectedPhysics.class,
-								Collection.class).newInstance(subs, state,
-								physics, possibleactions));
+				if (AbstractConnectedEnvironment.class
+						.isAssignableFrom(environmentclass)) {
+					ArrayList<AbstractEnvironment> subs = new ArrayList<>();
+					subenvs.forEach((n) -> subs.add(n.getValue()));
+					current.setValue((AbstractEnvironment) environmentclass
+							.getConstructor(Collection.class,
+									AbstractState.class,
+									AbstractConnectedPhysics.class,
+									Collection.class).newInstance(subs, state,
+									physics, possibleactions));
+				} else if (AbstractEnvironment.class
+						.isAssignableFrom(environmentclass)) {
+					if (subenvs.isEmpty()) {
+						current.setValue((AbstractEnvironment) environmentclass
+								.getConstructor(AbstractState.class,
+										AbstractPhysics.class, Collection.class)
+								.newInstance(state, physics, possibleactions));
+					} else {
+						throw new ReflectiveMethodStore.IllegalConfigurationException(
+								"Error: Provided an atomic ambient with sub ambients.");
+					}
+				}
 				return current;
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -377,8 +392,12 @@ public class Parser {
 			Visitor<AbstractEnvironment> {
 		@Override
 		public void visit(Acceptor<AbstractEnvironment> acceptor) {
-			((AbstractConnectedEnvironment) ((Node<AbstractEnvironment>) acceptor)
-					.getValue()).initialConnect();
+			if (AbstractConnectedEnvironment.class
+					.isAssignableFrom(((Node<AbstractEnvironment>) acceptor)
+							.getValue().getClass())) {
+				((AbstractConnectedEnvironment) ((Node<AbstractEnvironment>) acceptor)
+						.getValue()).initialConnect();
+			}
 		}
 	}
 

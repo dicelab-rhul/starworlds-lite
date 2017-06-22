@@ -1,7 +1,5 @@
 package uk.ac.rhul.cs.dice.starworlds.environment.base.interfaces;
 
-import java.util.Collection;
-
 import uk.ac.rhul.cs.dice.starworlds.actions.Action;
 import uk.ac.rhul.cs.dice.starworlds.actions.environmental.AbstractEnvironmentalAction;
 import uk.ac.rhul.cs.dice.starworlds.appearances.Appearance;

@@ -6,7 +6,6 @@ import uk.ac.rhul.cs.dice.starworlds.entities.ActiveBody;
 import uk.ac.rhul.cs.dice.starworlds.entities.PassiveBody;
 import uk.ac.rhul.cs.dice.starworlds.entities.agents.AbstractAgent;
 import uk.ac.rhul.cs.dice.starworlds.environment.base.AbstractState;
-import uk.ac.rhul.cs.dice.starworlds.environment.physics.AbstractPhysics;
 
 public class DefaultState extends AbstractState {
 

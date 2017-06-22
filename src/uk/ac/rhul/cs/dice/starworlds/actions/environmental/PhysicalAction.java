@@ -1,8 +1,6 @@
 package uk.ac.rhul.cs.dice.starworlds.actions.environmental;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
-import java.util.Set;
 
 import uk.ac.rhul.cs.dice.starworlds.environment.base.interfaces.State;
 import uk.ac.rhul.cs.dice.starworlds.environment.physics.Physics;
@@ -24,29 +22,40 @@ public abstract class PhysicalAction extends AbstractEnvironmentalAction {
 	private static final long serialVersionUID = -2173942461694544160L;
 
 	@SuppressWarnings("unchecked")
-	public Collection<AbstractPerception<?>> getAgentPerceptions(
-			Physics physics, State context) {
-		try {
-			return (Collection<AbstractPerception<?>>) physics
-					.getClass()
-					.getMethod(ReflectiveMethodStore.GETAGENTPERCEPTIONS,
-							this.getClass(), State.class)
-					.invoke(physics, this, context);
-		} catch (IllegalAccessException | IllegalArgumentException
-				| InvocationTargetException | NoSuchMethodException
-				| SecurityException e) {
-			e.printStackTrace();
-			return null;
-		}
+	public final Collection<AbstractPerception<?>> getAgentPerceptions(
+			Physics physics, State context) throws Exception {
+		return (Collection<AbstractPerception<?>>) ReflectiveMethodStore
+				.getActionMethod(this,
+						ReflectiveMethodStore.GETAGENTPERCEPTIONS).invoke(
+						physics, this, context);
 	}
 
-	public abstract Set<AbstractPerception<?>> getOtherPerceptions(
-			Physics physics, State context);
+	@SuppressWarnings("unchecked")
+	public final Collection<AbstractPerception<?>> getOtherPerceptions(
+			Physics physics, State context) throws Exception {
+		return (Collection<AbstractPerception<?>>) ReflectiveMethodStore
+				.getActionMethod(this,
+						ReflectiveMethodStore.GETOTHERPERCEPTIONS).invoke(
+						physics, this, context);
+	}
 
-	public abstract boolean perform(Physics physics, State context);
+	public final boolean perform(Physics physics, State context)
+			throws Exception {
+		return (boolean) ReflectiveMethodStore.getActionMethod(this,
+				ReflectiveMethodStore.PERFORM).invoke(physics, this, context);
+	}
 
-	public abstract boolean isPossible(Physics physics, State context);
+	public final boolean isPossible(Physics physics, State context)
+			throws Exception {
+		return (boolean) ReflectiveMethodStore.getActionMethod(this,
+				ReflectiveMethodStore.ISPOSSIBLE)
+				.invoke(physics, this, context);
+	}
 
-	public abstract boolean verify(Physics physics, State context);
+	public final boolean verify(Physics physics, State context)
+			throws Exception {
+		return (boolean) ReflectiveMethodStore.getActionMethod(this,
+				ReflectiveMethodStore.VERIFY).invoke(physics, this, context);
+	}
 
 }
