@@ -25,11 +25,12 @@ import uk.ac.rhul.cs.dice.starworlds.entities.PhysicalBody;
 import uk.ac.rhul.cs.dice.starworlds.entities.agents.AbstractAgent;
 import uk.ac.rhul.cs.dice.starworlds.entities.agents.components.Actuator;
 import uk.ac.rhul.cs.dice.starworlds.entities.agents.components.Sensor;
-import uk.ac.rhul.cs.dice.starworlds.environment.base.interfaces.State;
+import uk.ac.rhul.cs.dice.starworlds.environment.base.interfaces.Ambient;
 import uk.ac.rhul.cs.dice.starworlds.environment.physics.Physics;
+import uk.ac.rhul.cs.dice.starworlds.parser.DefaultConstructorStore.DefaultConstructor;
 import uk.ac.rhul.cs.dice.starworlds.utils.Pair;
 
-public abstract class AbstractState implements State {
+public abstract class AbstractAmbient implements Ambient {
 
 	private final static String AGENTSKEY = "AGENTS",
 			ACTIVEBODIESKEY = "ACTIVEBODIES",
@@ -47,7 +48,8 @@ public abstract class AbstractState implements State {
 	protected Map<String, ActiveBody> activeBodies;
 	protected Map<String, PassiveBody> passiveBodies;
 
-	public AbstractState(Set<AbstractAgent> agents,
+	@DefaultConstructor
+	public AbstractAmbient(Set<AbstractAgent> agents,
 			Set<ActiveBody> activeBodies, Set<PassiveBody> passiveBodies) {
 		this.agents = (agents != null) ? setToMap(agents) : new HashMap<>();
 		this.activeBodies = (activeBodies != null) ? setToMap(activeBodies)
@@ -66,7 +68,7 @@ public abstract class AbstractState implements State {
 	 * Initialises the default environment variables, namely, {@link Agent}s,
 	 * {@link ActiveBody}s, {@link PassiveBody}s. This method should be
 	 * Overridden if a user wishes to add more environment variables. When
-	 * adding more use the {@link State#addEnvironmentVariable(String, Object)}
+	 * adding more use the {@link Ambient#addEnvironmentVariable(String, Object)}
 	 * method.
 	 */
 	protected void initialiseEnvironmentVariables(Set<AbstractAgent> agents,

@@ -4,7 +4,7 @@ import java.util.Collection;
 
 import uk.ac.rhul.cs.dice.starworlds.actions.environmental.AbstractEnvironmentalAction;
 import uk.ac.rhul.cs.dice.starworlds.environment.base.AbstractConnectedEnvironment;
-import uk.ac.rhul.cs.dice.starworlds.environment.base.AbstractState;
+import uk.ac.rhul.cs.dice.starworlds.environment.base.AbstractAmbient;
 import uk.ac.rhul.cs.dice.starworlds.environment.concrete.DefaultUniverse;
 import uk.ac.rhul.cs.dice.starworlds.environment.physics.AbstractConnectedPhysics;
 
@@ -14,10 +14,10 @@ public class PhysicalEnvironment extends DefaultUniverse {
 
 	public PhysicalEnvironment(
 			Collection<AbstractConnectedEnvironment> subenvironments,
-			AbstractState state,
+			AbstractAmbient state,
 			AbstractConnectedPhysics physics,
 			Collection<Class<? extends AbstractEnvironmentalAction>> possibleActions) {
-		super(subenvironments, state, physics, possibleActions);
+		super(null, subenvironments, state, physics, possibleActions);
 	}
 
 	@Override

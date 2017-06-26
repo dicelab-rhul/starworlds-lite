@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.net.SocketAddress;
 import java.net.UnknownHostException;
 import java.util.Observable;
-import java.util.Observer;
 import java.util.Set;
 
 import uk.ac.rhul.cs.dice.starworlds.environment.base.interfaces.Universe;
@@ -25,8 +24,7 @@ import uk.ac.rhul.cs.dice.starworlds.utils.inet.INetSlave;
  * @author Ben
  *
  */
-public abstract class ViewControllerServer extends AbstractViewController
-		implements Observer {
+public abstract class ViewControllerServer extends AbstractViewController {
 
 	private INetServer server;
 

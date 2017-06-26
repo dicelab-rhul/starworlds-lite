@@ -4,7 +4,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import uk.ac.rhul.cs.dice.starworlds.appearances.ActiveBodyAppearance;
-import uk.ac.rhul.cs.dice.starworlds.environment.base.interfaces.State;
+import uk.ac.rhul.cs.dice.starworlds.environment.base.interfaces.Ambient;
 import uk.ac.rhul.cs.dice.starworlds.environment.physics.AbstractConnectedPhysics;
 import uk.ac.rhul.cs.dice.starworlds.perception.AbstractPerception;
 import uk.ac.rhul.cs.dice.starworlds.utils.Pair;
@@ -16,7 +16,7 @@ public class PhysicalPhysics extends AbstractConnectedPhysics {
 	}
 
 	public Set<AbstractPerception<?>> getAgentPerceptions(MoveAction action,
-			State context) {
+			Ambient context) {
 		// perceptions for the agent performing the action
 		Set<AbstractPerception<?>> perception = new HashSet<>();
 		perception.add(new MovePerception((ActiveBodyAppearance) action
@@ -25,7 +25,7 @@ public class PhysicalPhysics extends AbstractConnectedPhysics {
 	}
 
 	public Set<AbstractPerception<?>> getOtherPerceptions(MoveAction action,
-			State context) {
+			Ambient context) {
 		// perceptions for any other agents in range
 		Set<AbstractPerception<?>> perception = new HashSet<>();
 		perception.add(new MovePerception((ActiveBodyAppearance) action
@@ -33,7 +33,7 @@ public class PhysicalPhysics extends AbstractConnectedPhysics {
 		return perception;
 	}
 
-	public boolean perform(MoveAction action, State context) {
+	public boolean perform(MoveAction action, Ambient context) {
 		PhysicalState pcontext = (PhysicalState) context;
 		Pair<Integer, Integer> oldposition = pcontext.getGrid().get(
 				action.getActor());
@@ -46,7 +46,7 @@ public class PhysicalPhysics extends AbstractConnectedPhysics {
 		return true;
 	}
 
-	public boolean isPossible(MoveAction action, State context) {
+	public boolean isPossible(MoveAction action, Ambient context) {
 		PhysicalState pcontext = (PhysicalState) context;
 		Pair<Integer, Integer> result = this.addPosition(pcontext.getGrid()
 				.get(action.getActor()), action.getMoveTo());
@@ -54,7 +54,7 @@ public class PhysicalPhysics extends AbstractConnectedPhysics {
 				&& checkBounds(result, pcontext.getDimension());
 	}
 
-	public boolean verify(MoveAction action, State context) {
+	public boolean verify(MoveAction action, Ambient context) {
 		return true; // TODO
 	}
 
@@ -76,7 +76,7 @@ public class PhysicalPhysics extends AbstractConnectedPhysics {
 	}
 
 	public boolean perceivable(BadSeeingSensor sensor,
-			AbstractPerception<?> perception, State context) {
+			AbstractPerception<?> perception, Ambient context) {
 		if (super.perceivable(sensor, perception, context)) {
 			if (MovePerception.class.isAssignableFrom(perception.getClass())) {
 				MovePerception mp = (MovePerception) perception;

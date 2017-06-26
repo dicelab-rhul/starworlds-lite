@@ -8,28 +8,26 @@ import uk.ac.rhul.cs.dice.starworlds.actions.environmental.AbstractEnvironmental
 import uk.ac.rhul.cs.dice.starworlds.actions.environmental.CommunicationAction;
 import uk.ac.rhul.cs.dice.starworlds.actions.environmental.PhysicalAction;
 import uk.ac.rhul.cs.dice.starworlds.actions.environmental.SensingAction;
-import uk.ac.rhul.cs.dice.starworlds.appearances.ActiveBodyAppearance;
-import uk.ac.rhul.cs.dice.starworlds.appearances.Appearance;
 import uk.ac.rhul.cs.dice.starworlds.entities.ActiveBody;
 import uk.ac.rhul.cs.dice.starworlds.entities.PassiveBody;
 import uk.ac.rhul.cs.dice.starworlds.entities.agents.AbstractAgent;
-import uk.ac.rhul.cs.dice.starworlds.environment.base.AbstractState;
-import uk.ac.rhul.cs.dice.starworlds.environment.base.AbstractState.Filter;
+import uk.ac.rhul.cs.dice.starworlds.environment.base.AbstractAmbient;
+import uk.ac.rhul.cs.dice.starworlds.environment.base.AbstractAmbient.Filter;
 import uk.ac.rhul.cs.dice.starworlds.environment.physics.Physics;
 import uk.ac.rhul.cs.dice.starworlds.utils.Pair;
 
 /**
- * The interface for states.<br/>
+ * The interface for ambients.<br/>
  * <br/>
  * 
- * Known implementations: {@link AbstractState}.
+ * Known implementations: {@link AbstractAmbient}.
  * 
  * @author cloudstrife9999 a.k.a. Emanuele Uliana
  * @author Ben Wilkins
  * @author Kostas Stathis
  *
  */
-public interface State {
+public interface Ambient {
 
 	/**
 	 * This method should be called when some {@link SensingAction} is trying to

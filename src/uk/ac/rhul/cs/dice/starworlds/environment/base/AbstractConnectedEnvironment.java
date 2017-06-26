@@ -15,10 +15,10 @@ import uk.ac.rhul.cs.dice.starworlds.appearances.ActiveBodyAppearance;
 import uk.ac.rhul.cs.dice.starworlds.appearances.Appearance;
 import uk.ac.rhul.cs.dice.starworlds.appearances.EnvironmentAppearance;
 import uk.ac.rhul.cs.dice.starworlds.entities.agents.components.Sensor;
+import uk.ac.rhul.cs.dice.starworlds.environment.base.interfaces.Ambient;
 import uk.ac.rhul.cs.dice.starworlds.environment.base.interfaces.CommandMessage;
 import uk.ac.rhul.cs.dice.starworlds.environment.base.interfaces.Environment;
 import uk.ac.rhul.cs.dice.starworlds.environment.base.interfaces.Message;
-import uk.ac.rhul.cs.dice.starworlds.environment.base.interfaces.State;
 import uk.ac.rhul.cs.dice.starworlds.environment.inet.INetDefaultMessage;
 import uk.ac.rhul.cs.dice.starworlds.environment.physics.AbstractConnectedPhysics;
 import uk.ac.rhul.cs.dice.starworlds.environment.physics.Physics;
@@ -74,10 +74,8 @@ public abstract class AbstractConnectedEnvironment extends AbstractEnvironment {
 	 * @param neighbouringenvironments
 	 *            : the neighbouring-{@link Environment}s of this
 	 *            {@link Environment}
-	 * @param subscriber
-	 *            : used to manage {@link Sensor}s in the system.
-	 * @param state
-	 *            : a {@link State} instance.
+	 * @param ambient
+	 *            : a {@link Ambient} instance.
 	 * @param physics
 	 *            : the {@link Physics} of the environment.
 	 * @param bounded
@@ -89,13 +87,12 @@ public abstract class AbstractConnectedEnvironment extends AbstractEnvironment {
 	public AbstractConnectedEnvironment(
 			Collection<AbstractConnectedEnvironment> subenvironments,
 			Collection<AbstractConnectedEnvironment> neighbouringenvironments,
-			AbstractSubscriber subscriber,
-			AbstractState state,
+			AbstractAmbient ambient,
 			AbstractConnectedPhysics physics,
 			Boolean bounded,
 			EnvironmentAppearance appearance,
 			Collection<Class<? extends AbstractEnvironmentalAction>> possibleActions) {
-		super(subscriber, state, physics, bounded, appearance, possibleActions);
+		super(ambient, physics, bounded, appearance, possibleActions);
 		this.envconManager = new EnvironmentConnectionManager(this,
 				subenvironments, neighbouringenvironments);
 		physics.initSynchroniser(subenvironments, neighbouringenvironments);
@@ -110,10 +107,8 @@ public abstract class AbstractConnectedEnvironment extends AbstractEnvironment {
 	 * @param port
 	 *            : the port that any remote {@link Environment} will try to
 	 *            make connections to
-	 * @param subscriber
-	 *            : used to manage {@link Sensor}s in the system.
-	 * @param state
-	 *            : a {@link State} instance.
+	 * @param ambient
+	 *            : a {@link Ambient} instance.
 	 * @param physics
 	 *            : the {@link Physics} of the environment.
 	 * @param bounded
@@ -127,13 +122,12 @@ public abstract class AbstractConnectedEnvironment extends AbstractEnvironment {
 	 */
 	public AbstractConnectedEnvironment(
 			Integer port,
-			AbstractSubscriber subscriber,
-			AbstractState state,
+			AbstractAmbient ambient,
 			AbstractConnectedPhysics physics,
 			Boolean bounded,
 			EnvironmentAppearance appearance,
 			Collection<Class<? extends AbstractEnvironmentalAction>> possibleActions) {
-		super(subscriber, state, physics, bounded, appearance, possibleActions);
+		super(ambient, physics, bounded, appearance, possibleActions);
 		this.envconManager = new EnvironmentConnectionManager(this, port);
 		physics.initSynchroniser();
 		initialiseMessageProcessors();
@@ -157,8 +151,8 @@ public abstract class AbstractConnectedEnvironment extends AbstractEnvironment {
 	 *            make connections to
 	 * @param subscriber
 	 *            : used to manage {@link Sensor}s in the system.
-	 * @param state
-	 *            : a {@link State} instance.
+	 * @param ambient
+	 *            : a {@link Ambient} instance.
 	 * @param physics
 	 *            : the {@link Physics} of the environment.
 	 * @param bounded
@@ -173,12 +167,12 @@ public abstract class AbstractConnectedEnvironment extends AbstractEnvironment {
 			Collection<AbstractConnectedEnvironment> neighbouringenvironments,
 			Integer port,
 			AbstractSubscriber subscriber,
-			AbstractState state,
+			AbstractAmbient ambient,
 			AbstractConnectedPhysics physics,
 			Boolean bounded,
 			EnvironmentAppearance appearance,
 			Collection<Class<? extends AbstractEnvironmentalAction>> possibleActions) {
-		super(subscriber, state, physics, bounded, appearance, possibleActions);
+		super(ambient, physics, bounded, appearance, possibleActions);
 		this.envconManager = new EnvironmentConnectionManager(this,
 				superenvironment, subenvironments, neighbouringenvironments,
 				port);
@@ -220,8 +214,9 @@ public abstract class AbstractConnectedEnvironment extends AbstractEnvironment {
 			Message<?> message);
 
 	/**
-	 * This method is called after all environments have been created and are
-	 * connected. It should be used for setting parameters in the state etc.
+	 * This method is called after all {@link Environment}s have been created
+	 * and are connected. It should be used for setting parameters in the
+	 * {@link Ambient} etc.
 	 */
 	@Override
 	public void postInitialisation() {
@@ -252,9 +247,9 @@ public abstract class AbstractConnectedEnvironment extends AbstractEnvironment {
 	@Override
 	public void notify(AbstractEnvironmentalAction action,
 			ActiveBodyAppearance toNotify,
-			Collection<AbstractPerception<?>> perceptions, State context) {
-		System.out.println("   " + this + ":NOTIFY ATTEMPT: " + toNotify + " WITH: "
-				+ perceptions);
+			Collection<AbstractPerception<?>> perceptions, Ambient context) {
+		System.out.println("   " + this + ":NOTIFY ATTEMPT: " + toNotify
+				+ " WITH: " + perceptions);
 		if (!this.appearance.equals(action.getLocalEnvironment())) {
 			System.out.println("     Perception(s): " + System.lineSeparator()
 					+ "        " + perceptions + System.lineSeparator()
@@ -270,7 +265,7 @@ public abstract class AbstractConnectedEnvironment extends AbstractEnvironment {
 
 	public void notifyCommunication(AbstractEnvironmentalAction action,
 			ActiveBodyAppearance bodyappearance,
-			Collection<AbstractPerception<?>> perceptions, State context) {
+			Collection<AbstractPerception<?>> perceptions, Ambient context) {
 		super.notify(action, bodyappearance, perceptions, context);
 	}
 
@@ -332,9 +327,9 @@ public abstract class AbstractConnectedEnvironment extends AbstractEnvironment {
 	}
 
 	@Override
-	public synchronized void updateState(AbstractEnvironmentalAction action) {
+	public synchronized void updateAmbient(AbstractEnvironmentalAction action) {
 		action.setLocalEnvironment(this.getAppearance());
-		super.updateState(action);
+		super.updateAmbient(action);
 	}
 
 	public <T extends AbstractEnvironmentalAction> void sendAction(T action) {
@@ -387,10 +382,9 @@ public abstract class AbstractConnectedEnvironment extends AbstractEnvironment {
 			AbstractEnvironmentalAction action = (AbstractEnvironmentalAction) pair
 					.getFirst();
 			// TODO check type
-			AbstractConnectedEnvironment.this
-					.notify(action, action.getActor(),
-							(Collection<AbstractPerception<?>>) pair
-									.getSecond(), state);
+			AbstractConnectedEnvironment.this.notify(action, action.getActor(),
+					(Collection<AbstractPerception<?>>) pair.getSecond(),
+					ambient);
 		}
 	}
 
@@ -434,7 +428,7 @@ public abstract class AbstractConnectedEnvironment extends AbstractEnvironment {
 			actions.values()
 					.forEach(
 							(AbstractEnvironmentalAction a) -> AbstractConnectedEnvironment.super
-									.updateState(a));
+									.updateAmbient(a));
 			actions.clear();
 		}
 

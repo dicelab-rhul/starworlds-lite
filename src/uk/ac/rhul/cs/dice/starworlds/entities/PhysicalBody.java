@@ -76,9 +76,7 @@ public abstract class PhysicalBody implements Body {
 
 	@Override
 	public void setId(String id) {
-		if (this.appearance != null) {
-			this.appearance.setId(id);
-		}
+		this.appearance.setId(id);
 	}
 
 	@Override

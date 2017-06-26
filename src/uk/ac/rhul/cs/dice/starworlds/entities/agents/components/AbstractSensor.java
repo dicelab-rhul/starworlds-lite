@@ -7,6 +7,7 @@ import uk.ac.rhul.cs.dice.starworlds.actions.environmental.AbstractEnvironmental
 import uk.ac.rhul.cs.dice.starworlds.actions.environmental.SensingAction;
 import uk.ac.rhul.cs.dice.starworlds.entities.ActiveBody;
 import uk.ac.rhul.cs.dice.starworlds.environment.subscriber.AbstractSubscriber.SensiblePerception;
+import uk.ac.rhul.cs.dice.starworlds.parser.DefaultConstructorStore.DefaultConstructor;
 import uk.ac.rhul.cs.dice.starworlds.perception.AbstractPerception;
 import uk.ac.rhul.cs.dice.starworlds.perception.NullPerception;
 import uk.ac.rhul.cs.dice.starworlds.perception.Perception;
@@ -32,8 +33,9 @@ public abstract class AbstractSensor implements Sensor {
 	private ActiveBody body;
 
 	/**
-	 * AbstractSensor Constructor.
+	 * Constructor.
 	 */
+	@DefaultConstructor
 	public AbstractSensor() {
 		this.perceptions = new HashSet<>();
 	}
@@ -51,7 +53,7 @@ public abstract class AbstractSensor implements Sensor {
 
 	@Override
 	public void attemptActivePerceive(SensingAction action) {
-		body.getEnvironment().updateState(action);
+		body.getEnvironment().updateAmbient(action);
 	}
 
 	@Override

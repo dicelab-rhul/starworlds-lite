@@ -5,6 +5,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.lang.reflect.Array;
+import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -20,6 +22,9 @@ import org.json.JSONObject;
 
 import uk.ac.rhul.cs.dice.starworlds.actions.Action;
 import uk.ac.rhul.cs.dice.starworlds.actions.environmental.PhysicalAction;
+import uk.ac.rhul.cs.dice.starworlds.appearances.Appearance;
+import uk.ac.rhul.cs.dice.starworlds.appearances.PhysicalBodyAppearance;
+import uk.ac.rhul.cs.dice.starworlds.entities.PassiveBody;
 import uk.ac.rhul.cs.dice.starworlds.entities.agents.AbstractAgent;
 import uk.ac.rhul.cs.dice.starworlds.entities.agents.AbstractAgentMind;
 import uk.ac.rhul.cs.dice.starworlds.entities.agents.components.Actuator;
@@ -27,7 +32,7 @@ import uk.ac.rhul.cs.dice.starworlds.entities.agents.components.Sensor;
 import uk.ac.rhul.cs.dice.starworlds.environment.base.AbstractConnectedEnvironment;
 import uk.ac.rhul.cs.dice.starworlds.environment.base.AbstractConnectedEnvironment.AmbientRelation;
 import uk.ac.rhul.cs.dice.starworlds.environment.base.AbstractEnvironment;
-import uk.ac.rhul.cs.dice.starworlds.environment.base.AbstractState;
+import uk.ac.rhul.cs.dice.starworlds.environment.base.AbstractAmbient;
 import uk.ac.rhul.cs.dice.starworlds.environment.base.interfaces.Universe;
 import uk.ac.rhul.cs.dice.starworlds.environment.physics.AbstractConnectedPhysics;
 import uk.ac.rhul.cs.dice.starworlds.environment.physics.AbstractPhysics;
@@ -40,32 +45,48 @@ import uk.ac.rhul.cs.dice.starworlds.utils.datastructure.visitor.Visitor;
 
 public class Parser {
 
-	public static final String[] CLASSKEYS = new String[] { "@agentbodies",
+	public static final String[] CLASSKEYS = new String[] { "@agents",
 			"@agentminds", "@agentactuators", "@agentsensors",
-			"@possibleactions", "@environments", "@physics", "@states" };
-	public static final String AGENTBODIES = CLASSKEYS[0],
+			"@possibleactions", "@environments", "@physics", "@states",
+			"@activebodies", "@passivebodies", "@appearances" };
+	public static final String AGENTS = CLASSKEYS[0],
 			AGENTMINDS = CLASSKEYS[1], AGENTACTUATORS = CLASSKEYS[2],
 			AGENTSENSORS = CLASSKEYS[3], POSSIBLEACTIONS = CLASSKEYS[4],
 			ENVIRONMENTS = CLASSKEYS[5], PHYSICS = CLASSKEYS[6],
-			STATES = CLASSKEYS[7];
+			STATES = CLASSKEYS[7], ACTIVEBODIES = CLASSKEYS[8],
+			PASSIVEBODIES = CLASSKEYS[9], APPEARANCES = CLASSKEYS[10];
 
-	public static final String[] INSTANCEKEYS = new String[] { "~structure",
-			"~agents", "~environments" };
-	public static final String STRUCTURE = INSTANCEKEYS[0],
-			AGENTINSTANCES = INSTANCEKEYS[1],
-			ENVIRONMENTINSTANCES = INSTANCEKEYS[2];
+	public static final String[] INSTANCEKEYS = new String[] { "~agents",
+			"~activebodies", "~passivebodies", "~physics", "~states",
+			"~appearances" };
+	public static final String AGENTINSTANCES = INSTANCEKEYS[0],
+			ACTIVEINSTANCE = INSTANCEKEYS[1],
+			PASSIVEINSTANCE = INSTANCEKEYS[2],
+			PHYSICSINSTANCE = INSTANCEKEYS[3], STATEINSTANCE = INSTANCEKEYS[4],
+			APPEARANCEINSTANCE = INSTANCEKEYS[5];
+
+	public static final String STRUCTURE = "~structure",
+			ENVIRONMENTINSTANCES = "~environments";
 
 	public static final String[] PROPERTYKEYS = new String[] { "@remote",
-			"@connections", "@port", "@ctype", "@address" };
+			"@connections", "@port", "@ctype", "@address", "@construct", };
 
 	public static final String REMOTE = PROPERTYKEYS[0],
 			CONNECTIONS = PROPERTYKEYS[1], PORT = PROPERTYKEYS[2],
-			CONNECTIONTYPE = PROPERTYKEYS[3], ADDRESS = PROPERTYKEYS[4];
+			CONNECTIONTYPE = PROPERTYKEYS[3], ADDRESS = PROPERTYKEYS[4],
+			CONSTRUCT = PROPERTYKEYS[5];
+
+	private final static DefaultConstructorStore CONSTRUCTORSTORE = DefaultConstructorStore
+			.getInstance();
 
 	private JSONObject total;
 
 	// TODO optimise the parser
 	private Map<String, Class<?>> classmap = new HashMap<>();
+	private Map<String, JSONObject> instancemap = new HashMap<>();
+	private Map<String, Class<?>> instanceclassmap = new HashMap<>();
+	private Map<String, Constructor<?>> instanceconstructmap = new HashMap<>();
+	private Map<String, String> instanceOfMap = new HashMap<>();
 
 	public Parser(String initstructure) throws IOException {
 		File sf = new File(initstructure);
@@ -95,13 +116,6 @@ public class Parser {
 		return multiverse;
 	}
 
-	public void addToClassMap(JSONObject json, String superkey) {
-		JSONObject superObject = json.getJSONObject(superkey);
-		superObject.keySet().forEach(
-				(key) -> this.classmap.put(key, ReflectiveMethodStore
-						.getClassFromString(superObject.getString(key))));
-	}
-
 	public void validate(JSONObject json) {
 		System.out.println("VALIDATING CONFIGURATION... ");
 		for (String key : CLASSKEYS) {
@@ -109,12 +123,116 @@ public class Parser {
 		}
 		System.out.println("   FOUND CLASSES: ");
 		classmap.forEach((s, c) -> System.out.println("       " + s + "->" + c));
+
+		for (String key : INSTANCEKEYS) {
+			if (json.has(key)) {
+				if (!key.equals(ENVIRONMENTS))
+					addToInstanceMap(json, key);
+			}
+		}
+		System.out.println("   FOUND INSTANCES: ");
+		instancemap.forEach((s, c) -> System.out.println("       " + s + "->"
+				+ c));
+		this.instancemap.forEach((key, obj) -> {
+			System.out.println(key);
+			this.instanceconstructmap.put(key, this.getConstructor(key,
+					this.instanceclassmap.get(key), obj));
+		});
+
+		System.out.println("   FOUND INSTANCE CLASSES: ");
+		instanceclassmap.forEach((s, c) -> System.out.println("       " + s
+				+ "->" + c));
+		System.out.println("   FOUND INSTANCE CONSTRUCTORS: ");
+		instanceconstructmap.forEach((s, c) -> System.out.println("       " + s
+				+ "->" + c));
 		System.out.println("   VALIDATING REFLECTIVE METHODS...");
 		validateActionMethods(json);
 		System.out.println("   FOUND ALL ACTION METHODS");
 		validatePerceivableMethods(json);
 		System.out.println("   FOUND ALL PERCEIVABLE METHODS");
 		System.out.println("DONE!");
+	}
+
+	private void addToClassMap(JSONObject json, String superkey) {
+		JSONObject superObject = json.getJSONObject(superkey);
+		superObject.keySet().forEach(
+				(key) -> this.classmap.put(key, ReflectiveMethodStore
+						.getClassFromString(superObject.getString(key))));
+	}
+
+	private void addToInstanceMap(JSONObject json, String superkey) {
+		JSONObject superObject = json.getJSONObject(superkey);
+		superObject.keySet().forEach((key) -> {
+			JSONObject obj = superObject.getJSONObject(key);
+			this.instancemap.put(key, superObject.getJSONObject(key));
+			String classkey = getClassKey(superkey);
+			Class<?> c = getInstanceClassProperty(classkey, key);
+			this.instanceclassmap.put(key, c);
+			this.instanceOfMap.put(key, classkey);
+		});
+	}
+
+	private String getClassKey(String superkey) {
+		return superkey.replaceFirst("~", "@");
+	}
+
+	private Class<?> getInstanceClassProperty(String classkey,
+			String instancekey) {
+		JSONObject instance = instancemap.get(instancekey);
+		if (instance.has(classkey)) {
+			Class<?> c = classmap.get(instance.getString(classkey));
+			if (c != null) {
+				return c;
+			} else {
+				throw new IllegalParseExeception("Instance: " + instancekey
+						+ classkey + "class property doesnt exist: "
+						+ instance.getString(classkey));
+			}
+		} else {
+			throw new IllegalParseExeception(instancekey, classkey);
+		}
+	}
+
+	private <T> Constructor<T> getConstructor(String instance,
+			Class<T> instanceclass, JSONObject toConstruct) {
+		Class<?>[] types;
+		if (toConstruct.has(CONSTRUCT)) {
+			JSONArray args = toConstruct.getJSONArray(CONSTRUCT);
+			types = new Class<?>[args.length()];
+			for (int i = 0; i < types.length; i++) {
+				types[i] = resolveArgClass(args.get(i));
+			}
+		} else {
+			types = DefaultConstructorStore.getConstructor(
+					instanceOfMap.get(instance)).getParameterTypes();
+		}
+		try {
+			return instanceclass.getConstructor(types);
+		} catch (NoSuchMethodException | SecurityException e) {
+			throw new IllegalParseExeception("No "
+					+ CONSTRUCT
+					+ " property was provided for instance: "
+					+ instance
+					+ " and the default constructor:"
+					+ ReflectiveMethodStore.methodToString(instanceclass, "",
+							types) + " does not exist.");
+		}
+	}
+
+	private Class<?> resolveArgClass(Object key) {
+		if (key.getClass().isPrimitive()) {
+			return key.getClass();
+		} else if (this.classmap.containsKey(key)) {
+			return classmap.get(key).getClass();
+		} else if (classmap.containsKey(key)) {
+			return classmap.get(key);
+		} else if (key instanceof String) {
+			return String.class;
+		} else {
+			// fix the string check, the arg will always be a string!
+			throw new IllegalParseExeception("Could not find type for: " + key
+					+ " " + CONSTRUCT + " parameter");
+		}
 	}
 
 	private void validatePerceivableMethods(JSONObject json) {
@@ -213,22 +331,30 @@ public class Parser {
 			agents.add(constructAgent(ak, total.getJSONObject(AGENTINSTANCES)
 					.getJSONObject(ak), total));
 		}
+
+		// create active bodies //TODO
+		// create passive bodies
+		Set<PassiveBody> passivebodies = new HashSet<>();
+		JSONArray passivebodiesjson = structure.getJSONArray(PASSIVEINSTANCE);
+		for (int i = 0; i < passivebodiesjson.length(); i++) {
+			// TODO add additional arguments for constructors
+			constructPassiveBody(passivebodiesjson.getString(i));
+		}
+
 		JSONObject environmentjson = total.getJSONObject(ENVIRONMENTINSTANCES)
 				.getJSONObject(envkey);
-
 		// create physics
-		// TODO add active bodies and passive bodies
 		AbstractPhysics physics = null;
 		Class<?> physicsclass = getClassFromJson(PHYSICS,
 				environmentjson.getString(PHYSICS), total);
 		physics = (AbstractPhysics) physicsclass.newInstance();
 		// create state
-		AbstractState state = null;
+		AbstractAmbient state = null;
 		try {
-			state = (AbstractState) getClassFromJson(STATES,
+			state = (AbstractAmbient) getClassFromJson(STATES,
 					environmentjson.getString(STATES), total).getConstructor(
 					Set.class, Set.class, Set.class).newInstance(agents, null,
-					null);
+					passivebodies);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -250,7 +376,7 @@ public class Parser {
 			JSONObject remote = structure.getJSONObject(REMOTE);
 			Integer port = remote.getInt(PORT);
 			AbstractConnectedEnvironment remoteEnvironment = (AbstractConnectedEnvironment) environmentclass
-					.getConstructor(Integer.class, AbstractState.class,
+					.getConstructor(Integer.class, AbstractAmbient.class,
 							AbstractConnectedPhysics.class, Collection.class)
 					.newInstance(port, state, physics, possibleactions);
 			// check for any initial connections and add them
@@ -272,7 +398,7 @@ public class Parser {
 					subenvs.forEach((n) -> subs.add(n.getValue()));
 					current.setValue((AbstractEnvironment) environmentclass
 							.getConstructor(Collection.class,
-									AbstractState.class,
+									AbstractAmbient.class,
 									AbstractConnectedPhysics.class,
 									Collection.class).newInstance(subs, state,
 									physics, possibleactions));
@@ -280,7 +406,7 @@ public class Parser {
 						.isAssignableFrom(environmentclass)) {
 					if (subenvs.isEmpty()) {
 						current.setValue((AbstractEnvironment) environmentclass
-								.getConstructor(AbstractState.class,
+								.getConstructor(AbstractAmbient.class,
 										AbstractPhysics.class, Collection.class)
 								.newInstance(state, physics, possibleactions));
 					} else {
@@ -294,6 +420,92 @@ public class Parser {
 			}
 		}
 		return null;
+	}
+
+	private PassiveBody constructPassiveBody(String key) {
+		System.out.println("Construct Passive Body: " + key);
+		JSONObject passivebodyjson = total.getJSONObject(PASSIVEINSTANCE)
+				.getJSONObject(key);
+		Class<?> passivebodyclass = classmap.get(passivebodyjson
+				.getString(PASSIVEBODIES));
+		// check construct or force construct
+		if (shouldConstruct(passivebodyjson)) {
+			construct(passivebodyclass, key);
+		}
+		PhysicalBodyAppearance appearance = (PhysicalBodyAppearance) getAppearance(
+				passivebodyjson.getString(APPEARANCES),
+				new Class<?>[] { Class.class },
+				new Object[] { passivebodyclass });
+		System.out.println(appearance);
+		// add to param types
+		try {
+			// return (PassiveBody) passivebodyclass.getConstructor(
+			// concatArrays(
+			// new Class<?>[] { PhysicalBodyAppearance.class },
+			// paramtypes)).newInstance(
+			// concatArrays(new Object[] { appearance }, params));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	private <T> T construct(Class<T> instanceclass, String key) {
+		System.out.println(key);
+		
+		return null;
+	}
+
+	private Object[] parseArgsFromConstruct(String key) {
+		JSONArray con = instancemap.get(key).getJSONArray(CONSTRUCT);
+		Object[] obj = new Object[con.length()];
+		for (int i = 0; i < con.length(); i++) {
+			Object o = con.get(i);
+			if(o.getClass().isPrimitive()) {
+				obj[i] = o;
+			} else if(classmap.containsKey(o)) {
+				obj[i] = classmap.get(o);
+			} else if(instancemap.containsKey(o)) {
+				//obj[i] = construct(instanceclassmap.get(o));
+			}
+		}
+	}
+
+	private boolean shouldConstruct(JSONObject toConstruct) {
+		return toConstruct.has(CONSTRUCT);
+	}
+
+	private Appearance getAppearance(String key, Class<?>[] paramtypes,
+			Object[] params) {
+		// is the key a class key
+		Class<?> c = classmap.get(key);
+		if (c != null) {
+			// create the appearance as default
+			Class<? extends Appearance> ac = c.asSubclass(Appearance.class);
+			return constructInstance(ac, paramtypes, params);
+		} else {
+
+			Class<? extends Appearance> appearanceclass = getInstanceClassProperty(
+					instanceOfMap.get(key), key).asSubclass(Appearance.class);
+			JSONObject instance = total.getJSONObject(APPEARANCEINSTANCE)
+					.getJSONObject(key);
+			if (shouldConstruct(instance)) {
+				return construct(appearanceclass, key);
+			} else {
+				return getAppearance(instance.getString(APPEARANCES),
+						paramtypes, params);
+			}
+		}
+	}
+
+	private <T> T constructInstance(Class<T> c, Class<?>[] paramtypes,
+			Object[] params) {
+		try {
+			return (T) c.getConstructor(paramtypes).newInstance(params);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
 	}
 
 	private void addInitialConnection(JSONObject connection,
@@ -318,7 +530,7 @@ public class Parser {
 
 	private AbstractAgent constructAgent(String key, JSONObject agentjson,
 			JSONObject total) {
-		checkProperties(key, agentjson, AGENTBODIES, AGENTMINDS, AGENTSENSORS,
+		checkProperties(key, agentjson, AGENTS, AGENTMINDS, AGENTSENSORS,
 				AGENTACTUATORS);
 		JSONArray sensorjson = agentjson.getJSONArray(AGENTSENSORS);
 		List<Sensor> sensors = new ArrayList<>();
@@ -336,12 +548,12 @@ public class Parser {
 		String mindjson = agentjson.getString(AGENTMINDS);
 		AbstractAgentMind mind = (AbstractAgentMind) constructInstanceNoConstructor(getClassFromJson(
 				AGENTMINDS, mindjson, total));
-		String bodyjson = agentjson.getString(AGENTBODIES);
+		String bodyjson = agentjson.getString(AGENTS);
 		try {
-			return (AbstractAgent) getClassFromJson(AGENTBODIES, bodyjson,
-					total).getConstructor(List.class, List.class,
-					AbstractAgentMind.class).newInstance(sensors, actuators,
-					mind);
+			return (AbstractAgent) getClassFromJson(AGENTS, bodyjson, total)
+					.getConstructor(List.class, List.class,
+							AbstractAgentMind.class).newInstance(sensors,
+							actuators, mind);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return null;

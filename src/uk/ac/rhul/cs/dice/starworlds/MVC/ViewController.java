@@ -1,5 +1,7 @@
 package uk.ac.rhul.cs.dice.starworlds.MVC;
 
+import java.util.Observer;
+
 import uk.ac.rhul.cs.dice.starworlds.environment.base.interfaces.Universe;
 
 /**
@@ -11,7 +13,7 @@ import uk.ac.rhul.cs.dice.starworlds.environment.base.interfaces.Universe;
  * @author Ben
  *
  */
-public interface ViewController {
+public interface ViewController extends Observer {
 
 	/**
 	 * Getter for the {@link Universe} (the Model).

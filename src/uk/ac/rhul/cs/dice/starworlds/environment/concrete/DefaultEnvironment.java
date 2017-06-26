@@ -5,15 +5,14 @@ import java.util.Collection;
 import uk.ac.rhul.cs.dice.starworlds.actions.Action;
 import uk.ac.rhul.cs.dice.starworlds.actions.environmental.AbstractEnvironmentalAction;
 import uk.ac.rhul.cs.dice.starworlds.appearances.EnvironmentAppearance;
+import uk.ac.rhul.cs.dice.starworlds.environment.base.AbstractAmbient;
 import uk.ac.rhul.cs.dice.starworlds.environment.base.AbstractConnectedEnvironment;
-import uk.ac.rhul.cs.dice.starworlds.environment.base.AbstractState;
+import uk.ac.rhul.cs.dice.starworlds.environment.base.interfaces.Ambient;
 import uk.ac.rhul.cs.dice.starworlds.environment.base.interfaces.Environment;
 import uk.ac.rhul.cs.dice.starworlds.environment.base.interfaces.Message;
-import uk.ac.rhul.cs.dice.starworlds.environment.base.interfaces.State;
 import uk.ac.rhul.cs.dice.starworlds.environment.base.interfaces.Universe;
 import uk.ac.rhul.cs.dice.starworlds.environment.physics.AbstractConnectedPhysics;
 import uk.ac.rhul.cs.dice.starworlds.environment.physics.Physics;
-import uk.ac.rhul.cs.dice.starworlds.environment.subscriber.Subscriber;
 import uk.ac.rhul.cs.dice.starworlds.initialisation.IDFactory;
 
 /**
@@ -30,7 +29,7 @@ import uk.ac.rhul.cs.dice.starworlds.initialisation.IDFactory;
  * @author Kostas Stathis
  *
  */
-public class ComplexEnvironment extends AbstractConnectedEnvironment {
+public class DefaultEnvironment extends AbstractConnectedEnvironment {
 
 	/**
 	 * Constructor.
@@ -38,8 +37,11 @@ public class ComplexEnvironment extends AbstractConnectedEnvironment {
 	 * @param subenvironments
 	 *            : a {@link Collection} of {@link Environment}s that are the
 	 *            sub {@link Environment}s of this {@link Environment}.
+	 * @param subenvironments
+	 *            : a {@link Collection} of {@link Environment}s that are the
+	 *            neighbouring {@link Environment}s of this {@link Environment}.
 	 * @param state
-	 *            : an {@link AbstractState} instance.
+	 *            : an {@link AbstractAmbient} instance.
 	 * @param physics
 	 *            : the {@link AbstractConnectedPhysics} of the environment.
 	 * @param bounded
@@ -48,14 +50,15 @@ public class ComplexEnvironment extends AbstractConnectedEnvironment {
 	 * @param appearance
 	 *            : the {@link EnvironmentAppearance}
 	 */
-	public ComplexEnvironment(
+	public DefaultEnvironment(
 			Collection<AbstractConnectedEnvironment> subenvironments,
-			AbstractState state,
+			Collection<AbstractConnectedEnvironment> neighbourenvironments,
+			AbstractAmbient state,
 			AbstractConnectedPhysics physics,
 			Boolean bounded,
 			EnvironmentAppearance appearance,
 			Collection<Class<? extends AbstractEnvironmentalAction>> possibleActions) {
-		super(subenvironments, null, new Subscriber(), state, physics, bounded,
+		super(subenvironments, neighbourenvironments, state, physics, bounded,
 				appearance, possibleActions);
 	}
 
@@ -68,7 +71,7 @@ public class ComplexEnvironment extends AbstractConnectedEnvironment {
 	 *            : the port that any remote {@link Environment} will try to
 	 *            make connections to
 	 * @param state
-	 *            : a {@link State} instance.
+	 *            : a {@link Ambient} instance.
 	 * @param physics
 	 *            : the {@link Physics} of the environment.
 	 * @param bounded
@@ -78,38 +81,13 @@ public class ComplexEnvironment extends AbstractConnectedEnvironment {
 	 *            : a {@link Collection} of {@link Action}s that are possible in
 	 *            this {@link Environment}
 	 */
-	public ComplexEnvironment(
+	public DefaultEnvironment(
 			Integer port,
-			AbstractState state,
+			AbstractAmbient state,
 			AbstractConnectedPhysics physics,
 			Collection<Class<? extends AbstractEnvironmentalAction>> possibleActions) {
-		super(port, new Subscriber(), state, physics, true,
-				new EnvironmentAppearance(IDFactory.getInstance().getNewID(),
-						false, false), possibleActions);
-	}
-
-	/**
-	 * Constructor.
-	 * 
-	 * @param subenvironments
-	 *            : a {@link Collection} of {@link Environment}s that are the
-	 *            sub {@link Environment}s of this {@link Environment}.
-	 * @param state
-	 *            : an {@link AbstractState} instance.
-	 * @param physics
-	 *            : the {@link AbstractConnectedPhysics} of the environment
-	 * @param possibleActions
-	 *            : the {@link AbstractEnvironmentalAction}s that are possible
-	 *            in this {@link Environment}
-	 */
-	public ComplexEnvironment(
-			Collection<AbstractConnectedEnvironment> subenvironments,
-			AbstractState state,
-			AbstractConnectedPhysics physics,
-			Collection<Class<? extends AbstractEnvironmentalAction>> possibleActions) {
-		super(subenvironments, null, new Subscriber(), state, physics, true,
-				new EnvironmentAppearance(IDFactory.getInstance().getNewID(),
-						false, false), possibleActions);
+		super(port, state, physics, true, new EnvironmentAppearance(IDFactory
+				.getInstance().getNewID(), false, false), possibleActions);
 	}
 
 	@Override
@@ -118,14 +96,7 @@ public class ComplexEnvironment extends AbstractConnectedEnvironment {
 	}
 
 	@Override
-	public boolean isDistributed() {
-		return false;
-	}
-
-	@Override
 	public void handleCustomMessage(EnvironmentAppearance appearance,
 			Message<?> message) {
-		// TODO Auto-generated method stub
-
 	}
 }

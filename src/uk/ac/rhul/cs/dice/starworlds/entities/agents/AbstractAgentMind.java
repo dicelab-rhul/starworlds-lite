@@ -19,8 +19,9 @@ import uk.ac.rhul.cs.dice.starworlds.entities.agents.components.concrete.SeeingS
 import uk.ac.rhul.cs.dice.starworlds.entities.agents.components.concrete.SpeechActuator;
 import uk.ac.rhul.cs.dice.starworlds.entities.agents.concrete.DefaultAgentMind;
 import uk.ac.rhul.cs.dice.starworlds.environment.base.interfaces.Environment;
-import uk.ac.rhul.cs.dice.starworlds.environment.base.interfaces.State;
+import uk.ac.rhul.cs.dice.starworlds.environment.base.interfaces.Ambient;
 import uk.ac.rhul.cs.dice.starworlds.environment.physics.Physics;
+import uk.ac.rhul.cs.dice.starworlds.parser.DefaultConstructorStore.DefaultConstructor;
 import uk.ac.rhul.cs.dice.starworlds.perception.Perception;
 
 /**
@@ -46,6 +47,10 @@ public abstract class AbstractAgentMind implements Mind {
 
 	private AbstractAgent body;
 	private boolean actionDone;
+
+	@DefaultConstructor
+	public AbstractAgentMind() {
+	}
 
 	/**
 	 * A helper method for unpacking the parameters received in
@@ -120,7 +125,7 @@ public abstract class AbstractAgentMind implements Mind {
 	 * {@link Physics} of this {@link Environment} - an {@link Agent} cannot
 	 * actively listen for an agent if it doesn't not have permission, or
 	 * perhaps if the {@link Agent} is physically too far away. For more
-	 * information on keys see {@link State}.
+	 * information on keys see {@link Ambient}.
 	 * 
 	 * @param action
 	 *            to attempt

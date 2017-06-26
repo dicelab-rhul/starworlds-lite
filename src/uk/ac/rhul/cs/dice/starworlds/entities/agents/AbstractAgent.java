@@ -11,6 +11,7 @@ import uk.ac.rhul.cs.dice.starworlds.entities.ActiveBody;
 import uk.ac.rhul.cs.dice.starworlds.entities.Agent;
 import uk.ac.rhul.cs.dice.starworlds.entities.agents.components.Actuator;
 import uk.ac.rhul.cs.dice.starworlds.entities.agents.components.Sensor;
+import uk.ac.rhul.cs.dice.starworlds.parser.DefaultConstructorStore.DefaultConstructor;
 import uk.ac.rhul.cs.dice.starworlds.perception.Perception;
 
 /**
@@ -40,6 +41,7 @@ public abstract class AbstractAgent extends ActiveBody implements Agent {
 	 *            : the {@link AbstractAgentMind}.
 	 * 
 	 */
+	@DefaultConstructor
 	public AbstractAgent(List<Sensor> sensors, List<Actuator> actuators,
 			AbstractAgentMind mind) {
 		super(null, sensors, actuators);

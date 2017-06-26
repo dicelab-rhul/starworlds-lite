@@ -2,7 +2,7 @@ package uk.ac.rhul.cs.dice.starworlds.actions.environmental;
 
 import java.util.Collection;
 
-import uk.ac.rhul.cs.dice.starworlds.environment.base.interfaces.State;
+import uk.ac.rhul.cs.dice.starworlds.environment.base.interfaces.Ambient;
 import uk.ac.rhul.cs.dice.starworlds.environment.physics.Physics;
 import uk.ac.rhul.cs.dice.starworlds.parser.ReflectiveMethodStore;
 import uk.ac.rhul.cs.dice.starworlds.perception.AbstractPerception;
@@ -23,7 +23,7 @@ public abstract class PhysicalAction extends AbstractEnvironmentalAction {
 
 	@SuppressWarnings("unchecked")
 	public final Collection<AbstractPerception<?>> getAgentPerceptions(
-			Physics physics, State context) throws Exception {
+			Physics physics, Ambient context) throws Exception {
 		return (Collection<AbstractPerception<?>>) ReflectiveMethodStore
 				.getActionMethod(this,
 						ReflectiveMethodStore.GETAGENTPERCEPTIONS).invoke(
@@ -32,27 +32,27 @@ public abstract class PhysicalAction extends AbstractEnvironmentalAction {
 
 	@SuppressWarnings("unchecked")
 	public final Collection<AbstractPerception<?>> getOtherPerceptions(
-			Physics physics, State context) throws Exception {
+			Physics physics, Ambient context) throws Exception {
 		return (Collection<AbstractPerception<?>>) ReflectiveMethodStore
 				.getActionMethod(this,
 						ReflectiveMethodStore.GETOTHERPERCEPTIONS).invoke(
 						physics, this, context);
 	}
 
-	public final boolean perform(Physics physics, State context)
+	public final boolean perform(Physics physics, Ambient context)
 			throws Exception {
 		return (boolean) ReflectiveMethodStore.getActionMethod(this,
 				ReflectiveMethodStore.PERFORM).invoke(physics, this, context);
 	}
 
-	public final boolean isPossible(Physics physics, State context)
+	public final boolean isPossible(Physics physics, Ambient context)
 			throws Exception {
 		return (boolean) ReflectiveMethodStore.getActionMethod(this,
 				ReflectiveMethodStore.ISPOSSIBLE)
 				.invoke(physics, this, context);
 	}
 
-	public final boolean verify(Physics physics, State context)
+	public final boolean verify(Physics physics, Ambient context)
 			throws Exception {
 		return (boolean) ReflectiveMethodStore.getActionMethod(this,
 				ReflectiveMethodStore.VERIFY).invoke(physics, this, context);

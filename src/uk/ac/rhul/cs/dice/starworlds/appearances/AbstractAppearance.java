@@ -2,6 +2,7 @@ package uk.ac.rhul.cs.dice.starworlds.appearances;
 
 import uk.ac.rhul.cs.dice.starworlds.entities.Body;
 import uk.ac.rhul.cs.dice.starworlds.entities.Entity;
+import uk.ac.rhul.cs.dice.starworlds.parser.DefaultConstructorStore.DefaultConstructor;
 import uk.ac.rhul.cs.dice.starworlds.utils.Identifiable;
 
 /**
@@ -22,13 +23,20 @@ public abstract class AbstractAppearance implements Appearance {
 	private String id;
 
 	/**
-	 * Constructor with a {@link String} id.
+	 * Constructor.
+	 */
+	@DefaultConstructor
+	public AbstractAppearance() {
+	}
+
+	/**
+	 * Constructor.
 	 * 
 	 * @param id
 	 *            : the id of the {@link Body}.
 	 */
 	public AbstractAppearance(String id) {
-		this.id = id;
+		this.setId(id);
 	}
 
 	@Override

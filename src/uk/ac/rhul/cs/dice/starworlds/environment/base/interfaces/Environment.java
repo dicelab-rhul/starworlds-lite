@@ -24,28 +24,28 @@ public interface Environment extends Identifiable {
 	public void postInitialisation();
 
 	/**
-	 * Updates the state of this {@link Environment} with a new {@link Action}
+	 * Updates the ambient of this {@link Environment} with a new {@link Action}
 	 * that should be executed this cycle.
 	 * 
 	 * @param action
 	 *            to execute
 	 */
-	public void updateState(AbstractEnvironmentalAction action);
+	public void updateAmbient(AbstractEnvironmentalAction action);
 
 	/**
-	 * Returns the {@link State} of the {@link Environment}.
+	 * Returns the {@link Ambient} of the {@link Environment}.
 	 * 
-	 * @return the {@link State} of the {@link Environment}.
+	 * @return the {@link Ambient} of the {@link Environment}.
 	 */
-	public State getState();
+	public Ambient getState();
 
 	/**
-	 * Sets the {@link State} of the {@link Environment}.
+	 * Sets the {@link Ambient} of the {@link Environment}.
 	 * 
 	 * @param state
-	 *            : the {@link State} of the {@link Environment}.
+	 *            : the {@link Ambient} of the {@link Environment}.
 	 */
-	public void setState(State state);
+	public void setState(Ambient state);
 
 	/**
 	 * Returns the {@link Physics} of the {@link Environment}.

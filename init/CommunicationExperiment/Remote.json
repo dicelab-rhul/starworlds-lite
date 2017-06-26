@@ -13,6 +13,7 @@
 
 @appearances : {
 	environmentalappearance : uk.ac.rhul.cs.dice.starworlds.appearances.EnvironmentalAppearance,
+	passivebodyappearance : uk.ac.rhul.cs.dice.starworlds.appearances.PhysicalBodyAppearance,
 },
 
 @physics : {
@@ -42,6 +43,26 @@
 	physicalactuator : uk.ac.rhul.cs.dice.starworlds.entities.agents.components.concrete.PhysicalActuator,
 	speechactuator : uk.ac.rhul.cs.dice.starworlds.entities.agents.components.concrete.SpeechActuator,
 },
+
+@activebodies : {
+
+}
+
+@passivebodies : {
+	passivebody : uk.ac.rhul.cs.dice.starworlds.experiment.communicatingagents.ExpPassiveBody,
+}
+
+~passivebodies : {
+	Passive : {
+		@passivebodies : passivebody
+		@appearance : passivebodyappearance
+	}
+}
+
+~activebodies : {
+
+
+}
 
 ~agents : {
 	DefaultAgent : {

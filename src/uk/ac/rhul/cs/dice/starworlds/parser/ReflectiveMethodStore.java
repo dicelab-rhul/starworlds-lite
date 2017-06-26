@@ -12,7 +12,7 @@ import uk.ac.rhul.cs.dice.starworlds.entities.ActiveBody;
 import uk.ac.rhul.cs.dice.starworlds.entities.agents.components.Sensor;
 import uk.ac.rhul.cs.dice.starworlds.environment.base.AbstractEnvironment;
 import uk.ac.rhul.cs.dice.starworlds.environment.base.interfaces.Environment;
-import uk.ac.rhul.cs.dice.starworlds.environment.base.interfaces.State;
+import uk.ac.rhul.cs.dice.starworlds.environment.base.interfaces.Ambient;
 import uk.ac.rhul.cs.dice.starworlds.environment.physics.Physics;
 import uk.ac.rhul.cs.dice.starworlds.perception.AbstractPerception;
 import uk.ac.rhul.cs.dice.starworlds.perception.Perception;
@@ -41,7 +41,7 @@ public final class ReflectiveMethodStore {
 	public static final String PERCEIVABLE = "perceivable";
 	// parameters of the AbstractEnvironment method above
 	private static final Class<?>[] PERCEIVABLEPARAMS = new Class<?>[] { null,
-			AbstractPerception.class, State.class };
+			AbstractPerception.class, Ambient.class };
 
 	// ****************************************** //
 	// ********* PhysicalAction Methods ********* //
@@ -50,7 +50,7 @@ public final class ReflectiveMethodStore {
 	 * Name of the method that should be called when getting {@link Perception}s
 	 * for an {@link ActiveBody} that performed a given {@link PhysicalAction}. </br> This
 	 * method is called by default in the
-	 * {@link PhysicalAction#getAgentPerceptions(Physics, State)} method. </br>
+	 * {@link PhysicalAction#getAgentPerceptions(Physics, Ambient)} method. </br>
 	 * This method must be defined in the {@link Physics} of the application
 	 * that will use the {@link PhysicalAction}. It should be defined with parameters:
 	 * (Action, State) with Action being the class of the given {@link PhysicalAction}.
@@ -65,7 +65,7 @@ public final class ReflectiveMethodStore {
 	 * Name of the method that should be called when getting {@link Perception}s
 	 * for an all other {@link ActiveBody}s when an given {@link ActiveBody} has
 	 * performed a given {@link PhysicalAction}. </br> This method is called by default in the
-	 * {@link PhysicalAction#getOtherPerceptions(Physics, State)} method. </br>
+	 * {@link PhysicalAction#getOtherPerceptions(Physics, Ambient)} method. </br>
 	 * This method must be defined in the {@link Physics} of the application
 	 * that will use the {@link PhysicalAction}. It should be defined with parameters:
 	 * (Action, State) with Action being the class of the given {@link PhysicalAction}.
@@ -79,7 +79,7 @@ public final class ReflectiveMethodStore {
 	/**
 	 * The name of the method that should be called when an {@link Action}
 	 * isPossible that will perform the {@link Action}. </br> This method is
-	 * called by default in the {@link PhysicalAction#perform(Physics, State)}
+	 * called by default in the {@link PhysicalAction#perform(Physics, Ambient)}
 	 * method. </br> This method must be defined in the {@link Physics} of the
 	 * application that will use the {@link PhysicalAction}. It should be
 	 * defined with parameters: (Action, State) with Action being the class of
@@ -91,8 +91,8 @@ public final class ReflectiveMethodStore {
 	/**
 	 * The name of the method that should be called to check if a given
 	 * {@link PhysicalAction} is possible give the current {@link Physics} and
-	 * {@link State} of the {@link Environment}. </br> This method is called by
-	 * default in the {@link PhysicalAction#isPossible(Physics, State)} method.
+	 * {@link Ambient} of the {@link Environment}. </br> This method is called by
+	 * default in the {@link PhysicalAction#isPossible(Physics, Ambient)} method.
 	 * </br> This method must be defined in the {@link Physics} of the
 	 * application that will use the {@link PhysicalAction}. </br> The method
 	 * must have the return type: {@link Boolean}.
@@ -103,7 +103,7 @@ public final class ReflectiveMethodStore {
 	/**
 	 * The name of the method that should be called to check that the given
 	 * {@link PhysicalAction} was successfully performed. </br> This method is
-	 * called by default in the {@link PhysicalAction#verify(Physics, State)}
+	 * called by default in the {@link PhysicalAction#verify(Physics, Ambient)}
 	 * method. </br> This method must be defined in the {@link Physics} of the
 	 * application that will use the {@link PhysicalAction}. </br> The method
 	 * must have the return type: {@link Boolean}.
@@ -112,7 +112,7 @@ public final class ReflectiveMethodStore {
 	private static Method COMPAREVERIFY;
 	// parameters of the PhysicalAction methods above
 	private static final Class<?>[] ACTIONPARAMS = new Class<?>[] {
-			PhysicalAction.class, State.class };
+			PhysicalAction.class, Ambient.class };
 
 	static {
 		try {
@@ -230,7 +230,9 @@ public final class ReflectiveMethodStore {
 		try {
 			return Class.forName(c);
 		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
+			System.err.println("Could not find class: " + e.getMessage());
+			System.out.println("VALIDATION FAILED");
+			System.exit(-1);
 			return null;
 		}
 	}
@@ -246,18 +248,22 @@ public final class ReflectiveMethodStore {
 		}
 	}
 
-	private static String methodToString(Class<?> getFrom, String name,
+	public static String methodToString(Class<?> getFrom, String name,
 			Class<?>[] params) {
 		StringBuilder b = new StringBuilder(getFrom.getSimpleName() + " : "
 				+ name + "(");
-		for (int i = 0; i < params.length - 1; i++) {
-			b.append(params[i] + ",");
+		if (params.length > 0) {
+			for (int i = 0; i < params.length - 1; i++) {
+				b.append(params[i] + ",");
+			}
+			b.append(params[params.length - 1] + ")");
+		} else {
+			b.append(")");
 		}
-		b.append(params[params.length - 1] + ")");
 		return b.toString();
 	}
 
-	private static String methodToString(Type returntype, String name,
+	public static String methodToString(Type returntype, String name,
 			Class<?>[] params) {
 		StringBuilder b = new StringBuilder(returntype + " " + name + "(");
 		for (int i = 0; i < params.length - 1; i++) {

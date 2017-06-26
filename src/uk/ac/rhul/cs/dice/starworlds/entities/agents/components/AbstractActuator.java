@@ -2,6 +2,7 @@ package uk.ac.rhul.cs.dice.starworlds.entities.agents.components;
 
 import uk.ac.rhul.cs.dice.starworlds.actions.environmental.AbstractEnvironmentalAction;
 import uk.ac.rhul.cs.dice.starworlds.entities.ActiveBody;
+import uk.ac.rhul.cs.dice.starworlds.parser.DefaultConstructorStore.DefaultConstructor;
 
 /**
  * The most generic class implementing {@link Actuator}. It also extends
@@ -21,6 +22,7 @@ public abstract class AbstractActuator implements Actuator {
 	private String id;
 	private ActiveBody body;
 
+	@DefaultConstructor
 	public AbstractActuator() {
 	}
 
@@ -46,7 +48,7 @@ public abstract class AbstractActuator implements Actuator {
 
 	@Override
 	public void attempt(AbstractEnvironmentalAction action) {
-		body.getEnvironment().updateState(action);
+		body.getEnvironment().updateAmbient(action);
 	}
 
 	@Override

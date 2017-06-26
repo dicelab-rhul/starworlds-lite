@@ -12,7 +12,8 @@
 },
 
 @appearances : {
-	environmentalappearance : uk.ac.rhul.cs.dice.starworlds.appearances.EnvironmentalAppearance,
+	environmentalappearance : uk.ac.rhul.cs.dice.starworlds.appearances.EnvironmentAppearance,
+	passivebodyappearance : uk.ac.rhul.cs.dice.starworlds.appearances.PhysicalBodyAppearance,
 },
 
 @physics : {
@@ -29,7 +30,7 @@
 	cagentmind :  uk.ac.rhul.cs.dice.starworlds.experiment.communicatingagents.RandomCommunicatingAgentMind
 },
 
-@agentbodies : {
+@agents : {
 	dagent : uk.ac.rhul.cs.dice.starworlds.entities.agents.concrete.DefaultAgent,
 },
 
@@ -43,15 +44,42 @@
 	speechactuator : uk.ac.rhul.cs.dice.starworlds.entities.agents.components.concrete.SpeechActuator,
 },
 
+@activebodies : {
+
+},
+
+@passivebodies : {
+	passivebody : uk.ac.rhul.cs.dice.starworlds.experiment.communicatingagents.ExpPassiveBody,
+},
+
+~appearances : {
+	PassiveAppearance : {
+		@appearances : passivebodyappearance,
+		@construct : [passivebody, id0]
+	}
+},
+
+~passivebodies : {
+	Passive : {
+		@passivebodies : passivebody,
+		@appearances : PassiveAppearance,
+		@construct : [PassiveAppearance]
+	},
+},
+
+~activebodies : {
+
+},
+
 ~agents : {
 	DefaultAgent : {
-		@agentbodies : dagent,
+		@agents : dagent,
 		@agentminds : dagentmind,
 		@agentsensors : [listeningsensor, seeingsensor],
 		@agentactuators : [physicalactuator, speechactuator],
 	},
 	CommunicatingAgent : {
-		@agentbodies : dagent,
+		@agents : dagent,
 		@agentminds : cagentmind,
 		@agentsensors : [listeningsensor, seeingsensor],
 		@agentactuators : [speechactuator],
@@ -66,21 +94,12 @@
 		@physics : dcphysics,
 		@states : dstate,
 	},
-	DefaultEnvironment : {
-		@environments : complexenv,
-		@possibleactions : [communicationaction, sensingaction],
-		@physics : dcphysics,
-		@states : dstate,
-	}
 },
 
-~structure : [{
+~structure : [{ 
 		~environments : DefaultUniverse,
-		~agents : [CommunicatingAgent, CommunicatingAgent, CommunicatingAgent],
-	},
-]
+		~agents : [CommunicatingAgent],
+		~activebodies : [],
+		~passivebodies : [Passive, Passive],
+		}]
 }
-
-
-
-

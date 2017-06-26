@@ -17,7 +17,7 @@ import uk.ac.rhul.cs.dice.starworlds.entities.agents.components.concrete.Listeni
 import uk.ac.rhul.cs.dice.starworlds.entities.agents.components.concrete.SeeingSensor;
 import uk.ac.rhul.cs.dice.starworlds.environment.base.AbstractEnvironment;
 import uk.ac.rhul.cs.dice.starworlds.environment.base.interfaces.Environment;
-import uk.ac.rhul.cs.dice.starworlds.environment.base.interfaces.State;
+import uk.ac.rhul.cs.dice.starworlds.environment.base.interfaces.Ambient;
 import uk.ac.rhul.cs.dice.starworlds.experiment.physicalagents.MoveAction;
 import uk.ac.rhul.cs.dice.starworlds.experiment.physicalagents.MovePerception;
 import uk.ac.rhul.cs.dice.starworlds.perception.AbstractPerception;
@@ -44,43 +44,43 @@ public interface Physics extends Identifiable {
 
 	// METHODS TO HANDLE PHYSICAL ACTIONS //
 
-	public boolean execute(PhysicalAction action, State context);
+	public boolean execute(PhysicalAction action, Ambient context);
 
-	public boolean perform(PhysicalAction action, State context);
+	public boolean perform(PhysicalAction action, Ambient context);
 
-	public boolean isPossible(PhysicalAction action, State context);
+	public boolean isPossible(PhysicalAction action, Ambient context);
 
-	public boolean verify(PhysicalAction action, State context);
+	public boolean verify(PhysicalAction action, Ambient context);
 
 	public default Collection<AbstractPerception<?>> getAgentPerceptions(
-			PhysicalAction action, State context) {
+			PhysicalAction action, Ambient context) {
 		return null;
 	}
 
 	public default Collection<AbstractPerception<?>> getOtherPerceptions(
-			PhysicalAction action, State context) {
+			PhysicalAction action, Ambient context) {
 		return null;
 	}
 
 	// METHODS TO HANDLE COMMUNICATION ACTIONS //
 
-	public void execute(CommunicationAction<?> action, State context);
+	public void execute(CommunicationAction<?> action, Ambient context);
 
-	public boolean perform(CommunicationAction<?> action, State context);
+	public boolean perform(CommunicationAction<?> action, Ambient context);
 
-	public boolean isPossible(CommunicationAction<?> action, State context);
+	public boolean isPossible(CommunicationAction<?> action, Ambient context);
 
-	public boolean verify(CommunicationAction<?> action, State context);
+	public boolean verify(CommunicationAction<?> action, Ambient context);
 
 	// METHODS TO HANDLE SENSING ACTIONS //
 
-	public void execute(SensingAction action, State context);
+	public void execute(SensingAction action, Ambient context);
 
-	public Set<Pair<String, Object>> perform(SensingAction action, State context);
+	public Set<Pair<String, Object>> perform(SensingAction action, Ambient context);
 
-	public boolean isPossible(SensingAction action, State context);
+	public boolean isPossible(SensingAction action, Ambient context);
 
-	public boolean verify(SensingAction action, State context);
+	public boolean verify(SensingAction action, Ambient context);
 
 	public void setEnvironment(AbstractEnvironment environment);
 
@@ -90,14 +90,14 @@ public interface Physics extends Identifiable {
 	 * {@link AbstractSensor}. These methods define that any given
 	 * {@link Sensor} can perceive. They should check whether the given
 	 * {@link Perception} can be perceived by the {@link Sensor} given the
-	 * current {@link State} of the {@link Environment}. (although in some cases
-	 * the ability to perceive may not depend on the {@link State}). All
+	 * current {@link Ambient} of the {@link Environment}. (although in some cases
+	 * the ability to perceive may not depend on the {@link Ambient}). All
 	 * perceivable methods must be define as here but replacing the
 	 * {@link AbstractSensor} class with the given subclass. A simple example of
 	 * this is given
-	 * {@link AbstractPhysics#perceivable(ListeningSensor, AbstractPerception, State)}
+	 * {@link AbstractPhysics#perceivable(ListeningSensor, AbstractPerception, Ambient)}
 	 * and
-	 * {@link AbstractPhysics#perceivable(SeeingSensor, AbstractPerception, State)}
+	 * {@link AbstractPhysics#perceivable(SeeingSensor, AbstractPerception, Ambient)}
 	 * 
 	 * @param sensor
 	 *            that will be perceiving the given {@link Perception}
@@ -105,11 +105,11 @@ public interface Physics extends Identifiable {
 	 *            the {@link Perception} that may or may not be perceived by the
 	 *            sensor
 	 * @param context
-	 *            {@link State} of the {@link Environment} currently
+	 *            {@link Ambient} of the {@link Environment} currently
 	 * @return true if the given {@link Sensor} can perceive the given
 	 *         {@link Perception}, false otherwise.
 	 */
 	public boolean perceivable(AbstractSensor sensor,
-			AbstractPerception<?> perception, State context);
+			AbstractPerception<?> perception, Ambient context);
 
 }

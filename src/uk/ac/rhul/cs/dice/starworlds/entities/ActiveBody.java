@@ -10,6 +10,7 @@ import uk.ac.rhul.cs.dice.starworlds.actions.environmental.AbstractEnvironmental
 import uk.ac.rhul.cs.dice.starworlds.actions.environmental.EnvironmentalAction;
 import uk.ac.rhul.cs.dice.starworlds.appearances.ActiveBodyAppearance;
 import uk.ac.rhul.cs.dice.starworlds.appearances.Appearance;
+import uk.ac.rhul.cs.dice.starworlds.appearances.PhysicalBodyAppearance;
 import uk.ac.rhul.cs.dice.starworlds.entities.agents.AbstractAgent;
 import uk.ac.rhul.cs.dice.starworlds.entities.agents.components.AbstractSensor;
 import uk.ac.rhul.cs.dice.starworlds.entities.agents.components.Actuator;
@@ -19,6 +20,7 @@ import uk.ac.rhul.cs.dice.starworlds.entities.agents.components.concrete.Physica
 import uk.ac.rhul.cs.dice.starworlds.entities.agents.components.concrete.SpeechActuator;
 import uk.ac.rhul.cs.dice.starworlds.environment.base.AbstractEnvironment;
 import uk.ac.rhul.cs.dice.starworlds.environment.physics.Physics;
+import uk.ac.rhul.cs.dice.starworlds.parser.DefaultConstructorStore.DefaultConstructor;
 import uk.ac.rhul.cs.dice.starworlds.perception.Perception;
 
 /**
@@ -59,6 +61,7 @@ public abstract class ActiveBody extends PhysicalBody implements Actor {
 	 * @param actuators
 	 *            : a {@link List} of {@link Actuator} instances.
 	 */
+	@DefaultConstructor
 	public ActiveBody(List<Sensor> sensors, List<Actuator> actuators) {
 		super(null);
 		init(sensors, actuators);
@@ -265,6 +268,11 @@ public abstract class ActiveBody extends PhysicalBody implements Actor {
 	@Override
 	public ActiveBodyAppearance getAppearance() {
 		return (ActiveBodyAppearance) super.getAppearance();
+	}
+
+	@Override
+	public void setAppearance(PhysicalBodyAppearance appearance) {
+		super.setAppearance((ActiveBodyAppearance) appearance);
 	}
 
 }

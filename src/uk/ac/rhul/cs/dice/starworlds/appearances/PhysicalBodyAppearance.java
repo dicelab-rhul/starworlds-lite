@@ -9,7 +9,7 @@ public class PhysicalBodyAppearance extends AbstractAppearance {
 
 	private Class<? extends PhysicalBody> body;
 
-	public PhysicalBodyAppearance(String id, Class<? extends PhysicalBody> body) {
+	public PhysicalBodyAppearance(Class<? extends PhysicalBody> body, String id) {
 		super(id);
 		this.body = body;
 	}

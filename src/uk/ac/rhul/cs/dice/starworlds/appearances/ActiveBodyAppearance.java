@@ -18,7 +18,7 @@ public class ActiveBodyAppearance extends PhysicalBodyAppearance {
 
 	public ActiveBodyAppearance(String id, Class<? extends PhysicalBody> body,
 			Collection<Sensor> sensors, Collection<Actuator> actuators) {
-		super(id, body);
+		super(body, id);
 		init(sensors, actuators);
 	}
 

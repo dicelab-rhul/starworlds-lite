@@ -4,8 +4,10 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Observable;
 import java.util.Set;
 
+import uk.ac.rhul.cs.dice.starworlds.actions.Action;
 import uk.ac.rhul.cs.dice.starworlds.actions.environmental.AbstractEnvironmentalAction;
 import uk.ac.rhul.cs.dice.starworlds.appearances.ActiveBodyAppearance;
 import uk.ac.rhul.cs.dice.starworlds.appearances.Appearance;
@@ -16,7 +18,7 @@ import uk.ac.rhul.cs.dice.starworlds.entities.agents.components.AbstractSensor;
 import uk.ac.rhul.cs.dice.starworlds.entities.agents.components.Sensor;
 import uk.ac.rhul.cs.dice.starworlds.environment.base.interfaces.Container;
 import uk.ac.rhul.cs.dice.starworlds.environment.base.interfaces.Environment;
-import uk.ac.rhul.cs.dice.starworlds.environment.base.interfaces.State;
+import uk.ac.rhul.cs.dice.starworlds.environment.base.interfaces.Ambient;
 import uk.ac.rhul.cs.dice.starworlds.environment.physics.AbstractPhysics;
 import uk.ac.rhul.cs.dice.starworlds.environment.physics.Physics;
 import uk.ac.rhul.cs.dice.starworlds.environment.subscriber.AbstractSubscriber;
@@ -33,20 +35,28 @@ import uk.ac.rhul.cs.dice.starworlds.perception.AbstractPerception;
  * @author Kostas Stathis
  *
  */
-public abstract class AbstractEnvironment implements Environment, Container {
+public abstract class AbstractEnvironment extends Observable implements
+		Environment, Container {
 
-	protected String id;
-	protected AbstractState state;
+	protected AbstractAmbient ambient;
 	protected AbstractPhysics physics;
 	protected Boolean bounded;
 	protected EnvironmentAppearance appearance;
 	protected AbstractSubscriber subscriber;
 
+	/**
+	 * Constructor. The {@link Appearance} of this {@link AbstractEnvironment}
+	 * defaults to an {@link EnvironmentAppearance}.
+	 * 
+	 * @param ambient
+	 * @param physics
+	 * @param possibleActions
+	 */
 	public AbstractEnvironment(
-			AbstractState state,
+			AbstractAmbient ambient,
 			AbstractPhysics physics,
 			Collection<Class<? extends AbstractEnvironmentalAction>> possibleActions) {
-		init(new Subscriber(), state, physics, false,
+		init(new Subscriber(), ambient, physics, false,
 				new EnvironmentAppearance(IDFactory.getInstance().getNewID(),
 						false, true), possibleActions);
 	}
@@ -54,48 +64,48 @@ public abstract class AbstractEnvironment implements Environment, Container {
 	/**
 	 * Constructor.
 	 *
-	 * @param subscriber
-	 *            : used to manage {@link Sensor}s in the system.
-	 * @param state
-	 *            : a {@link State} instance.
+	 * @param ambient
+	 *            : a {@link Ambient} instance
 	 * @param physics
-	 *            : the {@link Physics} of the environment.
+	 *            : the {@link Physics} of the environment
 	 * @param bounded
 	 *            : a {@link Boolean} value indicating whether the environment
-	 *            is bounded or not.
+	 *            is bounded or not
 	 * @param appearance
-	 *            : the {@link Appearance} of the environment.
+	 *            : the {@link Appearance} of the environment
+	 * @param possibleActions
+	 *            : the {@link Collection} of {@link Action}s that are possible
+	 *            in this {@link Environment}
 	 */
 	public AbstractEnvironment(
-			AbstractSubscriber subscriber,
-			AbstractState state,
+			AbstractAmbient ambient,
 			AbstractPhysics physics,
 			Boolean bounded,
 			EnvironmentAppearance appearance,
 			Collection<Class<? extends AbstractEnvironmentalAction>> possibleActions) {
-		init(subscriber, state, physics, bounded, appearance, possibleActions);
+		init(new Subscriber(), ambient, physics, bounded, appearance,
+				possibleActions);
 	}
 
 	private void init(
 			AbstractSubscriber subscriber,
-			AbstractState state,
+			AbstractAmbient ambient,
 			AbstractPhysics physics,
 			Boolean bounded,
 			EnvironmentAppearance appearance,
 			Collection<Class<? extends AbstractEnvironmentalAction>> possibleActions) {
-		this.state = state;
+		this.ambient = ambient;
 		this.physics = physics;
 		this.bounded = bounded;
 		this.appearance = appearance;
-		this.id = this.appearance.getId(); // TODO should this be true?
 		this.physics.setEnvironment(this);
 		this.subscriber = subscriber;
 		this.subscriber.setPossibleActions(possibleActions);
-		this.state.getAgents().forEach((AbstractAgent agent) -> {
+		this.ambient.getAgents().forEach((AbstractAgent agent) -> {
 			agent.setEnvironment(this);
 			this.subscribe(agent, representSensors(agent.getSensors()));
 		});
-		this.state.getActiveBodies().forEach((ActiveBody body) -> {
+		this.ambient.getActiveBodies().forEach((ActiveBody body) -> {
 			body.setEnvironment(this);
 			this.subscribe(body, representSensors(body.getSensors()));
 		});
@@ -110,16 +120,16 @@ public abstract class AbstractEnvironment implements Environment, Container {
 		sensor.notify(perception);
 	}
 
-	public abstract boolean isDistributed();
-
 	@Override
-	public synchronized void updateState(AbstractEnvironmentalAction action) {
-		state.filterAction(action);
+	public synchronized void updateAmbient(AbstractEnvironmentalAction action) {
+		ambient.filterAction(action);
 	}
 
+	// TODO shift functionality to AbstractPhysics, the checkPerceivable method
+	// should also be moved
 	public void notify(AbstractEnvironmentalAction action,
 			ActiveBodyAppearance toNotify,
-			Collection<AbstractPerception<?>> perceptions, State context) {
+			Collection<AbstractPerception<?>> perceptions, Ambient context) {
 		Map<Class<? extends AbstractPerception>, Set<AbstractSensor>> sensors = subscriber
 				.findSensors(toNotify, action);
 		for (AbstractPerception<?> perception : perceptions) {
@@ -141,13 +151,13 @@ public abstract class AbstractEnvironment implements Environment, Container {
 	}
 
 	@Override
-	public AbstractState getState() {
-		return this.state;
+	public AbstractAmbient getState() {
+		return this.ambient;
 	}
 
 	@Override
-	public void setState(State state) {
-		this.state = (AbstractState) state;
+	public void setState(Ambient state) {
+		this.ambient = (AbstractAmbient) state;
 	}
 
 	@Override
@@ -189,14 +199,14 @@ public abstract class AbstractEnvironment implements Environment, Container {
 	}
 
 	protected boolean checkPerceivable(AbstractSensor sensor,
-			AbstractPerception<?> perception, State context) {
+			AbstractPerception<?> perception, Ambient context) {
 		try {
 			return (boolean) this
 					.getPhysics()
 					.getClass()
 					.getMethod(ReflectiveMethodStore.PERCEIVABLE,
 							sensor.getClass(), AbstractPerception.class,
-							State.class)
+							Ambient.class)
 					.invoke(this.getPhysics(), sensor, perception, context);
 		} catch (NoSuchMethodException | SecurityException
 				| IllegalAccessException | IllegalArgumentException e) {
@@ -213,7 +223,7 @@ public abstract class AbstractEnvironment implements Environment, Container {
 							+ ","
 							+ AbstractPerception.class.getSimpleName()
 							+ ","
-							+ State.class.getSimpleName() + ")");
+							+ Ambient.class.getSimpleName() + ")");
 			e.printStackTrace();
 		} catch (InvocationTargetException e) {
 			e.getTargetException().printStackTrace();
@@ -223,12 +233,12 @@ public abstract class AbstractEnvironment implements Environment, Container {
 
 	@Override
 	public String getId() {
-		return this.id;
+		return this.appearance.getId();
 	}
 
 	@Override
 	public void setId(String id) {
-		this.id = id;
+		this.appearance.setId(id);
 	}
 
 	@Override
