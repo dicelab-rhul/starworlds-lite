@@ -1,7 +1,7 @@
 package uk.ac.rhul.cs.dice.starworlds.environment.physics.time;
 
-import uk.ac.rhul.cs.dice.starworlds.environment.inet.INetEnvironmentConnection;
-import uk.ac.rhul.cs.dice.starworlds.environment.inet.SynchronisationMessage;
+import uk.ac.rhul.cs.dice.starworlds.environment.interaction.inet.INetEnvironmentConnection;
+import uk.ac.rhul.cs.dice.starworlds.environment.interaction.inet.SynchronisationMessage;
 
 public class RemoteSynchroniser implements Runnable {
 

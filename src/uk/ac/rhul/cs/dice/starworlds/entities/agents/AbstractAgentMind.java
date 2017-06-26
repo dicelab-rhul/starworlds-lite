@@ -18,8 +18,8 @@ import uk.ac.rhul.cs.dice.starworlds.entities.agents.components.concrete.Physica
 import uk.ac.rhul.cs.dice.starworlds.entities.agents.components.concrete.SeeingSensor;
 import uk.ac.rhul.cs.dice.starworlds.entities.agents.components.concrete.SpeechActuator;
 import uk.ac.rhul.cs.dice.starworlds.entities.agents.concrete.DefaultAgentMind;
-import uk.ac.rhul.cs.dice.starworlds.environment.base.interfaces.Environment;
-import uk.ac.rhul.cs.dice.starworlds.environment.base.interfaces.Ambient;
+import uk.ac.rhul.cs.dice.starworlds.environment.ambient.Ambient;
+import uk.ac.rhul.cs.dice.starworlds.environment.interfaces.Environment;
 import uk.ac.rhul.cs.dice.starworlds.environment.physics.Physics;
 import uk.ac.rhul.cs.dice.starworlds.parser.DefaultConstructorStore.DefaultConstructor;
 import uk.ac.rhul.cs.dice.starworlds.perception.Perception;

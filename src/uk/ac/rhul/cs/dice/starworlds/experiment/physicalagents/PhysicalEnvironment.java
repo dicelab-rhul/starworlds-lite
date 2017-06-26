@@ -3,9 +3,9 @@ package uk.ac.rhul.cs.dice.starworlds.experiment.physicalagents;
 import java.util.Collection;
 
 import uk.ac.rhul.cs.dice.starworlds.actions.environmental.AbstractEnvironmentalAction;
-import uk.ac.rhul.cs.dice.starworlds.environment.base.AbstractConnectedEnvironment;
-import uk.ac.rhul.cs.dice.starworlds.environment.base.AbstractAmbient;
+import uk.ac.rhul.cs.dice.starworlds.environment.ambient.AbstractAmbient;
 import uk.ac.rhul.cs.dice.starworlds.environment.concrete.DefaultUniverse;
+import uk.ac.rhul.cs.dice.starworlds.environment.interfaces.AbstractConnectedEnvironment;
 import uk.ac.rhul.cs.dice.starworlds.environment.physics.AbstractConnectedPhysics;
 
 public class PhysicalEnvironment extends DefaultUniverse {

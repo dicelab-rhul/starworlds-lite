@@ -1,4 +1,4 @@
-package uk.ac.rhul.cs.dice.starworlds.environment.base;
+package uk.ac.rhul.cs.dice.starworlds.environment.ambient;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -8,24 +8,23 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 
 import uk.ac.rhul.cs.dice.starworlds.actions.environmental.AbstractEnvironmentalAction;
 import uk.ac.rhul.cs.dice.starworlds.actions.environmental.CommunicationAction;
 import uk.ac.rhul.cs.dice.starworlds.actions.environmental.PhysicalAction;
 import uk.ac.rhul.cs.dice.starworlds.actions.environmental.SensingAction;
-import uk.ac.rhul.cs.dice.starworlds.appearances.Appearance;
-import uk.ac.rhul.cs.dice.starworlds.appearances.PhysicalBodyAppearance;
 import uk.ac.rhul.cs.dice.starworlds.entities.ActiveBody;
 import uk.ac.rhul.cs.dice.starworlds.entities.Agent;
 import uk.ac.rhul.cs.dice.starworlds.entities.Entity;
 import uk.ac.rhul.cs.dice.starworlds.entities.PassiveBody;
-import uk.ac.rhul.cs.dice.starworlds.entities.PhysicalBody;
 import uk.ac.rhul.cs.dice.starworlds.entities.agents.AbstractAgent;
 import uk.ac.rhul.cs.dice.starworlds.entities.agents.components.Actuator;
 import uk.ac.rhul.cs.dice.starworlds.entities.agents.components.Sensor;
-import uk.ac.rhul.cs.dice.starworlds.environment.base.interfaces.Ambient;
+import uk.ac.rhul.cs.dice.starworlds.environment.ambient.filter.AppearanceFilter;
+import uk.ac.rhul.cs.dice.starworlds.environment.ambient.filter.Filter;
+import uk.ac.rhul.cs.dice.starworlds.environment.ambient.filter.RandomFilter;
+import uk.ac.rhul.cs.dice.starworlds.environment.ambient.filter.SelfFilter;
 import uk.ac.rhul.cs.dice.starworlds.environment.physics.Physics;
 import uk.ac.rhul.cs.dice.starworlds.parser.DefaultConstructorStore.DefaultConstructor;
 import uk.ac.rhul.cs.dice.starworlds.utils.Pair;
@@ -68,15 +67,15 @@ public abstract class AbstractAmbient implements Ambient {
 	 * Initialises the default environment variables, namely, {@link Agent}s,
 	 * {@link ActiveBody}s, {@link PassiveBody}s. This method should be
 	 * Overridden if a user wishes to add more environment variables. When
-	 * adding more use the {@link Ambient#addEnvironmentVariable(String, Object)}
-	 * method.
+	 * adding more use the
+	 * {@link Ambient#addEnvironmentVariable(String, Object)} method.
 	 */
 	protected void initialiseEnvironmentVariables(Set<AbstractAgent> agents,
 			Set<ActiveBody> activeBodies, Set<PassiveBody> passiveBodies) {
 		environmentVariables.put(AGENTSKEY, agents);
 		environmentVariables.put(ACTIVEBODIESKEY, activeBodies);
 		environmentVariables.put(PASSIVEBODIESKEY, passiveBodies);
-		filters.put(RANDOM, new RandomEnvironmentVariable());
+		filters.put(RANDOM, new RandomFilter());
 		filters.put(SELF, new SelfFilter());
 		filters.put(APPEARANCEFILTER, new AppearanceFilter());
 	}
@@ -268,71 +267,6 @@ public abstract class AbstractAmbient implements Ambient {
 					+ action.getClass());
 			Thread.dumpStack();
 		}
-	}
-
-	private class RandomEnvironmentVariable implements Filter {
-
-		// private Random random = new Random();
-
-		@Override
-		public Object get(SensingAction action, Object... args) {
-			// we dont need the action for this
-			if (Collection.class.isAssignableFrom(args[0].getClass())) {
-				Collection<?> col = (Collection<?>) args[0];
-				Optional<?> o = col.stream()
-						.skip((long) (Math.random() * col.size())).findAny();
-				if (o != null) {
-					if (o.isPresent()) {
-						return o.get();
-					} else {
-						return null;
-					}
-				}
-			}
-			variablemissuse(this);
-			return null;
-		}
-	}
-
-	private class SelfFilter extends AppearanceFilter {
-		@Override
-		public Set<Appearance> get(SensingAction action, Object... args) {
-			Set<Appearance> self = new HashSet<>();
-			self.add(action.getActor());
-			return self;
-		}
-	}
-
-	public class AppearanceFilter implements Filter {
-
-		@Override
-		public Set<Appearance> get(SensingAction action, Object... args) {
-			Set<Appearance> appearances = new HashSet<>();
-			if (Collection.class.isAssignableFrom(args[0].getClass())) {
-				Collection<?> col = (Collection<?>) args[0];
-				PhysicalBodyAppearance actor = action.getActor();
-				col.forEach((Object o) -> {
-					PhysicalBody body = (PhysicalBody) o;
-					if (!body.getAppearance().equals(actor)) {
-						appearances.add(body.getAppearance());
-					}
-				});
-				return appearances;
-			} else if (PhysicalBody.class.isAssignableFrom(args[0].getClass())) {
-				appearances.add(((PhysicalBody) args[0]).getAppearance());
-				return appearances;
-			}
-			variablemissuse(this);
-			return null;
-		}
-	}
-
-	public interface Filter {
-		public Object get(SensingAction action, Object... args);
-	}
-
-	private void variablemissuse(Filter fev) {
-		System.err.println("MISSUSE OF FUNCTIONAL ENVIRONMENT VARIABLE " + fev);
 	}
 
 	private <T extends Entity> Map<String, T> setToMap(Set<T> set) {

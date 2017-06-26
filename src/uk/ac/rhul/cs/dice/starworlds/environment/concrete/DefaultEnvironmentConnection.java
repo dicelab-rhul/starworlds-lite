@@ -1,8 +1,8 @@
 package uk.ac.rhul.cs.dice.starworlds.environment.concrete;
 
 import uk.ac.rhul.cs.dice.starworlds.appearances.EnvironmentAppearance;
-import uk.ac.rhul.cs.dice.starworlds.environment.base.AbstractEnvironmentConnection;
-import uk.ac.rhul.cs.dice.starworlds.environment.base.interfaces.Message;
+import uk.ac.rhul.cs.dice.starworlds.environment.interaction.AbstractEnvironmentConnection;
+import uk.ac.rhul.cs.dice.starworlds.environment.interaction.Event;
 
 public class DefaultEnvironmentConnection extends AbstractEnvironmentConnection {
 
@@ -18,12 +18,12 @@ public class DefaultEnvironmentConnection extends AbstractEnvironmentConnection 
 	}
 
 	@Override
-	public void send(Message<?> obj) {
+	public void send(Event<?> obj) {
 		super.send(obj);
 	}
 
 	@Override
-	public void receive(Message<?> obj) {
+	public void receive(Event<?> obj) {
 		if (isOpen()) {
 			this.notifyReceivers(obj);
 		}

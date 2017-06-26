@@ -2,7 +2,7 @@ package uk.ac.rhul.cs.dice.starworlds.MVC;
 
 import java.util.Observer;
 
-import uk.ac.rhul.cs.dice.starworlds.environment.base.interfaces.Universe;
+import uk.ac.rhul.cs.dice.starworlds.environment.interfaces.Universe;
 
 /**
  * The interface for the Controller module of the MVC pattern. The

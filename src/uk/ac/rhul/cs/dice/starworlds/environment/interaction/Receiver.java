@@ -1,6 +1,5 @@
-package uk.ac.rhul.cs.dice.starworlds.environment.base;
+package uk.ac.rhul.cs.dice.starworlds.environment.interaction;
 
-import uk.ac.rhul.cs.dice.starworlds.environment.base.interfaces.Message;
 
 /**
  * A simple Observer class that should
@@ -14,6 +13,6 @@ import uk.ac.rhul.cs.dice.starworlds.environment.base.interfaces.Message;
  */
 public interface Receiver {
 
-	public void receive(Recipient recipient, Message<?> message);
+	public void receive(Recipient recipient, Event<?> message);
 
 }

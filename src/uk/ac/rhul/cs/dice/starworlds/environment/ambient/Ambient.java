@@ -1,4 +1,4 @@
-package uk.ac.rhul.cs.dice.starworlds.environment.base.interfaces;
+package uk.ac.rhul.cs.dice.starworlds.environment.ambient;
 
 import java.io.Serializable;
 import java.util.Collection;
@@ -11,8 +11,7 @@ import uk.ac.rhul.cs.dice.starworlds.actions.environmental.SensingAction;
 import uk.ac.rhul.cs.dice.starworlds.entities.ActiveBody;
 import uk.ac.rhul.cs.dice.starworlds.entities.PassiveBody;
 import uk.ac.rhul.cs.dice.starworlds.entities.agents.AbstractAgent;
-import uk.ac.rhul.cs.dice.starworlds.environment.base.AbstractAmbient;
-import uk.ac.rhul.cs.dice.starworlds.environment.base.AbstractAmbient.Filter;
+import uk.ac.rhul.cs.dice.starworlds.environment.ambient.filter.Filter;
 import uk.ac.rhul.cs.dice.starworlds.environment.physics.Physics;
 import uk.ac.rhul.cs.dice.starworlds.utils.Pair;
 

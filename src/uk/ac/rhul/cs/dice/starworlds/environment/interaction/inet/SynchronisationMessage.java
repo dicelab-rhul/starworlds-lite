@@ -1,4 +1,4 @@
-package uk.ac.rhul.cs.dice.starworlds.environment.inet;
+package uk.ac.rhul.cs.dice.starworlds.environment.interaction.inet;
 
 import uk.ac.rhul.cs.dice.starworlds.environment.physics.time.RemoteSynchroniser.SyncPoint;
 

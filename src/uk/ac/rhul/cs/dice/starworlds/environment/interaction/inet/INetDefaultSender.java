@@ -1,4 +1,4 @@
-package uk.ac.rhul.cs.dice.starworlds.environment.inet;
+package uk.ac.rhul.cs.dice.starworlds.environment.interaction.inet;
 
 import java.net.Socket;
 

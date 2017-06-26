@@ -1,4 +1,4 @@
-package uk.ac.rhul.cs.dice.starworlds.environment.base;
+package uk.ac.rhul.cs.dice.starworlds.environment.interaction;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -8,13 +8,14 @@ import java.util.Observable;
 import java.util.Observer;
 
 import uk.ac.rhul.cs.dice.starworlds.appearances.EnvironmentAppearance;
-import uk.ac.rhul.cs.dice.starworlds.environment.base.AbstractConnectedEnvironment.AmbientRelation;
-import uk.ac.rhul.cs.dice.starworlds.environment.base.interfaces.Environment;
-import uk.ac.rhul.cs.dice.starworlds.environment.base.interfaces.Message;
 import uk.ac.rhul.cs.dice.starworlds.environment.concrete.DefaultEnvironmentConnection;
-import uk.ac.rhul.cs.dice.starworlds.environment.inet.INetDefaultServer;
-import uk.ac.rhul.cs.dice.starworlds.environment.inet.INetEnvironmentConnection;
-import uk.ac.rhul.cs.dice.starworlds.environment.inet.InitialisationMessage;
+import uk.ac.rhul.cs.dice.starworlds.environment.interaction.inet.INetDefaultServer;
+import uk.ac.rhul.cs.dice.starworlds.environment.interaction.inet.INetEnvironmentConnection;
+import uk.ac.rhul.cs.dice.starworlds.environment.interaction.inet.InitialisationMessage;
+import uk.ac.rhul.cs.dice.starworlds.environment.interfaces.AbstractConnectedEnvironment;
+import uk.ac.rhul.cs.dice.starworlds.environment.interfaces.AbstractEnvironment;
+import uk.ac.rhul.cs.dice.starworlds.environment.interfaces.Environment;
+import uk.ac.rhul.cs.dice.starworlds.environment.interfaces.AbstractConnectedEnvironment.AmbientRelation;
 import uk.ac.rhul.cs.dice.starworlds.utils.inet.INetServer;
 import uk.ac.rhul.cs.dice.starworlds.utils.inet.INetSlave;
 
@@ -26,7 +27,7 @@ public class EnvironmentConnectionManager implements Receiver, Observer {
 	protected AbstractEnvironmentConnection superEnvironmentConnection;
 
 	protected INetServer server;
-	protected Map<EnvironmentAppearance, Collection<Message<?>>> recievedMessages;
+	protected Map<EnvironmentAppearance, Collection<Event<?>>> recievedMessages;
 
 	/**
 	 * Constructor specifically for mixed connections.
@@ -44,7 +45,6 @@ public class EnvironmentConnectionManager implements Receiver, Observer {
 	 */
 	public EnvironmentConnectionManager(
 			AbstractConnectedEnvironment localenvironment,
-			AbstractConnectedEnvironment localsuperenvironment,
 			Collection<AbstractConnectedEnvironment> localsubenvironments,
 			Collection<AbstractConnectedEnvironment> localneighbouringenvironments,
 			Integer port) {
@@ -102,12 +102,12 @@ public class EnvironmentConnectionManager implements Receiver, Observer {
 	/**
 	 * unused?
 	 */
-	public Map<EnvironmentAppearance, Collection<Message<?>>> flushMessages() {
-		Map<EnvironmentAppearance, Collection<Message<?>>> result = new HashMap<>();
+	public Map<EnvironmentAppearance, Collection<Event<?>>> flushMessages() {
+		Map<EnvironmentAppearance, Collection<Event<?>>> result = new HashMap<>();
 		// TODO if a message is received while this is happening? will it fail?
 		// i dont know!
 		recievedMessages.forEach((EnvironmentAppearance app,
-				Collection<Message<?>> messages) -> {
+				Collection<Event<?>> messages) -> {
 			if (!messages.isEmpty()) {
 				result.put(app, messages);
 				recievedMessages.put(app, new ArrayList<>());
@@ -174,7 +174,7 @@ public class EnvironmentConnectionManager implements Receiver, Observer {
 	}
 
 	@Override
-	public synchronized void receive(Recipient recipient, Message<?> message) {
+	public synchronized void receive(Recipient recipient, Event<?> message) {
 		if (InitialisationMessage.class.isAssignableFrom(message.getClass())) {
 			if (INetEnvironmentConnection.class.isAssignableFrom(recipient
 					.getClass())) {
@@ -277,14 +277,14 @@ public class EnvironmentConnectionManager implements Receiver, Observer {
 		return this.superEnvironmentConnection;
 	}
 
-	public void sendToAllNeighbouringEnvironments(Message<?> obj) {
+	public void sendToAllNeighbouringEnvironments(Event<?> obj) {
 		neighbouringEnvironmentConnections.values().forEach(
 				(AbstractEnvironmentConnection c) -> {
 					c.send(obj);
 				});
 	}
 
-	public void sendToAllSubEnvironments(Message<?> obj) {
+	public void sendToAllSubEnvironments(Event<?> obj) {
 		subEnvironmentConnections.values().forEach(
 				(AbstractEnvironmentConnection c) -> {
 					c.send(obj);
@@ -292,7 +292,7 @@ public class EnvironmentConnectionManager implements Receiver, Observer {
 	}
 
 	public void sendToEnvironment(EnvironmentAppearance environment,
-			Message<?> obj) {
+			Event<?> obj) {
 		AbstractEnvironmentConnection con;
 		if ((con = subEnvironmentConnections.get(environment)) != null) {
 			con.send(obj);
@@ -308,7 +308,7 @@ public class EnvironmentConnectionManager implements Receiver, Observer {
 	}
 
 	public void sendToEnvironments(
-			Collection<EnvironmentAppearance> environments, Message<?> obj) {
+			Collection<EnvironmentAppearance> environments, Event<?> obj) {
 		if (environments != null) {
 			System.out.println(localenvironment + " SEND: " + obj + " TO: "
 					+ environments);
@@ -332,16 +332,16 @@ public class EnvironmentConnectionManager implements Receiver, Observer {
 	}
 
 	public void sendToNeighbouringEnvironment(EnvironmentAppearance appearance,
-			Message<?> obj) {
+			Event<?> obj) {
 		neighbouringEnvironmentConnections.get(appearance).send(obj);
 	}
 
 	public void sendToSubEnvironment(EnvironmentAppearance appearance,
-			Message<?> obj) {
+			Event<?> obj) {
 		subEnvironmentConnections.get(appearance).send(obj);
 	}
 
-	public void sendToSuperEnvironment(Message<?> obj) {
+	public void sendToSuperEnvironment(Event<?> obj) {
 		superEnvironmentConnection.send(obj);
 	}
 

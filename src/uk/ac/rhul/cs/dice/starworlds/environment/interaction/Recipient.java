@@ -1,9 +1,7 @@
-package uk.ac.rhul.cs.dice.starworlds.environment.base;
+package uk.ac.rhul.cs.dice.starworlds.environment.interaction;
 
 import java.util.HashSet;
 import java.util.Set;
-
-import uk.ac.rhul.cs.dice.starworlds.environment.base.interfaces.Message;
 
 /**
  * A simple Observable class that contains some {@link Receiver}s who should be
@@ -21,7 +19,7 @@ public abstract class Recipient {
 		receivers = new HashSet<>();
 	}
 
-	public void notifyReceivers(Message<?> message) {
+	public void notifyReceivers(Event<?> message) {
 		for (Receiver r : receivers) {
 			r.receive(this, message);
 		}

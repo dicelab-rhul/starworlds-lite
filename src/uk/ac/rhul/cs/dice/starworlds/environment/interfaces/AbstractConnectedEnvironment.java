@@ -1,4 +1,4 @@
-package uk.ac.rhul.cs.dice.starworlds.environment.base;
+package uk.ac.rhul.cs.dice.starworlds.environment.interfaces;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -14,15 +14,14 @@ import uk.ac.rhul.cs.dice.starworlds.actions.environmental.SensingAction;
 import uk.ac.rhul.cs.dice.starworlds.appearances.ActiveBodyAppearance;
 import uk.ac.rhul.cs.dice.starworlds.appearances.Appearance;
 import uk.ac.rhul.cs.dice.starworlds.appearances.EnvironmentAppearance;
-import uk.ac.rhul.cs.dice.starworlds.entities.agents.components.Sensor;
-import uk.ac.rhul.cs.dice.starworlds.environment.base.interfaces.Ambient;
-import uk.ac.rhul.cs.dice.starworlds.environment.base.interfaces.CommandMessage;
-import uk.ac.rhul.cs.dice.starworlds.environment.base.interfaces.Environment;
-import uk.ac.rhul.cs.dice.starworlds.environment.base.interfaces.Message;
-import uk.ac.rhul.cs.dice.starworlds.environment.inet.INetDefaultMessage;
+import uk.ac.rhul.cs.dice.starworlds.environment.ambient.AbstractAmbient;
+import uk.ac.rhul.cs.dice.starworlds.environment.ambient.Ambient;
+import uk.ac.rhul.cs.dice.starworlds.environment.interaction.CommandEvent;
+import uk.ac.rhul.cs.dice.starworlds.environment.interaction.EnvironmentConnectionManager;
+import uk.ac.rhul.cs.dice.starworlds.environment.interaction.Event;
+import uk.ac.rhul.cs.dice.starworlds.environment.interaction.inet.INetDefaultMessage;
 import uk.ac.rhul.cs.dice.starworlds.environment.physics.AbstractConnectedPhysics;
 import uk.ac.rhul.cs.dice.starworlds.environment.physics.Physics;
-import uk.ac.rhul.cs.dice.starworlds.environment.subscriber.AbstractSubscriber;
 import uk.ac.rhul.cs.dice.starworlds.perception.AbstractPerception;
 import uk.ac.rhul.cs.dice.starworlds.utils.Pair;
 
@@ -70,7 +69,7 @@ public abstract class AbstractConnectedEnvironment extends AbstractEnvironment {
 	 * {@link AbstractConnectedEnvironment}s will be local.
 	 * 
 	 * @param subenvironments
-	 *            the sub-{@link Environment}s of this {@link Environment}
+	 *            : the sub-{@link Environment}s of this {@link Environment}
 	 * @param neighbouringenvironments
 	 *            : the neighbouring-{@link Environment}s of this
 	 *            {@link Environment}
@@ -78,21 +77,24 @@ public abstract class AbstractConnectedEnvironment extends AbstractEnvironment {
 	 *            : a {@link Ambient} instance.
 	 * @param physics
 	 *            : the {@link Physics} of the environment.
+	 * @param appearance
+	 *            : the {@link Appearance} of the environment.
+	 * @param possibleActions
+	 *            : the {@link Collection} of {@link Action}s that are possible
+	 *            in this {@link Environment}
 	 * @param bounded
 	 *            : a {@link Boolean} value indicating whether the environment
 	 *            is bounded or not.
-	 * @param appearance
-	 *            : the {@link Appearance} of the environment.
 	 */
 	public AbstractConnectedEnvironment(
 			Collection<AbstractConnectedEnvironment> subenvironments,
 			Collection<AbstractConnectedEnvironment> neighbouringenvironments,
 			AbstractAmbient ambient,
 			AbstractConnectedPhysics physics,
-			Boolean bounded,
 			EnvironmentAppearance appearance,
-			Collection<Class<? extends AbstractEnvironmentalAction>> possibleActions) {
-		super(ambient, physics, bounded, appearance, possibleActions);
+			Collection<Class<? extends AbstractEnvironmentalAction>> possibleActions,
+			Boolean bounded) {
+		super(ambient, physics, appearance, possibleActions, bounded);
 		this.envconManager = new EnvironmentConnectionManager(this,
 				subenvironments, neighbouringenvironments);
 		physics.initSynchroniser(subenvironments, neighbouringenvironments);
@@ -111,23 +113,24 @@ public abstract class AbstractConnectedEnvironment extends AbstractEnvironment {
 	 *            : a {@link Ambient} instance.
 	 * @param physics
 	 *            : the {@link Physics} of the environment.
-	 * @param bounded
-	 *            : a {@link Boolean} value indicating whether the environment
-	 *            is bounded or not.
+	 * 
 	 * @param appearance
 	 *            : the {@link Appearance} of the environment.
 	 * @param possibleActions
 	 *            : a {@link Collection} of {@link Action}s that are possible in
 	 *            this {@link Environment}
+	 * @param bounded
+	 *            : a {@link Boolean} value indicating whether the environment
+	 *            is bounded or not.
 	 */
 	public AbstractConnectedEnvironment(
 			Integer port,
 			AbstractAmbient ambient,
 			AbstractConnectedPhysics physics,
-			Boolean bounded,
 			EnvironmentAppearance appearance,
-			Collection<Class<? extends AbstractEnvironmentalAction>> possibleActions) {
-		super(ambient, physics, bounded, appearance, possibleActions);
+			Collection<Class<? extends AbstractEnvironmentalAction>> possibleActions,
+			Boolean bounded) {
+		super(ambient, physics, appearance, possibleActions, bounded);
 		this.envconManager = new EnvironmentConnectionManager(this, port);
 		physics.initSynchroniser();
 		initialiseMessageProcessors();
@@ -135,47 +138,45 @@ public abstract class AbstractConnectedEnvironment extends AbstractEnvironment {
 	}
 
 	/**
-	 * Constructor. This Constructor allows local and remote
-	 * {@link AbstractConnectedEnvironment}s to connect to this one. Remote
-	 * environments should connect via the give port.
-	 * 
-	 * @param superenvironment
-	 *            : the super-{@link Environment} of this {@link Environment}
+	 * Constructor. This Constructor allows local and remote {@link Environment}
+	 * s to connect to this one. Remote {@link Environment}s should connect via
+	 * the give port.
+	 *
 	 * @param subenvironments
-	 *            the sub-{@link Environment}s of this {@link Environment}
+	 *            : the sub-{@link Environment}s of this {@link Environment}
 	 * @param neighbouringenvironments
 	 *            : the neighbouring-{@link Environment}s of this
 	 *            {@link Environment}
 	 * @param port
 	 *            : the port that any remote {@link Environment} will try to
 	 *            make connections to
-	 * @param subscriber
-	 *            : used to manage {@link Sensor}s in the system.
 	 * @param ambient
 	 *            : a {@link Ambient} instance.
 	 * @param physics
 	 *            : the {@link Physics} of the environment.
+	 * 
+	 * @param appearance
+	 *            : the {@link Appearance} of the environment.
+	 * @param possibleActions
+	 *            : a {@link Collection} of {@link Action}s that are possible in
+	 *            this {@link Environment}
 	 * @param bounded
 	 *            : a {@link Boolean} value indicating whether the environment
 	 *            is bounded or not.
-	 * @param appearance
-	 *            : the {@link Appearance} of the environment.
 	 */
 	public AbstractConnectedEnvironment(
-			AbstractConnectedEnvironment superenvironment,
 			Collection<AbstractConnectedEnvironment> subenvironments,
 			Collection<AbstractConnectedEnvironment> neighbouringenvironments,
 			Integer port,
-			AbstractSubscriber subscriber,
 			AbstractAmbient ambient,
 			AbstractConnectedPhysics physics,
-			Boolean bounded,
+
 			EnvironmentAppearance appearance,
-			Collection<Class<? extends AbstractEnvironmentalAction>> possibleActions) {
-		super(ambient, physics, bounded, appearance, possibleActions);
+			Collection<Class<? extends AbstractEnvironmentalAction>> possibleActions,
+			Boolean bounded) {
+		super(ambient, physics, appearance, possibleActions, bounded);
 		this.envconManager = new EnvironmentConnectionManager(this,
-				superenvironment, subenvironments, neighbouringenvironments,
-				port);
+				subenvironments, neighbouringenvironments, port);
 		physics.initSynchroniser(subenvironments, neighbouringenvironments);
 		initialConnections = new HashMap<>();
 	}
@@ -191,11 +192,11 @@ public abstract class AbstractConnectedEnvironment extends AbstractEnvironment {
 	}
 
 	public void handleMessage(EnvironmentAppearance appearance,
-			Message<?> message) {
+			Event<?> message) {
 		// System.out.println(this.appearance + " HANDLE MESSAGE: " + message
 		// + System.lineSeparator() + "   FROM: " + appearance);
-		if (CommandMessage.class.isAssignableFrom(message.getClass())) {
-			CommandMessage<?> cm = (CommandMessage<?>) message;
+		if (CommandEvent.class.isAssignableFrom(message.getClass())) {
+			CommandEvent<?> cm = (CommandEvent<?>) message;
 			messageProcessors.get(cm.getCommand()).process(appearance,
 					cm.getCommandPayload());
 		} else {
@@ -205,13 +206,13 @@ public abstract class AbstractConnectedEnvironment extends AbstractEnvironment {
 
 	/**
 	 * This method should process any messages that the default processor cannot
-	 * handle. I.e. any message that is other than {@link CommandMessage}.
+	 * handle. I.e. any message that is other than {@link CommandEvent}.
 	 * 
 	 * @param appearance
 	 * @param message
 	 */
 	public abstract void handleCustomMessage(EnvironmentAppearance appearance,
-			Message<?> message);
+			Event<?> message);
 
 	/**
 	 * This method is called after all {@link Environment}s have been created

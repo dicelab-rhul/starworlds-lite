@@ -1,15 +1,15 @@
-package uk.ac.rhul.cs.dice.starworlds.environment.inet;
+package uk.ac.rhul.cs.dice.starworlds.environment.interaction.inet;
 
 import java.io.Serializable;
 
 import uk.ac.rhul.cs.dice.starworlds.appearances.Appearance;
 import uk.ac.rhul.cs.dice.starworlds.appearances.EnvironmentAppearance;
-import uk.ac.rhul.cs.dice.starworlds.environment.base.AbstractConnectedEnvironment.AmbientRelation;
-import uk.ac.rhul.cs.dice.starworlds.environment.base.interfaces.Environment;
-import uk.ac.rhul.cs.dice.starworlds.environment.base.interfaces.Message;
+import uk.ac.rhul.cs.dice.starworlds.environment.interaction.Event;
+import uk.ac.rhul.cs.dice.starworlds.environment.interfaces.Environment;
+import uk.ac.rhul.cs.dice.starworlds.environment.interfaces.AbstractConnectedEnvironment.AmbientRelation;
 
 /**
- * The class of {@link Message} that should be sent during initialisation of
+ * The class of {@link Event} that should be sent during initialisation of
  * connections between {@link Environment}s. This class holds the appearance of
  * the sending {@link Environment} and the {@link AmbientRelation} that
  * describes the relation between the two connected environments. TODO However

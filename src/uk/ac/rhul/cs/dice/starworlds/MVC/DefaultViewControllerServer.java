@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.net.Socket;
 import java.net.SocketAddress;
 
-import uk.ac.rhul.cs.dice.starworlds.environment.base.interfaces.Universe;
+import uk.ac.rhul.cs.dice.starworlds.environment.interfaces.Universe;
 import uk.ac.rhul.cs.dice.starworlds.utils.inet.INetServer;
 import uk.ac.rhul.cs.dice.starworlds.utils.inet.INetSlave;
 import uk.ac.rhul.cs.dice.starworlds.utils.inet.sendreceive.INetByteReceiver;

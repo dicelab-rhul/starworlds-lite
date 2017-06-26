@@ -1,4 +1,4 @@
-package uk.ac.rhul.cs.dice.starworlds.environment.base;
+package uk.ac.rhul.cs.dice.starworlds.environment.interfaces;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
@@ -16,9 +16,8 @@ import uk.ac.rhul.cs.dice.starworlds.entities.ActiveBody;
 import uk.ac.rhul.cs.dice.starworlds.entities.agents.AbstractAgent;
 import uk.ac.rhul.cs.dice.starworlds.entities.agents.components.AbstractSensor;
 import uk.ac.rhul.cs.dice.starworlds.entities.agents.components.Sensor;
-import uk.ac.rhul.cs.dice.starworlds.environment.base.interfaces.Container;
-import uk.ac.rhul.cs.dice.starworlds.environment.base.interfaces.Environment;
-import uk.ac.rhul.cs.dice.starworlds.environment.base.interfaces.Ambient;
+import uk.ac.rhul.cs.dice.starworlds.environment.ambient.AbstractAmbient;
+import uk.ac.rhul.cs.dice.starworlds.environment.ambient.Ambient;
 import uk.ac.rhul.cs.dice.starworlds.environment.physics.AbstractPhysics;
 import uk.ac.rhul.cs.dice.starworlds.environment.physics.Physics;
 import uk.ac.rhul.cs.dice.starworlds.environment.subscriber.AbstractSubscriber;
@@ -36,7 +35,7 @@ import uk.ac.rhul.cs.dice.starworlds.perception.AbstractPerception;
  *
  */
 public abstract class AbstractEnvironment extends Observable implements
-		Environment, Container {
+		Environment {
 
 	protected AbstractAmbient ambient;
 	protected AbstractPhysics physics;
@@ -46,31 +45,34 @@ public abstract class AbstractEnvironment extends Observable implements
 
 	/**
 	 * Constructor. The {@link Appearance} of this {@link AbstractEnvironment}
-	 * defaults to an {@link EnvironmentAppearance}.
+	 * defaults to an {@link EnvironmentAppearance}. The {@link Environment} is
+	 * unbounded by default.
 	 * 
 	 * @param ambient
+	 *            : a {@link Ambient} instance
 	 * @param physics
+	 *            : the {@link Physics} of the environment
 	 * @param possibleActions
+	 *            : the {@link Collection} of {@link Action}s that are possible
+	 *            in this {@link Environment}
+	 * 
 	 */
 	public AbstractEnvironment(
 			AbstractAmbient ambient,
 			AbstractPhysics physics,
 			Collection<Class<? extends AbstractEnvironmentalAction>> possibleActions) {
-		init(new Subscriber(), ambient, physics, false,
-				new EnvironmentAppearance(IDFactory.getInstance().getNewID(),
-						false, true), possibleActions);
+		init(new Subscriber(), ambient, physics, new EnvironmentAppearance(
+				IDFactory.getInstance().getNewID(), false, true),
+				possibleActions, false);
 	}
 
 	/**
-	 * Constructor.
+	 * Constructor. The {@link Environment} is unbounded by default.
 	 *
 	 * @param ambient
 	 *            : a {@link Ambient} instance
 	 * @param physics
 	 *            : the {@link Physics} of the environment
-	 * @param bounded
-	 *            : a {@link Boolean} value indicating whether the environment
-	 *            is bounded or not
 	 * @param appearance
 	 *            : the {@link Appearance} of the environment
 	 * @param possibleActions
@@ -80,20 +82,45 @@ public abstract class AbstractEnvironment extends Observable implements
 	public AbstractEnvironment(
 			AbstractAmbient ambient,
 			AbstractPhysics physics,
-			Boolean bounded,
 			EnvironmentAppearance appearance,
 			Collection<Class<? extends AbstractEnvironmentalAction>> possibleActions) {
-		init(new Subscriber(), ambient, physics, bounded, appearance,
-				possibleActions);
+		init(new Subscriber(), ambient, physics, appearance, possibleActions,
+				false);
+	}
+
+	/**
+	 * Constructor.
+	 *
+	 * @param ambient
+	 *            : a {@link Ambient} instance
+	 * @param physics
+	 *            : the {@link Physics} of the environment
+	 * @param appearance
+	 *            : the {@link Appearance} of the environment
+	 * @param possibleActions
+	 *            : the {@link Collection} of {@link Action}s that are possible
+	 *            in this {@link Environment}
+	 * @param bounded
+	 *            : a {@link Boolean} value indicating whether the environment
+	 *            is bounded or not
+	 */
+	public AbstractEnvironment(
+			AbstractAmbient ambient,
+			AbstractPhysics physics,
+			EnvironmentAppearance appearance,
+			Collection<Class<? extends AbstractEnvironmentalAction>> possibleActions,
+			Boolean bounded) {
+		init(new Subscriber(), ambient, physics, appearance, possibleActions,
+				bounded);
 	}
 
 	private void init(
 			AbstractSubscriber subscriber,
 			AbstractAmbient ambient,
 			AbstractPhysics physics,
-			Boolean bounded,
 			EnvironmentAppearance appearance,
-			Collection<Class<? extends AbstractEnvironmentalAction>> possibleActions) {
+			Collection<Class<? extends AbstractEnvironmentalAction>> possibleActions,
+			Boolean bounded) {
 		this.ambient = ambient;
 		this.physics = physics;
 		this.bounded = bounded;
@@ -130,6 +157,7 @@ public abstract class AbstractEnvironment extends Observable implements
 	public void notify(AbstractEnvironmentalAction action,
 			ActiveBodyAppearance toNotify,
 			Collection<AbstractPerception<?>> perceptions, Ambient context) {
+		@SuppressWarnings("rawtypes")
 		Map<Class<? extends AbstractPerception>, Set<AbstractSensor>> sensors = subscriber
 				.findSensors(toNotify, action);
 		for (AbstractPerception<?> perception : perceptions) {

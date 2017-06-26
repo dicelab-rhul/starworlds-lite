@@ -1,4 +1,4 @@
-package uk.ac.rhul.cs.dice.starworlds.environment.inet;
+package uk.ac.rhul.cs.dice.starworlds.environment.interaction.inet;
 
 import java.io.IOException;
 import java.util.Observable;
@@ -6,11 +6,11 @@ import java.util.Observer;
 
 import uk.ac.rhul.cs.dice.starworlds.appearances.Appearance;
 import uk.ac.rhul.cs.dice.starworlds.appearances.EnvironmentAppearance;
-import uk.ac.rhul.cs.dice.starworlds.environment.base.AbstractConnectedEnvironment.AmbientRelation;
-import uk.ac.rhul.cs.dice.starworlds.environment.base.AbstractEnvironmentConnection;
-import uk.ac.rhul.cs.dice.starworlds.environment.base.interfaces.Environment;
-import uk.ac.rhul.cs.dice.starworlds.environment.base.interfaces.EnvironmentConnection;
-import uk.ac.rhul.cs.dice.starworlds.environment.base.interfaces.Message;
+import uk.ac.rhul.cs.dice.starworlds.environment.interaction.AbstractEnvironmentConnection;
+import uk.ac.rhul.cs.dice.starworlds.environment.interaction.EnvironmentConnection;
+import uk.ac.rhul.cs.dice.starworlds.environment.interaction.Event;
+import uk.ac.rhul.cs.dice.starworlds.environment.interfaces.Environment;
+import uk.ac.rhul.cs.dice.starworlds.environment.interfaces.AbstractConnectedEnvironment.AmbientRelation;
 import uk.ac.rhul.cs.dice.starworlds.environment.physics.time.RemoteSynchroniser;
 import uk.ac.rhul.cs.dice.starworlds.utils.Pair;
 import uk.ac.rhul.cs.dice.starworlds.utils.inet.INetServer;
@@ -111,20 +111,20 @@ public class INetEnvironmentConnection extends AbstractEnvironmentConnection
 	}
 
 	@Override
-	public void send(Message<?> message) {
+	public void send(Event<?> message) {
 		slave.send(message);
 	}
 
-	public Message<?> sendAndWaitForReply(Message<?> message) {
-		return (Message<?>) slave.sendAndWaitForReply(message);
+	public Event<?> sendAndWaitForReply(Event<?> message) {
+		return (Event<?>) slave.sendAndWaitForReply(message);
 	}
 
-	public Message<?> sendAndWaitForReply(Message<?> message, Long timeout) {
-		return (Message<?>) slave.sendAndWaitForReply(message, timeout);
+	public Event<?> sendAndWaitForReply(Event<?> message, Long timeout) {
+		return (Event<?>) slave.sendAndWaitForReply(message, timeout);
 	}
 
 	@Override
-	public void receive(Message<?> message) {
+	public void receive(Event<?> message) {
 		// TODO optimise
 		if (InitialisationMessage.class.isAssignableFrom(message.getClass())) {
 			InitialisationMessage imessage = (InitialisationMessage) message;
@@ -175,7 +175,7 @@ public class INetEnvironmentConnection extends AbstractEnvironmentConnection
 
 	@Override
 	public void update(Observable o, Object arg) {
-		receive((Message<?>) arg);
+		receive((Event<?>) arg);
 	}
 
 	/**

@@ -1,6 +1,6 @@
 package uk.ac.rhul.cs.dice.starworlds.experiment.communicatingagents;
 
-import uk.ac.rhul.cs.dice.starworlds.environment.base.AbstractConnectedEnvironment;
+import uk.ac.rhul.cs.dice.starworlds.environment.interfaces.AbstractConnectedEnvironment;
 import uk.ac.rhul.cs.dice.starworlds.utils.datastructure.tree.NeighbourhoodTree;
 
 class ExperimentCommunication {

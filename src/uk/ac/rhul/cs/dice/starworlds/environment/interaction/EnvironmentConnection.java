@@ -1,13 +1,14 @@
-package uk.ac.rhul.cs.dice.starworlds.environment.base.interfaces;
+package uk.ac.rhul.cs.dice.starworlds.environment.interaction;
 
 import uk.ac.rhul.cs.dice.starworlds.appearances.Appearance;
 import uk.ac.rhul.cs.dice.starworlds.appearances.EnvironmentAppearance;
+import uk.ac.rhul.cs.dice.starworlds.environment.interfaces.Environment;
 
 public interface EnvironmentConnection {
 
-	public void send(Message<?> obj);
+	public void send(Event<?> obj);
 
-	public void receive(Message<?> obj);
+	public void receive(Event<?> obj);
 
 	public boolean isOpen();
 

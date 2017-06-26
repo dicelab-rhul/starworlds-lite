@@ -4,16 +4,16 @@ import java.util.Collection;
 
 import uk.ac.rhul.cs.dice.starworlds.actions.Action;
 import uk.ac.rhul.cs.dice.starworlds.actions.environmental.AbstractEnvironmentalAction;
+import uk.ac.rhul.cs.dice.starworlds.appearances.Appearance;
 import uk.ac.rhul.cs.dice.starworlds.appearances.EnvironmentAppearance;
-import uk.ac.rhul.cs.dice.starworlds.environment.base.AbstractAmbient;
-import uk.ac.rhul.cs.dice.starworlds.environment.base.AbstractConnectedEnvironment;
-import uk.ac.rhul.cs.dice.starworlds.environment.base.interfaces.Ambient;
-import uk.ac.rhul.cs.dice.starworlds.environment.base.interfaces.Environment;
-import uk.ac.rhul.cs.dice.starworlds.environment.base.interfaces.Message;
-import uk.ac.rhul.cs.dice.starworlds.environment.base.interfaces.Universe;
+import uk.ac.rhul.cs.dice.starworlds.environment.ambient.AbstractAmbient;
+import uk.ac.rhul.cs.dice.starworlds.environment.ambient.Ambient;
+import uk.ac.rhul.cs.dice.starworlds.environment.interaction.Event;
+import uk.ac.rhul.cs.dice.starworlds.environment.interfaces.AbstractConnectedEnvironment;
+import uk.ac.rhul.cs.dice.starworlds.environment.interfaces.Environment;
+import uk.ac.rhul.cs.dice.starworlds.environment.interfaces.Universe;
 import uk.ac.rhul.cs.dice.starworlds.environment.physics.AbstractConnectedPhysics;
 import uk.ac.rhul.cs.dice.starworlds.environment.physics.Physics;
-import uk.ac.rhul.cs.dice.starworlds.initialisation.IDFactory;
 
 /**
  * A concrete implementation of {@link Environment} that may contain a number of
@@ -32,34 +32,37 @@ import uk.ac.rhul.cs.dice.starworlds.initialisation.IDFactory;
 public class DefaultEnvironment extends AbstractConnectedEnvironment {
 
 	/**
-	 * Constructor.
+	 * Constructor. This constructor assumes that all
+	 * {@link AbstractConnectedEnvironment}s will be local.
 	 * 
 	 * @param subenvironments
-	 *            : a {@link Collection} of {@link Environment}s that are the
-	 *            sub {@link Environment}s of this {@link Environment}.
-	 * @param subenvironments
-	 *            : a {@link Collection} of {@link Environment}s that are the
-	 *            neighbouring {@link Environment}s of this {@link Environment}.
-	 * @param state
-	 *            : an {@link AbstractAmbient} instance.
+	 *            : the sub-{@link Environment}s of this {@link Environment}
+	 * @param neighbouringenvironments
+	 *            : the neighbouring-{@link Environment}s of this
+	 *            {@link Environment}
+	 * @param ambient
+	 *            : a {@link Ambient} instance
 	 * @param physics
-	 *            : the {@link AbstractConnectedPhysics} of the environment.
-	 * @param bounded
-	 *            : a {@link Boolean} value indicating whether the environment
-	 *            is bounded or not.
+	 *            : the {@link Physics} of the {@link Environment}
 	 * @param appearance
-	 *            : the {@link EnvironmentAppearance}
+	 *            : the {@link Appearance} of the {@link Environment}
+	 * @param possibleActions
+	 *            : the {@link Collection} of {@link Action}s that are possible
+	 *            in this {@link Environment}
+	 * @param bounded
+	 *            : a {@link Boolean} value indicating whether the
+	 *            {@link Environment} is bounded or not
 	 */
 	public DefaultEnvironment(
 			Collection<AbstractConnectedEnvironment> subenvironments,
-			Collection<AbstractConnectedEnvironment> neighbourenvironments,
-			AbstractAmbient state,
+			Collection<AbstractConnectedEnvironment> neighbouringenvironments,
+			AbstractAmbient ambient,
 			AbstractConnectedPhysics physics,
-			Boolean bounded,
 			EnvironmentAppearance appearance,
-			Collection<Class<? extends AbstractEnvironmentalAction>> possibleActions) {
-		super(subenvironments, neighbourenvironments, state, physics, bounded,
-				appearance, possibleActions);
+			Collection<Class<? extends AbstractEnvironmentalAction>> possibleActions,
+			Boolean bounded) {
+		super(subenvironments, neighbouringenvironments, ambient, physics,
+				appearance, possibleActions, bounded);
 	}
 
 	/**
@@ -70,24 +73,68 @@ public class DefaultEnvironment extends AbstractConnectedEnvironment {
 	 * @param port
 	 *            : the port that any remote {@link Environment} will try to
 	 *            make connections to
-	 * @param state
-	 *            : a {@link Ambient} instance.
+	 * @param ambient
+	 *            : a {@link Ambient} instance
 	 * @param physics
-	 *            : the {@link Physics} of the environment.
-	 * @param bounded
-	 *            : a {@link Boolean} value indicating whether the environment
-	 *            is bounded or not.
+	 *            : the {@link Physics} of the {@link Environment}
+	 * 
+	 * @param appearance
+	 *            : the {@link Appearance} of the {@link Environment}
 	 * @param possibleActions
 	 *            : a {@link Collection} of {@link Action}s that are possible in
 	 *            this {@link Environment}
+	 * @param bounded
+	 *            : a {@link Boolean} value indicating whether the
+	 *            {@link Environment} is bounded or not
+	 */
+	public DefaultEnvironment(
+			Collection<AbstractConnectedEnvironment> subenvironments,
+			Collection<AbstractConnectedEnvironment> neighbouringenvironments,
+			Integer port,
+			AbstractAmbient ambient,
+			AbstractConnectedPhysics physics,
+			EnvironmentAppearance appearance,
+			Collection<Class<? extends AbstractEnvironmentalAction>> possibleActions,
+			Boolean bounded) {
+		super(subenvironments, neighbouringenvironments, port, ambient,
+				physics, appearance, possibleActions, bounded);
+	}
+
+	/**
+	 * Constructor. This Constructor allows local and remote {@link Environment}
+	 * s to connect to this one. Remote {@link Environment}s should connect via
+	 * the give port.
+	 *
+	 * @param subenvironments
+	 *            : the sub-{@link Environment}s of this {@link Environment}
+	 * @param neighbouringenvironments
+	 *            : the neighbouring-{@link Environment}s of this
+	 *            {@link Environment}
+	 * @param port
+	 *            : the port that any remote {@link Environment} will try to
+	 *            make connections to
+	 * @param ambient
+	 *            : a {@link Ambient} instance
+	 * @param physics
+	 *            : the {@link Physics} of the environment
+	 * 
+	 * @param appearance
+	 *            : the {@link Appearance} of the {@link Environment}
+	 * @param possibleActions
+	 *            : a {@link Collection} of {@link Action}s that are possible in
+	 *            this {@link Environment}
+	 * @param bounded
+	 *            : a {@link Boolean} value indicating whether the
+	 *            {@link Environment} is bounded or not
 	 */
 	public DefaultEnvironment(
 			Integer port,
-			AbstractAmbient state,
+			AbstractAmbient ambient,
 			AbstractConnectedPhysics physics,
-			Collection<Class<? extends AbstractEnvironmentalAction>> possibleActions) {
-		super(port, state, physics, true, new EnvironmentAppearance(IDFactory
-				.getInstance().getNewID(), false, false), possibleActions);
+			EnvironmentAppearance appearance,
+			Collection<Class<? extends AbstractEnvironmentalAction>> possibleActions,
+			Boolean bounded) {
+		super(port, ambient, physics, appearance, possibleActions, bounded);
 	}
 
 	@Override
@@ -97,6 +144,6 @@ public class DefaultEnvironment extends AbstractConnectedEnvironment {
 
 	@Override
 	public void handleCustomMessage(EnvironmentAppearance appearance,
-			Message<?> message) {
+			Event<?> message) {
 	}
 }

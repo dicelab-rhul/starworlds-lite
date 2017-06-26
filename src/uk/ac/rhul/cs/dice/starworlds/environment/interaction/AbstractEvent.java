@@ -1,15 +1,14 @@
-package uk.ac.rhul.cs.dice.starworlds.environment.base;
+package uk.ac.rhul.cs.dice.starworlds.environment.interaction;
 
-import uk.ac.rhul.cs.dice.starworlds.environment.base.interfaces.Message;
 
-public abstract class AbstractMessage<T> implements Message<T> {
+public abstract class AbstractEvent<T> implements Event<T> {
 
 	protected T payload;
 
-	public AbstractMessage() {
+	public AbstractEvent() {
 	}
 
-	public AbstractMessage(T payload) {
+	public AbstractEvent(T payload) {
 		this.setPayload(payload);
 	}
 

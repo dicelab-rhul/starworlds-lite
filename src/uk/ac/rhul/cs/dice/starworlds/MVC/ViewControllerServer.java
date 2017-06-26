@@ -6,7 +6,7 @@ import java.net.UnknownHostException;
 import java.util.Observable;
 import java.util.Set;
 
-import uk.ac.rhul.cs.dice.starworlds.environment.base.interfaces.Universe;
+import uk.ac.rhul.cs.dice.starworlds.environment.interfaces.Universe;
 import uk.ac.rhul.cs.dice.starworlds.utils.Pair;
 import uk.ac.rhul.cs.dice.starworlds.utils.inet.INetServer;
 import uk.ac.rhul.cs.dice.starworlds.utils.inet.INetSlave;

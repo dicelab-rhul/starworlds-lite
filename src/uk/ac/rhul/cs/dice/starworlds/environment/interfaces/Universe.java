@@ -1,4 +1,4 @@
-package uk.ac.rhul.cs.dice.starworlds.environment.base.interfaces;
+package uk.ac.rhul.cs.dice.starworlds.environment.interfaces;
 
 /**
  * The interface that should be implemented by any {@link Environment} that is

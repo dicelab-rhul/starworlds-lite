@@ -1,9 +1,9 @@
-package uk.ac.rhul.cs.dice.starworlds.environment.base.interfaces;
+package uk.ac.rhul.cs.dice.starworlds.environment.interfaces;
 
 import uk.ac.rhul.cs.dice.starworlds.actions.Action;
 import uk.ac.rhul.cs.dice.starworlds.actions.environmental.AbstractEnvironmentalAction;
 import uk.ac.rhul.cs.dice.starworlds.appearances.Appearance;
-import uk.ac.rhul.cs.dice.starworlds.environment.base.AbstractEnvironment;
+import uk.ac.rhul.cs.dice.starworlds.environment.ambient.Ambient;
 import uk.ac.rhul.cs.dice.starworlds.environment.physics.Physics;
 import uk.ac.rhul.cs.dice.starworlds.utils.Identifiable;
 

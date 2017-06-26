@@ -1,6 +1,6 @@
 package uk.ac.rhul.cs.dice.starworlds.MVC;
 
-import uk.ac.rhul.cs.dice.starworlds.environment.base.interfaces.Universe;
+import uk.ac.rhul.cs.dice.starworlds.environment.interfaces.Universe;
 
 /**
  * An abstract implementation of {@link ViewController}. Containing a reference

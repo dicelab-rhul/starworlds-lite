@@ -4,9 +4,9 @@ import java.util.Collection;
 
 import uk.ac.rhul.cs.dice.starworlds.actions.Action;
 import uk.ac.rhul.cs.dice.starworlds.entities.Agent;
-import uk.ac.rhul.cs.dice.starworlds.environment.base.AbstractConnectedEnvironment;
-import uk.ac.rhul.cs.dice.starworlds.environment.base.interfaces.Environment;
-import uk.ac.rhul.cs.dice.starworlds.environment.base.interfaces.Simulator;
+import uk.ac.rhul.cs.dice.starworlds.environment.interfaces.AbstractConnectedEnvironment;
+import uk.ac.rhul.cs.dice.starworlds.environment.interfaces.Environment;
+import uk.ac.rhul.cs.dice.starworlds.environment.interfaces.Simulator;
 import uk.ac.rhul.cs.dice.starworlds.environment.physics.time.LocalSynchroniser;
 import uk.ac.rhul.cs.dice.starworlds.environment.physics.time.SuperSynchroniser;
 

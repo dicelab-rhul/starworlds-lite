@@ -1,11 +1,11 @@
-package uk.ac.rhul.cs.dice.starworlds.environment.inet;
+package uk.ac.rhul.cs.dice.starworlds.environment.interaction.inet;
 
 import java.io.Serializable;
 
-import uk.ac.rhul.cs.dice.starworlds.environment.base.interfaces.Message;
+import uk.ac.rhul.cs.dice.starworlds.environment.interaction.Event;
 
 public abstract class INetAbstractMessage<T extends Serializable> implements
-		Message<T>, Serializable {
+		Event<T>, Serializable {
 
 	private static final long serialVersionUID = -7398687670848928068L;
 

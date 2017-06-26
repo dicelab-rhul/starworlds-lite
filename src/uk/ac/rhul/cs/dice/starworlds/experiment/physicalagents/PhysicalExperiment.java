@@ -2,7 +2,7 @@ package uk.ac.rhul.cs.dice.starworlds.experiment.physicalagents;
 
 import java.util.Collection;
 
-import uk.ac.rhul.cs.dice.starworlds.environment.base.interfaces.Universe;
+import uk.ac.rhul.cs.dice.starworlds.environment.interfaces.Universe;
 import uk.ac.rhul.cs.dice.starworlds.parser.Parser;
 
 public class PhysicalExperiment {
