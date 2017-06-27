@@ -15,6 +15,7 @@ import uk.ac.rhul.cs.dice.starworlds.environment.concrete.DefaultEnvironment;
 import uk.ac.rhul.cs.dice.starworlds.environment.concrete.DefaultUniverse;
 import uk.ac.rhul.cs.dice.starworlds.environment.concrete.DefaultWorld;
 import uk.ac.rhul.cs.dice.starworlds.environment.interfaces.AbstractConnectedEnvironment;
+import uk.ac.rhul.cs.dice.starworlds.environment.interfaces.Environment;
 import uk.ac.rhul.cs.dice.starworlds.environment.interfaces.Universe;
 import uk.ac.rhul.cs.dice.starworlds.environment.interfaces.WorldNode;
 import uk.ac.rhul.cs.dice.starworlds.initialisation.AgentFactory;
@@ -29,6 +30,7 @@ import uk.ac.rhul.cs.dice.starworlds.utils.datastructure.tree.GraphTree;
 class ExperimentCommunication {
 
 	private static AgentFactory FACTORY = AgentFactory.getInstance();
+	// The set of actions possible in the Environments
 	private static Collection<Class<? extends AbstractEnvironmentalAction>> possibleActions = new HashSet<>();
 	static {
 		possibleActions.add(SensingAction.class);
@@ -36,10 +38,21 @@ class ExperimentCommunication {
 	}
 
 	public static void main(String[] args) throws Exception {
-		WorldDeployer.deploy(chainEnvironments(2));
+		// calling this method will start the simulation
+		WorldDeployer.deployAndRun(createWorld(2));
 	}
 
-	private static DefaultWorld chainEnvironments(int num) {
+	/**
+	 * Creates a chain of sub-{@link Environment}s and builds a
+	 * {@link DefaultWorld World} from them. The simplest case is when the num
+	 * argument is 1. This will create a single {@link DefaultUniverse}.
+	 * 
+	 * @param num
+	 *            how many {@link Environment}s
+	 * @return the {@link DefaultWorld World}
+	 */
+	public static DefaultWorld createWorld(int num) {
+		num = (num > 1) ? num : 1;
 		// create the universe
 		DefaultWorld world = new DefaultWorld(new DefaultUniverse(
 				new DefaultAmbient(getAgents(1), null, null),
@@ -60,6 +73,7 @@ class ExperimentCommunication {
 		return world;
 	}
 
+	// creates some default communicating agents
 	private static Set<AbstractAgent> getAgents(int numAgents) {
 		Set<AbstractAgent> agents = new HashSet<>();
 		for (int i = 0; i < numAgents; i++) {
