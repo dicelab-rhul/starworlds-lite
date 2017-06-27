@@ -21,7 +21,7 @@ import uk.ac.rhul.cs.dice.starworlds.perception.CommunicationPerception;
  * @author Kostas Stathis
  *
  */
-public class CommunicationAction<T extends Serializable> extends
+public final class CommunicationAction<T extends Serializable> extends
 		AbstractEnvironmentalAction {
 
 	private static final long serialVersionUID = 1L;

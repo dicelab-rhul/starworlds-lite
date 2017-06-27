@@ -23,21 +23,16 @@ public class RandomPhysicalAgentMind extends AbstractAgentMind {
 	}
 
 	@Override
-	public Collection<Action> decide(Object... parameters) {
-		Collection<Action> actions = new HashSet<>();
-		actions.add(new MoveAction(r.nextInt(3) - 1, r.nextInt(3) - 1));
-		// actions.add(new SensingAction("GRID.LOCAL"));
-		System.out.println(this.getId() + " :ACTIONS: " + actions);
-		return actions;
+	public Action decide(Object... parameters) {
+		Action action = new MoveAction(r.nextInt(3) - 1, r.nextInt(3) - 1);
+		System.out.println(this.getId() + " :ACTION: " + action);
+		return action;
 	}
 
 	@Override
 	public Action execute(Object... parameters) {
-		Collection<?> actions = (Collection<?>) parameters[0];
-		Action action = doAct((AbstractEnvironmentalAction) actions.stream()
-				.findFirst().get());
-		// System.out.println(this + " EXECUTE: " + action);
-		return action;
+		return doAct((AbstractEnvironmentalAction) super
+				.unpackAction(parameters));
 	}
 
 }

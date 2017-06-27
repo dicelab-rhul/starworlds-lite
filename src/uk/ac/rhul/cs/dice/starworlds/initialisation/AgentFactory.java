@@ -1,11 +1,16 @@
 package uk.ac.rhul.cs.dice.starworlds.initialisation;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import uk.ac.rhul.cs.dice.starworlds.entities.Agent;
+import uk.ac.rhul.cs.dice.starworlds.entities.agents.AbstractAgent;
 import uk.ac.rhul.cs.dice.starworlds.entities.agents.AbstractAgentMind;
+import uk.ac.rhul.cs.dice.starworlds.entities.agents.Mind;
 import uk.ac.rhul.cs.dice.starworlds.entities.agents.components.Actuator;
 import uk.ac.rhul.cs.dice.starworlds.entities.agents.components.Sensor;
 import uk.ac.rhul.cs.dice.starworlds.entities.agents.components.concrete.ListeningSensor;
@@ -20,6 +25,37 @@ public class AgentFactory {
 	private static IDFactory idfactory = IDFactory.getInstance();
 
 	private AgentFactory() {
+	}
+
+	public Set<AbstractAgent> createDefaultAgents(int numagents,
+			Class<? extends Mind> mindclass,
+			Collection<Class<?>> sensorclasses,
+			Collection<Class<?>> actuatorclasses) {
+		Set<AbstractAgent> agents = new HashSet<>();
+		for (int i = 0; i < numagents; i++) {
+			agents.add(new DefaultAgent(constructEmpty(sensorclasses,
+					Sensor.class), constructEmpty(actuatorclasses,
+					Actuator.class),
+					(AbstractAgentMind) constructEmpty(mindclass)));
+		}
+		return agents;
+	}
+
+	private <T> List<T> constructEmpty(Collection<Class<?>> classes, Class<T> c) {
+		List<T> result = new ArrayList<>();
+		for (Class<?> rc : classes) {
+			result.add(constructEmpty(rc.asSubclass(c)));
+		}
+		return result;
+	}
+
+	private <T> T constructEmpty(Class<T> c) {
+		try {
+			return c.newInstance();
+		} catch (InstantiationException | IllegalAccessException e) {
+			e.printStackTrace();
+			return null;
+		}
 	}
 
 	public <T extends Agent> T createAgent(Class<T> agentclass,

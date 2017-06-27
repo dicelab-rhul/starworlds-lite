@@ -12,9 +12,11 @@ import uk.ac.rhul.cs.dice.starworlds.entities.ActiveBody;
 import uk.ac.rhul.cs.dice.starworlds.entities.PassiveBody;
 import uk.ac.rhul.cs.dice.starworlds.entities.agents.AbstractAgent;
 import uk.ac.rhul.cs.dice.starworlds.environment.ambient.AbstractAmbient;
+import uk.ac.rhul.cs.dice.starworlds.environment.ambient.filter.AppearanceFilter;
+import uk.ac.rhul.cs.dice.starworlds.environment.ambient.filter.Filter;
 import uk.ac.rhul.cs.dice.starworlds.utils.Pair;
 
-public class PhysicalState extends AbstractAmbient {
+public class PhysicalAmbient extends AbstractAmbient {
 
 	private static final String DIMENSIONKEY = "DIMENSION";
 	private static final String GRIDKEY = "GRID";
@@ -26,7 +28,7 @@ public class PhysicalState extends AbstractAmbient {
 	private Map<ActiveBodyAppearance, Pair<Integer, Integer>> grid = new HashMap<>();
 	private Map<Pair<Integer, Integer>, ActiveBodyAppearance> inversegrid = new HashMap<>();
 
-	public PhysicalState(Set<AbstractAgent> agents,
+	public PhysicalAmbient(Set<AbstractAgent> agents,
 			Set<ActiveBody> activeBodies, Set<PassiveBody> passiveBodies) {
 		super(agents, activeBodies, passiveBodies);
 		super.addEnvironmentVariable(GRIDKEY, this.grid);
@@ -36,8 +38,8 @@ public class PhysicalState extends AbstractAmbient {
 
 	/**
 	 * An initialisation method that called by the
-	 * {@link PhysicalEnvironment#postInitialisation()} method (and only by that
-	 * method) to set up the dimension of this {@link PhysicalState}.
+	 * {@link PhysicalUniverse#postInitialisation()} method (and only by that
+	 * method) to set up the dimension of this {@link PhysicalAmbient}.
 	 * 
 	 * @param dimension
 	 *            to set

@@ -31,12 +31,8 @@ public abstract class AbstractSubscriber {
 	}
 
 	public static enum Permeability {
-		
 		GLOBAL() {
-			
 		}, NEIGHBOUR, SUB, SUPER
-		
-		
 	}
 
 	// map: agentid -> map: sensorclass -> sensor

@@ -34,7 +34,7 @@ public class PhysicalPhysics extends AbstractConnectedPhysics {
 	}
 
 	public boolean perform(MoveAction action, Ambient context) {
-		PhysicalState pcontext = (PhysicalState) context;
+		PhysicalAmbient pcontext = (PhysicalAmbient) context;
 		Pair<Integer, Integer> oldposition = pcontext.getGrid().get(
 				action.getActor());
 		Pair<Integer, Integer> newposition = this.addPosition(oldposition,
@@ -47,7 +47,7 @@ public class PhysicalPhysics extends AbstractConnectedPhysics {
 	}
 
 	public boolean isPossible(MoveAction action, Ambient context) {
-		PhysicalState pcontext = (PhysicalState) context;
+		PhysicalAmbient pcontext = (PhysicalAmbient) context;
 		Pair<Integer, Integer> result = this.addPosition(pcontext.getGrid()
 				.get(action.getActor()), action.getMoveTo());
 		return !pcontext.positionFilled(result)
@@ -71,7 +71,7 @@ public class PhysicalPhysics extends AbstractConnectedPhysics {
 
 	@Override
 	public void executeActions() {
-		((PhysicalState) environment.getState()).printGrid();
+		((PhysicalAmbient) environment.getState()).printGrid();
 		super.executeActions();
 	}
 
@@ -80,9 +80,9 @@ public class PhysicalPhysics extends AbstractConnectedPhysics {
 		if (super.perceivable(sensor, perception, context)) {
 			if (MovePerception.class.isAssignableFrom(perception.getClass())) {
 				MovePerception mp = (MovePerception) perception;
-				Pair<Integer, Integer> otherposition = ((PhysicalState) context)
+				Pair<Integer, Integer> otherposition = ((PhysicalAmbient) context)
 						.getPositionOfAgent(mp.getActivebody());
-				Pair<Integer, Integer> selfposition = ((PhysicalState) context)
+				Pair<Integer, Integer> selfposition = ((PhysicalAmbient) context)
 						.getPositionOfAgent(sensor.getBody());
 				// check that the other agent is in range of this agent
 				if (Math.abs(otherposition.getFirst() - selfposition.getFirst()) <= 1

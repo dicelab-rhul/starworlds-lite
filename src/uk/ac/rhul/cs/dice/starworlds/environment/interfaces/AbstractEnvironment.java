@@ -37,6 +37,7 @@ import uk.ac.rhul.cs.dice.starworlds.perception.AbstractPerception;
 public abstract class AbstractEnvironment extends Observable implements
 		Environment {
 
+	protected Collection<Class<? extends AbstractEnvironmentalAction>> possibleActions;
 	protected AbstractAmbient ambient;
 	protected AbstractPhysics physics;
 	protected Boolean bounded;
@@ -127,6 +128,7 @@ public abstract class AbstractEnvironment extends Observable implements
 		this.appearance = appearance;
 		this.physics.setEnvironment(this);
 		this.subscriber = subscriber;
+		this.possibleActions = possibleActions;
 		this.subscriber.setPossibleActions(possibleActions);
 		this.ambient.getAgents().forEach((AbstractAgent agent) -> {
 			agent.setEnvironment(this);
@@ -267,6 +269,10 @@ public abstract class AbstractEnvironment extends Observable implements
 	@Override
 	public void setId(String id) {
 		this.appearance.setId(id);
+	}
+
+	public Collection<Class<? extends AbstractEnvironmentalAction>> getPossibleActions() {
+		return possibleActions;
 	}
 
 	@Override

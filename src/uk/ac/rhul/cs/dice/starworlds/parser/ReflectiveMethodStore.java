@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import uk.ac.rhul.cs.dice.starworlds.actions.Action;
+import uk.ac.rhul.cs.dice.starworlds.actions.environmental.AbstractEnvironmentalAction;
 import uk.ac.rhul.cs.dice.starworlds.actions.environmental.PhysicalAction;
 import uk.ac.rhul.cs.dice.starworlds.entities.ActiveBody;
 import uk.ac.rhul.cs.dice.starworlds.entities.agents.components.Sensor;
@@ -91,9 +92,9 @@ public final class ReflectiveMethodStore {
 	/**
 	 * The name of the method that should be called to check if a given
 	 * {@link PhysicalAction} is possible give the current {@link Physics} and
-	 * {@link Ambient} of the {@link Environment}. </br> This method is called by
-	 * default in the {@link PhysicalAction#isPossible(Physics, Ambient)} method.
-	 * </br> This method must be defined in the {@link Physics} of the
+	 * {@link Ambient} of the {@link Environment}. </br> This method is called
+	 * by default in the {@link PhysicalAction#isPossible(Physics, Ambient)}
+	 * method. </br> This method must be defined in the {@link Physics} of the
 	 * application that will use the {@link PhysicalAction}. </br> The method
 	 * must have the return type: {@link Boolean}.
 	 */
@@ -171,7 +172,7 @@ public final class ReflectiveMethodStore {
 	 */
 	public static void validateReflectiveActions(
 			Class<? extends Physics> physics,
-			Collection<Class<? extends Action>> actions) {
+			Collection<Class<? extends AbstractEnvironmentalAction>> actions) {
 		for (Class<? extends Action> a : actions) {
 			ACTIONPARAMS[0] = a;
 			Map<String, Method> methodmap = new HashMap<>();

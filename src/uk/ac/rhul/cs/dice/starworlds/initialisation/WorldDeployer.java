@@ -39,8 +39,9 @@ public class WorldDeployer {
 	/**
 	 * Initialise the given {@link AbstractWorld World}. The
 	 * {@link AbstractWorld World} is traversed as a depth first search using
-	 * {@link Visitor}s, initialisation has 2 phases: The first {@link Visitor}
-	 * is {@link ConnectionInitialisationVisitor}, the second is
+	 * {@link Visitor}s, initialisation has 3 phases: The first
+	 * {@link ValidationVisitor}, the second
+	 * {@link ConnectionInitialisationVisitor}, the third
 	 * {@link PostInitialisationVisitor}. See classes for details. This method
 	 * may be overridden if additional {@link AbstractWorld World}
 	 * initialisation is required. However it is recommended that this method is
@@ -53,6 +54,7 @@ public class WorldDeployer {
 	 * @return the {@link Universe}
 	 */
 	protected Universe initialiseWorld(AbstractWorld world) {
+		world.accept(new ValidationVisitor());
 		world.accept(new ConnectionInitialisationVisitor());
 		// world.accept(new InfoPrintVisitor());
 		world.accept(new PostInitialisationVisitor());
