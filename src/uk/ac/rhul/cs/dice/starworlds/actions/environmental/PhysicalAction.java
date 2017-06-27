@@ -4,7 +4,7 @@ import java.util.Collection;
 
 import uk.ac.rhul.cs.dice.starworlds.environment.ambient.Ambient;
 import uk.ac.rhul.cs.dice.starworlds.environment.physics.Physics;
-import uk.ac.rhul.cs.dice.starworlds.parser.ReflectiveMethodStore;
+import uk.ac.rhul.cs.dice.starworlds.initialisation.ReflectiveMethodStore;
 import uk.ac.rhul.cs.dice.starworlds.perception.AbstractPerception;
 
 /**

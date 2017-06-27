@@ -9,6 +9,7 @@ import uk.ac.rhul.cs.dice.starworlds.environment.interfaces.AbstractEnvironment;
 import uk.ac.rhul.cs.dice.starworlds.environment.interfaces.Environment;
 import uk.ac.rhul.cs.dice.starworlds.environment.interfaces.Universe;
 import uk.ac.rhul.cs.dice.starworlds.environment.physics.AbstractPhysics;
+import uk.ac.rhul.cs.dice.starworlds.initialisation.ReflectiveMethodStore;
 
 /**
  * A default {@link Universe} that cannot make any connections to other
@@ -27,6 +28,7 @@ public class DefaultSimpleUniverse extends AbstractEnvironment implements
 			Collection<Class<? extends AbstractEnvironmentalAction>> possibleActions,
 			Boolean bounded) {
 		super(ambient, physics, appearance, possibleActions, bounded);
+		validatePhysics();
 	}
 
 	public DefaultSimpleUniverse(
@@ -35,6 +37,7 @@ public class DefaultSimpleUniverse extends AbstractEnvironment implements
 			EnvironmentAppearance appearance,
 			Collection<Class<? extends AbstractEnvironmentalAction>> possibleActions) {
 		super(ambient, physics, appearance, possibleActions);
+		validatePhysics();
 	}
 
 	public DefaultSimpleUniverse(
@@ -42,6 +45,12 @@ public class DefaultSimpleUniverse extends AbstractEnvironment implements
 			AbstractPhysics physics,
 			Collection<Class<? extends AbstractEnvironmentalAction>> possibleActions) {
 		super(ambient, physics, possibleActions);
+		validatePhysics();
+	}
+
+	private void validatePhysics() {
+		ReflectiveMethodStore.validateReflectiveActions(
+				this.physics.getClass(), this.possibleActions);
 	}
 
 	@Override

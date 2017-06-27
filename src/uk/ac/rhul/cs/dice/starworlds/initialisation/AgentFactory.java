@@ -41,7 +41,7 @@ public class AgentFactory {
 		return agents;
 	}
 
-	private <T> List<T> constructEmpty(Collection<Class<?>> classes, Class<T> c) {
+	public <T> List<T> constructEmpty(Collection<Class<?>> classes, Class<T> c) {
 		List<T> result = new ArrayList<>();
 		for (Class<?> rc : classes) {
 			result.add(constructEmpty(rc.asSubclass(c)));
@@ -49,7 +49,7 @@ public class AgentFactory {
 		return result;
 	}
 
-	private <T> T constructEmpty(Class<T> c) {
+	public <T> T constructEmpty(Class<T> c) {
 		try {
 			return c.newInstance();
 		} catch (InstantiationException | IllegalAccessException e) {

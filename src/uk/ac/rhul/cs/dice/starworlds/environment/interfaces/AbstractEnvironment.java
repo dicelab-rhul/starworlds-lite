@@ -23,7 +23,7 @@ import uk.ac.rhul.cs.dice.starworlds.environment.physics.Physics;
 import uk.ac.rhul.cs.dice.starworlds.environment.subscriber.AbstractSubscriber;
 import uk.ac.rhul.cs.dice.starworlds.environment.subscriber.Subscriber;
 import uk.ac.rhul.cs.dice.starworlds.initialisation.IDFactory;
-import uk.ac.rhul.cs.dice.starworlds.parser.ReflectiveMethodStore;
+import uk.ac.rhul.cs.dice.starworlds.initialisation.ReflectiveMethodStore;
 import uk.ac.rhul.cs.dice.starworlds.perception.AbstractPerception;
 
 /**

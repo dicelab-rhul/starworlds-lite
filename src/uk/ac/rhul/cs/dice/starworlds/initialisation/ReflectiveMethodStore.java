@@ -1,4 +1,4 @@
-package uk.ac.rhul.cs.dice.starworlds.parser;
+package uk.ac.rhul.cs.dice.starworlds.initialisation;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
@@ -173,22 +173,26 @@ public final class ReflectiveMethodStore {
 	public static void validateReflectiveActions(
 			Class<? extends Physics> physics,
 			Collection<Class<? extends AbstractEnvironmentalAction>> actions) {
+		System.out.println("VALIDATING ACTIONS... ");
 		for (Class<? extends Action> a : actions) {
-			ACTIONPARAMS[0] = a;
-			Map<String, Method> methodmap = new HashMap<>();
-			actionmethods.put(a, methodmap);
-			doActionMethod(physics, GETAGENTPERCEPTIONS, ACTIONPARAMS,
-					COMPAREGETAGENTPERCEPTIONS, methodmap);
-			doActionMethod(physics, GETOTHERPERCEPTIONS, ACTIONPARAMS,
-					COMPAREGETOTHERPERCEPTIONS, methodmap);
-			doActionMethod(physics, PERFORM, ACTIONPARAMS, COMPAREPERFORM,
-					methodmap);
-			doActionMethod(physics, ISPOSSIBLE, ACTIONPARAMS,
-					COMPAREISPOSSIBLE, methodmap);
-			doActionMethod(physics, VERIFY, ACTIONPARAMS, COMPAREVERIFY,
-					methodmap);
-			System.out.println(actionmethods);
+			if (PhysicalAction.class.isAssignableFrom(a)) {
+				ACTIONPARAMS[0] = a;
+				Map<String, Method> methodmap = new HashMap<>();
+				actionmethods.put(a, methodmap);
+				doActionMethod(physics, GETAGENTPERCEPTIONS, ACTIONPARAMS,
+						COMPAREGETAGENTPERCEPTIONS, methodmap);
+				doActionMethod(physics, GETOTHERPERCEPTIONS, ACTIONPARAMS,
+						COMPAREGETOTHERPERCEPTIONS, methodmap);
+				doActionMethod(physics, PERFORM, ACTIONPARAMS, COMPAREPERFORM,
+						methodmap);
+				doActionMethod(physics, ISPOSSIBLE, ACTIONPARAMS,
+						COMPAREISPOSSIBLE, methodmap);
+				doActionMethod(physics, VERIFY, ACTIONPARAMS, COMPAREVERIFY,
+						methodmap);
+				System.out.println("     " + methodmap);
+			}
 		}
+		System.out.println("DONE");
 	}
 
 	private static void doActionMethod(Class<?> physics, String name,
