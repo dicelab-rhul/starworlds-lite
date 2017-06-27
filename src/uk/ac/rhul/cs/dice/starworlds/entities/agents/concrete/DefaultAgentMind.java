@@ -26,11 +26,8 @@ public class DefaultAgentMind extends AbstractAgentMind {
 	}
 
 	@Override
-	public Collection<Action> decide(Object... parameters) {
-		Collection<Action> actions = new HashSet<>();
-		actions.add(new CommunicationAction<>("hello", this.recipients));
-		System.out.println("DECISIONS: " + actions);
-		return actions;
+	public Action decide(Object... parameters) {
+		return new CommunicationAction<>("hello", this.recipients);
 	}
 
 	@Override

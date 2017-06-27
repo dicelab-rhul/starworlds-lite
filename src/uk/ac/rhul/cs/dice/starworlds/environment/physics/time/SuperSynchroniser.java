@@ -1,7 +1,5 @@
 package uk.ac.rhul.cs.dice.starworlds.environment.physics.time;
 
-import java.util.Collection;
-
 import uk.ac.rhul.cs.dice.starworlds.environment.interfaces.AbstractConnectedEnvironment;
 import uk.ac.rhul.cs.dice.starworlds.environment.interfaces.Simulator;
 
@@ -9,12 +7,6 @@ public class SuperSynchroniser extends LocalSynchroniser implements Simulator {
 
 	// default
 	protected long framegap = 1000;
-
-	public SuperSynchroniser(AbstractConnectedEnvironment environment,
-			Collection<AbstractConnectedEnvironment> subenvironments,
-			Collection<AbstractConnectedEnvironment> neighbouringenvironments) {
-		super(environment, subenvironments, neighbouringenvironments);
-	}
 
 	public SuperSynchroniser(AbstractConnectedEnvironment environment) {
 		super(environment);

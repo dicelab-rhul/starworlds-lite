@@ -13,9 +13,9 @@ import uk.ac.rhul.cs.dice.starworlds.environment.interaction.inet.INetDefaultSer
 import uk.ac.rhul.cs.dice.starworlds.environment.interaction.inet.INetEnvironmentConnection;
 import uk.ac.rhul.cs.dice.starworlds.environment.interaction.inet.InitialisationMessage;
 import uk.ac.rhul.cs.dice.starworlds.environment.interfaces.AbstractConnectedEnvironment;
+import uk.ac.rhul.cs.dice.starworlds.environment.interfaces.AbstractConnectedEnvironment.AmbientRelation;
 import uk.ac.rhul.cs.dice.starworlds.environment.interfaces.AbstractEnvironment;
 import uk.ac.rhul.cs.dice.starworlds.environment.interfaces.Environment;
-import uk.ac.rhul.cs.dice.starworlds.environment.interfaces.AbstractConnectedEnvironment.AmbientRelation;
 import uk.ac.rhul.cs.dice.starworlds.utils.inet.INetServer;
 import uk.ac.rhul.cs.dice.starworlds.utils.inet.INetSlave;
 
@@ -26,7 +26,7 @@ public class EnvironmentConnectionManager implements Receiver, Observer {
 	protected Map<EnvironmentAppearance, AbstractEnvironmentConnection> neighbouringEnvironmentConnections;
 	protected AbstractEnvironmentConnection superEnvironmentConnection;
 
-	protected INetServer server;
+	protected INetServer server = null;
 	protected Map<EnvironmentAppearance, Collection<Event<?>>> recievedMessages;
 
 	/**
@@ -44,59 +44,31 @@ public class EnvironmentConnectionManager implements Receiver, Observer {
 	 *            connect to
 	 */
 	public EnvironmentConnectionManager(
-			AbstractConnectedEnvironment localenvironment,
-			Collection<AbstractConnectedEnvironment> localsubenvironments,
-			Collection<AbstractConnectedEnvironment> localneighbouringenvironments,
-			Integer port) {
-		this.recievedMessages = new HashMap<>();
-		this.localenvironment = localenvironment;
-		initialiseLocalEnvironments(localsubenvironments,
-				localneighbouringenvironments);
-		this.server = new INetDefaultServer(port);
-		this.server.addObserver(this);
-	}
-
-	/**
-	 * Constructor specifically for local connections.
-	 * 
-	 * @param localenvironment
-	 *            : the {@link Environment} that this
-	 *            {@link EnvironmentConnectionManager} is managing
-	 * @param localsubenvironments
-	 *            : the local {@link Environment}s sub {@link Environment}s
-	 * @param localneighbouringenvironments
-	 *            : the local {@link Environment}s neighbouring
-	 *            {@link Environment}s
-	 */
-	public EnvironmentConnectionManager(
-			AbstractConnectedEnvironment localenvironment,
-			Collection<AbstractConnectedEnvironment> localsubenvironments,
-			Collection<AbstractConnectedEnvironment> localneighbouringenvironments) {
-		this.recievedMessages = new HashMap<>();
-		this.localenvironment = localenvironment;
-		subEnvironmentConnections = new HashMap<>();
-		neighbouringEnvironmentConnections = new HashMap<>();
-		initialiseLocalEnvironments(localsubenvironments,
-				localneighbouringenvironments);
-	}
-
-	/**
-	 * Constructor specifically for remote connections.
-	 * 
-	 * @param localenvironment
-	 *            : the {@link Environment} that this
-	 * @param port
-	 *            : the port that any remote {@link Environment} will try to
-	 *            connect to
-	 */
-	public EnvironmentConnectionManager(
 			AbstractConnectedEnvironment localenvironment, Integer port) {
 		this.recievedMessages = new HashMap<>();
-		subEnvironmentConnections = new HashMap<>();
-		neighbouringEnvironmentConnections = new HashMap<>();
+		this.subEnvironmentConnections = new HashMap<>();
+		this.neighbouringEnvironmentConnections = new HashMap<>();
 		this.localenvironment = localenvironment;
-		this.server = new INetDefaultServer(port);
-		this.server.addObserver(this);
+		if (port != null) {
+			this.server = new INetDefaultServer(port);
+			this.server.addObserver(this);
+		}
+	}
+
+	public void initialiseLocalSubEnvironments(
+			Collection<AbstractConnectedEnvironment> localsubenvironments,
+			Collection<AbstractConnectedEnvironment> localneighbouringenvironments) {
+		if (localsubenvironments != null) {
+			localsubenvironments.forEach((AbstractConnectedEnvironment e) -> {
+				addSubEnviroment(e);
+			});
+		}
+		// TODO
+		// if (localneighbouringenvironments != null) {
+		// localneighbouringenvironments
+		// .forEach((AbstractEnvironment e) -> this.state
+		// .addNeighbouringEnvironment(e));
+		// }
 	}
 
 	/**
@@ -203,22 +175,6 @@ public class EnvironmentConnectionManager implements Receiver, Observer {
 		} else {
 			System.out.println(environment + " refused connection");
 		}
-	}
-
-	private void initialiseLocalEnvironments(
-			Collection<AbstractConnectedEnvironment> localsubenvironments,
-			Collection<AbstractConnectedEnvironment> localneighbouringenvironments) {
-		if (localsubenvironments != null) {
-			localsubenvironments.forEach((AbstractConnectedEnvironment e) -> {
-				addSubEnviroment(e);
-			});
-		}
-		// TODO
-		// if (localneighbouringenvironments != null) {
-		// localneighbouringenvironments
-		// .forEach((AbstractEnvironment e) -> this.state
-		// .addNeighbouringEnvironment(e));
-		// }
 	}
 
 	public void addNeighbouringEnvironmentConnection(
@@ -350,6 +306,10 @@ public class EnvironmentConnectionManager implements Receiver, Observer {
 		Map<K, V> newMap = new HashMap<K, V>(map);
 		newMap.keySet().retainAll(keys);
 		return newMap.values();
+	}
+
+	public boolean isDistributed() {
+		return server != null;
 	}
 
 	@Override

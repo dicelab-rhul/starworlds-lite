@@ -65,63 +65,54 @@ public abstract class AbstractConnectedEnvironment extends AbstractEnvironment {
 	protected ActionMessageProcessor actionProcessor;
 
 	/**
-	 * Constructor. This constructor assumes that all
-	 * {@link AbstractConnectedEnvironment}s will be local.
+	 * Constructor. This Constructor allows local {@link Environment}s to
+	 * connect to this one.
 	 * 
-	 * @param subenvironments
-	 *            : the sub-{@link Environment}s of this {@link Environment}
-	 * @param neighbouringenvironments
-	 *            : the neighbouring-{@link Environment}s of this
-	 *            {@link Environment}
 	 * @param ambient
 	 *            : a {@link Ambient} instance.
 	 * @param physics
-	 *            : the {@link Physics} of the environment.
+	 *            : the {@link Physics} of the {@link Environment}
 	 * @param appearance
-	 *            : the {@link Appearance} of the environment.
+	 *            : the {@link Appearance} of the {@link Environment}
 	 * @param possibleActions
-	 *            : the {@link Collection} of {@link Action}s that are possible
-	 *            in this {@link Environment}
+	 *            : a {@link Collection} of {@link Action}s that are possible in
+	 *            this {@link Environment}
 	 * @param bounded
-	 *            : a {@link Boolean} value indicating whether the environment
-	 *            is bounded or not.
+	 *            : a {@link Boolean} value indicating whether the
+	 *            {@link Environment} is bounded or not.
 	 */
 	public AbstractConnectedEnvironment(
-			Collection<AbstractConnectedEnvironment> subenvironments,
-			Collection<AbstractConnectedEnvironment> neighbouringenvironments,
 			AbstractAmbient ambient,
 			AbstractConnectedPhysics physics,
 			EnvironmentAppearance appearance,
 			Collection<Class<? extends AbstractEnvironmentalAction>> possibleActions,
 			Boolean bounded) {
 		super(ambient, physics, appearance, possibleActions, bounded);
-		this.envconManager = new EnvironmentConnectionManager(this,
-				subenvironments, neighbouringenvironments);
-		physics.initSynchroniser(subenvironments, neighbouringenvironments);
-		initialiseMessageProcessors();
+		this.envconManager = new EnvironmentConnectionManager(this, null);
+		this.initialiseMessageProcessors();
 	}
 
 	/**
-	 * Constructor. This constructor assumes that all
-	 * {@link AbstractConnectedEnvironment}s will be remote. All remote
-	 * {@link Environment}s should connect via the given port.
-	 * 
+	 * Constructor. This Constructor allows local and remote {@link Environment}
+	 * s to connect to this one. Remote {@link Environment}s should connect via
+	 * the give port.
+	 *
 	 * @param port
 	 *            : the port that any remote {@link Environment} will try to
 	 *            make connections to
 	 * @param ambient
-	 *            : a {@link Ambient} instance.
+	 *            : a {@link Ambient} instance
 	 * @param physics
-	 *            : the {@link Physics} of the environment.
+	 *            : the {@link Physics} of the {@link Environment}
 	 * 
 	 * @param appearance
-	 *            : the {@link Appearance} of the environment.
+	 *            : the {@link Appearance} of the {@link Environment}.
 	 * @param possibleActions
 	 *            : a {@link Collection} of {@link Action}s that are possible in
 	 *            this {@link Environment}
 	 * @param bounded
-	 *            : a {@link Boolean} value indicating whether the environment
-	 *            is bounded or not.
+	 *            : a {@link Boolean} value indicating whether the
+	 *            {@link Environment} is bounded or not
 	 */
 	public AbstractConnectedEnvironment(
 			Integer port,
@@ -132,67 +123,56 @@ public abstract class AbstractConnectedEnvironment extends AbstractEnvironment {
 			Boolean bounded) {
 		super(ambient, physics, appearance, possibleActions, bounded);
 		this.envconManager = new EnvironmentConnectionManager(this, port);
-		physics.initSynchroniser();
-		initialiseMessageProcessors();
-		initialConnections = new HashMap<>();
+		this.initialiseMessageProcessors();
+	}
+
+	public void initialiseEnvironmentConnections(
+			Collection<AbstractConnectedEnvironment> subenvironments,
+			Collection<AbstractConnectedEnvironment> neighbouringenvironments) {
+		this.envconManager.initialiseLocalSubEnvironments(subenvironments,
+				neighbouringenvironments);
+		if (this.envconManager.isDistributed()) {
+			initialiseRemoteEnvironmentConnections();
+		}
+		this.getPhysics().initialiseSynchronisers(subenvironments,
+				neighbouringenvironments);
+	}
+
+	private void initialiseRemoteEnvironmentConnections() {
+		if (initialConnections != null) {
+			// perform all initial remote connections
+			initialConnections.forEach((addr, relation) -> {
+				this.envconManager.connectToEnvironment(addr.getFirst(),
+						addr.getSecond(), relation);
+			});
+		}
+		initialConnections = null;
+	}
+
+	public void addRemoteConnection(String addr, Integer port,
+			AmbientRelation relation) {
+		this.initialConnections.put(new Pair<>(addr, port), relation);
 	}
 
 	/**
-	 * Constructor. This Constructor allows local and remote {@link Environment}
-	 * s to connect to this one. Remote {@link Environment}s should connect via
-	 * the give port.
-	 *
-	 * @param subenvironments
-	 *            : the sub-{@link Environment}s of this {@link Environment}
-	 * @param neighbouringenvironments
-	 *            : the neighbouring-{@link Environment}s of this
-	 *            {@link Environment}
-	 * @param port
-	 *            : the port that any remote {@link Environment} will try to
-	 *            make connections to
-	 * @param ambient
-	 *            : a {@link Ambient} instance.
-	 * @param physics
-	 *            : the {@link Physics} of the environment.
-	 * 
-	 * @param appearance
-	 *            : the {@link Appearance} of the environment.
-	 * @param possibleActions
-	 *            : a {@link Collection} of {@link Action}s that are possible in
-	 *            this {@link Environment}
-	 * @param bounded
-	 *            : a {@link Boolean} value indicating whether the environment
-	 *            is bounded or not.
+	 * This method is called after all {@link Environment}s have been created
+	 * and are connected. It should be used for setting parameters in the
+	 * {@link Ambient} etc.
 	 */
-	public AbstractConnectedEnvironment(
-			Collection<AbstractConnectedEnvironment> subenvironments,
-			Collection<AbstractConnectedEnvironment> neighbouringenvironments,
-			Integer port,
-			AbstractAmbient ambient,
-			AbstractConnectedPhysics physics,
-
-			EnvironmentAppearance appearance,
-			Collection<Class<? extends AbstractEnvironmentalAction>> possibleActions,
-			Boolean bounded) {
-		super(ambient, physics, appearance, possibleActions, bounded);
-		this.envconManager = new EnvironmentConnectionManager(this,
-				subenvironments, neighbouringenvironments, port);
-		physics.initSynchroniser(subenvironments, neighbouringenvironments);
-		initialConnections = new HashMap<>();
+	@Override
+	public void postInitialisation() {
+		this.initialActionSubscribe();
 	}
 
-	protected void initialiseMessageProcessors() {
+	private void initialiseMessageProcessors() {
 		messageProcessors = new HashMap<>();
 		messageProcessors.put(SUBSCRIBE, new SubscriptionMessageProcessor());
-		ActionMessageProcessor amp = new ActionMessageProcessor();
-		actionProcessor = amp;
-		messageProcessors.put(ACTION, amp);
+		messageProcessors.put(ACTION,
+				(actionProcessor = new ActionMessageProcessor()));
 		messageProcessors.put(PERCEPTION, new PerceptionMessageProcessor());
-
 	}
 
-	public void handleMessage(EnvironmentAppearance appearance,
-			Event<?> message) {
+	public void handleMessage(EnvironmentAppearance appearance, Event<?> message) {
 		// System.out.println(this.appearance + " HANDLE MESSAGE: " + message
 		// + System.lineSeparator() + "   FROM: " + appearance);
 		if (CommandEvent.class.isAssignableFrom(message.getClass())) {
@@ -213,32 +193,6 @@ public abstract class AbstractConnectedEnvironment extends AbstractEnvironment {
 	 */
 	public abstract void handleCustomMessage(EnvironmentAppearance appearance,
 			Event<?> message);
-
-	/**
-	 * This method is called after all {@link Environment}s have been created
-	 * and are connected. It should be used for setting parameters in the
-	 * {@link Ambient} etc.
-	 */
-	@Override
-	public void postInitialisation() {
-		this.initialActionSubscribe();
-	}
-
-	public void initialConnect() {
-		if (initialConnections != null) {
-			// perform all initial remote connections
-			initialConnections.forEach((addr, relation) -> {
-				this.envconManager.connectToEnvironment(addr.getFirst(),
-						addr.getSecond(), relation);
-			});
-		}
-		initialConnections = null;
-	}
-
-	public void addInitialConnection(String addr, Integer port,
-			AmbientRelation relation) {
-		this.initialConnections.put(new Pair<>(addr, port), relation);
-	}
 
 	public void clearAndUpdateActionsAfterPropagation() {
 		((ActionMessageProcessor) messageProcessors.get(ACTION))

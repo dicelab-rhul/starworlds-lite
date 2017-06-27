@@ -10,7 +10,6 @@ import uk.ac.rhul.cs.dice.starworlds.appearances.EnvironmentAppearance;
 import uk.ac.rhul.cs.dice.starworlds.environment.ambient.AbstractAmbient;
 import uk.ac.rhul.cs.dice.starworlds.environment.ambient.Ambient;
 import uk.ac.rhul.cs.dice.starworlds.environment.interaction.inet.INetDefaultMessage;
-import uk.ac.rhul.cs.dice.starworlds.environment.interfaces.AbstractConnectedEnvironment;
 import uk.ac.rhul.cs.dice.starworlds.environment.interfaces.Environment;
 import uk.ac.rhul.cs.dice.starworlds.environment.interfaces.Universe;
 import uk.ac.rhul.cs.dice.starworlds.environment.physics.AbstractConnectedPhysics;
@@ -27,66 +26,25 @@ import uk.ac.rhul.cs.dice.starworlds.environment.physics.Physics;
 public class DefaultUniverse extends DefaultEnvironment implements Universe {
 
 	/**
-	 * Constructor. This constructor assumes that all
-	 * {@link AbstractConnectedEnvironment}s will be local.
+	 * Constructor. This Constructor allows local {@link Environment}s to
+	 * connect to this one.
 	 * 
-	 * @param subenvironments
-	 *            : the sub-{@link Environment}s of this {@link Environment}
-	 * @param neighbouringenvironments
-	 *            : the neighbouring-{@link Environment}s of this
-	 *            {@link Environment}
 	 * @param ambient
 	 *            : a {@link Ambient} instance.
 	 * @param physics
-	 *            : the {@link Physics} of the environment.
+	 *            : the {@link Physics} of the {@link Environment}
 	 * @param appearance
-	 *            : the {@link Appearance} of the environment.
-	 * @param possibleActions
-	 *            : the {@link Collection} of {@link Action}s that are possible
-	 *            in this {@link Environment}
-	 */
-	public DefaultUniverse(
-			Collection<AbstractConnectedEnvironment> subenvironments,
-			Collection<AbstractConnectedEnvironment> neighbouringenvironments,
-			AbstractAmbient ambient,
-			AbstractConnectedPhysics physics,
-			EnvironmentAppearance appearance,
-			Collection<Class<? extends AbstractEnvironmentalAction>> possibleActions,
-			Boolean bounded) {
-		super(subenvironments, neighbouringenvironments, ambient, physics,
-				appearance, possibleActions, false);
-	}
-
-	/**
-	 * Constructor. This constructor assumes that all
-	 * {@link AbstractConnectedEnvironment}s will be remote. All remote
-	 * {@link Environment}s should connect via the given port.
-	 * 
-	 * @param port
-	 *            : the port that any remote {@link Environment} will try to
-	 *            make connections to
-	 * @param ambient
-	 *            : a {@link Ambient} instance.
-	 * @param physics
-	 *            : the {@link Physics} of the {@link Environment}.
-	 * 
-	 * @param appearance
-	 *            : the {@link Appearance} of the {@link Environment}.
+	 *            : the {@link Appearance} of the {@link Environment}
 	 * @param possibleActions
 	 *            : a {@link Collection} of {@link Action}s that are possible in
 	 *            this {@link Environment}
 	 */
 	public DefaultUniverse(
-			Collection<AbstractConnectedEnvironment> subenvironments,
-			Collection<AbstractConnectedEnvironment> neighbouringenvironments,
-			Integer port,
 			AbstractAmbient ambient,
 			AbstractConnectedPhysics physics,
 			EnvironmentAppearance appearance,
-			Collection<Class<? extends AbstractEnvironmentalAction>> possibleActions,
-			Boolean bounded) {
-		super(subenvironments, neighbouringenvironments, port, ambient,
-				physics, appearance, possibleActions, false);
+			Collection<Class<? extends AbstractEnvironmentalAction>> possibleActions) {
+		super(ambient, physics, appearance, possibleActions, false);
 	}
 
 	/**
@@ -94,18 +52,13 @@ public class DefaultUniverse extends DefaultEnvironment implements Universe {
 	 * s to connect to this one. Remote {@link Environment}s should connect via
 	 * the give port.
 	 *
-	 * @param subenvironments
-	 *            : the sub-{@link Environment}s of this {@link Environment}
-	 * @param neighbouringenvironments
-	 *            : the neighbouring-{@link Environment}s of this
-	 *            {@link Environment}
 	 * @param port
 	 *            : the port that any remote {@link Environment} will try to
 	 *            make connections to
 	 * @param ambient
-	 *            : a {@link Ambient} instance.
+	 *            : a {@link Ambient} instance
 	 * @param physics
-	 *            : the {@link Physics} of the {@link Environment}.
+	 *            : the {@link Physics} of the {@link Environment}
 	 * 
 	 * @param appearance
 	 *            : the {@link Appearance} of the {@link Environment}.
@@ -118,8 +71,7 @@ public class DefaultUniverse extends DefaultEnvironment implements Universe {
 			AbstractAmbient ambient,
 			AbstractConnectedPhysics physics,
 			EnvironmentAppearance appearance,
-			Collection<Class<? extends AbstractEnvironmentalAction>> possibleActions,
-			Boolean bounded) {
+			Collection<Class<? extends AbstractEnvironmentalAction>> possibleActions) {
 		super(port, ambient, physics, appearance, possibleActions, false);
 	}
 

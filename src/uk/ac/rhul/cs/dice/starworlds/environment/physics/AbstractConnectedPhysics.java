@@ -5,6 +5,7 @@ import java.util.Collection;
 import uk.ac.rhul.cs.dice.starworlds.actions.Action;
 import uk.ac.rhul.cs.dice.starworlds.entities.Agent;
 import uk.ac.rhul.cs.dice.starworlds.environment.interfaces.AbstractConnectedEnvironment;
+import uk.ac.rhul.cs.dice.starworlds.environment.interfaces.AbstractEnvironment;
 import uk.ac.rhul.cs.dice.starworlds.environment.interfaces.Environment;
 import uk.ac.rhul.cs.dice.starworlds.environment.interfaces.Simulator;
 import uk.ac.rhul.cs.dice.starworlds.environment.physics.time.LocalSynchroniser;
@@ -60,35 +61,11 @@ public class AbstractConnectedPhysics extends AbstractPhysics {
 	 * @param subenvironments
 	 * @param neighbouringenvironments
 	 */
-	public void initSynchroniser(
+	public void initialiseSynchronisers(
 			Collection<AbstractConnectedEnvironment> subenvironments,
 			Collection<AbstractConnectedEnvironment> neighbouringenvironments) {
-		if (environment != null) {
-			if (!Simulator.class.isAssignableFrom(environment.getClass())) {
-				this.synchroniser = new LocalSynchroniser(
-						(AbstractConnectedEnvironment) environment,
-						subenvironments, neighbouringenvironments);
-			} else {
-				this.synchroniser = new SuperSynchroniser(
-						(AbstractConnectedEnvironment) environment,
-						subenvironments, neighbouringenvironments);
-			}
-		}
-	}
-
-	/**
-	 * Initialises the {@link LocalSynchroniser} for remote {@link Physics}.
-	 */
-	public void initSynchroniser() {
-		if (environment != null) {
-			if (!Simulator.class.isAssignableFrom(environment.getClass())) {
-				this.synchroniser = new LocalSynchroniser(
-						(AbstractConnectedEnvironment) environment);
-			} else {
-				this.synchroniser = new SuperSynchroniser(
-						(AbstractConnectedEnvironment) environment);
-			}
-		}
+		this.synchroniser.initialiseSynchroniser(subenvironments,
+				neighbouringenvironments);
 	}
 
 	public LocalSynchroniser getSynchroniser() {
@@ -100,4 +77,17 @@ public class AbstractConnectedPhysics extends AbstractPhysics {
 		return (AbstractConnectedEnvironment) super.getEnvironment();
 	}
 
+	@Override
+	public void setEnvironment(AbstractEnvironment environment) {
+		if (environment != null) {
+			if (!Simulator.class.isAssignableFrom(environment.getClass())) {
+				this.synchroniser = new LocalSynchroniser(
+						(AbstractConnectedEnvironment) environment);
+			} else {
+				this.synchroniser = new SuperSynchroniser(
+						(AbstractConnectedEnvironment) environment);
+			}
+		}
+		super.setEnvironment(environment);
+	}
 }

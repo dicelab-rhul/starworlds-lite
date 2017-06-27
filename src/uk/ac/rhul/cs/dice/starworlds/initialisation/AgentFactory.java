@@ -1,8 +1,10 @@
 package uk.ac.rhul.cs.dice.starworlds.initialisation;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
+import uk.ac.rhul.cs.dice.starworlds.entities.Agent;
 import uk.ac.rhul.cs.dice.starworlds.entities.agents.AbstractAgentMind;
 import uk.ac.rhul.cs.dice.starworlds.entities.agents.components.Actuator;
 import uk.ac.rhul.cs.dice.starworlds.entities.agents.components.Sensor;
@@ -18,6 +20,25 @@ public class AgentFactory {
 	private static IDFactory idfactory = IDFactory.getInstance();
 
 	private AgentFactory() {
+	}
+
+	public <T extends Agent> T createAgent(Class<T> agentclass,
+			Class<?>[] types, Object[] args) {
+		try {
+			return agentclass.getConstructor(types).newInstance(args);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	public <T extends Agent> T createAgent(Class<T> agentclass, Object... args) {
+		try {
+			return agentclass.getConstructor(getTypes(args)).newInstance(args);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
 	}
 
 	public DefaultAgent createCustomDefaultAgent(List<Sensor> sensors,
@@ -48,6 +69,14 @@ public class AgentFactory {
 		actuators.add(new SpeechActuator());
 		actuators.add(new PhysicalActuator());
 		return actuators;
+	}
+
+	public Class<?>[] getTypes(Object[] args) {
+		Class<?>[] types = new Class<?>[args.length];
+		for (int i = 0; i < args.length; i++) {
+			types[i] = args[i].getClass();
+		}
+		return types;
 	}
 
 	public static AgentFactory getInstance() {

@@ -47,8 +47,7 @@ public class RandomCommunicatingAgentMind extends AbstractAgentMind {
 	}
 
 	@Override
-	public Collection<Action> decide(Object... parameters) {
-		Collection<Action> actions = new HashSet<>();
+	public Action decide(Object... parameters) {
 		if (!start) {
 			Optional<String> recipient = otheragents.stream()
 					.skip((long) (Math.random() * otheragents.size()))
@@ -58,27 +57,18 @@ public class RandomCommunicatingAgentMind extends AbstractAgentMind {
 				recipients.add(otheragents.stream()
 						.skip((long) (Math.random() * otheragents.size()))
 						.findFirst().get());
-				actions.add(new CommunicationAction<>(this.getId(), recipients));
-				System.out.println(this + " DECISIONS: " + actions);
-				return actions;
+				return new CommunicationAction<>(this.getId(), recipients);
 			}
 			// the sensing action must have fail for some reason, so do it again
 		}
-		actions.add(new SensingAction("AGENTS.APPEARANCE.RANDOM"));
 		start = false;
-		System.out.println(this + " DECISIONS: " + actions);
-		return actions;
+		return new SensingAction("AGENTS.APPEARANCE.RANDOM");
 	}
 
 	@Override
 	public Action execute(Object... parameters) {
-		Collection<?> actions = (Collection<?>) parameters[0];
-		Action[] act = actions.toArray(new Action[] {});
-		if (act.length > 0) {
-			Action action = doAct((AbstractEnvironmentalAction) act[0]);
-			return action;
-		}
-		return null;
+		Action action = unpackAction(parameters);
+		return doAct((AbstractEnvironmentalAction) action);
 	}
 
 	private Collection<Appearance> unpackAppearances(Perception<?> percept) {

@@ -7,9 +7,9 @@ import uk.ac.rhul.cs.dice.starworlds.entities.PassiveBody;
 import uk.ac.rhul.cs.dice.starworlds.entities.agents.AbstractAgent;
 import uk.ac.rhul.cs.dice.starworlds.environment.ambient.AbstractAmbient;
 
-public class DefaultState extends AbstractAmbient {
+public class DefaultAmbient extends AbstractAmbient {
 
-	public DefaultState(Set<AbstractAgent> agents,
+	public DefaultAmbient(Set<AbstractAgent> agents,
 			Set<ActiveBody> activeBodies, Set<PassiveBody> passiveBodies) {
 		super(agents, activeBodies, passiveBodies);
 	}

@@ -60,7 +60,9 @@ public abstract class AbstractAgentMind implements Mind {
 	 * method will do nothing.
 	 * 
 	 * @param parameters
-	 * @return
+	 *            to unpack
+	 * @return a {@link Collection} of {@link Perception}s that have been
+	 *         unpacked, null if failed to unpack
 	 */
 	protected Collection<Perception<?>> unpackPerceptions(Object... parameters) {
 		Collection<Perception<?>> perceptions = new HashSet<>();
@@ -75,6 +77,27 @@ public abstract class AbstractAgentMind implements Mind {
 			}
 		} catch (Exception e) {
 			return null;
+		}
+		return null;
+	}
+
+	/**
+	 * A helper method for unpacking the parameters received in
+	 * {@link Mind#execute(Object...)}. This method will only unpack the default
+	 * parameters, if custom parameters have been set (the
+	 * {@link Mind#cycle(Object...)} method has been overridden) then this
+	 * method will do nothing.
+	 * 
+	 * @param parameters
+	 *            to unpack
+	 * @return an {@link Action} that has been unpacked, null if failed to
+	 *         unpack
+	 */
+	public Action unpackAction(Object... parameters) {
+		if (parameters.length == 1) {
+			if (Action.class.isAssignableFrom(parameters[0].getClass())) {
+				return (Action) parameters[0];
+			}
 		}
 		return null;
 	}
@@ -296,7 +319,7 @@ public abstract class AbstractAgentMind implements Mind {
 		setActionDone(false);
 		Collection<?> sensoryPerceptions = (Collection<?>) parameters[0];
 		Perception<?> mindPerception = this.perceive(sensoryPerceptions);
-		Collection<Action> mindActions = this.decide(mindPerception);
+		Action mindActions = this.decide(mindPerception);
 		Action actionToExecute = this.execute(mindActions);
 		return new Object[] { actionToExecute };
 	}

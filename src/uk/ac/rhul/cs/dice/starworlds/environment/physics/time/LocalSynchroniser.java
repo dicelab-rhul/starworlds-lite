@@ -18,27 +18,11 @@ public class LocalSynchroniser implements Synchroniser {
 	private Collection<RemoteSynchroniser> remoteSynchronisers;
 	private Collection<Synchroniser> synchronisers;
 	private AbstractConnectedPhysics physics;
-	private AbstractConnectedEnvironment environment;
-
-	public LocalSynchroniser(AbstractConnectedEnvironment environment,
-			Collection<AbstractConnectedEnvironment> subenvironments,
-			Collection<AbstractConnectedEnvironment> neighbouringenvironments) {
-		this.environment = environment;
-		this.physics = (AbstractConnectedPhysics) environment.getPhysics();
-		this.synchronisers = new ArrayList<>();
-		this.remoteSynchronisers = new ArrayList<>();
-		// get all local synchronisers
-		updateSynchronisers(subenvironments, neighbouringenvironments);
-		System.out.println(this + " SUBSYNCS: " + synchronisers);
-	}
 
 	public LocalSynchroniser(AbstractConnectedEnvironment environment) {
-		this.environment = environment;
 		this.physics = (AbstractConnectedPhysics) environment.getPhysics();
 		this.synchronisers = new ArrayList<>();
 		this.remoteSynchronisers = new ArrayList<>();
-		// get all local synchronisers
-		updateSynchronisers(null, null);
 	}
 
 	public RemoteSynchroniser addRemoteSynchroniser(
@@ -48,10 +32,9 @@ public class LocalSynchroniser implements Synchroniser {
 		return sync;
 	}
 
-	public void updateSynchronisers(
+	public void initialiseSynchroniser(
 			Collection<AbstractConnectedEnvironment> subenvironments,
 			Collection<AbstractConnectedEnvironment> neighbouringenvironments) {
-		// TODO check that the synchroniser has not been added already
 		// add local synchronisers
 		if (subenvironments != null) {
 			subenvironments.forEach((AbstractConnectedEnvironment e) -> {
@@ -60,6 +43,7 @@ public class LocalSynchroniser implements Synchroniser {
 							.getPhysics()).getSynchroniser());
 				});
 		}
+		System.out.println(this);
 	}
 
 	/**
@@ -146,7 +130,12 @@ public class LocalSynchroniser implements Synchroniser {
 
 	@Override
 	public String toString() {
-		return this.getClass().getSimpleName() + " : " + physics.getId();
+		return this.getClass().getSimpleName()
+				+ " : "
+				+ physics.getId()
+				+ ((!this.synchronisers.isEmpty()) ? " Local: "
+						+ this.synchronisers : "")
+				+ ((!this.remoteSynchronisers.isEmpty()) ? " Remote: "
+						+ this.remoteSynchronisers : "");
 	}
-
 }

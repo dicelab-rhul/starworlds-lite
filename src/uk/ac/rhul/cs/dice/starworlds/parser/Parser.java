@@ -37,8 +37,8 @@ import uk.ac.rhul.cs.dice.starworlds.environment.interfaces.AbstractConnectedEnv
 import uk.ac.rhul.cs.dice.starworlds.environment.physics.AbstractConnectedPhysics;
 import uk.ac.rhul.cs.dice.starworlds.environment.physics.AbstractPhysics;
 import uk.ac.rhul.cs.dice.starworlds.environment.physics.Physics;
-import uk.ac.rhul.cs.dice.starworlds.utils.datastructure.tree.NeighbourhoodNode;
-import uk.ac.rhul.cs.dice.starworlds.utils.datastructure.tree.NeighbourhoodTree;
+import uk.ac.rhul.cs.dice.starworlds.utils.datastructure.tree.GraphTreeNode;
+import uk.ac.rhul.cs.dice.starworlds.utils.datastructure.tree.GraphTree;
 import uk.ac.rhul.cs.dice.starworlds.utils.datastructure.tree.Node;
 import uk.ac.rhul.cs.dice.starworlds.utils.datastructure.visitor.Acceptor;
 import uk.ac.rhul.cs.dice.starworlds.utils.datastructure.visitor.Visitor;
@@ -100,14 +100,14 @@ public class Parser {
 	public Collection<Universe> parse() throws Exception {
 		validate(total);
 		JSONArray structure = total.getJSONArray(STRUCTURE);
-		List<NeighbourhoodTree<AbstractEnvironment>> trees = new ArrayList<>();
+		List<GraphTree<AbstractEnvironment>> trees = new ArrayList<>();
 		for (int i = 0; i < structure.length(); i++) {
-			trees.add(new NeighbourhoodTree<AbstractEnvironment>(
-					(NeighbourhoodNode<AbstractEnvironment>) recurseStructure(
+			trees.add(new GraphTree<AbstractEnvironment>(
+					(GraphTreeNode<AbstractEnvironment>) recurseStructure(
 							structure.getJSONObject(i), total)));
 		}
 		List<Universe> multiverse = new ArrayList<>();
-		for (NeighbourhoodTree<AbstractEnvironment> t : trees) {
+		for (GraphTree<AbstractEnvironment> t : trees) {
 			System.out.println(t);
 			t.accept(new InitialConnectVisitor());
 			t.accept(new PostInitialisationVisitor());
@@ -308,7 +308,7 @@ public class Parser {
 
 	private Node<AbstractEnvironment> recurseStructure(JSONObject structure,
 			JSONObject total) throws Exception {
-		NeighbourhoodNode<AbstractEnvironment> current = new NeighbourhoodNode<>();
+		GraphTreeNode<AbstractEnvironment> current = new GraphTreeNode<>();
 		String envkey = structure.getString(ENVIRONMENTINSTANCES);
 		final List<Node<AbstractEnvironment>> subenvs = new ArrayList<>();
 		if (structure.has(STRUCTURE)) {
@@ -597,42 +597,5 @@ public class Parser {
 		}
 		reader.close();
 		return new JSONObject(builder.toString());
-	}
-
-	// visits each environment and connects any networked environments
-	private static class InitialConnectVisitor implements
-			Visitor<AbstractEnvironment> {
-		@Override
-		public void visit(Acceptor<AbstractEnvironment> acceptor) {
-			if (AbstractConnectedEnvironment.class
-					.isAssignableFrom(((Node<AbstractEnvironment>) acceptor)
-							.getValue().getClass())) {
-				((AbstractConnectedEnvironment) ((Node<AbstractEnvironment>) acceptor)
-						.getValue()).initialConnect();
-			}
-		}
-	}
-
-	// visits each environment and initialises it
-	private static class PostInitialisationVisitor implements
-			Visitor<AbstractEnvironment> {
-		@Override
-		public void visit(Acceptor<AbstractEnvironment> acceptor) {
-			((Node<AbstractEnvironment>) acceptor).getValue()
-					.postInitialisation();
-		}
-	}
-
-	// visits each environment and prints information about it. e.g. all its
-	// connections, appearance etc.
-	@SuppressWarnings("unused")
-	private static class InfoPrintVisitor implements
-			Visitor<AbstractEnvironment> {
-		@Override
-		public void visit(Acceptor<AbstractEnvironment> acceptor) {
-			System.out
-					.println(((AbstractConnectedEnvironment) ((Node<AbstractEnvironment>) acceptor)
-							.getValue()).getConnectedEnvironmentManager());
-		}
 	}
 }

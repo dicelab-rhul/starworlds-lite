@@ -48,16 +48,16 @@ public interface Mind {
 	/**
 	 * 
 	 * The decide procedure. The agent should come to a decision about what
-	 * {@link Action}s it would like to attempt.
+	 * {@link Action} it would like to attempt.
 	 * 
 	 * @param parameters
 	 *            an array of optional parameters that may be used to make the
 	 *            decision
-	 * @return a {@link Collection} of {@link Action}s that the agent would like
+	 * @return the {@link Action} that the agent would like
 	 *         to attempt
 	 * 
 	 */
-	public Collection<Action> decide(Object... parameters);
+	public Action decide(Object... parameters);
 
 	/**
 	 * The execute procedure. The agent should process the actions it has
