@@ -48,8 +48,8 @@ import uk.ac.rhul.cs.dice.starworlds.utils.Pair;
  */
 public abstract class AbstractPhysics implements Physics, Simulator {
 
-	private static final long FRAMELENGTH = 1000;
-
+	private static final long DEFAULTFRAMELENGTH = 1000;
+	private long framelength = DEFAULTFRAMELENGTH;
 	protected AbstractEnvironment environment;
 	protected AbstractAmbient state;
 
@@ -64,7 +64,7 @@ public abstract class AbstractPhysics implements Physics, Simulator {
 		while (true) {
 			cycle();
 			try {
-				Thread.sleep(FRAMELENGTH);
+				Thread.sleep(framelength);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
@@ -74,7 +74,13 @@ public abstract class AbstractPhysics implements Physics, Simulator {
 	protected void cycle() {
 		this.runAgents();
 		this.executeActions();
+		this.cycleAddition();
 	}
+
+	/**
+	 * The method is 
+	 */
+	public abstract void cycleAddition();
 
 	@Override
 	public void runAgents() {
@@ -219,7 +225,8 @@ public abstract class AbstractPhysics implements Physics, Simulator {
 	}
 
 	@Override
-	public Set<Pair<String, Object>> perform(SensingAction action, Ambient context) {
+	public Set<Pair<String, Object>> perform(SensingAction action,
+			Ambient context) {
 		return context.filterActivePerception(action.getKeys(), action);
 	}
 
@@ -454,5 +461,14 @@ public abstract class AbstractPhysics implements Physics, Simulator {
 		} else {
 			timestate = new TimeStateParallel();
 		}
+	}
+
+	public void setFramelength(long framelength) {
+		this.framelength = framelength;
+	}
+
+	@Override
+	public void run() {
+		this.simulate();
 	}
 }

@@ -11,7 +11,7 @@ import uk.ac.rhul.cs.dice.starworlds.environment.interfaces.Simulator;
 import uk.ac.rhul.cs.dice.starworlds.environment.physics.time.LocalSynchroniser;
 import uk.ac.rhul.cs.dice.starworlds.environment.physics.time.SuperSynchroniser;
 
-public class AbstractConnectedPhysics extends AbstractPhysics {
+public abstract class AbstractConnectedPhysics extends AbstractPhysics {
 
 	private LocalSynchroniser synchroniser;
 
@@ -89,5 +89,10 @@ public class AbstractConnectedPhysics extends AbstractPhysics {
 			}
 		}
 		super.setEnvironment(environment);
+	}
+
+	@Override
+	public void run() {
+		this.simulate();
 	}
 }

@@ -97,4 +97,10 @@ public class PhysicalPhysics extends AbstractConnectedPhysics {
 		}
 		return false;
 	}
+
+	@Override
+	public void cycleAddition() {
+		// TODO Auto-generated method stub
+		
+	}
 }

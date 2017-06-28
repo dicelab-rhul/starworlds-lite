@@ -7,4 +7,8 @@ public class DefaultConnectedPhysics extends AbstractConnectedPhysics {
 	public DefaultConnectedPhysics() {
 		super();
 	}
+
+	@Override
+	public void cycleAddition() {	
+	}
 }

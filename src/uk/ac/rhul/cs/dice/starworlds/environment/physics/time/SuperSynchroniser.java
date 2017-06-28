@@ -6,18 +6,14 @@ import uk.ac.rhul.cs.dice.starworlds.environment.interfaces.Simulator;
 public class SuperSynchroniser extends LocalSynchroniser implements Simulator {
 
 	// default
-	protected long framegap = 1000;
+	protected long framelength = 1000;
 
 	public SuperSynchroniser(AbstractConnectedEnvironment environment) {
 		super(environment);
 	}
 
-	public long getFramegap() {
-		return framegap;
-	}
-
-	public void setFramegap(long framegap) {
-		this.framegap = framegap;
+	public void setFrameLength(long framegap) {
+		this.framelength = framegap;
 	}
 
 	/**
@@ -37,18 +33,10 @@ public class SuperSynchroniser extends LocalSynchroniser implements Simulator {
 			this.executeactions();
 			this.cycleAddition();
 			try {
-				Thread.sleep(framegap);
+				Thread.sleep(framelength);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
 		}
-	}
-
-	/**
-	 * A method that should be overridden in a subclass of
-	 * {@link SuperSynchroniser} if there are any additional things to be done
-	 * at the end of a cycle. See {@link SuperSynchroniser#simulate()}.
-	 */
-	public void cycleAddition() {
 	}
 }

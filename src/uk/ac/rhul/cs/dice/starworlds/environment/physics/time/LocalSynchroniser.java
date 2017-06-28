@@ -11,6 +11,7 @@ import uk.ac.rhul.cs.dice.starworlds.environment.interaction.inet.INetEnvironmen
 import uk.ac.rhul.cs.dice.starworlds.environment.interfaces.AbstractConnectedEnvironment;
 import uk.ac.rhul.cs.dice.starworlds.environment.interfaces.Environment;
 import uk.ac.rhul.cs.dice.starworlds.environment.physics.AbstractConnectedPhysics;
+import uk.ac.rhul.cs.dice.starworlds.environment.physics.AbstractPhysics;
 import uk.ac.rhul.cs.dice.starworlds.environment.physics.time.RemoteSynchroniser.SyncPoint;
 
 public class LocalSynchroniser implements Synchroniser {
@@ -137,5 +138,16 @@ public class LocalSynchroniser implements Synchroniser {
 						+ this.synchronisers : "")
 				+ ((!this.remoteSynchronisers.isEmpty()) ? " Remote: "
 						+ this.remoteSynchronisers : "");
+	}
+
+	/**
+	 * A method that should be overridden in a subclass of
+	 * {@link LocalSynchroniser} if there are any additional things to be done
+	 * at the end of a cycle. See {@link LocalSynchroniser#simulate()}. This
+	 * method may call {@link LocalSynchroniser#cycleAddition()} for sub
+	 * {@link LocalSynchroniser} or perhaps call
+	 * {@link AbstractPhysics#cycleAddition()}.
+	 */
+	public void cycleAddition() {
 	}
 }
