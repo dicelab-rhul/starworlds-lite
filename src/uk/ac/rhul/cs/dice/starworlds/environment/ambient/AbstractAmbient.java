@@ -25,6 +25,8 @@ import uk.ac.rhul.cs.dice.starworlds.environment.ambient.filter.AppearanceFilter
 import uk.ac.rhul.cs.dice.starworlds.environment.ambient.filter.Filter;
 import uk.ac.rhul.cs.dice.starworlds.environment.ambient.filter.RandomFilter;
 import uk.ac.rhul.cs.dice.starworlds.environment.ambient.filter.SelfFilter;
+import uk.ac.rhul.cs.dice.starworlds.environment.interfaces.AbstractEnvironment;
+import uk.ac.rhul.cs.dice.starworlds.environment.interfaces.Environment;
 import uk.ac.rhul.cs.dice.starworlds.environment.physics.Physics;
 import uk.ac.rhul.cs.dice.starworlds.parser.DefaultConstructorStore.DefaultConstructor;
 import uk.ac.rhul.cs.dice.starworlds.utils.Pair;
@@ -78,6 +80,48 @@ public abstract class AbstractAmbient implements Ambient {
 		filters.put(RANDOM, new RandomFilter());
 		filters.put(SELF, new SelfFilter());
 		filters.put(APPEARANCEFILTER, new AppearanceFilter());
+	}
+
+	/**
+	 * Adds the given {@link Agent} to this {@link Ambient}. This method should
+	 * only be called outside of out the {@link Environment} cycle to prevent
+	 * conflict of access. This method does not subscribe the {@link Agent} to
+	 * the {@link Environment}, use
+	 * {@link AbstractEnvironment#addAgent(AbstractAgent)}.
+	 * 
+	 * @param agent
+	 *            to add
+	 */
+	public void addAgent(AbstractAgent agent) {
+		this.agents.put(agent.getId(), agent);
+	}
+
+	/**
+	 * Adds the given {@link ActiveBody} to this {@link Ambient}. This method
+	 * should only be called outside of out the {@link Environment} cycle to
+	 * prevent conflict of access. This method does not subscribe the
+	 * {@link ActiveBody} to the {@link Environment}, use
+	 * {@link AbstractEnvironment#addActiveBody(ActiveBody)}.
+	 * 
+	 * @param agent
+	 *            to add
+	 */
+	public void addActiveBody(ActiveBody body) {
+		this.activeBodies.put(body.getId(), body);
+	}
+
+	/**
+	 * Adds the given {@link PassiveBody} to this {@link Ambient}. This method
+	 * should only be called outside of out the {@link Environment} cycle to
+	 * prevent conflict of access. This method does not subscribe the
+	 * {@link PassiveBody} to the {@link Environment}, use
+	 * {@link AbstractEnvironment#addAgent(AbstractAgent)}.
+	 * 
+	 * @param agent
+	 *            to add
+	 */
+	public void addPassiveBody(PassiveBody body) {
+		this.passiveBodies.put(body.getId(), body);
 	}
 
 	public AbstractAgent getAgent(String id) {

@@ -13,6 +13,7 @@ import uk.ac.rhul.cs.dice.starworlds.appearances.ActiveBodyAppearance;
 import uk.ac.rhul.cs.dice.starworlds.appearances.Appearance;
 import uk.ac.rhul.cs.dice.starworlds.appearances.EnvironmentAppearance;
 import uk.ac.rhul.cs.dice.starworlds.entities.ActiveBody;
+import uk.ac.rhul.cs.dice.starworlds.entities.PassiveBody;
 import uk.ac.rhul.cs.dice.starworlds.entities.agents.AbstractAgent;
 import uk.ac.rhul.cs.dice.starworlds.entities.agents.components.AbstractSensor;
 import uk.ac.rhul.cs.dice.starworlds.entities.agents.components.Sensor;
@@ -131,13 +132,75 @@ public abstract class AbstractEnvironment extends Observable implements
 		this.possibleActions = possibleActions;
 		this.subscriber.setPossibleActions(possibleActions);
 		this.ambient.getAgents().forEach((AbstractAgent agent) -> {
-			agent.setEnvironment(this);
-			this.subscribe(agent, representSensors(agent.getSensors()));
+			subscribeAgent(agent);
 		});
 		this.ambient.getActiveBodies().forEach((ActiveBody body) -> {
-			body.setEnvironment(this);
-			this.subscribe(body, representSensors(body.getSensors()));
+			subscribeActiveBody(body);
 		});
+	}
+
+	/**
+	 * Subscribes the given {@link AbstractAgent}s {@link Sensor}s to this
+	 * {@link Environment} and adds it to this {@link Environment}s
+	 * {@link Ambient}. This method should only be called outside of out the
+	 * {@link Environment} cycle to prevent conflict of access.
+	 * 
+	 * @param agent
+	 *            to add
+	 */
+	public void addAgent(AbstractAgent agent) {
+		subscribeAgent(agent);
+		this.ambient.addAgent(agent);
+	}
+
+	/**
+	 * Subscribes the given {@link ActiveBody}s {@link Sensor}s to this
+	 * {@link Environment} and adds it to this {@link Environment}s
+	 * {@link Ambient}. This method should only be called outside of out the
+	 * {@link Environment} cycle to prevent conflict of access.
+	 * 
+	 * @param body
+	 *            to add
+	 */
+	public void addActiveBody(ActiveBody body) {
+		subscribeActiveBody(body);
+		this.ambient.addActiveBody(body);
+	}
+
+	/**
+	 * Adds the {@link PassiveBody} to this {@link Environment}s {@link Ambient}
+	 * . This method should only be called outside of out the
+	 * {@link Environment} cycle to prevent conflict of access.
+	 * 
+	 * @param agent
+	 *            to add
+	 */
+	public void addPassiveBody(PassiveBody body) {
+		this.ambient.addPassiveBody(body);
+	}
+
+	/**
+	 * Subscribes the given {@link AbstractAgent}s {@link Sensor}s to this
+	 * {@link Environment}.
+	 * 
+	 * @param agent
+	 *            to subscribe
+	 */
+	public void subscribeAgent(AbstractAgent agent) {
+		agent.setEnvironment(this);
+		this.subscribe(agent, representSensors(agent.getSensors()));
+	}
+
+	/**
+	 * Subscribes the given {@link ActiveBody}s {@link Sensor}s to this
+	 * {@link Environment}.
+	 * 
+	 * @param body
+	 *            to subscribe
+	 */
+	public void subscribeActiveBody(ActiveBody body) {
+		body.setEnvironment(this);
+		this.subscribe(body, representSensors(body.getSensors()));
 	}
 
 	protected AbstractSensor[] representSensors(List<Sensor> sensors) {
