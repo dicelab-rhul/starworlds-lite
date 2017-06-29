@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import uk.ac.rhul.cs.dice.starworlds.actions.environmental.AbstractEnvironmentalAction;
 import uk.ac.rhul.cs.dice.starworlds.actions.environmental.SensingAction;
 import uk.ac.rhul.cs.dice.starworlds.appearances.ActiveBodyAppearance;
 import uk.ac.rhul.cs.dice.starworlds.appearances.Appearance;
@@ -128,7 +129,7 @@ public class PhysicalAmbient extends AbstractAmbient {
 
 	public class LocalAgentFilter extends AppearanceFilter {
 		@Override
-		public Set<Appearance> get(SensingAction action, Object... args) {
+		public Set<Appearance> get(AbstractEnvironmentalAction action, Object... args) {
 			Set<Appearance> result = new HashSet<>();
 			Set<?> pairs = (Set<?>) args[0];
 			pairs.forEach((Object o) -> {
@@ -142,7 +143,7 @@ public class PhysicalAmbient extends AbstractAmbient {
 	public class LocalFilter implements Filter {
 
 		@Override
-		public Set<Pair<Integer, Integer>> get(SensingAction action,
+		public Set<Pair<Integer, Integer>> get(AbstractEnvironmentalAction action,
 				Object... args) {
 			// Map<ActiveBody, Pair<Integer, Integer>>
 			Map<?, ?> map = (Map<?, ?>) args[0];

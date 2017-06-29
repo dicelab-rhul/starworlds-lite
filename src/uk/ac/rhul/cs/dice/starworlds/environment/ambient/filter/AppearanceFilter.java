@@ -4,14 +4,15 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
-import uk.ac.rhul.cs.dice.starworlds.actions.environmental.SensingAction;
+import uk.ac.rhul.cs.dice.starworlds.actions.environmental.AbstractEnvironmentalAction;
 import uk.ac.rhul.cs.dice.starworlds.appearances.Appearance;
 import uk.ac.rhul.cs.dice.starworlds.appearances.PhysicalBodyAppearance;
 import uk.ac.rhul.cs.dice.starworlds.entities.PhysicalBody;
 
 public class AppearanceFilter implements Filter {
 	@Override
-	public Set<Appearance> get(SensingAction action, Object... args) {
+	public Set<Appearance> get(AbstractEnvironmentalAction action,
+			Object... args) {
 		Set<Appearance> appearances = new HashSet<>();
 		if (Collection.class.isAssignableFrom(args[0].getClass())) {
 			Collection<?> col = (Collection<?>) args[0];
