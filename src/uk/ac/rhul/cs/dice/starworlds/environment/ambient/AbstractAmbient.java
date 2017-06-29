@@ -36,7 +36,7 @@ public abstract class AbstractAmbient implements Ambient {
 	private final static String AGENTSKEY = "AGENTS",
 			ACTIVEBODIESKEY = "ACTIVEBODIES",
 			PASSIVEBODIESKEY = "PASSIVEBODIES", RANDOM = "RANDOM",
-			SELF = "SELF", APPEARANCEFILTER = "APPEARANCE";
+			SELF = "SELF", APPEARANCEFILTER = "APPEARANCE", NULL = "NULL";
 
 	private HashMap<String, Object> environmentVariables;
 	private HashMap<String, Filter> filters;
@@ -77,6 +77,7 @@ public abstract class AbstractAmbient implements Ambient {
 		environmentVariables.put(AGENTSKEY, agents);
 		environmentVariables.put(ACTIVEBODIESKEY, activeBodies);
 		environmentVariables.put(PASSIVEBODIESKEY, passiveBodies);
+		environmentVariables.put(NULL, null);
 		filters.put(RANDOM, new RandomFilter());
 		filters.put(SELF, new SelfFilter());
 		filters.put(APPEARANCEFILTER, new AppearanceFilter());
