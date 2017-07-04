@@ -9,7 +9,7 @@ import java.util.Map;
 import uk.ac.rhul.cs.dice.starworlds.appearances.AbstractAppearance;
 import uk.ac.rhul.cs.dice.starworlds.entities.ActiveBody;
 import uk.ac.rhul.cs.dice.starworlds.entities.PassiveBody;
-import uk.ac.rhul.cs.dice.starworlds.entities.agent.AbstractAgent;
+import uk.ac.rhul.cs.dice.starworlds.entities.agent.AbstractAutonomousAgent;
 import uk.ac.rhul.cs.dice.starworlds.entities.agent.AbstractAgentMind;
 import uk.ac.rhul.cs.dice.starworlds.entities.agents.components.AbstractActuator;
 import uk.ac.rhul.cs.dice.starworlds.entities.agents.components.AbstractSensor;
@@ -38,7 +38,7 @@ public class DefaultConstructorStore {
 
 	static {
 		// store default classes
-		DEFAULTCLASSES.put(Parser.AGENTS, AbstractAgent.class);
+		DEFAULTCLASSES.put(Parser.AGENTS, AbstractAutonomousAgent.class);
 		DEFAULTCLASSES.put(Parser.AGENTMINDS, AbstractAgentMind.class);
 		DEFAULTCLASSES.put(Parser.AGENTACTUATORS, AbstractActuator.class);
 		DEFAULTCLASSES.put(Parser.AGENTSENSORS, AbstractSensor.class);

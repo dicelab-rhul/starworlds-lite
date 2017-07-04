@@ -73,11 +73,11 @@ public interface Mind<D, E> {
 	public Object execute(E parameters);
 
 	/**
-	 * Setter for the {@link AbstractMindfulActiveBody} that this {@link Mind}
+	 * Setter for the {@link AbstractAgent} that this {@link Mind}
 	 * resides in.
 	 * 
 	 * @param body
 	 */
-	public void setBody(AbstractMindfulActiveBody<D, E> body);
+	public void setBody(AbstractAgent<D, E> body);
 
 }

@@ -7,16 +7,16 @@ import uk.ac.rhul.cs.dice.starworlds.actions.Action;
 import uk.ac.rhul.cs.dice.starworlds.entities.agent.AbstractMind;
 import uk.ac.rhul.cs.dice.starworlds.perception.Perception;
 
-public abstract class AbstractAvatarMind<D extends Action>
-		extends
+public abstract class AbstractAvatarMind<D extends Action> extends
 		AbstractMind<D, Stack<D>> {
 
 	private Stack<D> actionsToExecute = new Stack<>();
 	private volatile Boolean decided = false;
 
 	public AbstractAvatarMind() {
-		// TODO Auto-generated constructor stub
 	}
+
+	public abstract void showAvatarView(Collection<Perception<?>> perceptions);
 
 	@Override
 	public Action cycle(Collection<Perception<?>> perceptions) {
@@ -32,7 +32,7 @@ public abstract class AbstractAvatarMind<D extends Action>
 
 	@Override
 	public Object perceive(Collection<Perception<?>> perceptions) {
-		// display the view
+		showAvatarView(perceptions);
 		return null;
 	}
 

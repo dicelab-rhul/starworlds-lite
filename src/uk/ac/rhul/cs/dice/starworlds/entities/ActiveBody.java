@@ -11,7 +11,7 @@ import uk.ac.rhul.cs.dice.starworlds.actions.environmental.EnvironmentalAction;
 import uk.ac.rhul.cs.dice.starworlds.appearances.ActiveBodyAppearance;
 import uk.ac.rhul.cs.dice.starworlds.appearances.Appearance;
 import uk.ac.rhul.cs.dice.starworlds.appearances.PhysicalBodyAppearance;
-import uk.ac.rhul.cs.dice.starworlds.entities.agent.AbstractAgent;
+import uk.ac.rhul.cs.dice.starworlds.entities.agent.AbstractAutonomousAgent;
 import uk.ac.rhul.cs.dice.starworlds.entities.agents.components.AbstractSensor;
 import uk.ac.rhul.cs.dice.starworlds.entities.agents.components.Actuator;
 import uk.ac.rhul.cs.dice.starworlds.entities.agents.components.Component;
@@ -29,7 +29,7 @@ import uk.ac.rhul.cs.dice.starworlds.perception.Perception;
  * {@link List} of {@link Sensor} elements and one of {@link Actuator} elements.<br/>
  * <br/>
  * 
- * Known direct subclasses: {@link AbstractAgent}, {@link DependentBody}.
+ * Known direct subclasses: {@link AbstractAutonomousAgent}, {@link DependentBody}.
  * 
  * @author cloudstrife9999 a.k.a. Emanuele Uliana
  * @author Ben Wilkins

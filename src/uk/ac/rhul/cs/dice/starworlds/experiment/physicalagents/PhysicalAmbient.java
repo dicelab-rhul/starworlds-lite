@@ -11,7 +11,7 @@ import uk.ac.rhul.cs.dice.starworlds.appearances.ActiveBodyAppearance;
 import uk.ac.rhul.cs.dice.starworlds.appearances.Appearance;
 import uk.ac.rhul.cs.dice.starworlds.entities.ActiveBody;
 import uk.ac.rhul.cs.dice.starworlds.entities.PassiveBody;
-import uk.ac.rhul.cs.dice.starworlds.entities.agent.AbstractAgent;
+import uk.ac.rhul.cs.dice.starworlds.entities.agent.AbstractAutonomousAgent;
 import uk.ac.rhul.cs.dice.starworlds.environment.ambient.AbstractAmbient;
 import uk.ac.rhul.cs.dice.starworlds.environment.ambient.filter.AppearanceFilter;
 import uk.ac.rhul.cs.dice.starworlds.environment.ambient.filter.Filter;
@@ -29,7 +29,7 @@ public class PhysicalAmbient extends AbstractAmbient {
 	private Map<ActiveBodyAppearance, Pair<Integer, Integer>> grid = new HashMap<>();
 	private Map<Pair<Integer, Integer>, ActiveBodyAppearance> inversegrid = new HashMap<>();
 
-	public PhysicalAmbient(Set<AbstractAgent> agents,
+	public PhysicalAmbient(Set<AbstractAutonomousAgent> agents,
 			Set<ActiveBody> activeBodies, Set<PassiveBody> passiveBodies) {
 		super(agents, activeBodies, passiveBodies);
 		super.addEnvironmentVariable(GRIDKEY, this.grid);
@@ -53,7 +53,7 @@ public class PhysicalAmbient extends AbstractAmbient {
 			super.addEnvironmentVariable(DIMENSIONKEY, dimension);
 			this.dimension = dimension;
 			this.getAgents().forEach(
-					(AbstractAgent a) -> {
+					(AbstractAutonomousAgent a) -> {
 						Set<Pair<Integer, Integer>> filled = new HashSet<>();
 						Pair<Integer, Integer> position = new Pair<>(
 								(int) (Math.random() * this.dimension),

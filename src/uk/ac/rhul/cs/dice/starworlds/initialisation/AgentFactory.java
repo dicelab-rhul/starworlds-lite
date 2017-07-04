@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Set;
 
 import uk.ac.rhul.cs.dice.starworlds.entities.Agent;
-import uk.ac.rhul.cs.dice.starworlds.entities.agent.AbstractAgent;
+import uk.ac.rhul.cs.dice.starworlds.entities.agent.AbstractAutonomousAgent;
 import uk.ac.rhul.cs.dice.starworlds.entities.agent.AbstractAgentMind;
 import uk.ac.rhul.cs.dice.starworlds.entities.agent.Mind;
 import uk.ac.rhul.cs.dice.starworlds.entities.agents.components.Actuator;
@@ -27,11 +27,11 @@ public class AgentFactory {
 	private AgentFactory() {
 	}
 
-	public Set<AbstractAgent> createDefaultAgents(int numagents,
+	public Set<AbstractAutonomousAgent> createDefaultAgents(int numagents,
 			Class<? extends Mind> mindclass,
 			Collection<Class<?>> sensorclasses,
 			Collection<Class<?>> actuatorclasses) {
-		Set<AbstractAgent> agents = new HashSet<>();
+		Set<AbstractAutonomousAgent> agents = new HashSet<>();
 		for (int i = 0; i < numagents; i++) {
 			agents.add(new DefaultAgent(constructEmpty(sensorclasses,
 					Sensor.class), constructEmpty(actuatorclasses,

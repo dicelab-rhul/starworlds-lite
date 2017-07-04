@@ -10,7 +10,7 @@ import uk.ac.rhul.cs.dice.starworlds.actions.environmental.PhysicalAction;
 import uk.ac.rhul.cs.dice.starworlds.actions.environmental.SensingAction;
 import uk.ac.rhul.cs.dice.starworlds.entities.ActiveBody;
 import uk.ac.rhul.cs.dice.starworlds.entities.PassiveBody;
-import uk.ac.rhul.cs.dice.starworlds.entities.agent.AbstractAgent;
+import uk.ac.rhul.cs.dice.starworlds.entities.agent.AbstractAutonomousAgent;
 import uk.ac.rhul.cs.dice.starworlds.environment.ambient.filter.Filter;
 import uk.ac.rhul.cs.dice.starworlds.environment.physics.Physics;
 import uk.ac.rhul.cs.dice.starworlds.utils.Pair;
@@ -49,7 +49,7 @@ public interface Ambient {
 	public Set<Pair<String, Object>> filterActivePerception(String[] keys,
 			AbstractEnvironmentalAction action);
 
-	public Collection<AbstractAgent> getAgents();
+	public Collection<AbstractAutonomousAgent> getAgents();
 
 	public Collection<ActiveBody> getActiveBodies();
 

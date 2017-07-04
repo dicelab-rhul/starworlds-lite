@@ -18,9 +18,10 @@ import uk.ac.rhul.cs.dice.starworlds.entities.ActiveBody;
 import uk.ac.rhul.cs.dice.starworlds.entities.Agent;
 import uk.ac.rhul.cs.dice.starworlds.entities.Entity;
 import uk.ac.rhul.cs.dice.starworlds.entities.PassiveBody;
-import uk.ac.rhul.cs.dice.starworlds.entities.agent.AbstractAgent;
+import uk.ac.rhul.cs.dice.starworlds.entities.agent.AbstractAutonomousAgent;
 import uk.ac.rhul.cs.dice.starworlds.entities.agents.components.Actuator;
 import uk.ac.rhul.cs.dice.starworlds.entities.agents.components.Sensor;
+import uk.ac.rhul.cs.dice.starworlds.entities.avatar.AbstractAvatarAgent;
 import uk.ac.rhul.cs.dice.starworlds.environment.ambient.filter.AppearanceFilter;
 import uk.ac.rhul.cs.dice.starworlds.environment.ambient.filter.Filter;
 import uk.ac.rhul.cs.dice.starworlds.environment.ambient.filter.RandomFilter;
@@ -45,12 +46,13 @@ public abstract class AbstractAmbient implements Ambient {
 	private List<PhysicalAction> physicalActions;
 	private List<CommunicationAction<?>> communicationActions;
 
-	protected Map<String, AbstractAgent> agents;
+	protected Map<String, AbstractAvatarAgent<?>> avatars;// TODO
+	protected Map<String, AbstractAutonomousAgent> agents;
 	protected Map<String, ActiveBody> activeBodies;
 	protected Map<String, PassiveBody> passiveBodies;
 
 	@DefaultConstructor
-	public AbstractAmbient(Set<AbstractAgent> agents,
+	public AbstractAmbient(Set<AbstractAutonomousAgent> agents,
 			Set<ActiveBody> activeBodies, Set<PassiveBody> passiveBodies) {
 		this.agents = (agents != null) ? setToMap(agents) : new HashMap<>();
 		this.activeBodies = (activeBodies != null) ? setToMap(activeBodies)
@@ -72,8 +74,9 @@ public abstract class AbstractAmbient implements Ambient {
 	 * adding more use the
 	 * {@link Ambient#addEnvironmentVariable(String, Object)} method.
 	 */
-	protected void initialiseEnvironmentVariables(Set<AbstractAgent> agents,
-			Set<ActiveBody> activeBodies, Set<PassiveBody> passiveBodies) {
+	protected void initialiseEnvironmentVariables(
+			Set<AbstractAutonomousAgent> agents, Set<ActiveBody> activeBodies,
+			Set<PassiveBody> passiveBodies) {
 		environmentVariables.put(AGENTSKEY, agents);
 		environmentVariables.put(ACTIVEBODIESKEY, activeBodies);
 		environmentVariables.put(PASSIVEBODIESKEY, passiveBodies);
@@ -88,12 +91,12 @@ public abstract class AbstractAmbient implements Ambient {
 	 * only be called outside of out the {@link Environment} cycle to prevent
 	 * conflict of access. This method does not subscribe the {@link Agent} to
 	 * the {@link Environment}, use
-	 * {@link AbstractEnvironment#addAgent(AbstractAgent)}.
+	 * {@link AbstractEnvironment#addAgent(AbstractAutonomousAgent)}.
 	 * 
 	 * @param agent
 	 *            to add
 	 */
-	public void addAgent(AbstractAgent agent) {
+	public void addAgent(AbstractAutonomousAgent agent) {
 		this.agents.put(agent.getId(), agent);
 	}
 
@@ -116,7 +119,7 @@ public abstract class AbstractAmbient implements Ambient {
 	 * should only be called outside of out the {@link Environment} cycle to
 	 * prevent conflict of access. This method does not subscribe the
 	 * {@link PassiveBody} to the {@link Environment}, use
-	 * {@link AbstractEnvironment#addAgent(AbstractAgent)}.
+	 * {@link AbstractEnvironment#addAgent(AbstractAutonomousAgent)}.
 	 * 
 	 * @param agent
 	 *            to add
@@ -125,7 +128,7 @@ public abstract class AbstractAmbient implements Ambient {
 		this.passiveBodies.put(body.getId(), body);
 	}
 
-	public AbstractAgent getAgent(String id) {
+	public AbstractAutonomousAgent getAgent(String id) {
 		return this.agents.get(id);
 	}
 
@@ -138,7 +141,7 @@ public abstract class AbstractAmbient implements Ambient {
 	}
 
 	@Override
-	public Collection<AbstractAgent> getAgents() {
+	public Collection<AbstractAutonomousAgent> getAgents() {
 		return this.agents.values();
 	}
 

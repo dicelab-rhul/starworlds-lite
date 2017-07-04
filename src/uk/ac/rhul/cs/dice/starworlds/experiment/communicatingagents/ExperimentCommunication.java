@@ -8,7 +8,7 @@ import uk.ac.rhul.cs.dice.starworlds.actions.environmental.AbstractEnvironmental
 import uk.ac.rhul.cs.dice.starworlds.actions.environmental.CommunicationAction;
 import uk.ac.rhul.cs.dice.starworlds.actions.environmental.SensingAction;
 import uk.ac.rhul.cs.dice.starworlds.appearances.EnvironmentAppearance;
-import uk.ac.rhul.cs.dice.starworlds.entities.agent.AbstractAgent;
+import uk.ac.rhul.cs.dice.starworlds.entities.agent.AbstractAutonomousAgent;
 import uk.ac.rhul.cs.dice.starworlds.environment.concrete.DefaultAmbient;
 import uk.ac.rhul.cs.dice.starworlds.environment.concrete.DefaultConnectedPhysics;
 import uk.ac.rhul.cs.dice.starworlds.environment.concrete.DefaultEnvironment;
@@ -67,8 +67,8 @@ class ExperimentCommunication {
 	}
 
 	// creates some default communicating agents
-	private static Set<AbstractAgent> getAgents(int numAgents) {
-		Set<AbstractAgent> agents = new HashSet<>();
+	private static Set<AbstractAutonomousAgent> getAgents(int numAgents) {
+		Set<AbstractAutonomousAgent> agents = new HashSet<>();
 		for (int i = 0; i < numAgents; i++) {
 			agents.add(FACTORY.createCustomDefaultAgent(
 					FACTORY.getDefaultSensors(), FACTORY.getDefaultActuators(),

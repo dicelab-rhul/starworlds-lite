@@ -4,12 +4,12 @@ import java.util.Set;
 
 import uk.ac.rhul.cs.dice.starworlds.entities.ActiveBody;
 import uk.ac.rhul.cs.dice.starworlds.entities.PassiveBody;
-import uk.ac.rhul.cs.dice.starworlds.entities.agent.AbstractAgent;
+import uk.ac.rhul.cs.dice.starworlds.entities.agent.AbstractAutonomousAgent;
 import uk.ac.rhul.cs.dice.starworlds.environment.ambient.AbstractAmbient;
 
 public class DefaultAmbient extends AbstractAmbient {
 
-	public DefaultAmbient(Set<AbstractAgent> agents,
+	public DefaultAmbient(Set<AbstractAutonomousAgent> agents,
 			Set<ActiveBody> activeBodies, Set<PassiveBody> passiveBodies) {
 		super(agents, activeBodies, passiveBodies);
 	}

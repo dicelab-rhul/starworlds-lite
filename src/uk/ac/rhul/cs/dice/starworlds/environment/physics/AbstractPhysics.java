@@ -12,7 +12,7 @@ import uk.ac.rhul.cs.dice.starworlds.actions.environmental.SensingAction;
 import uk.ac.rhul.cs.dice.starworlds.appearances.ActiveBodyAppearance;
 import uk.ac.rhul.cs.dice.starworlds.entities.ActiveBody;
 import uk.ac.rhul.cs.dice.starworlds.entities.Agent;
-import uk.ac.rhul.cs.dice.starworlds.entities.agent.AbstractAgent;
+import uk.ac.rhul.cs.dice.starworlds.entities.agent.AbstractAutonomousAgent;
 import uk.ac.rhul.cs.dice.starworlds.entities.agents.components.AbstractSensor;
 import uk.ac.rhul.cs.dice.starworlds.entities.agents.components.concrete.ListeningSensor;
 import uk.ac.rhul.cs.dice.starworlds.entities.agents.components.concrete.SeeingSensor;
@@ -158,7 +158,7 @@ public abstract class AbstractPhysics implements Physics, Simulator {
 		Collection<AbstractPerception<?>> otherPerceptions = action
 				.getOtherPerceptions(this, context);
 		if (otherPerceptions != null) {
-			Collection<AbstractAgent> others = new HashSet<>(state.getAgents());
+			Collection<AbstractAutonomousAgent> others = new HashSet<>(state.getAgents());
 			others.remove(state.getAgent(action.getActor().getId()));
 			for (ActiveBody a : others) {
 				environment.notify(action, a.getAppearance(), otherPerceptions,
@@ -275,11 +275,11 @@ public abstract class AbstractPhysics implements Physics, Simulator {
 	public boolean perform(CommunicationAction<?> action, Ambient context) {
 		if (action.getRecipientsIds().isEmpty()) {
 			// send to all agents except the sender.
-			Collection<AbstractAgent> recipients = new HashSet<>(
+			Collection<AbstractAutonomousAgent> recipients = new HashSet<>(
 					state.getAgents());
 			recipients.remove(action.getActor());
 			recipients
-					.forEach((AbstractAgent a) -> {
+					.forEach((AbstractAutonomousAgent a) -> {
 						Collection<AbstractPerception<?>> perceptionsToNotify = new HashSet<>();
 						perceptionsToNotify.add(new CommunicationPerception<>(
 								action.getPayload()));
@@ -294,7 +294,7 @@ public abstract class AbstractPhysics implements Physics, Simulator {
 		action.getRecipientsIds()
 				.forEach(
 						(String s) -> {
-							AbstractAgent agent = state.getAgent(s);
+							AbstractAutonomousAgent agent = state.getAgent(s);
 							if (agent != null) {
 								ActiveBodyAppearance appearance = agent
 										.getAppearance();
@@ -360,7 +360,7 @@ public abstract class AbstractPhysics implements Physics, Simulator {
 	protected class TimeStateSerial implements TimeState {
 
 		public void simulate() {
-			state.getAgents().forEach((AbstractAgent a) -> {
+			state.getAgents().forEach((AbstractAutonomousAgent a) -> {
 				a.run();
 			});
 		}
@@ -389,7 +389,7 @@ public abstract class AbstractPhysics implements Physics, Simulator {
 		public void simulate() {
 			// split into threads
 			Collection<Thread> threads = new ArrayList<>();
-			state.getAgents().forEach((AbstractAgent a) -> {
+			state.getAgents().forEach((AbstractAutonomousAgent a) -> {
 				Thread t = new Thread(a);
 				threads.add(t);
 				t.start();

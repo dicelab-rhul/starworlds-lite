@@ -14,7 +14,7 @@ import uk.ac.rhul.cs.dice.starworlds.appearances.Appearance;
 import uk.ac.rhul.cs.dice.starworlds.appearances.EnvironmentAppearance;
 import uk.ac.rhul.cs.dice.starworlds.entities.ActiveBody;
 import uk.ac.rhul.cs.dice.starworlds.entities.PassiveBody;
-import uk.ac.rhul.cs.dice.starworlds.entities.agent.AbstractAgent;
+import uk.ac.rhul.cs.dice.starworlds.entities.agent.AbstractAutonomousAgent;
 import uk.ac.rhul.cs.dice.starworlds.entities.agents.components.AbstractSensor;
 import uk.ac.rhul.cs.dice.starworlds.entities.agents.components.Sensor;
 import uk.ac.rhul.cs.dice.starworlds.environment.ambient.AbstractAmbient;
@@ -131,7 +131,7 @@ public abstract class AbstractEnvironment extends Observable implements
 		this.subscriber = subscriber;
 		this.possibleActions = possibleActions;
 		this.subscriber.setPossibleActions(possibleActions);
-		this.ambient.getAgents().forEach((AbstractAgent agent) -> {
+		this.ambient.getAgents().forEach((AbstractAutonomousAgent agent) -> {
 			subscribeAgent(agent);
 		});
 		this.ambient.getActiveBodies().forEach((ActiveBody body) -> {
@@ -140,7 +140,7 @@ public abstract class AbstractEnvironment extends Observable implements
 	}
 
 	/**
-	 * Subscribes the given {@link AbstractAgent}s {@link Sensor}s to this
+	 * Subscribes the given {@link AbstractAutonomousAgent}s {@link Sensor}s to this
 	 * {@link Environment} and adds it to this {@link Environment}s
 	 * {@link Ambient}. This method should only be called outside of out the
 	 * {@link Environment} cycle to prevent conflict of access.
@@ -148,7 +148,7 @@ public abstract class AbstractEnvironment extends Observable implements
 	 * @param agent
 	 *            to add
 	 */
-	public void addAgent(AbstractAgent agent) {
+	public void addAgent(AbstractAutonomousAgent agent) {
 		subscribeAgent(agent);
 		this.ambient.addAgent(agent);
 	}
@@ -180,13 +180,13 @@ public abstract class AbstractEnvironment extends Observable implements
 	}
 
 	/**
-	 * Subscribes the given {@link AbstractAgent}s {@link Sensor}s to this
+	 * Subscribes the given {@link AbstractAutonomousAgent}s {@link Sensor}s to this
 	 * {@link Environment}.
 	 * 
 	 * @param agent
 	 *            to subscribe
 	 */
-	public void subscribeAgent(AbstractAgent agent) {
+	public void subscribeAgent(AbstractAutonomousAgent agent) {
 		agent.setEnvironment(this);
 		this.subscribe(agent, representSensors(agent.getSensors()));
 	}

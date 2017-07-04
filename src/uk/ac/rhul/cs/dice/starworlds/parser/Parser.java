@@ -25,7 +25,7 @@ import uk.ac.rhul.cs.dice.starworlds.actions.environmental.PhysicalAction;
 import uk.ac.rhul.cs.dice.starworlds.appearances.Appearance;
 import uk.ac.rhul.cs.dice.starworlds.appearances.PhysicalBodyAppearance;
 import uk.ac.rhul.cs.dice.starworlds.entities.PassiveBody;
-import uk.ac.rhul.cs.dice.starworlds.entities.agent.AbstractAgent;
+import uk.ac.rhul.cs.dice.starworlds.entities.agent.AbstractAutonomousAgent;
 import uk.ac.rhul.cs.dice.starworlds.entities.agent.AbstractAgentMind;
 import uk.ac.rhul.cs.dice.starworlds.entities.agents.components.Actuator;
 import uk.ac.rhul.cs.dice.starworlds.entities.agents.components.Sensor;
@@ -326,7 +326,7 @@ public class Parser {
 		}
 		// create agents
 		JSONArray agentkeys = structure.getJSONArray(AGENTINSTANCES);
-		Set<AbstractAgent> agents = new HashSet<>();
+		Set<AbstractAutonomousAgent> agents = new HashSet<>();
 		for (int i = 0; i < agentkeys.length(); i++) {
 			String ak = agentkeys.getString(i);
 			agents.add(constructAgent(ak, total.getJSONObject(AGENTINSTANCES)
@@ -529,7 +529,7 @@ public class Parser {
 		}
 	}
 
-	private AbstractAgent constructAgent(String key, JSONObject agentjson,
+	private AbstractAutonomousAgent constructAgent(String key, JSONObject agentjson,
 			JSONObject total) {
 		checkProperties(key, agentjson, AGENTS, AGENTMINDS, AGENTSENSORS,
 				AGENTACTUATORS);
@@ -551,7 +551,7 @@ public class Parser {
 				AGENTMINDS, mindjson, total));
 		String bodyjson = agentjson.getString(AGENTS);
 		try {
-			return (AbstractAgent) getClassFromJson(AGENTS, bodyjson, total)
+			return (AbstractAutonomousAgent) getClassFromJson(AGENTS, bodyjson, total)
 					.getConstructor(List.class, List.class,
 							AbstractAgentMind.class).newInstance(sensors,
 							actuators, mind);

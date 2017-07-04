@@ -8,20 +8,20 @@ import uk.ac.rhul.cs.dice.starworlds.actions.Action;
 import uk.ac.rhul.cs.dice.starworlds.actions.environmental.AbstractEnvironmentalAction;
 import uk.ac.rhul.cs.dice.starworlds.appearances.ActiveBodyAppearance;
 import uk.ac.rhul.cs.dice.starworlds.entities.agent.AbstractMind;
-import uk.ac.rhul.cs.dice.starworlds.entities.agent.AbstractMindfulActiveBody;
+import uk.ac.rhul.cs.dice.starworlds.entities.agent.AbstractAgent;
 import uk.ac.rhul.cs.dice.starworlds.entities.agents.components.Actuator;
 import uk.ac.rhul.cs.dice.starworlds.entities.agents.components.Sensor;
 import uk.ac.rhul.cs.dice.starworlds.perception.Perception;
 
-public class AbstractAvatar<D extends Action> extends
-		AbstractMindfulActiveBody<D, Stack<D>> {
+public abstract class AbstractAvatarAgent<D extends Action> extends
+		AbstractAgent<D, Stack<D>> implements Avatar {
 
-	public AbstractAvatar(List<Sensor> sensors, List<Actuator> actuators,
+	public AbstractAvatarAgent(List<Sensor> sensors, List<Actuator> actuators,
 			AbstractMind<D, Stack<D>> mind) {
 		super(sensors, actuators, mind);
 	}
 
-	public AbstractAvatar(ActiveBodyAppearance appearance,
+	public AbstractAvatarAgent(ActiveBodyAppearance appearance,
 			List<Sensor> sensors, List<Actuator> actuators,
 			AbstractMind<D, Stack<D>> mind) {
 		super(appearance, sensors, actuators, mind);
