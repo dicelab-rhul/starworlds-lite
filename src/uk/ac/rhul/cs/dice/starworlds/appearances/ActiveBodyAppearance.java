@@ -30,12 +30,24 @@ public class ActiveBodyAppearance extends PhysicalBodyAppearance {
 	private void init(Collection<Sensor> sensors, Collection<Actuator> actuators) {
 		this.actuators = new ArrayList<>();
 		this.sensors = new ArrayList<>();
-		for (Actuator a : actuators) {
-			this.actuators.add(a.getClass());
+		if (actuators != null) {
+			for (Actuator a : actuators) {
+				this.actuators.add(a.getClass());
+			}
 		}
-		for (Sensor s : sensors) {
-			this.sensors.add(s.getClass());
+		if (sensors != null) {
+			for (Sensor s : sensors) {
+				this.sensors.add(s.getClass());
+			}
 		}
+	}
+
+	protected void setSensors(Collection<Class<? extends Sensor>> sensors) {
+		this.sensors = sensors;
+	}
+
+	protected void setActuators(Collection<Class<? extends Actuator>> actuators) {
+		this.actuators = actuators;
 	}
 
 	public Collection<Class<? extends Sensor>> getSensors() {

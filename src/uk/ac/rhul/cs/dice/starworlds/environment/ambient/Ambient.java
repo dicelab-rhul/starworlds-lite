@@ -10,7 +10,7 @@ import uk.ac.rhul.cs.dice.starworlds.actions.environmental.PhysicalAction;
 import uk.ac.rhul.cs.dice.starworlds.actions.environmental.SensingAction;
 import uk.ac.rhul.cs.dice.starworlds.entities.ActiveBody;
 import uk.ac.rhul.cs.dice.starworlds.entities.PassiveBody;
-import uk.ac.rhul.cs.dice.starworlds.entities.agents.AbstractAgent;
+import uk.ac.rhul.cs.dice.starworlds.entities.agent.AbstractAgent;
 import uk.ac.rhul.cs.dice.starworlds.environment.ambient.filter.Filter;
 import uk.ac.rhul.cs.dice.starworlds.environment.physics.Physics;
 import uk.ac.rhul.cs.dice.starworlds.utils.Pair;
@@ -39,7 +39,7 @@ public interface Ambient {
 	 * @param keys
 	 *            an array of keys to environmental variables.
 	 * @param action
-	 *            the {@link SensingAction} that began the call
+	 *            the {@link AbstractEnvironmentalAction} that began the call
 	 * @return a {@link Set} of {@link Pair}s consisting of < {@link String} ,
 	 *         {@link Object} > where the {@link String} is the key and the
 	 *         {@link Object} is its associated environment variable. The
@@ -47,7 +47,7 @@ public interface Ambient {
 	 *         be sent overnetwork.
 	 */
 	public Set<Pair<String, Object>> filterActivePerception(String[] keys,
-			SensingAction action);
+			AbstractEnvironmentalAction action);
 
 	public Collection<AbstractAgent> getAgents();
 

@@ -1,4 +1,4 @@
-package uk.ac.rhul.cs.dice.starworlds.entities.agents;
+package uk.ac.rhul.cs.dice.starworlds.entities.agent;
 
 import java.util.Collection;
 import java.util.List;
@@ -7,28 +7,14 @@ import uk.ac.rhul.cs.dice.starworlds.actions.Action;
 import uk.ac.rhul.cs.dice.starworlds.actions.MentalAction;
 import uk.ac.rhul.cs.dice.starworlds.actions.environmental.AbstractEnvironmentalAction;
 import uk.ac.rhul.cs.dice.starworlds.appearances.ActiveBodyAppearance;
-import uk.ac.rhul.cs.dice.starworlds.entities.ActiveBody;
 import uk.ac.rhul.cs.dice.starworlds.entities.Agent;
 import uk.ac.rhul.cs.dice.starworlds.entities.agents.components.Actuator;
 import uk.ac.rhul.cs.dice.starworlds.entities.agents.components.Sensor;
 import uk.ac.rhul.cs.dice.starworlds.parser.DefaultConstructorStore.DefaultConstructor;
 import uk.ac.rhul.cs.dice.starworlds.perception.Perception;
 
-/**
- * A subclass of {@link ActiveBody} implementing the {@link Agent} interface.
- * {@link Mind}.<br/>
- * <br/>
- * 
- * Known direct subclasses: {@link AutonomousAgent}, {@link Avatar}.
- * 
- * @author cloudstrife9999 a.k.a. Emanuele Uliana
- * @author Ben Wilkins
- * @author Kostas Stathis
- *
- */
-public abstract class AbstractAgent extends ActiveBody implements Agent {
-
-	private AbstractAgentMind mind;
+public abstract class AbstractAgent extends
+		AbstractMindfulActiveBody<Perception<?>, Action> implements Agent {
 
 	/**
 	 * Constructor.
@@ -44,7 +30,7 @@ public abstract class AbstractAgent extends ActiveBody implements Agent {
 	@DefaultConstructor
 	public AbstractAgent(List<Sensor> sensors, List<Actuator> actuators,
 			AbstractAgentMind mind) {
-		super(null, sensors, actuators);
+		super(null, sensors, actuators, mind);
 		init(mind);
 		this.setAppearance(new ActiveBodyAppearance(this));
 	}
@@ -63,7 +49,7 @@ public abstract class AbstractAgent extends ActiveBody implements Agent {
 	 */
 	public AbstractAgent(ActiveBodyAppearance appearance, List<Sensor> sensors,
 			List<Actuator> actuators, AbstractAgentMind mind) {
-		super(appearance, sensors, actuators);
+		super(appearance, sensors, actuators, mind);
 		init(mind);
 	}
 
@@ -79,7 +65,7 @@ public abstract class AbstractAgent extends ActiveBody implements Agent {
 	 */
 	@Override
 	public AbstractAgentMind getMind() {
-		return this.mind;
+		return (AbstractAgentMind) this.mind;
 	}
 
 	@Override
@@ -87,7 +73,8 @@ public abstract class AbstractAgent extends ActiveBody implements Agent {
 		// get perceptions from sensors
 		Collection<Perception<?>> sensoryPerceptions = this.perceive();
 		// call mind cycle
-		Action actionToExecute = (Action) this.mind.cycle(sensoryPerceptions)[0];
+		Action actionToExecute = this.getMind().cycle(sensoryPerceptions);
+		this.doAct((AbstractEnvironmentalAction) actionToExecute);
 		// execute any actions to perform in actuators
 		if (actionToExecute != null) {
 			if (!MentalAction.class

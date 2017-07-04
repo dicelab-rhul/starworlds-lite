@@ -6,7 +6,7 @@ import java.util.Collection;
 import uk.ac.rhul.cs.dice.starworlds.actions.environmental.AbstractEnvironmentalAction;
 import uk.ac.rhul.cs.dice.starworlds.actions.environmental.CommunicationAction;
 import uk.ac.rhul.cs.dice.starworlds.actions.environmental.SensingAction;
-import uk.ac.rhul.cs.dice.starworlds.entities.agents.Mind;
+import uk.ac.rhul.cs.dice.starworlds.entities.agent.Mind;
 import uk.ac.rhul.cs.dice.starworlds.entities.agents.components.concrete.ListeningSensor;
 import uk.ac.rhul.cs.dice.starworlds.entities.agents.components.concrete.PhysicalActuator;
 import uk.ac.rhul.cs.dice.starworlds.entities.agents.components.concrete.SpeechActuator;

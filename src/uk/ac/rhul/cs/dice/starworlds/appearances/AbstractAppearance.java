@@ -36,7 +36,7 @@ public abstract class AbstractAppearance implements Appearance {
 	 *            : the id of the {@link Body}.
 	 */
 	public AbstractAppearance(String id) {
-		this.setId(id);
+		this.id = (id != null) ? id : Identifiable.NULLID;
 	}
 
 	@Override

@@ -17,7 +17,7 @@ import uk.ac.rhul.cs.dice.starworlds.perception.DefaultPerception;
  * @author Kostas Stathis
  *
  */
-public final class SensingAction extends AbstractEnvironmentalAction {
+public class SensingAction extends AbstractEnvironmentalAction {
 
 	private static final long serialVersionUID = 4695622233320564044L;
 

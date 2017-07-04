@@ -32,7 +32,8 @@ public abstract class AbstractSubscriber {
 
 	public static enum Permeability {
 		GLOBAL() {
-		}, NEIGHBOUR, SUB, SUPER
+		},
+		NEIGHBOUR, SUB, SUPER
 	}
 
 	// map: agentid -> map: sensorclass -> sensor
@@ -107,6 +108,7 @@ public abstract class AbstractSubscriber {
 
 	public void addPossibleAction(
 			Class<? extends AbstractEnvironmentalAction> action) {
+		// TODO actions inheriting perceptions from super classes
 		while (AbstractEnvironmentalAction.class.isAssignableFrom(action
 				.getSuperclass())) {
 			if (!actions.contains(action)) {
@@ -200,6 +202,14 @@ public abstract class AbstractSubscriber {
 						+ " was not subscribed");
 			}
 		}
+	}
+
+	public Map<Class<? extends AbstractPerception>, Set<Class<? extends AbstractSensor>>> getPerceptionSensors() {
+		return perceptionSensors;
+	}
+
+	public Map<Class<? extends AbstractEnvironmentalAction>, Set<Class<? extends AbstractPerception>>> getActionPerceptions() {
+		return actionPerceptions;
 	}
 
 	public Map<String, Map<Class<? extends AbstractSensor>, AbstractSensor>> getSubscribedSensors() {

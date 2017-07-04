@@ -2,12 +2,11 @@ package uk.ac.rhul.cs.dice.starworlds.entities.agents.concrete;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
 
 import uk.ac.rhul.cs.dice.starworlds.actions.Action;
 import uk.ac.rhul.cs.dice.starworlds.actions.environmental.CommunicationAction;
-import uk.ac.rhul.cs.dice.starworlds.entities.agents.AbstractAgentMind;
+import uk.ac.rhul.cs.dice.starworlds.entities.agent.AbstractAgentMind;
 import uk.ac.rhul.cs.dice.starworlds.perception.Perception;
 
 public class DefaultAgentMind extends AbstractAgentMind {
@@ -19,27 +18,23 @@ public class DefaultAgentMind extends AbstractAgentMind {
 	}
 
 	@Override
-	public Perception<?> perceive(Object... parameters) {
-		Collection<?> perceptions = (Collection<?>) parameters[0];
+	public String toString() {
+		return this.getClass().getSimpleName();
+	}
+
+	@Override
+	public Perception<?> perceive(Collection<Perception<?>> perceptions) {
 		System.out.println("PERCEPTIONS: " + perceptions);
 		return null;
 	}
 
 	@Override
-	public Action decide(Object... parameters) {
+	public Action decide(Perception<?> perception) {
 		return new CommunicationAction<>("hello", this.recipients);
 	}
 
 	@Override
-	public Action execute(Object... parameters) {
-		Collection<?> actions = (Collection<?>) parameters[0];
-		Action action = (Action) actions.stream().findFirst().get();
-		System.out.println("EXECUTE: " + action);
-		return super.doSpeakAct((CommunicationAction<?>) action);
-	}
-
-	@Override
-	public String toString() {
-		return this.getClass().getSimpleName();
+	public Action execute(Action action) {
+		return action;
 	}
 }

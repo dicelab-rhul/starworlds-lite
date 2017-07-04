@@ -18,7 +18,7 @@ import uk.ac.rhul.cs.dice.starworlds.entities.ActiveBody;
 import uk.ac.rhul.cs.dice.starworlds.entities.Agent;
 import uk.ac.rhul.cs.dice.starworlds.entities.Entity;
 import uk.ac.rhul.cs.dice.starworlds.entities.PassiveBody;
-import uk.ac.rhul.cs.dice.starworlds.entities.agents.AbstractAgent;
+import uk.ac.rhul.cs.dice.starworlds.entities.agent.AbstractAgent;
 import uk.ac.rhul.cs.dice.starworlds.entities.agents.components.Actuator;
 import uk.ac.rhul.cs.dice.starworlds.entities.agents.components.Sensor;
 import uk.ac.rhul.cs.dice.starworlds.environment.ambient.filter.AppearanceFilter;
@@ -265,7 +265,7 @@ public abstract class AbstractAmbient implements Ambient {
 
 	@Override
 	public Set<Pair<String, Object>> filterActivePerception(String[] keys,
-			SensingAction action) {
+			AbstractEnvironmentalAction action) {
 		// TODO optimise the recursive environment variables e.g. agents that
 		// are in some space, or sub environment
 		// System.out.println("FILTER: " + Arrays.toString(keys));

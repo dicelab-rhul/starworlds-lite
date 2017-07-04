@@ -1,6 +1,6 @@
 package uk.ac.rhul.cs.dice.starworlds.actions;
 
-import uk.ac.rhul.cs.dice.starworlds.entities.agents.Mind;
+import uk.ac.rhul.cs.dice.starworlds.entities.agent.Mind;
 
 /**
  * The interface for all the actions that should be performed inside a

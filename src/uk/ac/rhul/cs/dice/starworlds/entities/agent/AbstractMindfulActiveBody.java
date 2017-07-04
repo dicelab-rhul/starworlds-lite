@@ -1,13 +1,14 @@
-package uk.ac.rhul.cs.dice.starworlds.entities.agents;
+package uk.ac.rhul.cs.dice.starworlds.entities.agent;
 
-import java.util.Collection;
-import java.util.HashSet;
+import java.util.List;
 
 import uk.ac.rhul.cs.dice.starworlds.actions.Action;
 import uk.ac.rhul.cs.dice.starworlds.actions.environmental.AbstractEnvironmentalAction;
 import uk.ac.rhul.cs.dice.starworlds.actions.environmental.CommunicationAction;
 import uk.ac.rhul.cs.dice.starworlds.actions.environmental.PhysicalAction;
 import uk.ac.rhul.cs.dice.starworlds.actions.environmental.SensingAction;
+import uk.ac.rhul.cs.dice.starworlds.appearances.ActiveBodyAppearance;
+import uk.ac.rhul.cs.dice.starworlds.entities.ActiveBody;
 import uk.ac.rhul.cs.dice.starworlds.entities.Agent;
 import uk.ac.rhul.cs.dice.starworlds.entities.agents.components.AbstractActuator;
 import uk.ac.rhul.cs.dice.starworlds.entities.agents.components.AbstractSensor;
@@ -17,89 +18,68 @@ import uk.ac.rhul.cs.dice.starworlds.entities.agents.components.concrete.Listeni
 import uk.ac.rhul.cs.dice.starworlds.entities.agents.components.concrete.PhysicalActuator;
 import uk.ac.rhul.cs.dice.starworlds.entities.agents.components.concrete.SeeingSensor;
 import uk.ac.rhul.cs.dice.starworlds.entities.agents.components.concrete.SpeechActuator;
-import uk.ac.rhul.cs.dice.starworlds.entities.agents.concrete.DefaultAgentMind;
 import uk.ac.rhul.cs.dice.starworlds.environment.ambient.Ambient;
 import uk.ac.rhul.cs.dice.starworlds.environment.interfaces.Environment;
 import uk.ac.rhul.cs.dice.starworlds.environment.physics.Physics;
 import uk.ac.rhul.cs.dice.starworlds.parser.DefaultConstructorStore.DefaultConstructor;
 import uk.ac.rhul.cs.dice.starworlds.perception.Perception;
 
-/**
- * The abstract implementation of {@link Mind}. This mind houses useful method
- * for any concrete implementation of the a {@link Mind}. Including methods to
- * access information about the agent this {@link Mind} resides in, methods for
- * performing {@link Action}s - speak, sense, do. See {@link SpeechActuator},
- * {@link AbstractSensor}, {@link PhysicalActuator}. </br> When a concrete
- * implementation of a {@link Mind} is in its {@link Mind#execute(Object...)}
- * procedure it should call either {@link AbstractAgentMind#d}
- * //TODO If this method is not called with the actions, the agent will be idle
- * in the current cycle.
- * 
- * 
- * </br> Known direct subclasses: {@link DefaultAgentMind}.
- * 
- * @author cloudstrife9999 a.k.a. Emanuele Uliana
- * @author Ben Wilkins
- * @author Kostas Stathis
- *
- */
-public abstract class AbstractAgentMind implements Mind {
+public abstract class AbstractMindfulActiveBody<D, E> extends ActiveBody {
 
-	private AbstractAgent body;
-	private boolean actionDone;
+	protected AbstractMind<D, E> mind;
 
+	/**
+	 * Constructor.
+	 * 
+	 * @param sensors
+	 *            : a {@link List} of {@link Sensor} instances.
+	 * @param actuators
+	 *            : a {@link List} of {@link Actuator} instances.
+	 * @param mind
+	 *            : the {@link AbstractAgentMind}.
+	 * 
+	 */
 	@DefaultConstructor
-	public AbstractAgentMind() {
+	public AbstractMindfulActiveBody(List<Sensor> sensors,
+			List<Actuator> actuators, AbstractMind<D, E> mind) {
+		super(null, sensors, actuators);
+		init(mind);
+		this.setAppearance(new ActiveBodyAppearance(this));
 	}
 
 	/**
-	 * A helper method for unpacking the parameters received in
-	 * {@link Mind#perceive(Object...)}. This method will only unpack the
-	 * default parameters, if custom parameters have been set (the
-	 * {@link Mind#cycle(Object...)} method has been overridden) then this
-	 * method will do nothing.
+	 * Constructor.
 	 * 
-	 * @param parameters
-	 *            to unpack
-	 * @return a {@link Collection} of {@link Perception}s that have been
-	 *         unpacked, null if failed to unpack
+	 * @param appearance
+	 *            : the {@link ActiveBodyAppearance}.
+	 * @param sensors
+	 *            : a {@link List} of {@link Sensor} instances.
+	 * @param actuators
+	 *            : a {@link List} of {@link Actuator} instances.
+	 * @param mind
+	 *            : the {@link AbstractMind}.
 	 */
-	protected Collection<Perception<?>> unpackPerceptions(Object... parameters) {
-		Collection<Perception<?>> perceptions = new HashSet<>();
-		try {
-			if (parameters.length == 1) {
-				if (Collection.class.isAssignableFrom(parameters[0].getClass())) {
-					((Collection<?>) parameters[0])
-							.forEach((Object o) -> perceptions
-									.add((Perception<?>) o));
-					return perceptions;
-				}
-			}
-		} catch (Exception e) {
-			return null;
-		}
-		return null;
+	public AbstractMindfulActiveBody(ActiveBodyAppearance appearance,
+			List<Sensor> sensors, List<Actuator> actuators,
+			AbstractMind<D, E> mind) {
+		super(appearance, sensors, actuators);
+		init(mind);
+	}
+
+	private void init(AbstractMind<D, E> mind) {
+		this.mind = mind;
+		this.mind.setBody(this);
 	}
 
 	/**
-	 * A helper method for unpacking the parameters received in
-	 * {@link Mind#execute(Object...)}. This method will only unpack the default
-	 * parameters, if custom parameters have been set (the
-	 * {@link Mind#cycle(Object...)} method has been overridden) then this
-	 * method will do nothing.
+	 * Returns the {@link AbstractMind} of the {@link AbstractMindfulActiveBody}
+	 * .
 	 * 
-	 * @param parameters
-	 *            to unpack
-	 * @return an {@link Action} that has been unpacked, null if failed to
-	 *         unpack
+	 * @return the {@link AbstractMind} of the {@link AbstractMindfulActiveBody}
+	 *         .
 	 */
-	public Action unpackAction(Object... parameters) {
-		if (parameters.length == 1) {
-			if (Action.class.isAssignableFrom(parameters[0].getClass())) {
-				return (Action) parameters[0];
-			}
-		}
-		return null;
+	public AbstractMind<D, E> getMind() {
+		return this.mind;
 	}
 
 	protected final Action doAct(AbstractEnvironmentalAction action) {
@@ -162,10 +142,8 @@ public abstract class AbstractAgentMind implements Mind {
 		}
 		Class<?> as = (sensor != null) ? sensor : getDefaultSensorClass();
 		action.setActuator(as);
-		action.setActor(this.body.getAppearance());
-		this.body.actuatorActive(this.body.findSensorByClass(action
-				.getActuator()));
-		setActionDone(true);
+		action.setActor(this.getAppearance());
+		this.actuatorActive(this.findSensorByClass(action.getActuator()));
 		return action;
 	}
 
@@ -197,10 +175,8 @@ public abstract class AbstractAgentMind implements Mind {
 		}
 		action.setActuator((actuator != null) ? actuator
 				: getDefaultSpeechActuatorClass());
-		action.setActor(this.body.getAppearance());
-		this.body.actuatorActive(this.body.findActuatorByClass(action
-				.getActuator()));
-		setActionDone(true);
+		action.setActor(this.getAppearance());
+		this.actuatorActive(this.findActuatorByClass(action.getActuator()));
 		return action;
 	}
 
@@ -228,10 +204,8 @@ public abstract class AbstractAgentMind implements Mind {
 		}
 		action.setActuator((actuator != null) ? actuator
 				: getDefaultPhysicalActuatorClass());
-		action.setActor(this.body.getAppearance());
-		this.body.actuatorActive(this.body.findActuatorByClass(action
-				.getActuator()));
-		setActionDone(true);
+		action.setActor(this.getAppearance());
+		this.actuatorActive(this.findActuatorByClass(action.getActuator()));
 		return action;
 	}
 
@@ -253,82 +227,20 @@ public abstract class AbstractAgentMind implements Mind {
 	}
 
 	protected Class<? extends SpeechActuator> getDefaultSpeechActuatorClass() {
-		Class<? extends SpeechActuator> c = this.body
-				.getDefaultSpeechActuator().getClass();
+		Class<? extends SpeechActuator> c = this.getDefaultSpeechActuator()
+				.getClass();
 		return (c != null) ? c : SpeechActuator.class;
 	}
 
 	protected Class<? extends AbstractSensor> getDefaultSensorClass() {
-		Class<? extends AbstractSensor> c = this.body.getDefaultSensor()
-				.getClass();
+		Class<? extends AbstractSensor> c = this.getDefaultSensor().getClass();
 		return (c != null) ? c : SeeingSensor.class;
 	}
 
 	protected Class<? extends PhysicalActuator> getDefaultPhysicalActuatorClass() {
-		Class<? extends PhysicalActuator> c = this.body
-				.getDefaultPhysicalActuator().getClass();
+		Class<? extends PhysicalActuator> c = this.getDefaultPhysicalActuator()
+				.getClass();
 		return (c != null) ? c : PhysicalActuator.class;
 	}
 
-	protected void setDefaultSensor(AbstractSensor sensor) {
-		if (sensor != null) {
-			this.body.setDefaultSensor(sensor);
-		}
-	}
-
-	protected void setDefaultSpeechActuator(SpeechActuator actuator) {
-		if (actuator != null) {
-			this.body.setDefaultSpeechActuator(actuator);
-		}
-	}
-
-	protected void setDefaultPhysicalActuator(PhysicalActuator actuator) {
-		if (actuator != null) {
-			this.body.setDefaultPhysicalActuator(actuator);
-		}
-	}
-
-	@Override
-	public final void setBody(AbstractAgent body) {
-		if (this.body == null) {
-			this.body = body;
-		}
-	}
-
-	protected AbstractAgent getBody() {
-		return this.body;
-	}
-
-	/**
-	 * Getter for the id of this {@link Agent}. This method may be used when
-	 * communicating as the 'return address'.
-	 * 
-	 * @return the id
-	 */
-	protected String getId() {
-		return this.body.getId();
-	}
-
-	@Override
-	public String toString() {
-		return this.getClass().getSimpleName() + " " + this.getId();
-	}
-
-	@Override
-	public Object[] cycle(Object... parameters) {
-		setActionDone(false);
-		Collection<?> sensoryPerceptions = (Collection<?>) parameters[0];
-		Perception<?> mindPerception = this.perceive(sensoryPerceptions);
-		Action mindActions = this.decide(mindPerception);
-		Action actionToExecute = this.execute(mindActions);
-		return new Object[] { actionToExecute };
-	}
-
-	public boolean isActionDone() {
-		return actionDone;
-	}
-
-	public void setActionDone(boolean actionDone) {
-		this.actionDone = actionDone;
-	}
 }

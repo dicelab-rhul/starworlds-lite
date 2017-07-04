@@ -2,17 +2,15 @@ package uk.ac.rhul.cs.dice.starworlds.experiment.communicatingagents;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 
 import uk.ac.rhul.cs.dice.starworlds.actions.Action;
-import uk.ac.rhul.cs.dice.starworlds.actions.environmental.AbstractEnvironmentalAction;
 import uk.ac.rhul.cs.dice.starworlds.actions.environmental.CommunicationAction;
 import uk.ac.rhul.cs.dice.starworlds.actions.environmental.SensingAction;
 import uk.ac.rhul.cs.dice.starworlds.actions.speech.Payload;
 import uk.ac.rhul.cs.dice.starworlds.appearances.Appearance;
-import uk.ac.rhul.cs.dice.starworlds.entities.agents.AbstractAgentMind;
+import uk.ac.rhul.cs.dice.starworlds.entities.agent.AbstractAgentMind;
 import uk.ac.rhul.cs.dice.starworlds.perception.CommunicationPerception;
 import uk.ac.rhul.cs.dice.starworlds.perception.Perception;
 import uk.ac.rhul.cs.dice.starworlds.utils.Pair;
@@ -23,9 +21,7 @@ public class RandomCommunicatingAgentMind extends AbstractAgentMind {
 	protected List<String> otheragents = new ArrayList<>();
 
 	@Override
-	public Perception<?> perceive(Object... parameters) {
-		Collection<Perception<?>> perceptions = super
-				.unpackPerceptions(parameters);
+	public Perception<?> perceive(Collection<Perception<?>> perceptions) {
 		for (Perception<?> p : perceptions) {
 			if (CommunicationPerception.class.isAssignableFrom(p.getClass())) {
 				// unpack the message and add it to the list of agents!
@@ -47,7 +43,7 @@ public class RandomCommunicatingAgentMind extends AbstractAgentMind {
 	}
 
 	@Override
-	public Action decide(Object... parameters) {
+	public Action decide(Perception<?> perception) {
 		if (!start) {
 			Optional<String> recipient = otheragents.stream()
 					.skip((long) (Math.random() * otheragents.size()))
@@ -66,9 +62,8 @@ public class RandomCommunicatingAgentMind extends AbstractAgentMind {
 	}
 
 	@Override
-	public Action execute(Object... parameters) {
-		Action action = unpackAction(parameters);
-		return doAct((AbstractEnvironmentalAction) action);
+	public Action execute(Action action) {
+		return action;
 	}
 
 	private Collection<Appearance> unpackAppearances(Perception<?> percept) {
@@ -79,4 +74,5 @@ public class RandomCommunicatingAgentMind extends AbstractAgentMind {
 		}
 		return appearances;
 	}
+
 }

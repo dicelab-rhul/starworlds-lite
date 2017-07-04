@@ -1,4 +1,4 @@
-package uk.ac.rhul.cs.dice.starworlds.entities.agents;
+package uk.ac.rhul.cs.dice.starworlds.entities.agent;
 
 import java.util.Collection;
 
@@ -8,17 +8,21 @@ import uk.ac.rhul.cs.dice.starworlds.entities.agents.components.Sensor;
 import uk.ac.rhul.cs.dice.starworlds.perception.Perception;
 
 /**
- * The interface for minds. it extends {@link CustomObserver}.<br/>
- * <br/>
  * 
- * Known implementations: {@link AbstractAgentMind}.
+ * The base interface for a Mind. Generally, a mind takes perceptions as input,
+ * decides on an {@link Action} given the {@link Perception}, then executes the
+ * decided {@link Action}.
  * 
  * @author cloudstrife9999 a.k.a. Emanuele Uliana
  * @author Ben Wilkins
  * @author Kostas Stathis
- *
+ * 
+ * @param <D>
+ *            type parameter for the {@link Mind#decide(Object)} method.
+ * @param <E>
+ *            type parameter for the {@link Mind#execute(Object)} method.
  */
-public interface Mind {
+public interface Mind<D, E> {
 
 	/**
 	 * The cycle of all {@link Mind}s. Usually consisting of (but isn't limited
@@ -27,23 +31,22 @@ public interface Mind {
 	 * {@link Mind#cycle(Object...)} see
 	 * {@link AbstractAgentMind#cycle(Object...)}.
 	 * 
-	 * @param parameters
-	 *            that may be used in the cycle
-	 * @return any result of the cycle - often this will be some {@link Action}
-	 *         (s)
+	 * @param perceptions
+	 *            : to be used by this {@link Mind}
+	 * @return any result(s) of the cycle - often this will be some
+	 *         {@link Action}(s)
 	 */
-	public Object[] cycle(Object... parameters);
+	public Object cycle(Collection<Perception<?>> perceptions);
 
 	/**
 	 * The perceive procedure. Any perceptions received by this {@link Agent}s
 	 * {@link Sensor}s should be processed here.
 	 * 
-	 * @param parameters
-	 *            to process, usually some {@link Perception}(s) received by the
-	 *            agents {@link Sensor}(s)
-	 * @return the processed {@link Perception}
+	 * @param perceptions
+	 *            : to process
+	 * @return the result of perceive (application specific)
 	 */
-	public Perception<?> perceive(Object... parameters);
+	public Object perceive(Collection<Perception<?>> perceptions);
 
 	/**
 	 * 
@@ -53,11 +56,10 @@ public interface Mind {
 	 * @param parameters
 	 *            an array of optional parameters that may be used to make the
 	 *            decision
-	 * @return the {@link Action} that the agent would like
-	 *         to attempt
+	 * @return the {@link Action} that the agent would like to attempt
 	 * 
 	 */
-	public Action decide(Object... parameters);
+	public Object decide(D parameters);
 
 	/**
 	 * The execute procedure. The agent should process the actions it has
@@ -68,13 +70,14 @@ public interface Mind {
 	 *            action to attempt.
 	 * @return
 	 */
-	public Action execute(Object... parameters);
+	public Object execute(E parameters);
 
 	/**
-	 * Setter for the {@link Agent} that this {@link Mind} resides in.
+	 * Setter for the {@link AbstractMindfulActiveBody} that this {@link Mind}
+	 * resides in.
 	 * 
 	 * @param body
 	 */
-	public void setBody(AbstractAgent body);
+	public void setBody(AbstractMindfulActiveBody<D, E> body);
 
 }

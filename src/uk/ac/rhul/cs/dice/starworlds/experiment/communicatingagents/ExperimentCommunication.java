@@ -8,24 +8,17 @@ import uk.ac.rhul.cs.dice.starworlds.actions.environmental.AbstractEnvironmental
 import uk.ac.rhul.cs.dice.starworlds.actions.environmental.CommunicationAction;
 import uk.ac.rhul.cs.dice.starworlds.actions.environmental.SensingAction;
 import uk.ac.rhul.cs.dice.starworlds.appearances.EnvironmentAppearance;
-import uk.ac.rhul.cs.dice.starworlds.entities.agents.AbstractAgent;
+import uk.ac.rhul.cs.dice.starworlds.entities.agent.AbstractAgent;
 import uk.ac.rhul.cs.dice.starworlds.environment.concrete.DefaultAmbient;
 import uk.ac.rhul.cs.dice.starworlds.environment.concrete.DefaultConnectedPhysics;
 import uk.ac.rhul.cs.dice.starworlds.environment.concrete.DefaultEnvironment;
 import uk.ac.rhul.cs.dice.starworlds.environment.concrete.DefaultUniverse;
 import uk.ac.rhul.cs.dice.starworlds.environment.concrete.DefaultWorld;
-import uk.ac.rhul.cs.dice.starworlds.environment.interfaces.AbstractConnectedEnvironment;
 import uk.ac.rhul.cs.dice.starworlds.environment.interfaces.Environment;
-import uk.ac.rhul.cs.dice.starworlds.environment.interfaces.Universe;
 import uk.ac.rhul.cs.dice.starworlds.environment.interfaces.WorldNode;
 import uk.ac.rhul.cs.dice.starworlds.initialisation.AgentFactory;
-import uk.ac.rhul.cs.dice.starworlds.initialisation.ConnectionInitialisationVisitor;
 import uk.ac.rhul.cs.dice.starworlds.initialisation.IDFactory;
-import uk.ac.rhul.cs.dice.starworlds.initialisation.InfoPrintVisitor;
-import uk.ac.rhul.cs.dice.starworlds.initialisation.PostInitialisationVisitor;
 import uk.ac.rhul.cs.dice.starworlds.initialisation.WorldDeployer;
-import uk.ac.rhul.cs.dice.starworlds.utils.datastructure.tree.GraphTreeNode;
-import uk.ac.rhul.cs.dice.starworlds.utils.datastructure.tree.GraphTree;
 
 class ExperimentCommunication {
 

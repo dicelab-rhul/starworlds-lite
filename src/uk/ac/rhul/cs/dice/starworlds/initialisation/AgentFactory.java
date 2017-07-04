@@ -8,9 +8,9 @@ import java.util.List;
 import java.util.Set;
 
 import uk.ac.rhul.cs.dice.starworlds.entities.Agent;
-import uk.ac.rhul.cs.dice.starworlds.entities.agents.AbstractAgent;
-import uk.ac.rhul.cs.dice.starworlds.entities.agents.AbstractAgentMind;
-import uk.ac.rhul.cs.dice.starworlds.entities.agents.Mind;
+import uk.ac.rhul.cs.dice.starworlds.entities.agent.AbstractAgent;
+import uk.ac.rhul.cs.dice.starworlds.entities.agent.AbstractAgentMind;
+import uk.ac.rhul.cs.dice.starworlds.entities.agent.Mind;
 import uk.ac.rhul.cs.dice.starworlds.entities.agents.components.Actuator;
 import uk.ac.rhul.cs.dice.starworlds.entities.agents.components.Sensor;
 import uk.ac.rhul.cs.dice.starworlds.entities.agents.components.concrete.ListeningSensor;

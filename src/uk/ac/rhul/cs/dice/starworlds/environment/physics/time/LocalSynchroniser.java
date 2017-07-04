@@ -6,7 +6,7 @@ import java.util.List;
 
 import uk.ac.rhul.cs.dice.starworlds.actions.Action;
 import uk.ac.rhul.cs.dice.starworlds.entities.Agent;
-import uk.ac.rhul.cs.dice.starworlds.entities.agents.Mind;
+import uk.ac.rhul.cs.dice.starworlds.entities.agent.Mind;
 import uk.ac.rhul.cs.dice.starworlds.environment.interaction.inet.INetEnvironmentConnection;
 import uk.ac.rhul.cs.dice.starworlds.environment.interfaces.AbstractConnectedEnvironment;
 import uk.ac.rhul.cs.dice.starworlds.environment.interfaces.Environment;
