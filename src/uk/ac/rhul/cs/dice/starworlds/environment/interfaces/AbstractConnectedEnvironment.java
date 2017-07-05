@@ -280,7 +280,7 @@ public abstract class AbstractConnectedEnvironment extends AbstractEnvironment {
 	 *         to
 	 */
 	protected Collection<Class<? extends AbstractEnvironmentalAction>> getInitialActionsToSubscribe() {
-		return Collections.unmodifiableCollection(DEFAULTSUBSCRIPTIONACTIONS);
+		return DEFAULTSUBSCRIPTIONACTIONS;
 	}
 
 	/**

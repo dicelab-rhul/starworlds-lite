@@ -15,6 +15,7 @@ import uk.ac.rhul.cs.dice.starworlds.environment.concrete.DefaultUniverse;
 import uk.ac.rhul.cs.dice.starworlds.environment.concrete.DefaultWorld;
 import uk.ac.rhul.cs.dice.starworlds.initialisation.AgentFactory;
 import uk.ac.rhul.cs.dice.starworlds.initialisation.IDFactory;
+import uk.ac.rhul.cs.dice.starworlds.initialisation.WorldDeployer;
 
 public class CommunicationExperimentServer {
 
@@ -36,6 +37,7 @@ public class CommunicationExperimentServer {
 				possibleActions));
 		world.getRoot().getValue()
 				.setExpectedRemoteConnections(expectedConnections);
+		WorldDeployer.deployAndRun(world);
 	}
 
 	// creates some default communicating agents

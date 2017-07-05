@@ -124,12 +124,6 @@ public class EnvironmentConnectionManager implements Receiver, Observer {
 
 	public void connectToEnvironment(String host, Integer port,
 			AmbientRelation relation) {
-		System.out.println("SLOW CONNECT");
-		try {
-			Thread.sleep(1000);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
 		INetEnvironmentConnection connection = new INetEnvironmentConnection(
 				this.localenvironment.getAppearance(), relation, server, host,
 				port);

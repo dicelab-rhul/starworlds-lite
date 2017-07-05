@@ -58,7 +58,7 @@ public class RandomCommunicatingAgentMind extends AbstractAgentMind {
 			// the sensing action must have fail for some reason, so do it again
 		}
 		start = false;
-		return new SensingAction("AGENTS.APPEARANCE");
+		return new SensingAction("AGENTS.APPEARANCE.RANDOM");
 	}
 
 	@Override

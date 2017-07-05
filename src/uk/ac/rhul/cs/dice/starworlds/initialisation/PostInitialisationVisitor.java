@@ -20,11 +20,11 @@ import uk.ac.rhul.cs.dice.starworlds.utils.datastructure.visitor.Visitor;
 public class PostInitialisationVisitor implements
 		Visitor<AbstractConnectedEnvironment> {
 	
-	
-	
 	@Override
 	public void visit(Acceptor<AbstractConnectedEnvironment> acceptor) {
+		System.out.println("POST INITIALISATION");
 		((Node<AbstractConnectedEnvironment>) acceptor).getValue()
 				.postInitialisation();
+		System.out.println("DONE POST INITIALISATION");
 	}
 }

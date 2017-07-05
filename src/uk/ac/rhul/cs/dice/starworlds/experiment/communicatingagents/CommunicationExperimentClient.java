@@ -16,6 +16,7 @@ import uk.ac.rhul.cs.dice.starworlds.environment.concrete.DefaultWorld;
 import uk.ac.rhul.cs.dice.starworlds.environment.interfaces.AbstractConnectedEnvironment.AmbientRelation;
 import uk.ac.rhul.cs.dice.starworlds.initialisation.AgentFactory;
 import uk.ac.rhul.cs.dice.starworlds.initialisation.IDFactory;
+import uk.ac.rhul.cs.dice.starworlds.initialisation.WorldDeployer;
 
 public class CommunicationExperimentClient {
 
@@ -28,16 +29,19 @@ public class CommunicationExperimentClient {
 	}
 
 	public static void main(String[] args) {
-		Integer port = 10002;
-		Integer portremote = 10001;
-		String addr = "localhost";
+		Integer port = 10001;
+		Integer portremote = 5000;
+		String addr = "10.2.105.128";
 		DefaultWorld world = new DefaultWorld(new DefaultUniverse(port,
 				new DefaultAmbient(getAgents(1), null, null, null),
 				new DefaultConnectedPhysics(), new EnvironmentAppearance(
 						IDFactory.getInstance().getNewID(), false, false),
 				possibleActions));
-		world.getRoot().getValue()
-				.addRemoteConnection(addr, portremote, AmbientRelation.SUB);
+		world.getRoot()
+				.getValue()
+				.addRemoteConnection(addr, portremote,
+						AmbientRelation.NEIGHBOUR);
+		WorldDeployer.deployAndRun(world);
 	}
 
 	// creates some default communicating agents
