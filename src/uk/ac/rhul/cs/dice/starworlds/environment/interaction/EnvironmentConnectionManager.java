@@ -172,10 +172,14 @@ public class EnvironmentConnectionManager implements Receiver, Observer {
 		if (InitialisationMessage.class.isAssignableFrom(message.getClass())) {
 			if (INetEnvironmentConnection.class.isAssignableFrom(recipient
 					.getClass())) {
-				addRemoteEnvironment((INetEnvironmentConnection) recipient);
+				INetEnvironmentConnection connection = (INetEnvironmentConnection) recipient;
+				addRemoteEnvironment(connection);
+				connection.send(this.localenvironment
+						.getDefaultActionSubscriptionMessage());
 				this.numRemoteConnections++;
 				System.out.println("NUM REMOTE CONNECTIONS: "
 						+ numRemoteConnections);
+
 			}
 		} else {
 			this.localenvironment
