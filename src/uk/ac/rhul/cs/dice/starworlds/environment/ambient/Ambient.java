@@ -9,9 +9,14 @@ import uk.ac.rhul.cs.dice.starworlds.actions.environmental.CommunicationAction;
 import uk.ac.rhul.cs.dice.starworlds.actions.environmental.PhysicalAction;
 import uk.ac.rhul.cs.dice.starworlds.actions.environmental.SensingAction;
 import uk.ac.rhul.cs.dice.starworlds.entities.ActiveBody;
+import uk.ac.rhul.cs.dice.starworlds.entities.Agent;
 import uk.ac.rhul.cs.dice.starworlds.entities.PassiveBody;
 import uk.ac.rhul.cs.dice.starworlds.entities.agent.AbstractAutonomousAgent;
+import uk.ac.rhul.cs.dice.starworlds.entities.avatar.AbstractAvatarAgent;
+import uk.ac.rhul.cs.dice.starworlds.entities.avatar.Avatar;
 import uk.ac.rhul.cs.dice.starworlds.environment.ambient.filter.Filter;
+import uk.ac.rhul.cs.dice.starworlds.environment.interfaces.AbstractEnvironment;
+import uk.ac.rhul.cs.dice.starworlds.environment.interfaces.Environment;
 import uk.ac.rhul.cs.dice.starworlds.environment.physics.Physics;
 import uk.ac.rhul.cs.dice.starworlds.utils.Pair;
 
@@ -48,6 +53,56 @@ public interface Ambient {
 	 */
 	public Set<Pair<String, Object>> filterActivePerception(String[] keys,
 			AbstractEnvironmentalAction action);
+
+	/**
+	 * Adds the given {@link Agent} to this {@link Ambient}. This method should
+	 * only be called outside of out the {@link Environment} cycle to prevent
+	 * conflict of access. This method does not subscribe the {@link Agent} to
+	 * the {@link Environment}, use
+	 * {@link AbstractEnvironment#addAgent(AbstractAutonomousAgent)}.
+	 * 
+	 * @param agent
+	 *            : to add
+	 */
+	public void addAgent(AbstractAutonomousAgent agent);
+
+	/**
+	 * Adds the given {@link ActiveBody} to this {@link Ambient}. This method
+	 * should only be called outside of out the {@link Environment} cycle to
+	 * prevent conflict of access. This method does not subscribe the
+	 * {@link ActiveBody} to the {@link Environment}, use
+	 * {@link AbstractEnvironment#addActiveBody(ActiveBody)}.
+	 * 
+	 * @param body
+	 *            : to add
+	 */
+	public void addActiveBody(ActiveBody body);
+
+	/**
+	 * Adds the given {@link PassiveBody} to this {@link Ambient}. This method
+	 * should only be called outside of out the {@link Environment} cycle to
+	 * prevent conflict of access. This method does not subscribe the
+	 * {@link PassiveBody} to the {@link Environment}, use
+	 * {@link AbstractEnvironment#addAgent(AbstractAutonomousAgent)}.
+	 * 
+	 * @param body
+	 *            : to add
+	 */
+	public void addPassiveBody(PassiveBody body);
+
+	/**
+	 * Adds the given {@link AbstractAvatarAgent} to this {@link Ambient}. This
+	 * method should only be called outside of out the {@link Environment} cycle
+	 * to prevent conflict of access. This method does not subscribe the
+	 * {@link Avatar} to the {@link Environment}, use
+	 * {@link AbstractEnvironment#addAgent(AbstractAutonomousAgent)}.
+	 * 
+	 * @param avatar
+	 *            : to add
+	 */
+	public void addAvatar(AbstractAvatarAgent<?> avatar);
+
+	public Collection<AbstractAvatarAgent<?>> getAvatars();
 
 	public Collection<AbstractAutonomousAgent> getAgents();
 

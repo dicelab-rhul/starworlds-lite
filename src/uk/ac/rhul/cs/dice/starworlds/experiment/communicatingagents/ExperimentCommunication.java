@@ -48,7 +48,7 @@ class ExperimentCommunication {
 		num = (num > 1) ? num : 1;
 		// create the universe
 		DefaultWorld world = new DefaultWorld(new DefaultUniverse(
-				new DefaultAmbient(getAgents(1), null, null),
+				new DefaultAmbient(getAgents(1), null, null, null),
 				new DefaultConnectedPhysics(), new EnvironmentAppearance(
 						IDFactory.getInstance().getNewID(), false, false),
 				possibleActions));
@@ -56,7 +56,7 @@ class ExperimentCommunication {
 		WorldNode current = world.getRoot();
 		for (int i = 1; i < num; i++) {
 			WorldNode node = new WorldNode(new DefaultEnvironment(
-					new DefaultAmbient(getAgents(1), null, null),
+					new DefaultAmbient(getAgents(1), null, null, null),
 					new DefaultConnectedPhysics(), new EnvironmentAppearance(
 							IDFactory.getInstance().getNewID(), false, false),
 					possibleActions, true));

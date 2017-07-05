@@ -26,8 +26,6 @@ import uk.ac.rhul.cs.dice.starworlds.environment.ambient.filter.AppearanceFilter
 import uk.ac.rhul.cs.dice.starworlds.environment.ambient.filter.Filter;
 import uk.ac.rhul.cs.dice.starworlds.environment.ambient.filter.RandomFilter;
 import uk.ac.rhul.cs.dice.starworlds.environment.ambient.filter.SelfFilter;
-import uk.ac.rhul.cs.dice.starworlds.environment.interfaces.AbstractEnvironment;
-import uk.ac.rhul.cs.dice.starworlds.environment.interfaces.Environment;
 import uk.ac.rhul.cs.dice.starworlds.environment.physics.Physics;
 import uk.ac.rhul.cs.dice.starworlds.parser.DefaultConstructorStore.DefaultConstructor;
 import uk.ac.rhul.cs.dice.starworlds.utils.Pair;
@@ -40,20 +38,26 @@ public abstract class AbstractAmbient implements Ambient {
 			SELF = "SELF", APPEARANCEFILTER = "APPEARANCE", NULL = "NULL";
 
 	private HashMap<String, Object> environmentVariables;
-	private HashMap<String, Filter> filters;
+	private HashMap<String, Filter> queries; // TODO name change
 
 	private List<SensingAction> sensingActions;
 	private List<PhysicalAction> physicalActions;
 	private List<CommunicationAction<?>> communicationActions;
 
-	protected Map<String, AbstractAvatarAgent<?>> avatars;// TODO
+	// TODO Portals
+	// TODO close/open
+
+	protected Map<String, Process> processes; // TODO
+	protected Map<String, AbstractAvatarAgent<?>> avatars;
 	protected Map<String, AbstractAutonomousAgent> agents;
 	protected Map<String, ActiveBody> activeBodies;
 	protected Map<String, PassiveBody> passiveBodies;
 
 	@DefaultConstructor
 	public AbstractAmbient(Set<AbstractAutonomousAgent> agents,
-			Set<ActiveBody> activeBodies, Set<PassiveBody> passiveBodies) {
+			Set<ActiveBody> activeBodies, Set<PassiveBody> passiveBodies,
+			Set<AbstractAvatarAgent<?>> avatars) {
+		this.avatars = (avatars != null) ? setToMap(avatars) : new HashMap<>();
 		this.agents = (agents != null) ? setToMap(agents) : new HashMap<>();
 		this.activeBodies = (activeBodies != null) ? setToMap(activeBodies)
 				: new HashMap<>();
@@ -63,7 +67,7 @@ public abstract class AbstractAmbient implements Ambient {
 		this.physicalActions = new ArrayList<>();
 		this.communicationActions = new ArrayList<>();
 		this.environmentVariables = new HashMap<>();
-		this.filters = new HashMap<>();
+		this.queries = new HashMap<>();
 		initialiseEnvironmentVariables(agents, activeBodies, passiveBodies);
 	}
 
@@ -81,51 +85,9 @@ public abstract class AbstractAmbient implements Ambient {
 		environmentVariables.put(ACTIVEBODIESKEY, activeBodies);
 		environmentVariables.put(PASSIVEBODIESKEY, passiveBodies);
 		environmentVariables.put(NULL, null);
-		filters.put(RANDOM, new RandomFilter());
-		filters.put(SELF, new SelfFilter());
-		filters.put(APPEARANCEFILTER, new AppearanceFilter());
-	}
-
-	/**
-	 * Adds the given {@link Agent} to this {@link Ambient}. This method should
-	 * only be called outside of out the {@link Environment} cycle to prevent
-	 * conflict of access. This method does not subscribe the {@link Agent} to
-	 * the {@link Environment}, use
-	 * {@link AbstractEnvironment#addAgent(AbstractAutonomousAgent)}.
-	 * 
-	 * @param agent
-	 *            to add
-	 */
-	public void addAgent(AbstractAutonomousAgent agent) {
-		this.agents.put(agent.getId(), agent);
-	}
-
-	/**
-	 * Adds the given {@link ActiveBody} to this {@link Ambient}. This method
-	 * should only be called outside of out the {@link Environment} cycle to
-	 * prevent conflict of access. This method does not subscribe the
-	 * {@link ActiveBody} to the {@link Environment}, use
-	 * {@link AbstractEnvironment#addActiveBody(ActiveBody)}.
-	 * 
-	 * @param agent
-	 *            to add
-	 */
-	public void addActiveBody(ActiveBody body) {
-		this.activeBodies.put(body.getId(), body);
-	}
-
-	/**
-	 * Adds the given {@link PassiveBody} to this {@link Ambient}. This method
-	 * should only be called outside of out the {@link Environment} cycle to
-	 * prevent conflict of access. This method does not subscribe the
-	 * {@link PassiveBody} to the {@link Environment}, use
-	 * {@link AbstractEnvironment#addAgent(AbstractAutonomousAgent)}.
-	 * 
-	 * @param agent
-	 *            to add
-	 */
-	public void addPassiveBody(PassiveBody body) {
-		this.passiveBodies.put(body.getId(), body);
+		queries.put(RANDOM, new RandomFilter());
+		queries.put(SELF, new SelfFilter());
+		queries.put(APPEARANCEFILTER, new AppearanceFilter());
 	}
 
 	public AbstractAutonomousAgent getAgent(String id) {
@@ -138,6 +100,31 @@ public abstract class AbstractAmbient implements Ambient {
 
 	public PassiveBody getPassiveBody(String id) {
 		return this.passiveBodies.get(id);
+	}
+
+	@Override
+	public void addAvatar(AbstractAvatarAgent<?> avatar) {
+		this.avatars.put(avatar.getId(), avatar);
+	}
+
+	@Override
+	public void addAgent(AbstractAutonomousAgent agent) {
+		this.agents.put(agent.getId(), agent);
+	}
+
+	@Override
+	public void addActiveBody(ActiveBody body) {
+		this.activeBodies.put(body.getId(), body);
+	}
+
+	@Override
+	public void addPassiveBody(PassiveBody body) {
+		this.passiveBodies.put(body.getId(), body);
+	}
+
+	@Override
+	public Collection<AbstractAvatarAgent<?>> getAvatars() {
+		return this.avatars.values();
 	}
 
 	@Override
@@ -243,7 +230,7 @@ public abstract class AbstractAmbient implements Ambient {
 
 	@Override
 	public Set<String> getFilterKeys() {
-		return Collections.unmodifiableSet(filters.keySet());
+		return Collections.unmodifiableSet(queries.keySet());
 	}
 
 	@Override
@@ -253,12 +240,12 @@ public abstract class AbstractAmbient implements Ambient {
 
 	@Override
 	public boolean addFilter(String key, Filter filter) {
-		return this.filters.putIfAbsent(key, filter) == null;
+		return this.queries.putIfAbsent(key, filter) == null;
 	}
 
 	@Override
 	public boolean filterExists(String key) {
-		return filters.containsKey(key);
+		return queries.containsKey(key);
 	}
 
 	@Override
@@ -284,7 +271,7 @@ public abstract class AbstractAmbient implements Ambient {
 			// System.out.println("SUB: " + Arrays.toString(subkeys));
 			// System.out.println("DATA: " + result);
 			for (int i = 1; i < subkeys.length; i++) {
-				result = filters.get(subkeys[i]).get(action, result);
+				result = queries.get(subkeys[i]).get(action, result);
 			}
 			perceptions.add(new Pair<String, Object>(key, result));
 			// perceptions.add(null);

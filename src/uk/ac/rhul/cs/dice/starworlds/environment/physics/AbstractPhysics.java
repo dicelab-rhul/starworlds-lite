@@ -77,9 +77,6 @@ public abstract class AbstractPhysics implements Physics, Simulator {
 		this.cycleAddition();
 	}
 
-	/**
-	 * The method is 
-	 */
 	public abstract void cycleAddition();
 
 	@Override

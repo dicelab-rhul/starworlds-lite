@@ -22,6 +22,7 @@ import uk.ac.rhul.cs.dice.starworlds.environment.interaction.Event;
 import uk.ac.rhul.cs.dice.starworlds.environment.interaction.inet.INetDefaultMessage;
 import uk.ac.rhul.cs.dice.starworlds.environment.physics.AbstractConnectedPhysics;
 import uk.ac.rhul.cs.dice.starworlds.environment.physics.Physics;
+import uk.ac.rhul.cs.dice.starworlds.initialisation.WorldDeployer;
 import uk.ac.rhul.cs.dice.starworlds.perception.AbstractPerception;
 import uk.ac.rhul.cs.dice.starworlds.utils.Pair;
 
@@ -123,6 +124,7 @@ public abstract class AbstractConnectedEnvironment extends AbstractEnvironment {
 			Boolean bounded) {
 		super(ambient, physics, appearance, possibleActions, bounded);
 		this.envconManager = new EnvironmentConnectionManager(this, port);
+		initialConnections = new HashMap<>();
 		this.initialiseMessageProcessors();
 	}
 
@@ -149,6 +151,19 @@ public abstract class AbstractConnectedEnvironment extends AbstractEnvironment {
 		initialConnections = null;
 	}
 
+	/**
+	 * Adds a connection to a remote environment. This method does not make the
+	 * connection, this is done by the {@link WorldDeployer}.
+	 * 
+	 * @param addr
+	 *            : of the remote {@link Environment}
+	 * @param port
+	 *            : of the remote {@link Environment}
+	 * @param relation
+	 *            : of this {@link Environment} to the other. i.e. if this is
+	 *            the super {@link Environment} to the other, the <b> relation
+	 *            </b> should be {@link AmbientRelation#SUPER}.
+	 */
 	public void addRemoteConnection(String addr, Integer port,
 			AmbientRelation relation) {
 		this.initialConnections.put(new Pair<>(addr, port), relation);

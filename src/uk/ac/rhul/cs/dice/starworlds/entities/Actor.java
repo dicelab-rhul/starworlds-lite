@@ -1,6 +1,7 @@
 package uk.ac.rhul.cs.dice.starworlds.entities;
 
 import uk.ac.rhul.cs.dice.starworlds.actions.environmental.EnvironmentalAction;
+import uk.ac.rhul.cs.dice.starworlds.utils.Identifiable;
 
 /**
  * The interface for classes capable of performing an
@@ -14,6 +15,6 @@ import uk.ac.rhul.cs.dice.starworlds.actions.environmental.EnvironmentalAction;
  * @author Kostas Stathis
  *
  */
-public interface Actor extends Runnable {
+public interface Actor extends Runnable, Identifiable {
 
 }

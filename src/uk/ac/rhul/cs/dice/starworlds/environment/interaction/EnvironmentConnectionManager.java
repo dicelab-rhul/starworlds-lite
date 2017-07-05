@@ -106,6 +106,12 @@ public class EnvironmentConnectionManager implements Receiver, Observer {
 		}
 	}
 
+	/**
+	 * 
+	 * @param host
+	 * @param port
+	 * @param relation
+	 */
 	public void connectToEnvironment(String host, Integer port,
 			AmbientRelation relation) {
 		INetEnvironmentConnection connection = new INetEnvironmentConnection(

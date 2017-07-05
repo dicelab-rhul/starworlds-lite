@@ -11,7 +11,7 @@ public class EnvironmentAppearance extends AbstractAppearance {
 		super(id);
 	}
 
-	public boolean isSimple() {
+	public boolean isAtomic() {
 		return isSimple;
 	}
 

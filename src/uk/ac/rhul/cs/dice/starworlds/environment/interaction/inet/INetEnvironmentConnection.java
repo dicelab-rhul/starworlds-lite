@@ -9,8 +9,8 @@ import uk.ac.rhul.cs.dice.starworlds.appearances.EnvironmentAppearance;
 import uk.ac.rhul.cs.dice.starworlds.environment.interaction.AbstractEnvironmentConnection;
 import uk.ac.rhul.cs.dice.starworlds.environment.interaction.EnvironmentConnection;
 import uk.ac.rhul.cs.dice.starworlds.environment.interaction.Event;
-import uk.ac.rhul.cs.dice.starworlds.environment.interfaces.Environment;
 import uk.ac.rhul.cs.dice.starworlds.environment.interfaces.AbstractConnectedEnvironment.AmbientRelation;
+import uk.ac.rhul.cs.dice.starworlds.environment.interfaces.Environment;
 import uk.ac.rhul.cs.dice.starworlds.environment.physics.time.RemoteSynchroniser;
 import uk.ac.rhul.cs.dice.starworlds.utils.Pair;
 import uk.ac.rhul.cs.dice.starworlds.utils.inet.INetServer;
@@ -36,9 +36,9 @@ public class INetEnvironmentConnection extends AbstractEnvironmentConnection
 	 * and port arguments. Sends an initial connect message containing the given
 	 * {@link EnvironmentAppearance} which should be the {@link Appearance} of
 	 * the local {@link Environment} as well as the {@link AmbientRelation} of
-	 * this {@link Environment} to the other. As an example, if this the
-	 * connection is being made to a sub {@link Environment} the
-	 * {@link AmbientRelation} should be {@link AmbientRelation#SUPER}
+	 * this {@link Environment} to the other. As an example, if the connection
+	 * is being made to a sub {@link Environment} of this {@link Environment}
+	 * the {@link AmbientRelation} should be {@link AmbientRelation#SUPER}
 	 * indicating that the local {@link Environment} is the super
 	 * {@link Environment}. This constructor will block while waiting for a
 	 * reply from the remote {@link Environment}.
