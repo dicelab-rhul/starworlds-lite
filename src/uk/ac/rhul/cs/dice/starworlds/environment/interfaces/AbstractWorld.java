@@ -11,6 +11,10 @@ public abstract class AbstractWorld extends
 		super(new WorldNode((AbstractConnectedEnvironment) universe));
 	}
 
+	public boolean addChild(AbstractConnectedEnvironment e) {
+		return this.getRoot().addChild(e);
+	}
+
 	@Override
 	public WorldNode getRoot() {
 		return (WorldNode) super.getRoot();

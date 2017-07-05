@@ -55,8 +55,13 @@ public class WorldDeployer {
 	 */
 	protected Universe initialiseWorld(AbstractWorld world) {
 		world.accept(new ValidationVisitor());
-		world.accept(new ConnectionInitialisationVisitor());
-		// world.accept(new InfoPrintVisitor());
+		ConnectionInitialisationVisitor civ;
+		world.accept((civ = new ConnectionInitialisationVisitor()));
+		try {
+			civ.waitFromRemoteConnections();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 		world.accept(new PostInitialisationVisitor());
 		return (Universe) world.getRoot().getValue();
 	}

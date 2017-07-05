@@ -169,6 +169,10 @@ public abstract class AbstractConnectedEnvironment extends AbstractEnvironment {
 		this.initialConnections.put(new Pair<>(addr, port), relation);
 	}
 
+	public void setExpectedRemoteConnections(int expectedRemoteConnections) {
+		envconManager.setExpectedRemoteConnections(expectedRemoteConnections);
+	}
+
 	/**
 	 * This method is called after all {@link Environment}s have been created
 	 * and are connected. It should be used for setting parameters in the
@@ -289,11 +293,22 @@ public abstract class AbstractConnectedEnvironment extends AbstractEnvironment {
 	 * overriding this method in a subclass.
 	 */
 	protected void initialActionSubscribe() {
-		INetDefaultMessage sub = new INetDefaultMessage(SUBSCRIBE,
-				(Serializable) getInitialActionsToSubscribe());
+		INetDefaultMessage sub = getDefaultActionSubscriptionMessage();
 		this.envconManager.sendToAllNeighbouringEnvironments(sub);
 		this.envconManager.sendToAllSubEnvironments(sub);
 		this.envconManager.sendToSuperEnvironment(sub);
+	}
+
+	/**
+	 * Getter for a subscription message with the default {@link Action}s
+	 * specified by
+	 * {@link AbstractConnectedEnvironment#getInitialActionsToSubscribe()}.
+	 * 
+	 * @return the subscription message
+	 */
+	public INetDefaultMessage getDefaultActionSubscriptionMessage() {
+		return new INetDefaultMessage(SUBSCRIBE,
+				(Serializable) getInitialActionsToSubscribe());
 	}
 
 	@Override

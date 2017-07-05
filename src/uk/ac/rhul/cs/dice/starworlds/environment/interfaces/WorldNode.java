@@ -8,4 +8,8 @@ public class WorldNode extends GraphTreeNode<AbstractConnectedEnvironment> {
 		super(value);
 	}
 
+	public boolean addChild(AbstractConnectedEnvironment e) {
+		return super.addChild(new WorldNode(e));
+	}
+
 }

@@ -28,6 +28,8 @@ public class EnvironmentConnectionManager implements Receiver, Observer {
 
 	protected INetServer server = null;
 	protected Map<EnvironmentAppearance, Collection<Event<?>>> recievedMessages;
+	protected volatile int numRemoteConnections = 0;
+	protected volatile int expectedRemoteConnections = 0;
 
 	/**
 	 * Constructor specifically for mixed connections.
@@ -71,6 +73,20 @@ public class EnvironmentConnectionManager implements Receiver, Observer {
 		// }
 	}
 
+	public void setExpectedRemoteConnections(int expectedRemoteConnections) {
+		this.expectedRemoteConnections = expectedRemoteConnections;
+	}
+
+	public boolean expectingRemoteConnections() {
+		System.out.println(this.localenvironment.getId()
+				+ " EXPECTED CONNCETIONS: " + expectedRemoteConnections);
+		return this.expectedRemoteConnections > 0;
+	}
+
+	public boolean reachedExpectedRemoteConnections() {
+		return expectedRemoteConnections <= numRemoteConnections;
+	}
+
 	/**
 	 * unused?
 	 */
@@ -106,14 +122,14 @@ public class EnvironmentConnectionManager implements Receiver, Observer {
 		}
 	}
 
-	/**
-	 * 
-	 * @param host
-	 * @param port
-	 * @param relation
-	 */
 	public void connectToEnvironment(String host, Integer port,
 			AmbientRelation relation) {
+		System.out.println("SLOW CONNECT");
+		try {
+			Thread.sleep(1000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 		INetEnvironmentConnection connection = new INetEnvironmentConnection(
 				this.localenvironment.getAppearance(), relation, server, host,
 				port);
@@ -157,6 +173,9 @@ public class EnvironmentConnectionManager implements Receiver, Observer {
 			if (INetEnvironmentConnection.class.isAssignableFrom(recipient
 					.getClass())) {
 				addRemoteEnvironment((INetEnvironmentConnection) recipient);
+				this.numRemoteConnections++;
+				System.out.println("NUM REMOTE CONNECTIONS: "
+						+ numRemoteConnections);
 			}
 		} else {
 			this.localenvironment
