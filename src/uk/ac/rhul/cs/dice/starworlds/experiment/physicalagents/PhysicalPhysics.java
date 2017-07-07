@@ -5,6 +5,7 @@ import java.util.Set;
 
 import uk.ac.rhul.cs.dice.starworlds.appearances.ActiveBodyAppearance;
 import uk.ac.rhul.cs.dice.starworlds.environment.ambient.Ambient;
+import uk.ac.rhul.cs.dice.starworlds.environment.interfaces.AbstractConnectedEnvironment;
 import uk.ac.rhul.cs.dice.starworlds.environment.physics.AbstractConnectedPhysics;
 import uk.ac.rhul.cs.dice.starworlds.perception.AbstractPerception;
 import uk.ac.rhul.cs.dice.starworlds.utils.Pair;
@@ -69,12 +70,6 @@ public class PhysicalPhysics extends AbstractConnectedPhysics {
 				&& p.getSecond() > 0 && p.getSecond() < dimension;
 	}
 
-	@Override
-	public void executeActions() {
-		((PhysicalAmbient) environment.getState()).printGrid();
-		super.executeActions();
-	}
-
 	public boolean perceivable(BadSeeingSensor sensor,
 			AbstractPerception<?> perception, Ambient context) {
 		if (super.perceivable(sensor, perception, context)) {
@@ -100,7 +95,7 @@ public class PhysicalPhysics extends AbstractConnectedPhysics {
 
 	@Override
 	public void cycleAddition() {
-		// TODO Auto-generated method stub
-		
+		// update the view
+		environment.notifyObservers();
 	}
 }

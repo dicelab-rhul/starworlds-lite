@@ -24,8 +24,8 @@ import uk.ac.rhul.cs.dice.starworlds.entities.avatar.AbstractAvatarMind;
  *            : type parameter for the {@link AbstractAvatarMind AvatarMind}
  *            that is to be linked to a view.
  */
-public class KeyboardAvatarLink<A extends Action, M extends AbstractAvatarMind<A>>
-		extends AbstractAvatarLink<Integer, A, M> {
+public abstract class KeyboardAvatarLink<A extends Action, M extends AbstractAvatarMind<A>>
+		extends AbstractAvatarLink<Integer, A, M> implements KeyListener {
 
 	public KeyboardAvatarLink(M mind) {
 		super(mind);

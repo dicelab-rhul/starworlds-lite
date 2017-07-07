@@ -30,9 +30,8 @@ class ExperimentCommunication {
 	}
 
 	public static void main(String[] args) throws Exception {
-		
-	}
 
+	}
 
 	/**
 	 * Creates a chain of sub-{@link Environment}s and builds a

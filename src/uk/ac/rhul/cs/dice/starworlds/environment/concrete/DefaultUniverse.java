@@ -77,9 +77,6 @@ public class DefaultUniverse extends DefaultEnvironment implements Universe {
 
 	@Override
 	protected void initialActionSubscribe() {
-		System.out.println("INITIAL ACTION SUBSCRIBE");
-		System.out.println(this.envconManager
-				.getNeighbouringEnvironmentAppearances());
 		INetDefaultMessage sub = new INetDefaultMessage(SUBSCRIBE,
 				(Serializable) getInitialActionsToSubscribe());
 		this.envconManager.sendToAllNeighbouringEnvironments(sub);

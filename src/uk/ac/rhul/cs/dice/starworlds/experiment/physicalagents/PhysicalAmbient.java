@@ -1,16 +1,21 @@
 package uk.ac.rhul.cs.dice.starworlds.experiment.physicalagents;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import uk.ac.rhul.cs.dice.starworlds.actions.environmental.AbstractEnvironmentalAction;
 import uk.ac.rhul.cs.dice.starworlds.appearances.ActiveBodyAppearance;
 import uk.ac.rhul.cs.dice.starworlds.appearances.Appearance;
+import uk.ac.rhul.cs.dice.starworlds.appearances.PhysicalBodyAppearance;
 import uk.ac.rhul.cs.dice.starworlds.entities.ActiveBody;
 import uk.ac.rhul.cs.dice.starworlds.entities.PassiveBody;
+import uk.ac.rhul.cs.dice.starworlds.entities.PhysicalBody;
 import uk.ac.rhul.cs.dice.starworlds.entities.agent.AbstractAutonomousAgent;
+import uk.ac.rhul.cs.dice.starworlds.entities.avatar.AbstractAvatarAgent;
 import uk.ac.rhul.cs.dice.starworlds.environment.ambient.AbstractAmbient;
 import uk.ac.rhul.cs.dice.starworlds.environment.ambient.filter.AppearanceFilter;
 import uk.ac.rhul.cs.dice.starworlds.environment.ambient.filter.Filter;
@@ -25,12 +30,13 @@ public class PhysicalAmbient extends AbstractAmbient {
 
 	private Integer dimension;
 
-	private Map<ActiveBodyAppearance, Pair<Integer, Integer>> grid = new HashMap<>();
-	private Map<Pair<Integer, Integer>, ActiveBodyAppearance> inversegrid = new HashMap<>();
+	private Map<PhysicalBodyAppearance, Pair<Integer, Integer>> grid = new HashMap<>();
+	private Map<Pair<Integer, Integer>, PhysicalBodyAppearance> inversegrid = new HashMap<>();
 
 	public PhysicalAmbient(Set<AbstractAutonomousAgent> agents,
-			Set<ActiveBody> activeBodies, Set<PassiveBody> passiveBodies) {
-		super(agents, activeBodies, passiveBodies, null);
+			Set<ActiveBody> activeBodies, Set<PassiveBody> passiveBodies,
+			Set<AbstractAvatarAgent<?>> avatars) {
+		super(agents, activeBodies, passiveBodies, avatars);
 		super.addEnvironmentVariable(GRIDKEY, this.grid);
 		super.addFilter(LOCALKEY, new LocalFilter());
 		super.addFilter(LOCALAGENT, new LocalAgentFilter());
@@ -51,20 +57,10 @@ public class PhysicalAmbient extends AbstractAmbient {
 		if (this.dimension == null) {
 			super.addEnvironmentVariable(DIMENSIONKEY, dimension);
 			this.dimension = dimension;
-			this.getAgents().forEach(
-					(AbstractAutonomousAgent a) -> {
-						Set<Pair<Integer, Integer>> filled = new HashSet<>();
-						Pair<Integer, Integer> position = new Pair<>(
-								(int) (Math.random() * this.dimension),
-								(int) (Math.random() * this.dimension));
-						while (filled.contains(position)) {
-							position = new Pair<>(
-									(int) (Math.random() * this.dimension),
-									(int) (Math.random() * this.dimension));
-						}
-						grid.put(a.getAppearance(), position);
-						inversegrid.put(position, a.getAppearance());
-					});
+			fillGrid(avatars.values());
+			fillGrid(agents.values());
+			fillGrid(activeBodies.values());
+			fillGrid(passiveBodies.values());
 			printGrid();
 		} else {
 			throw new IllegalStateException("Cannot reset dimension: "
@@ -72,6 +68,21 @@ public class PhysicalAmbient extends AbstractAmbient {
 					+ this.getClass().getSimpleName()
 					+ " after it has been set.");
 		}
+	}
+
+	private void fillGrid(Collection<? extends PhysicalBody> bodies) {
+		bodies.forEach((PhysicalBody a) -> {
+			Set<Pair<Integer, Integer>> filled = new HashSet<>();
+			Pair<Integer, Integer> position = new Pair<>(
+					(int) (Math.random() * this.dimension), (int) (Math
+							.random() * this.dimension));
+			while (filled.contains(position)) {
+				position = new Pair<>((int) (Math.random() * this.dimension),
+						(int) (Math.random() * this.dimension));
+			}
+			grid.put(a.getAppearance(), position);
+			inversegrid.put(position, a.getAppearance());
+		});
 	}
 
 	public void printGrid() {
@@ -88,13 +99,13 @@ public class PhysicalAmbient extends AbstractAmbient {
 							.getFirst()) * 3) + pair.getSecond() * 2;
 					int end = start + 3;
 					builder.replace(start, end, "["
-							+ inversegrid.get(pair).getId() + "]");
+							+ inversegrid.get(pair).getId().charAt(0) + "]");
 					System.out.println(pair);
 				});
 		System.out.println(builder.toString());
 	}
 
-	public Map<ActiveBodyAppearance, Pair<Integer, Integer>> getGrid() {
+	public Map<PhysicalBodyAppearance, Pair<Integer, Integer>> getGrid() {
 		return grid;
 	}
 
@@ -113,7 +124,7 @@ public class PhysicalAmbient extends AbstractAmbient {
 		return dimension;
 	}
 
-	public ActiveBodyAppearance getAgentAt(Pair<Integer, Integer> position) {
+	public PhysicalBodyAppearance getAgentAt(Pair<Integer, Integer> position) {
 		return inversegrid.get(position);
 	}
 

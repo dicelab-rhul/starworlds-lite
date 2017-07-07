@@ -6,6 +6,10 @@ public class AvatarLinkMappingException extends RuntimeException {
 
 	private static final long serialVersionUID = 4024049934707068026L;
 
+	public AvatarLinkMappingException(String message) {
+		super(message);
+	}
+
 	public AvatarLinkMappingException(Object key) {
 		super("No mapping exists for key: " + key);
 	}

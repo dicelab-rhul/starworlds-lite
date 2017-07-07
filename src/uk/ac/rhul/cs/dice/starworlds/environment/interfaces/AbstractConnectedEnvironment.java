@@ -222,8 +222,8 @@ public abstract class AbstractConnectedEnvironment extends AbstractEnvironment {
 	public void notify(AbstractEnvironmentalAction action,
 			ActiveBodyAppearance toNotify,
 			Collection<AbstractPerception<?>> perceptions, Ambient context) {
-		System.out.println("   " + this + ":NOTIFY ATTEMPT: " + toNotify
-				+ " WITH: " + perceptions);
+//		System.out.println("   " + this + ":NOTIFY ATTEMPT: " + toNotify
+//				+ " WITH: " + perceptions);
 		if (!this.appearance.equals(action.getLocalEnvironment())) {
 			System.out.println("     Perception(s): " + System.lineSeparator()
 					+ "        " + perceptions + System.lineSeparator()

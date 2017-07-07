@@ -15,6 +15,10 @@ public abstract class AbstractWorld extends
 		return this.getRoot().addChild(e);
 	}
 
+	public Universe getUniverse() {
+		return (Universe) super.getRoot().getValue();
+	}
+
 	@Override
 	public WorldNode getRoot() {
 		return (WorldNode) super.getRoot();

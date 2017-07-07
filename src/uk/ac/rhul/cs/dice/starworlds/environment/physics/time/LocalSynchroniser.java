@@ -149,5 +149,6 @@ public class LocalSynchroniser implements Synchroniser {
 	 * {@link AbstractPhysics#cycleAddition()}.
 	 */
 	public void cycleAddition() {
+		physics.cycleAddition();
 	}
 }

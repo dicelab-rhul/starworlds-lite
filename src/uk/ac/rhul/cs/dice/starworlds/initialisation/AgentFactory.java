@@ -1,16 +1,15 @@
 package uk.ac.rhul.cs.dice.starworlds.initialisation;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import uk.ac.rhul.cs.dice.starworlds.actions.environmental.AbstractEnvironmentalAction;
 import uk.ac.rhul.cs.dice.starworlds.entities.Agent;
-import uk.ac.rhul.cs.dice.starworlds.entities.agent.AbstractAutonomousAgent;
 import uk.ac.rhul.cs.dice.starworlds.entities.agent.AbstractAgentMind;
-import uk.ac.rhul.cs.dice.starworlds.entities.agent.Mind;
+import uk.ac.rhul.cs.dice.starworlds.entities.agent.AbstractAutonomousAgent;
 import uk.ac.rhul.cs.dice.starworlds.entities.agents.components.Actuator;
 import uk.ac.rhul.cs.dice.starworlds.entities.agents.components.Sensor;
 import uk.ac.rhul.cs.dice.starworlds.entities.agents.components.concrete.ListeningSensor;
@@ -18,6 +17,8 @@ import uk.ac.rhul.cs.dice.starworlds.entities.agents.components.concrete.Physica
 import uk.ac.rhul.cs.dice.starworlds.entities.agents.components.concrete.SeeingSensor;
 import uk.ac.rhul.cs.dice.starworlds.entities.agents.components.concrete.SpeechActuator;
 import uk.ac.rhul.cs.dice.starworlds.entities.agents.concrete.DefaultAgent;
+import uk.ac.rhul.cs.dice.starworlds.entities.avatar.AbstractAvatarMind;
+import uk.ac.rhul.cs.dice.starworlds.entities.avatar.DefaultAvatarAgent;
 
 public class AgentFactory {
 
@@ -28,7 +29,7 @@ public class AgentFactory {
 	}
 
 	public Set<AbstractAutonomousAgent> createDefaultAgents(int numagents,
-			Class<? extends Mind> mindclass,
+			Class<? extends AbstractAgentMind> mindclass,
 			Collection<Class<?>> sensorclasses,
 			Collection<Class<?>> actuatorclasses) {
 		Set<AbstractAutonomousAgent> agents = new HashSet<>();
@@ -39,6 +40,31 @@ public class AgentFactory {
 					(AbstractAgentMind) constructEmpty(mindclass)));
 		}
 		return agents;
+	}
+
+	public DefaultAgent createCustomDefaultAgent(List<Sensor> sensors,
+			List<Actuator> actuators, AbstractAgentMind mind) {
+		DefaultAgent agent = new DefaultAgent(sensors, actuators, mind);
+		agent.setId(idfactory.getNewID());
+		return agent;
+	}
+
+	public DefaultAgent createDefaultAgent(AbstractAgentMind mind) {
+		DefaultAgent agent = new DefaultAgent(getDefaultSensors(),
+				getDefaultActuators(), mind);
+		agent.setId(idfactory.getNewID());
+		return agent;
+	}
+
+	public DefaultAvatarAgent createDefaultCustomAvatar(
+			Collection<Class<?>> sensors,
+			Collection<Class<?>> actuators,
+			Class<? extends AbstractAvatarMind<AbstractEnvironmentalAction>> mind) {
+		DefaultAvatarAgent avatar = new DefaultAvatarAgent(constructEmpty(
+				sensors, Sensor.class), constructEmpty(actuators,
+				Actuator.class), constructEmpty(mind));
+		avatar.setId(idfactory.getNewID());
+		return avatar;
 	}
 
 	public <T> List<T> constructEmpty(Collection<Class<?>> classes, Class<T> c) {
@@ -58,7 +84,7 @@ public class AgentFactory {
 		}
 	}
 
-	public <T extends Agent> T createAgent(Class<T> agentclass,
+	public <T extends Agent<?, ?>> T createAgent(Class<T> agentclass,
 			Class<?>[] types, Object[] args) {
 		try {
 			return agentclass.getConstructor(types).newInstance(args);
@@ -68,27 +94,14 @@ public class AgentFactory {
 		}
 	}
 
-	public <T extends Agent> T createAgent(Class<T> agentclass, Object... args) {
+	public <T extends Agent<?, ?>> T createAgent(Class<T> agentclass,
+			Object... args) {
 		try {
 			return agentclass.getConstructor(getTypes(args)).newInstance(args);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return null;
 		}
-	}
-
-	public DefaultAgent createCustomDefaultAgent(List<Sensor> sensors,
-			List<Actuator> actuators, AbstractAgentMind mind) {
-		DefaultAgent agent = new DefaultAgent(sensors, actuators, mind);
-		agent.setId(idfactory.getNewID());
-		return agent;
-	}
-
-	public DefaultAgent createDefaultAgent(AbstractAgentMind mind) {
-		DefaultAgent agent = new DefaultAgent(getDefaultSensors(),
-				getDefaultActuators(), mind);
-		agent.setId(idfactory.getNewID());
-		return agent;
 	}
 
 	// TODO

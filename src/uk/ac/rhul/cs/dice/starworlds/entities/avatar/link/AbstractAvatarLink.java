@@ -41,9 +41,10 @@ import uk.ac.rhul.cs.dice.starworlds.entities.avatar.Avatar;
  */
 public abstract class AbstractAvatarLink<K, A extends Action, M extends AbstractAvatarMind<A>> {
 
-	private AbstractAvatarMind<A> mind;
-	private HashMap<K, Class<A>> actionclassmap;
-	private HashMap<K, Constructor<A>> actionconstructormap;
+	protected AbstractAvatarMind<A> mind;
+	protected HashMap<K, Class<? extends A>> actionclassmap;
+	protected HashMap<K, Constructor<? extends A>> actionconstructormap;
+	protected HashMap<K, Object[]> defaultargmap;
 
 	/**
 	 * Constructor.
@@ -55,6 +56,7 @@ public abstract class AbstractAvatarLink<K, A extends Action, M extends Abstract
 		this.setMind(mind);
 		this.actionclassmap = new HashMap<>();
 		this.actionconstructormap = new HashMap<>();
+		this.defaultargmap = new HashMap<>();
 	}
 
 	/**
@@ -66,13 +68,22 @@ public abstract class AbstractAvatarLink<K, A extends Action, M extends Abstract
 	 *            : user input
 	 * @param args
 	 *            : of the {@link Action} to be attempted by the {@link Avatar}
+	 * @throws AvatarLinkMappingException
+	 *             if the key has no mapping
 	 */
-	public void decide(K key, Object... args) {
+	public boolean decide(K key, Object... args) {
 		// create a new action
-		Constructor<A> ac = this.actionconstructormap.get(key);
+		Constructor<? extends A> ac = this.actionconstructormap.get(key);
 		if (ac != null) {
 			try {
-				mind.decide(ac.newInstance(args));
+				// maybe use default args
+				if (args.length == 0) {
+					if (defaultargmap.containsKey(key)) {
+						return mind.decide(ac.newInstance(defaultargmap
+								.get(key)));
+					}
+				}
+				return mind.decide(ac.newInstance(args));
 			} catch (InstantiationException | IllegalAccessException
 					| IllegalArgumentException | InvocationTargetException e) {
 				throw new AvatarLinkMappingException(key,
@@ -88,7 +99,7 @@ public abstract class AbstractAvatarLink<K, A extends Action, M extends Abstract
 	 * @param key
 	 * @return the mapped {@link Action}
 	 */
-	public Class<A> get(K key) {
+	public Class<? extends A> get(K key) {
 		return actionclassmap.get(key);
 	}
 
@@ -109,17 +120,58 @@ public abstract class AbstractAvatarLink<K, A extends Action, M extends Abstract
 	 * @throws NoSuchMethodException
 	 * @throws SecurityException
 	 */
-	public boolean addMapping(K key, Class<A> action,
+	public boolean addMapping(K key, Class<? extends A> action,
 			Class<?>... constructorArgs) throws NoSuchMethodException,
 			SecurityException {
-		if (constructorArgs.length != 0) {
+		if (constructorArgs == null || constructorArgs.length == 0) {
+			this.actionconstructormap.put(key, action.getConstructor());
+		} else {
 			this.actionconstructormap.put(key,
 					action.getConstructor(constructorArgs));
-		} else {
-			this.actionconstructormap.put(key, action.getConstructor());
 		}
 		actionclassmap.put(key, action);
 		return true;
+	}
+
+	/**
+	 * Maps default arguments to a given key if there is a mapping for the given
+	 * key. The default arguments are used if on
+	 * {@link AbstractAvatarLink#decide(Object, Object...)} no additional
+	 * arguments are given when they should have been.
+	 * 
+	 * @param key
+	 * @param defaultargs
+	 * @throws AvatarLinkMappingException
+	 *             if the key has no mapping
+	 */
+	public void mapDefaultArguments(K key, Object... defaultargs) {
+		if (actionclassmap.containsKey(key)) {
+			// check the args
+			Class<?>[] paramtypes = actionconstructormap.get(key)
+					.getParameterTypes();
+			if (defaultargs.length == paramtypes.length) {
+				for (int i = 0; i < paramtypes.length; i++) {
+					if (defaultargs[i] != null) {
+						if (!paramtypes[i].isAssignableFrom(defaultargs[i]
+								.getClass())) {
+							throw new AvatarLinkMappingException(key
+									+ ": defaultarg class: "
+									+ defaultargs[i].getClass()
+									+ " is not compatible with mapped type: "
+									+ paramtypes[i]);
+						}
+					}
+				}
+				defaultargmap.put(key, defaultargs);
+			} else {
+				throw new AvatarLinkMappingException(key
+						+ ": invalid defaultargs length = "
+						+ defaultargs.length + " should be: "
+						+ paramtypes.length);
+			}
+		} else {
+			throw new AvatarLinkMappingException(key);
+		}
 	}
 
 	/**

@@ -10,25 +10,15 @@ import uk.ac.rhul.cs.dice.starworlds.perception.Perception;
 public abstract class AbstractAvatarMind<D extends Action> extends
 		AbstractMind<D, Stack<D>> {
 
-	private Stack<D> actionsToExecute = new Stack<>();
-	private volatile Boolean decided = false;
+	protected Stack<D> actionsToExecute = new Stack<>();
 
 	public AbstractAvatarMind() {
 	}
 
-	public abstract void showAvatarView(Collection<Perception<?>> perceptions);
-
 	@Override
-	public Action cycle(Collection<Perception<?>> perceptions) {
-		this.decided = false;
-		this.perceive(perceptions);
-		// wait for the decide method to be called.
-		while (!decided)
-			;
-		// the user has decide
-		Action actionToExecute = this.execute(actionsToExecute);
-		return actionToExecute;
-	}
+	public abstract Action cycle(Collection<Perception<?>> perceptions);
+
+	public abstract void showAvatarView(Collection<Perception<?>> perceptions);
 
 	@Override
 	public Object perceive(Collection<Perception<?>> perceptions) {
@@ -39,12 +29,21 @@ public abstract class AbstractAvatarMind<D extends Action> extends
 	@Override
 	public Boolean decide(D action) {
 		actionsToExecute.push(action);
-		this.decided = true;
+		return true;
+	}
+
+	public Boolean decide(D[] actions) {
+		for (D d : actions) {
+			actionsToExecute.push(d);
+		}
 		return true;
 	}
 
 	@Override
 	public Action execute(Stack<D> actionstack) {
-		return actionstack.pop();
+		if (!actionstack.isEmpty()) {
+			return actionstack.pop();
+		}
+		return null;
 	}
 }

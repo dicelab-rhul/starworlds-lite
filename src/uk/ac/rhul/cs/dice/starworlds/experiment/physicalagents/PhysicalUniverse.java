@@ -26,6 +26,11 @@ public class PhysicalUniverse extends DefaultUniverse {
 		super.postInitialisation();
 		this.getState().setDimension(dimension);
 	}
+	
+	public void notifyObservers() {
+		this.setChanged();
+		super.notifyObservers();
+	}
 
 	@Override
 	public PhysicalAmbient getState() {

@@ -16,6 +16,7 @@ import uk.ac.rhul.cs.dice.starworlds.entities.agent.AbstractAutonomousAgent;
 import uk.ac.rhul.cs.dice.starworlds.entities.agents.components.AbstractSensor;
 import uk.ac.rhul.cs.dice.starworlds.entities.agents.components.concrete.ListeningSensor;
 import uk.ac.rhul.cs.dice.starworlds.entities.agents.components.concrete.SeeingSensor;
+import uk.ac.rhul.cs.dice.starworlds.entities.avatar.AbstractAvatarAgent;
 import uk.ac.rhul.cs.dice.starworlds.environment.ambient.AbstractAmbient;
 import uk.ac.rhul.cs.dice.starworlds.environment.ambient.Ambient;
 import uk.ac.rhul.cs.dice.starworlds.environment.concrete.DefaultPhysics;
@@ -155,7 +156,8 @@ public abstract class AbstractPhysics implements Physics, Simulator {
 		Collection<AbstractPerception<?>> otherPerceptions = action
 				.getOtherPerceptions(this, context);
 		if (otherPerceptions != null) {
-			Collection<AbstractAutonomousAgent> others = new HashSet<>(state.getAgents());
+			Collection<AbstractAutonomousAgent> others = new HashSet<>(
+					state.getAgents());
 			others.remove(state.getAgent(action.getActor().getId()));
 			for (ActiveBody a : others) {
 				environment.notify(action, a.getAppearance(), otherPerceptions,
@@ -357,9 +359,9 @@ public abstract class AbstractPhysics implements Physics, Simulator {
 	protected class TimeStateSerial implements TimeState {
 
 		public void simulate() {
-			state.getAgents().forEach((AbstractAutonomousAgent a) -> {
-				a.run();
-			});
+			state.getAvatars().forEach((AbstractAvatarAgent<?> a) -> a.run());
+			state.getAgents().forEach((AbstractAutonomousAgent a) -> a.run());
+			state.getActiveBodies().forEach((ActiveBody a) -> a.run());
 		}
 
 		@Override
@@ -386,12 +388,21 @@ public abstract class AbstractPhysics implements Physics, Simulator {
 		public void simulate() {
 			// split into threads
 			Collection<Thread> threads = new ArrayList<>();
-			state.getAgents().forEach((AbstractAutonomousAgent a) -> {
+			getThreads(state.getAvatars());
+			getThreads(state.getAgents());
+			getThreads(state.getActiveBodies());
+			waitForAgents(threads);
+		}
+
+		private Collection<Thread> getThreads(
+				Collection<? extends Runnable> runnables) {
+			Collection<Thread> threads = new ArrayList<>();
+			runnables.forEach((Runnable a) -> {
 				Thread t = new Thread(a);
 				threads.add(t);
 				t.start();
 			});
-			waitForAgents(threads);
+			return threads;
 		}
 
 		private void waitForAgents(Collection<Thread> threads) {

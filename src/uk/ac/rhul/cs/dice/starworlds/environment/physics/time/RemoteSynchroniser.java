@@ -15,24 +15,28 @@ public class RemoteSynchroniser implements Runnable {
 
 	public RemoteSynchroniser(INetEnvironmentConnection remoteEnvironment) {
 		this.remoteEnvironment = remoteEnvironment;
-		System.out.println("REMOTE SYNC");
 	}
 
 	@Override
 	public void run() {
-		System.out.println(this + " waiting...");
-		while (waitCondition()) {
+		if (waitCondition()) {
+			System.out.println(remoteEnvironment.getAppearance().getId()
+					+ " Current: " + current + " waiting for: "
+					+ remoteEnvironment.getRemoteAppearance().getId());
+			while (waitCondition()) {
+			}
+			System.out.println(remoteEnvironment.getAppearance().getId()
+					+ " ...continue");
 		}
-		System.out.println(this + " ...continue");
 	}
 
 	public void done(SyncPoint reached) {
-		System.out.println(this + " ...DONE");
+		System.out.println(this + " ...done:" + reached);
 		remoteEnvironment.send(new SynchronisationMessage(reached));
 	}
 
 	public void receiveSyncMessage(SyncPoint point) {
-		System.out.println("SYNCMESSAGE FINISHED: " + point);
+		System.out.println("Received sync message: " + point);
 		received = point;
 	}
 

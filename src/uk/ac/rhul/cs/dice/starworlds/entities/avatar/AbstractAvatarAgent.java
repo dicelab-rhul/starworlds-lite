@@ -39,8 +39,11 @@ public abstract class AbstractAvatarAgent<D extends Action> extends
 		// call mind cycle
 		Action actionToExecute = this.getMind().cycle(sensoryPerceptions);
 		// activate actuators
-		this.doAct((AbstractEnvironmentalAction) actionToExecute);
+		actionToExecute = this
+				.doAct((AbstractEnvironmentalAction) actionToExecute);
 		// execute any actions to perform in actuators
-		this.execute((AbstractEnvironmentalAction) actionToExecute);
+		if (actionToExecute != null) {
+			this.execute((AbstractEnvironmentalAction) actionToExecute);
+		}
 	}
 }

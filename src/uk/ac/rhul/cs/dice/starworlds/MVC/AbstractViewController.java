@@ -14,7 +14,7 @@ import uk.ac.rhul.cs.dice.starworlds.environment.interfaces.Universe;
  */
 public abstract class AbstractViewController implements ViewController {
 
-	private Universe universe;
+	protected Universe universe;
 
 	public AbstractViewController() {
 	}

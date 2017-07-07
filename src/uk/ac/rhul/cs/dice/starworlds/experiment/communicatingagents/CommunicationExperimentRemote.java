@@ -10,14 +10,12 @@ import uk.ac.rhul.cs.dice.starworlds.actions.environmental.SensingAction;
 import uk.ac.rhul.cs.dice.starworlds.appearances.EnvironmentAppearance;
 import uk.ac.rhul.cs.dice.starworlds.entities.agent.AbstractAutonomousAgent;
 import uk.ac.rhul.cs.dice.starworlds.environment.concrete.DefaultAmbient;
-import uk.ac.rhul.cs.dice.starworlds.environment.concrete.DefaultConnectedPhysics;
-import uk.ac.rhul.cs.dice.starworlds.environment.concrete.DefaultUniverse;
 import uk.ac.rhul.cs.dice.starworlds.environment.concrete.DefaultWorld;
+import uk.ac.rhul.cs.dice.starworlds.environment.interfaces.AbstractConnectedEnvironment.AmbientRelation;
 import uk.ac.rhul.cs.dice.starworlds.initialisation.AgentFactory;
-import uk.ac.rhul.cs.dice.starworlds.initialisation.IDFactory;
 import uk.ac.rhul.cs.dice.starworlds.initialisation.WorldDeployer;
 
-public class CommunicationExperimentServer {
+public class CommunicationExperimentRemote {
 
 	private static AgentFactory FACTORY = AgentFactory.getInstance();
 	// The set of actions possible in the Environments
@@ -25,19 +23,49 @@ public class CommunicationExperimentServer {
 	static {
 		possibleActions.add(SensingAction.class);
 		possibleActions.add(CommunicationAction.class);
+		possibleActions.add(TestAction.class);
 	}
 
 	public static void main(String[] args) {
-		Integer expectedConnections = 1;
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+				WorldDeployer.deployAndRun(getServer());
+			}
+		}).start();
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+				WorldDeployer.deployAndRun(getClient());
+			}
+		}).start();
+	}
+
+	public static DefaultWorld getClient() {
 		Integer port = 10001;
-		DefaultWorld world = new DefaultWorld(new DefaultUniverse(port,
+		Integer portremote = 10002;
+		String addr = "localhost";
+		DefaultWorld world = new DefaultWorld(new TestUniverse(port,
 				new DefaultAmbient(getAgents(1), null, null, null),
-				new DefaultConnectedPhysics(), new EnvironmentAppearance(
-						IDFactory.getInstance().getNewID(), false, false),
-				possibleActions));
+				new TestPhysics(), new EnvironmentAppearance("Client", false,
+						false), possibleActions));
+		world.getRoot()
+				.getValue()
+				.addRemoteConnection(addr, portremote,
+						AmbientRelation.NEIGHBOUR);
+		return world;
+	}
+
+	public static DefaultWorld getServer() {
+		Integer expectedConnections = 1;
+		Integer port = 10002;
+		DefaultWorld world = new DefaultWorld(new TestUniverse(port,
+				new DefaultAmbient(getAgents(1), null, null, null),
+				new TestPhysics(), new EnvironmentAppearance("Server", false,
+						false), possibleActions));
 		world.getRoot().getValue()
 				.setExpectedRemoteConnections(expectedConnections);
-		WorldDeployer.deployAndRun(world);
+		return world;
 	}
 
 	// creates some default communicating agents
@@ -46,7 +74,7 @@ public class CommunicationExperimentServer {
 		for (int i = 0; i < numAgents; i++) {
 			agents.add(FACTORY.createCustomDefaultAgent(
 					FACTORY.getDefaultSensors(), FACTORY.getDefaultActuators(),
-					new RandomCommunicatingAgentMind()));
+					new TestAgentMind()));
 		}
 		return agents;
 	}
