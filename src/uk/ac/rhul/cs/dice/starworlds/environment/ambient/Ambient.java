@@ -50,7 +50,7 @@ public interface Ambient {
 	 *         {@link Object} should be {@link Serializable} if it is to be sent
 	 *         over network.
 	 */
-	public Map<String, Object> filterActivePerception(String[] keys,
+	public Map<String, Object> queryActivePerception(String[] keys,
 			AbstractEnvironmentalAction action);
 
 	/**
@@ -109,21 +109,21 @@ public interface Ambient {
 
 	public Collection<PassiveBody> getPassiveBodies();
 
-	public boolean addEnvironmentVariable(String key, Object variable);
+	public boolean addAmbientAttribute(String key, Object variable);
 
-	public boolean filterExists(String key);
+	public boolean queryExists(String key);
 
-	public boolean environmentVariableExists(String key);
+	public boolean environmentAmbientAttribute(String key);
 
-	public String getEnvironmentVariableKeysAsString();
+	public String getAmbientAttributeKeysAsString();
 
-	public Set<String> getEnvironmentVariableKeys();
+	public Set<String> getAmbientAttributeKeys();
 
-	public Set<String> getFilterKeys();
+	public Set<String> getQueryKeys();
 
-	public String getFilterKeysAsString();
+	public String getQueryKeysAsString();
 
-	public boolean addFilter(String key, Query filter);
+	public boolean addQuery(String key, Query filter);
 
 	public void filterAction(AbstractEnvironmentalAction action);
 

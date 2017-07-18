@@ -37,9 +37,9 @@ public class PhysicalAmbient extends AbstractAmbient {
 			Set<ActiveBody> activeBodies, Set<PassiveBody> passiveBodies,
 			Set<AbstractAvatarAgent<?>> avatars) {
 		super(agents, activeBodies, passiveBodies, avatars);
-		super.addEnvironmentVariable(GRIDKEY, this.grid);
-		super.addFilter(LOCALKEY, new LocalFilter());
-		super.addFilter(LOCALAGENT, new LocalAgentFilter());
+		super.addAmbientAttribute(GRIDKEY, this.grid);
+		super.addQuery(LOCALKEY, new LocalFilter());
+		super.addQuery(LOCALAGENT, new LocalAgentFilter());
 	}
 
 	/**
@@ -55,7 +55,7 @@ public class PhysicalAmbient extends AbstractAmbient {
 	 */
 	public void setDimension(int dimension) {
 		if (this.dimension == null) {
-			super.addEnvironmentVariable(DIMENSIONKEY, dimension);
+			super.addAmbientAttribute(DIMENSIONKEY, dimension);
 			this.dimension = dimension;
 			fillGrid(avatars.values());
 			fillGrid(agents.values());

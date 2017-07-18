@@ -333,7 +333,7 @@ public abstract class AbstractPhysics implements Physics, Simulator {
 
 	@Override
 	public Map<String, Object> perform(SensingAction action, Ambient context) {
-		return context.filterActivePerception(action.getKeys(), action);
+		return context.queryActivePerception(action.getKeys(), action);
 	}
 
 	@Override
@@ -349,9 +349,9 @@ public abstract class AbstractPhysics implements Physics, Simulator {
 		for (int i = 0; i < keys.length; i++) {
 			String[] subkeys = keys[i].split("\\.");
 			// TODO handle integer parameters
-			if (context.environmentVariableExists(subkeys[0])) {
+			if (context.environmentAmbientAttribute(subkeys[0])) {
 				for (int j = 1; j < subkeys.length; j++) {
-					if (!context.filterExists(subkeys[j])) {
+					if (!context.queryExists(subkeys[j])) {
 						keys[i] = null;
 						count++;
 						break;

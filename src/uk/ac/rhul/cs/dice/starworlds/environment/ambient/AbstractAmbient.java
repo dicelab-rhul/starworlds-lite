@@ -35,7 +35,7 @@ public abstract class AbstractAmbient implements Ambient {
 			PASSIVEBODIESKEY = "PASSIVEBODIES", RANDOM = "RANDOM",
 			SELF = "SELF", APPEARANCE = "APPEARANCE", NULL = "NULL";
 
-	private HashMap<String, Object> environmentVariables;
+	private HashMap<String, Object> ambientAttributes;
 	private HashMap<String, Query> queries; // TODO name change
 
 	private List<SensingAction> sensingActions;
@@ -64,25 +64,25 @@ public abstract class AbstractAmbient implements Ambient {
 		this.sensingActions = new ArrayList<>();
 		this.physicalActions = new ArrayList<>();
 		this.communicationActions = new ArrayList<>();
-		this.environmentVariables = new HashMap<>();
+		this.ambientAttributes = new HashMap<>();
 		this.queries = new HashMap<>();
-		initialiseEnvironmentVariables(agents, activeBodies, passiveBodies);
+		initialiseAmbientAttributes(agents, activeBodies, passiveBodies);
 	}
 
 	/**
 	 * Initialises the default environment variables, namely, {@link Agent}s,
 	 * {@link ActiveBody}s, {@link PassiveBody}s. This method should be
 	 * Overridden if a user wishes to add more environment variables. When
-	 * adding more use the
-	 * {@link Ambient#addEnvironmentVariable(String, Object)} method.
+	 * adding more use the {@link Ambient#addAmbientAttribute(String, Object)}
+	 * method.
 	 */
-	protected void initialiseEnvironmentVariables(
+	protected void initialiseAmbientAttributes(
 			Set<AbstractAutonomousAgent> agents, Set<ActiveBody> activeBodies,
 			Set<PassiveBody> passiveBodies) {
-		environmentVariables.put(AGENTSKEY, agents);
-		environmentVariables.put(ACTIVEBODIESKEY, activeBodies);
-		environmentVariables.put(PASSIVEBODIESKEY, passiveBodies);
-		environmentVariables.put(NULL, null);
+		ambientAttributes.put(AGENTSKEY, agents);
+		ambientAttributes.put(ACTIVEBODIESKEY, activeBodies);
+		ambientAttributes.put(PASSIVEBODIESKEY, passiveBodies);
+		ambientAttributes.put(NULL, null);
 		queries.put(RANDOM, new RandomQuery());
 		queries.put(SELF, new SelfQuery());
 		queries.put(APPEARANCE, new AppearanceQuery());
@@ -195,80 +195,81 @@ public abstract class AbstractAmbient implements Ambient {
 	}
 
 	/**
-	 * Getter for the environment variable key chain as a single {@link String}.
+	 * Getter for the {@link AmbientAttribute} Key chain as a single
+	 * {@link String}.
 	 * 
 	 * @return the key chain as a {@link String}
 	 */
 	@Override
-	public String getEnvironmentVariableKeysAsString() {
-		return Arrays.toString(environmentVariables.keySet().toArray());
+	public String getAmbientAttributeKeysAsString() {
+		return Arrays.toString(ambientAttributes.keySet().toArray());
 	}
 
 	/**
-	 * Getter for the environment variable key chain.
+	 * Getter for the {@link AmbientAttribute} key chain.
 	 * 
-	 * @return all keys for environment variables.
+	 * @return all keys for {@link AmbientAttribute}s.
 	 */
 	@Override
-	public Set<String> getEnvironmentVariableKeys() {
-		return Collections.unmodifiableSet(environmentVariables.keySet());
+	public Set<String> getAmbientAttributeKeys() {
+		return Collections.unmodifiableSet(ambientAttributes.keySet());
 	}
 
 	/**
-	 * Adds a new environment variable with the given key. Adding a new variable
-	 * with an existing key will have no effect on the key chain - the new value
-	 * will not replace the old.
+	 * Adds a new {@link AmbientAttribute} with the given key. Adding a new
+	 * {@link AmbientAttribute} with an existing key will have no effect on the
+	 * key chain - the new value will not replace the old.
 	 * 
 	 * @return true if the variable is added successfully, false otherwise
 	 */
 	@Override
-	public boolean addEnvironmentVariable(String key, Object variable) {
-		return this.environmentVariables.putIfAbsent(key, variable) == null;
+	public boolean addAmbientAttribute(String key, Object variable) {
+		return this.ambientAttributes.putIfAbsent(key, variable) == null;
 	}
 
 	/**
-	 * Removes an existing environment variable given its key. This will have no
-	 * effect if the key does not exist.
+	 * Removes an existing {@link AmbientAttribute} given its key. This will
+	 * have no effect if the key does not exist.
 	 * 
 	 * @param key
-	 *            : of the environment variable to remove
+	 *            : of the {@link AmbientAttribute} to remove
 	 * @return true if the key was removed, false otherwise
 	 */
-	public boolean removeEnvironmentVariable(String key) {
-		return this.environmentVariables.remove(key) != null;
+	public boolean removeAmbientAttribute(String key) {
+		return this.ambientAttributes.remove(key) != null;
+	}
+	
+	@Override
+	public boolean environmentAmbientAttribute(String key) {
+		return ambientAttributes.containsKey(key);
 	}
 
 	@Override
-	public Set<String> getFilterKeys() {
+	public Set<String> getQueryKeys() {
 		return Collections.unmodifiableSet(queries.keySet());
 	}
 
 	@Override
-	public String getFilterKeysAsString() {
-		return Arrays.toString(environmentVariables.keySet().toArray());
+	public String getQueryKeysAsString() {
+		return Arrays.toString(ambientAttributes.keySet().toArray());
 	}
 
 	@Override
-	public boolean addFilter(String key, Query filter) {
-		return this.queries.putIfAbsent(key, filter) == null;
+	public boolean addQuery(String key, Query query) {
+		return this.queries.putIfAbsent(key, query) == null;
 	}
 
-	public boolean removeFilter(String key) {
+	public boolean removeQuery(String key) {
 		return this.queries.remove(key) != null;
 	}
 
 	@Override
-	public boolean filterExists(String key) {
+	public boolean queryExists(String key) {
 		return queries.containsKey(key);
 	}
 
 	@Override
-	public boolean environmentVariableExists(String key) {
-		return environmentVariables.containsKey(key);
-	}
-
-	@Override
-	public Map<String, Object> filterActivePerception(String[] keys,
+	public Map<String, Object> queryActivePerception(String[] keys,
 			AbstractEnvironmentalAction action) {
 
 		Map<String, Object> perceptions = new HashMap<>();
@@ -281,7 +282,7 @@ public abstract class AbstractAmbient implements Ambient {
 			 */
 			String[] subkeys = key.split("\\.");
 			// TODO handle integer parameters
-			Object result = environmentVariables.get(subkeys[0]);
+			Object result = ambientAttributes.get(subkeys[0]);
 			for (int i = 1; i < subkeys.length; i++) {
 				result = queries.get(subkeys[i]).get(action, result);
 			}
