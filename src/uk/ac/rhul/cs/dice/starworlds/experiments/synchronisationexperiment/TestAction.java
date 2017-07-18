@@ -1,4 +1,4 @@
-package uk.ac.rhul.cs.dice.starworlds.experiment.communicatingagents;
+package uk.ac.rhul.cs.dice.starworlds.experiments.synchronisationexperiment;
 
 import uk.ac.rhul.cs.dice.starworlds.actions.environmental.PhysicalAction;
 import uk.ac.rhul.cs.dice.starworlds.environment.subscriber.AbstractSubscriber.SensiblePerception;

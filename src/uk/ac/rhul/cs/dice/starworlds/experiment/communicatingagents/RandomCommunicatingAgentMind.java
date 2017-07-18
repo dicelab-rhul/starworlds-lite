@@ -2,6 +2,7 @@ package uk.ac.rhul.cs.dice.starworlds.experiment.communicatingagents;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 
@@ -13,7 +14,6 @@ import uk.ac.rhul.cs.dice.starworlds.appearances.Appearance;
 import uk.ac.rhul.cs.dice.starworlds.entities.agent.AbstractAgentMind;
 import uk.ac.rhul.cs.dice.starworlds.perception.CommunicationPerception;
 import uk.ac.rhul.cs.dice.starworlds.perception.Perception;
-import uk.ac.rhul.cs.dice.starworlds.utils.Pair;
 
 public class RandomCommunicatingAgentMind extends AbstractAgentMind {
 
@@ -22,6 +22,7 @@ public class RandomCommunicatingAgentMind extends AbstractAgentMind {
 
 	@Override
 	public Perception<?> perceive(Collection<Perception<?>> perceptions) {
+		// System.out.println(this + " PERCEPTIONS: " + perceptions);
 		for (Perception<?> p : perceptions) {
 			if (CommunicationPerception.class.isAssignableFrom(p.getClass())) {
 				// unpack the message and add it to the list of agents!
@@ -37,7 +38,6 @@ public class RandomCommunicatingAgentMind extends AbstractAgentMind {
 				}
 			}
 		}
-		System.out.println(this + " PERCEPTIONS: " + perceptions);
 		// no need to return as we are saving the state
 		return null;
 	}
@@ -68,11 +68,13 @@ public class RandomCommunicatingAgentMind extends AbstractAgentMind {
 
 	private Collection<Appearance> unpackAppearances(Perception<?> percept) {
 		Collection<Appearance> appearances = new ArrayList<>();
-		Pair<?, ?> pair = (Pair<?, ?>) percept.getPerception();
-		if (pair.getSecond() != null) {
-			appearances.add((Appearance) pair.getSecond());
-		}
+		HashMap<?, ?> keymap = (HashMap<?, ?>) percept.getPerception();
+		keymap.forEach((key, value) -> {
+			System.out.println(key + "->" + value);
+			if (value != null) {
+				appearances.add((Appearance) value);
+			}
+		});
 		return appearances;
 	}
-
 }

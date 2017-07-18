@@ -1,4 +1,4 @@
-package uk.ac.rhul.cs.dice.starworlds.experiment.communicatingagents;
+package uk.ac.rhul.cs.dice.starworlds.experiments.synchronisationexperiment;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -15,7 +15,7 @@ import uk.ac.rhul.cs.dice.starworlds.environment.interfaces.AbstractConnectedEnv
 import uk.ac.rhul.cs.dice.starworlds.initialisation.AgentFactory;
 import uk.ac.rhul.cs.dice.starworlds.initialisation.WorldDeployer;
 
-public class CommunicationExperimentRemote {
+public class SynchronisationExperiment {
 
 	private static AgentFactory FACTORY = AgentFactory.getInstance();
 	// The set of actions possible in the Environments
@@ -23,7 +23,6 @@ public class CommunicationExperimentRemote {
 	static {
 		possibleActions.add(SensingAction.class);
 		possibleActions.add(CommunicationAction.class);
-		possibleActions.add(TestAction.class);
 	}
 
 	public static void main(String[] args) {
@@ -46,7 +45,7 @@ public class CommunicationExperimentRemote {
 		Integer portremote = 10002;
 		String addr = "localhost";
 		DefaultWorld world = new DefaultWorld(new TestUniverse(port,
-				new DefaultAmbient(getAgents(1), null, null, null),
+				new DefaultAmbient(getAgents(0), null, null, null),
 				new TestPhysics(), new EnvironmentAppearance("Client", false,
 						false), possibleActions));
 		world.getRoot()
@@ -60,7 +59,7 @@ public class CommunicationExperimentRemote {
 		Integer expectedConnections = 1;
 		Integer port = 10002;
 		DefaultWorld world = new DefaultWorld(new TestUniverse(port,
-				new DefaultAmbient(getAgents(1), null, null, null),
+				new DefaultAmbient(getAgents(0), null, null, null),
 				new TestPhysics(), new EnvironmentAppearance("Server", false,
 						false), possibleActions));
 		world.getRoot().getValue()

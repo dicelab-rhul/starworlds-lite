@@ -11,7 +11,8 @@ public final class IDFactory {
 	}
 
 	public String getNewID() {
-		return String.valueOf(UUID.randomUUID());
+		return String.valueOf(count++);
+		// return String.valueOf(UUID.randomUUID());
 	}
 
 	public static IDFactory getInstance() {

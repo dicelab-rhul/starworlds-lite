@@ -32,4 +32,11 @@ public interface Sensor extends Component {
 
 	public void notify(Perception<?> perception);
 
+	// for the next version!
+	// public void setOpen();
+	//
+	// public void setClosed();
+	//
+	// public boolean isOpen();
+
 }

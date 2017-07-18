@@ -5,7 +5,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -28,7 +27,6 @@ import uk.ac.rhul.cs.dice.starworlds.environment.ambient.filter.RandomFilter;
 import uk.ac.rhul.cs.dice.starworlds.environment.ambient.filter.SelfFilter;
 import uk.ac.rhul.cs.dice.starworlds.environment.physics.Physics;
 import uk.ac.rhul.cs.dice.starworlds.parser.DefaultConstructorStore.DefaultConstructor;
-import uk.ac.rhul.cs.dice.starworlds.utils.Pair;
 
 public abstract class AbstractAmbient implements Ambient {
 
@@ -228,6 +226,18 @@ public abstract class AbstractAmbient implements Ambient {
 		return this.environmentVariables.putIfAbsent(key, variable) == null;
 	}
 
+	/**
+	 * Removes an existing environment variable given its key. This will have no
+	 * effect if the key does not exist.
+	 * 
+	 * @param key
+	 *            : of the environment variable to remove
+	 * @return true if the key was removed, false otherwise
+	 */
+	public boolean removeEnvironmentVariable(String key) {
+		return this.environmentVariables.remove(key) != null;
+	}
+
 	@Override
 	public Set<String> getFilterKeys() {
 		return Collections.unmodifiableSet(queries.keySet());
@@ -243,6 +253,10 @@ public abstract class AbstractAmbient implements Ambient {
 		return this.queries.putIfAbsent(key, filter) == null;
 	}
 
+	public boolean removeFilter(String key) {
+		return this.queries.remove(key) != null;
+	}
+
 	@Override
 	public boolean filterExists(String key) {
 		return queries.containsKey(key);
@@ -254,29 +268,25 @@ public abstract class AbstractAmbient implements Ambient {
 	}
 
 	@Override
-	public Set<Pair<String, Object>> filterActivePerception(String[] keys,
+	public Map<String, Object> filterActivePerception(String[] keys,
 			AbstractEnvironmentalAction action) {
-		// TODO optimise the recursive environment variables e.g. agents that
-		// are in some space, or sub environment
-		// System.out.println("FILTER: " + Arrays.toString(keys));
-		HashSet<Pair<String, Object>> perceptions = new HashSet<>();
 
+		Map<String, Object> perceptions = new HashMap<>();
 		for (String key : keys) {
 			if (key == null)
 				continue;
-			String[] subkeys = key.split("\\."); // TODO optimise, we dont want
-													// to do this twice!
+			/*
+			 * TODO optimise, we don't want to do this twice (also done in
+			 * physics#ispossible)
+			 */
+			String[] subkeys = key.split("\\.");
 			// TODO handle integer parameters
 			Object result = environmentVariables.get(subkeys[0]);
-			// System.out.println("SUB: " + Arrays.toString(subkeys));
-			// System.out.println("DATA: " + result);
 			for (int i = 1; i < subkeys.length; i++) {
 				result = queries.get(subkeys[i]).get(action, result);
 			}
-			perceptions.add(new Pair<String, Object>(key, result));
-			// perceptions.add(null);
+			perceptions.put(key, result);
 		}
-		// System.out.println("PERCEPTIONS: " + perceptions);
 		return perceptions;
 	}
 

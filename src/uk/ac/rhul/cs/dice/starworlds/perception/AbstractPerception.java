@@ -14,7 +14,7 @@ public abstract class AbstractPerception<T> implements Perception<T> {
 
 	private static final long serialVersionUID = 1L;
 
-	private T content;
+	protected T content;
 
 	/**
 	 * Constructor.

@@ -18,6 +18,7 @@ import uk.ac.rhul.cs.dice.starworlds.environment.interfaces.Environment;
 import uk.ac.rhul.cs.dice.starworlds.environment.interfaces.WorldNode;
 import uk.ac.rhul.cs.dice.starworlds.initialisation.AgentFactory;
 import uk.ac.rhul.cs.dice.starworlds.initialisation.IDFactory;
+import uk.ac.rhul.cs.dice.starworlds.initialisation.WorldDeployer;
 
 class ExperimentCommunication {
 
@@ -30,7 +31,7 @@ class ExperimentCommunication {
 	}
 
 	public static void main(String[] args) throws Exception {
-
+		WorldDeployer.deployAndRun(createWorld(2));
 	}
 
 	/**

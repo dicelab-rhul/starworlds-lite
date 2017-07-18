@@ -18,7 +18,10 @@ import uk.ac.rhul.cs.dice.starworlds.appearances.ActiveBodyAppearance;
 import uk.ac.rhul.cs.dice.starworlds.appearances.EnvironmentAppearance;
 import uk.ac.rhul.cs.dice.starworlds.entities.ActiveBody;
 import uk.ac.rhul.cs.dice.starworlds.entities.agents.components.AbstractSensor;
+import uk.ac.rhul.cs.dice.starworlds.entities.agents.components.Sensor;
+import uk.ac.rhul.cs.dice.starworlds.environment.interfaces.Environment;
 import uk.ac.rhul.cs.dice.starworlds.perception.AbstractPerception;
+import uk.ac.rhul.cs.dice.starworlds.perception.Perception;
 
 public abstract class AbstractSubscriber {
 
@@ -59,6 +62,23 @@ public abstract class AbstractSubscriber {
 		actions = new HashSet<>();
 		environmentSubscriptions = new HashMap<>();
 		inverseEnvironmentSubscriptions = new HashMap<>();
+	}
+
+	/**
+	 * Clear all {@link Sensor} subscriptions. This method does not clear the
+	 * initial mapping between {@link Action}s and {@link Perception}s provided
+	 * by the {@link SensiblePerception} annotation.
+	 */
+	public void clearSensorSubscriptions() {
+		subscribedSensors.clear();
+	}
+
+	/**
+	 * Clear all {@link Environment} subscriptions.
+	 */
+	public void clearEnvironmentSubscriptions() {
+		environmentSubscriptions.clear();
+		inverseEnvironmentSubscriptions.clear();
 	}
 
 	public Collection<EnvironmentAppearance> getEnvironmentsFromSubscribedAction(
@@ -129,6 +149,7 @@ public abstract class AbstractSubscriber {
 		}
 	}
 
+	//TODO optimize, (probably the who subscriber should be re written!
 	public Map<Class<? extends AbstractPerception>, Set<AbstractSensor>> findSensors(
 			ActiveBodyAppearance body, AbstractEnvironmentalAction action) {
 		Map<Class<? extends AbstractSensor>, AbstractSensor> sensormap = subscribedSensors

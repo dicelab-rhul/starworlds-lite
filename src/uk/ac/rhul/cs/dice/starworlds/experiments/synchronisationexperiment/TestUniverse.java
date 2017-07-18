@@ -1,4 +1,4 @@
-package uk.ac.rhul.cs.dice.starworlds.experiment.communicatingagents;
+package uk.ac.rhul.cs.dice.starworlds.experiments.synchronisationexperiment;
 
 import java.util.Collection;
 import java.util.HashSet;

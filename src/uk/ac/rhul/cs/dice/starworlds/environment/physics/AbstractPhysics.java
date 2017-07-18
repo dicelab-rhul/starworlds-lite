@@ -1,11 +1,15 @@
 package uk.ac.rhul.cs.dice.starworlds.environment.physics;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import uk.ac.rhul.cs.dice.starworlds.actions.Action;
+import uk.ac.rhul.cs.dice.starworlds.actions.environmental.AbstractEnvironmentalAction;
 import uk.ac.rhul.cs.dice.starworlds.actions.environmental.CommunicationAction;
 import uk.ac.rhul.cs.dice.starworlds.actions.environmental.PhysicalAction;
 import uk.ac.rhul.cs.dice.starworlds.actions.environmental.SensingAction;
@@ -23,12 +27,12 @@ import uk.ac.rhul.cs.dice.starworlds.environment.concrete.DefaultPhysics;
 import uk.ac.rhul.cs.dice.starworlds.environment.interfaces.AbstractEnvironment;
 import uk.ac.rhul.cs.dice.starworlds.environment.interfaces.Environment;
 import uk.ac.rhul.cs.dice.starworlds.environment.interfaces.Simulator;
+import uk.ac.rhul.cs.dice.starworlds.initialisation.ReflectiveMethodStore;
 import uk.ac.rhul.cs.dice.starworlds.parser.DefaultConstructorStore.DefaultConstructor;
 import uk.ac.rhul.cs.dice.starworlds.perception.AbstractPerception;
+import uk.ac.rhul.cs.dice.starworlds.perception.ActivePerception;
 import uk.ac.rhul.cs.dice.starworlds.perception.CommunicationPerception;
-import uk.ac.rhul.cs.dice.starworlds.perception.DefaultPerception;
-import uk.ac.rhul.cs.dice.starworlds.perception.NullPerception;
-import uk.ac.rhul.cs.dice.starworlds.utils.Pair;
+import uk.ac.rhul.cs.dice.starworlds.perception.Perception;
 
 /**
  * An abstract implementation of {@link Physics}. This physics handles the
@@ -61,14 +65,18 @@ public abstract class AbstractPhysics implements Physics, Simulator {
 	public AbstractPhysics() {
 	}
 
+	protected void sleep() {
+		try {
+			Thread.sleep(framelength);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+	}
+
 	public void simulate() {
 		while (true) {
 			cycle();
-			try {
-				Thread.sleep(framelength);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
+			sleep();
 		}
 	}
 
@@ -93,66 +101,181 @@ public abstract class AbstractPhysics implements Physics, Simulator {
 				.flushCommunicationActions());
 	}
 
-	protected void doPhysicalActions(Collection<PhysicalAction> actions) {
-		Collection<PhysicalAction> failedactions = new ArrayList<>();
-		actions.forEach((PhysicalAction a) -> {
-			if (!this.execute(a, environment.getState())) {
-				failedactions.add(a);
-			}
-		});
-		actions.removeAll(failedactions);
-		// get the perceptions of all non-failed actions, this must be done so
-		// that any perceptions are not out of sync
-		actions.forEach((PhysicalAction a) -> {
-			try {
-				this.doPhysicalPerceptions(a, environment.getState());
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		});
-	}
-
-	protected void doSensingActions(Collection<SensingAction> actions) {
-		// System.out.println("DO SENSING ACTIONS"
-		// + environment.getState().getSensingActions());
-		actions.forEach((SensingAction s) -> this.execute(s,
-				environment.getState()));
-	}
-
 	protected void doCommunicationActions(
 			Collection<CommunicationAction<?>> actions) {
 		actions.forEach((CommunicationAction<?> c) -> this.execute(c,
 				environment.getState()));
 	}
 
+	/**
+	 * The method used to notify {@link ActiveBody}s of their {@link Perception}
+	 * . It uses the
+	 * {@link AbstractEnvironment#notify(AbstractEnvironmentalAction, ActiveBodyAppearance, Collection, Ambient)
+	 * notify} method to do this, if this method is overridden, that is the
+	 * method that should be used.
+	 * 
+	 * @param action
+	 * @param context
+	 */
+	protected void notifyPerceptions(AbstractEnvironmentalAction action,
+			Ambient context) {
+		Collection<AbstractPerception<?>> agentPerceptions = this
+				.activeBodyPerceive(action.getActor(), action, context);
+		if (agentPerceptions != null) {
+			notify(action, action.getActor(), agentPerceptions, context);
+		}
+	}
+
+	public void notify(AbstractEnvironmentalAction action,
+			ActiveBodyAppearance toNotify, AbstractPerception<?> perception,
+			Ambient context) {
+		@SuppressWarnings("rawtypes")
+		Map<Class<? extends AbstractPerception>, Set<AbstractSensor>> sensors = environment
+				.getSubscriber().findSensors(toNotify, action);
+		notifySensors(sensors, perception, context);
+	}
+
+	public void notify(AbstractEnvironmentalAction action,
+			ActiveBodyAppearance toNotify,
+			Collection<AbstractPerception<?>> perceptions, Ambient context) {
+		@SuppressWarnings("rawtypes")
+		Map<Class<? extends AbstractPerception>, Set<AbstractSensor>> sensors = environment
+				.getSubscriber().findSensors(toNotify, action);
+		for (AbstractPerception<?> perception : perceptions) {
+			notifySensors(sensors, perception, context);
+		}
+	}
+
+	private void notifySensors(
+			@SuppressWarnings("rawtypes") Map<Class<? extends AbstractPerception>, Set<AbstractSensor>> sensors,
+			AbstractPerception<?> perception, Ambient context) {
+		Set<AbstractSensor> ss = sensors.get(perception.getClass());
+		if (ss != null) {
+			for (AbstractSensor s : ss) {
+				if (checkPerceivable(s, perception, context)) {
+					s.notify(perception);
+				}
+			}
+		}
+	}
+
+	protected boolean checkPerceivable(AbstractSensor sensor,
+			AbstractPerception<?> perception, Ambient context) {
+		try {
+			return (boolean) this
+					.getClass()
+					.getMethod(ReflectiveMethodStore.PERCEIVABLE,
+							sensor.getClass(), AbstractPerception.class,
+							Ambient.class)
+					.invoke(this, sensor, perception, context);
+		} catch (NoSuchMethodException | SecurityException
+				| IllegalAccessException | IllegalArgumentException e) {
+			System.err
+					.println("A Perceivable method must be defined in the class: "
+							+ this.getClass().getSimpleName()
+							+ " and be accessible to the class: "
+							+ this.getClass().getSimpleName()
+							+ System.lineSeparator()
+							+ "   It must have the signature: "
+							+ System.lineSeparator()
+							+ "   perceivable("
+							+ sensor.getClass().getSimpleName()
+							+ ","
+							+ AbstractPerception.class.getSimpleName()
+							+ ","
+							+ Ambient.class.getSimpleName() + ")");
+			e.printStackTrace();
+		} catch (InvocationTargetException e) {
+			e.getTargetException().printStackTrace();
+		}
+		return false;
+	}
+
 	// ***************************************************** //
 	// ****************** PHYSICAL ACTIONS ***************** //
 	// ***************************************************** //
 
+	protected void doPhysicalActions(Collection<PhysicalAction> actions) {
+		Collection<PhysicalAction> failedactions = new ArrayList<>();
+		/* execute all physical actions */
+		actions.forEach((PhysicalAction a) -> {
+			if (!this.execute(a, environment.getState())) {
+				failedactions.add(a);
+			}
+		});
+		/* notify perceptions of all physical actions */
+		/* it is up to the agent to decide if the action failed? */
+		for (PhysicalAction a : actions) {
+			this.notifyPerceptions(a, environment.getState());
+		}
+		/* remove all failed actions */
+		actions.removeAll(failedactions);
+		try {
+			/* notify the perceptions of all non-failed actions */
+			for (PhysicalAction a : actions) {
+				this.notifyAgentPhysicalPerceptions(a, environment.getState());
+				this.notifyOtherPhysicalPerceptions(a, environment.getState());
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
 	@Override
 	public boolean execute(PhysicalAction action, Ambient context) {
-		AbstractPerception<?> perception = null;
-		if (isPossible(action, context)) {
-			if (perform(action, context)) {
-				if (verify(action, context)) {
-					return true;
+		try {
+			if (isPossible(action, context)) {
+				if (perform(action, context)) {
+					return verify(action, context);
 				}
 			}
+		} catch (Exception e) {
+			System.err
+					.println("Something has gone wrong during the execution of the action: "
+							+ action);
+			e.printStackTrace();
 		}
-		// notify the agent that their action has failed
 		return false;
 	}
 
-	// finds the perceptions generated by a given physical action
-	private void doPhysicalPerceptions(PhysicalAction action, Ambient context)
-			throws Exception {
+	/**
+	 * Notifies the {@link ActiveBody} has successfully performed a
+	 * {@link PhysicalAction} with some {@link Perception}s that is defined by
+	 * the specific {@link PhysicalAction}
+	 * {@link Physics#getAgentPerceptions(PhysicalAction, Ambient)} method.
+	 * 
+	 * @param action
+	 *            : that was performed
+	 * @param context
+	 *            : of the {@link Environment}
+	 * @throws Exception
+	 *             : if something went wrong
+	 */
+	protected void notifyAgentPhysicalPerceptions(PhysicalAction action,
+			Ambient context) throws Exception {
 		Collection<AbstractPerception<?>> agentPerceptions = action
 				.getAgentPerceptions(this, context);
 		if (agentPerceptions != null) {
-			environment.notify(action, action.getActor(), agentPerceptions,
-					context);
+			notify(action, action.getActor(), agentPerceptions, context);
 		}
+	}
 
+	/**
+	 * After a {@link PhysicalAction} has been successfully performed by an
+	 * {@link ActiveBody}, notify all other {@link ActiveBody ActiveBodies} with
+	 * some {@link Perception}s that is defined by the specific
+	 * {@link PhysicalAction}
+	 * {@link Physics#getOtherPerceptions(PhysicalAction, Ambient)} method.
+	 * 
+	 * @param action
+	 *            : that was performed
+	 * @param context
+	 *            : of the {@link Environment}
+	 * @throws Exception
+	 *             : if something went wrong
+	 */
+	protected void notifyOtherPhysicalPerceptions(PhysicalAction action,
+			Ambient context) throws Exception {
 		Collection<AbstractPerception<?>> otherPerceptions = action
 				.getOtherPerceptions(this, context);
 		if (otherPerceptions != null) {
@@ -160,77 +283,73 @@ public abstract class AbstractPhysics implements Physics, Simulator {
 					state.getAgents());
 			others.remove(state.getAgent(action.getActor().getId()));
 			for (ActiveBody a : others) {
-				environment.notify(action, a.getAppearance(), otherPerceptions,
-						context);
+				notify(action, a.getAppearance(), otherPerceptions, context);
 			}
 		}
 	}
 
 	@Override
-	public boolean perform(PhysicalAction action, Ambient context) {
-		try {
-			return action.perform(this, context);
-		} catch (Exception e) {
-			e.printStackTrace();
-			return false;
-		}
+	public boolean perform(PhysicalAction action, Ambient context)
+			throws Exception {
+		return action.perform(this, context);
 	}
 
 	@Override
-	public boolean isPossible(PhysicalAction action, Ambient context) {
-		try {
-			return action.isPossible(this, context);
-		} catch (Exception e) {
-			e.printStackTrace();
-			return false;
-		}
+	public boolean isPossible(PhysicalAction action, Ambient context)
+			throws Exception {
+		return action.isPossible(this, context);
 	}
 
 	@Override
-	public boolean verify(PhysicalAction action, Ambient context) {
-		try {
-			return action.verify(this, context);
-		} catch (Exception e) {
-			e.printStackTrace();
-			return false;
-		}
+	public boolean verify(PhysicalAction action, Ambient context)
+			throws Exception {
+		return action.verify(this, context);
 	}
 
 	// ***************************************************** //
 	// ****************** SENSING ACTIONS ****************** //
 	// ***************************************************** //
 
+	protected void doSensingActions(Collection<SensingAction> actions) {
+		/* execute all sensing actions */
+		for (SensingAction a : actions) {
+			this.execute(a, environment.getState());
+		}
+		/*
+		 * TODO in the future sense filtering should be optimised, it may be
+		 * that many agents will be asking for the same filtered perception!
+		 */
+	}
+
 	@Override
 	public void execute(SensingAction action, Ambient context) {
-		Set<Pair<String, Object>> perceptions = null;
+		Map<String, Object> result = null;
 		if (isPossible(action, context)) {
-			perceptions = perform(action, context);
-			verify(action, context); // TODO what to verify?
+			result = perform(action, context);
+			// verify(action, context); // TODO what to verify?
 		}
-		// should other agents be able to sense that this agent is sensing?
-		if (perceptions != null) {
-			Collection<AbstractPerception<?>> perceptionsToNotify = new HashSet<>();
-			for (Pair<String, Object> p : perceptions) {
-				if (p != null) {
-					perceptionsToNotify
-							.add(new DefaultPerception<Pair<String, Object>>(p));
-				} else {
-					perceptionsToNotify.add(new NullPerception());
-				}
-			}
-			environment.notify(action, action.getActor(), perceptionsToNotify,
-					context);
+		if (result != null) {
+			ActivePerception perception = new ActivePerception(result);
+			notify(action, action.getActor(), perception, context);
+		} else {
+			/* if the sensing action failed, notify with the default */
+			notifyPerceptions(action, context);
 		}
 	}
 
 	@Override
-	public Set<Pair<String, Object>> perform(SensingAction action,
-			Ambient context) {
+	public Map<String, Object> perform(SensingAction action, Ambient context) {
 		return context.filterActivePerception(action.getKeys(), action);
 	}
 
 	@Override
 	public boolean isPossible(SensingAction action, Ambient context) {
+		/*
+		 * checks each key given in the action to see if it exists. If the key
+		 * does not exist, it is changed to null, a null key will be discarded
+		 * later. This method will return true (i.e. the action is possible) if
+		 * there is at least one valid key.
+		 */
 		String[] keys = action.getKeys();
 		int count = 0;
 		for (int i = 0; i < keys.length; i++) {
@@ -252,6 +371,9 @@ public abstract class AbstractPhysics implements Physics, Simulator {
 		return count < keys.length;
 	}
 
+	/**
+	 * Not currently used by the execution procedure of {@link SensingAction}s.
+	 */
 	@Override
 	public boolean verify(SensingAction action, Ambient context) {
 		return true;
@@ -267,46 +389,36 @@ public abstract class AbstractPhysics implements Physics, Simulator {
 			perform(action, context);
 			verify(action, context);
 		}
-		// TODO notify - should the sending agent be notified?
+		/* notify the sending agent with a perception */
+		notifyPerceptions(action, context);
 	}
 
 	@Override
 	public boolean perform(CommunicationAction<?> action, Ambient context) {
-		if (action.getRecipientsIds().isEmpty()) {
+		CommunicationAction<?> localaction = new CommunicationAction<>(action);
+		localaction.setLocalEnvironment(this.environment.getAppearance());
+		if (localaction.getRecipientsIds().isEmpty()) {
 			// send to all agents except the sender.
 			Collection<AbstractAutonomousAgent> recipients = new HashSet<>(
 					state.getAgents());
-			recipients.remove(action.getActor());
-			recipients
-					.forEach((AbstractAutonomousAgent a) -> {
-						Collection<AbstractPerception<?>> perceptionsToNotify = new HashSet<>();
-						perceptionsToNotify.add(new CommunicationPerception<>(
-								action.getPayload()));
-						environment.notify(action, a.getAppearance(),
-								perceptionsToNotify, context);
-					});
+			recipients.remove(localaction.getActor());
+			for (AbstractAutonomousAgent a : recipients) {
+				notify(localaction,
+						a.getAppearance(),
+						new CommunicationPerception<>(localaction.getPayload()),
+						context);
+			}
 		}
-		// Clone the action as a special case - the perception should be
-		// returned to the recipients that (may) reside in this environment
-		CommunicationAction<?> clone = new CommunicationAction<>(action);
-		clone.setLocalEnvironment(this.environment.getAppearance());
-		action.getRecipientsIds()
-				.forEach(
-						(String s) -> {
-							AbstractAutonomousAgent agent = state.getAgent(s);
-							if (agent != null) {
-								ActiveBodyAppearance appearance = agent
-										.getAppearance();
-								Collection<AbstractPerception<?>> perceptionsToNotify = new HashSet<>();
-								perceptionsToNotify
-										.add(new CommunicationPerception<>(
-												action.getPayload()));
-								// the agent resides within this environment
-								environment.notify(clone, appearance,
-										perceptionsToNotify, context);
-							}
-						});
-		// TODO if something failed
+		List<String> recipients = localaction.getRecipientsIds();
+		for (String recipient : recipients) {
+			AbstractAutonomousAgent agent;
+			if ((agent = state.getAgent(recipient)) != null) {
+				notify(localaction,
+						agent.getAppearance(),
+						new CommunicationPerception<>(localaction.getPayload()),
+						context);
+			}
+		}
 		return true;
 	}
 
@@ -316,9 +428,12 @@ public abstract class AbstractPhysics implements Physics, Simulator {
 		return true;
 	}
 
+	/**
+	 * Not currently used in the {@link CommunicationAction} execution
+	 * procedure.
+	 */
 	@Override
 	public boolean verify(CommunicationAction<?> action, Ambient context) {
-		// TODO check that the state has the proper perceptions
 		return true;
 	}
 
@@ -415,16 +530,15 @@ public abstract class AbstractPhysics implements Physics, Simulator {
 		}
 	}
 
+	// TODO check class hierarchy, do perceivable methods properly
+
 	/**
 	 * Perceivable method for all {@link SeeingSensor}s. See
 	 * {@link Physics#perceivable(AbstractSensor, AbstractPerception, Ambient)}.
 	 */
 	public boolean perceivable(SeeingSensor sensor,
 			AbstractPerception<?> perception, Ambient context) {
-		return SeeingSensor.DEFAULTPERCEPTION.isAssignableFrom(perception
-				.getClass())
-				|| SeeingSensor.NULLPERCEPTION.isAssignableFrom(perception
-						.getClass());
+		return true;
 	}
 
 	/**
@@ -433,15 +547,13 @@ public abstract class AbstractPhysics implements Physics, Simulator {
 	 */
 	public boolean perceivable(ListeningSensor sensor,
 			AbstractPerception<?> perception, Ambient context) {
-		return ListeningSensor.COMMUNICATIONPERCEPTION
-				.isAssignableFrom(perception.getClass());
+		return true;
 	}
 
 	@Override
 	public boolean perceivable(AbstractSensor sensor,
 			AbstractPerception<?> perception, Ambient context) {
-		return AbstractSensor.NULLPERCEPTION.isAssignableFrom(perception
-				.getClass());
+		return true;
 	}
 
 	/**

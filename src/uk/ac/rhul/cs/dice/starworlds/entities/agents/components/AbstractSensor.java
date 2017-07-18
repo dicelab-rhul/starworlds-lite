@@ -31,6 +31,7 @@ public abstract class AbstractSensor implements Sensor {
 	private String id;
 	private Set<Perception<?>> perceptions;
 	private ActiveBody body;
+	//private boolean open = false;
 
 	/**
 	 * Constructor.
@@ -99,4 +100,19 @@ public abstract class AbstractSensor implements Sensor {
 	public String toString() {
 		return this.getClass().getSimpleName();
 	}
+
+//	@Override
+//	public boolean isOpen() {
+//		return open;
+//	}
+//
+//	@Override
+//	public void setClosed() {
+//		this.open = false;
+//	}
+//
+//	@Override
+//	public void setOpen() {
+//		this.open = true;
+//	}
 }

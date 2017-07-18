@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Observable;
 import java.util.Set;
+import java.util.Stack;
 
 import uk.ac.rhul.cs.dice.starworlds.actions.Action;
 import uk.ac.rhul.cs.dice.starworlds.actions.environmental.AbstractEnvironmentalAction;
@@ -45,6 +46,11 @@ public abstract class AbstractEnvironment extends Observable implements
 	protected Boolean bounded;
 	protected EnvironmentAppearance appearance;
 	protected AbstractSubscriber subscriber;
+//
+//	protected Stack<Entity> safeBodyBuffer;
+//	protected Stack<>
+	
+	
 
 	/**
 	 * Constructor. The {@link Appearance} of this {@link AbstractEnvironment}
@@ -146,8 +152,60 @@ public abstract class AbstractEnvironment extends Observable implements
 	/**
 	 * Subscribes the given {@link AbstractAvatarAgent}s {@link Sensor}s to this
 	 * {@link Environment} and adds it to this {@link Environment}s
+	 * {@link Ambient}.
+	 * 
+	 * @param avatar
+	 *            : to add
+	 */
+	public void safeAddAvatar(AbstractAvatarAgent<?> avatar) {
+		subscribeActiveBody(avatar);
+		this.ambient.addAvatar(avatar);
+	}
+
+	/**
+	 * Subscribes the given {@link AbstractAutonomousAgent}s {@link Sensor}s to
+	 * this {@link Environment} and adds it to this {@link Environment}s
+	 * {@link Ambient}.
+	 * 
+	 * @param agent
+	 *            : to add
+	 */
+	public void safeAddAgent(AbstractAutonomousAgent agent) {
+		subscribeActiveBody(agent);
+		this.ambient.addAgent(agent);
+	}
+
+	/**
+	 * Subscribes the given {@link ActiveBody}s {@link Sensor}s to this
+	 * {@link Environment} and adds it to this {@link Environment}s
+	 * {@link Ambient}.
+	 * 
+	 * @param body
+	 *            : to add
+	 */
+	public void safeAddActiveBody(ActiveBody body) {
+		subscribeActiveBody(body);
+		this.ambient.addActiveBody(body);
+	}
+
+	/**
+	 * Adds the {@link PassiveBody} to this {@link Environment}s {@link Ambient}
+	 * .
+	 * 
+	 * @param agent
+	 *            : to add
+	 */
+	public void safeAddPassiveBody(PassiveBody body) {
+		this.ambient.addPassiveBody(body);
+	}
+
+	/**
+	 * Subscribes the given {@link AbstractAvatarAgent}s {@link Sensor}s to this
+	 * {@link Environment} and adds it to this {@link Environment}s
 	 * {@link Ambient}. This method should only be called outside of out the
-	 * {@link Environment} cycle to prevent conflict of access.
+	 * {@link Environment} cycle to prevent conflict of access, consider calling
+	 * in {@link AbstractPhysics#cycleAddition()} or using
+	 * {@link AbstractEnvironment#safeAddAvatar(AbstractAvatarAgent)} instead.
 	 * 
 	 * @param avatar
 	 *            : to add
@@ -161,7 +219,10 @@ public abstract class AbstractEnvironment extends Observable implements
 	 * Subscribes the given {@link AbstractAutonomousAgent}s {@link Sensor}s to
 	 * this {@link Environment} and adds it to this {@link Environment}s
 	 * {@link Ambient}. This method should only be called outside of out the
-	 * {@link Environment} cycle to prevent conflict of access.
+	 * {@link Environment} cycle to prevent conflict of access, consider calling
+	 * in {@link AbstractPhysics#cycleAddition()} or using
+	 * {@link AbstractEnvironment#safeAddAgent(AbstractAutonomousAgent)}
+	 * instead.
 	 * 
 	 * @param agent
 	 *            : to add
@@ -175,7 +236,9 @@ public abstract class AbstractEnvironment extends Observable implements
 	 * Subscribes the given {@link ActiveBody}s {@link Sensor}s to this
 	 * {@link Environment} and adds it to this {@link Environment}s
 	 * {@link Ambient}. This method should only be called outside of out the
-	 * {@link Environment} cycle to prevent conflict of access.
+	 * {@link Environment} cycle to prevent conflict of access, consider calling
+	 * in {@link AbstractPhysics#cycleAddition()} or using
+	 * {@link AbstractEnvironment#safeAddActiveBody(ActiveBody)} instead.
 	 * 
 	 * @param body
 	 *            : to add
@@ -188,7 +251,9 @@ public abstract class AbstractEnvironment extends Observable implements
 	/**
 	 * Adds the {@link PassiveBody} to this {@link Environment}s {@link Ambient}
 	 * . This method should only be called outside of out the
-	 * {@link Environment} cycle to prevent conflict of access.
+	 * {@link Environment} cycle to prevent conflict of access, consider calling
+	 * in {@link AbstractPhysics#cycleAddition()} or using
+	 * {@link AbstractEnvironment#safeAddPassiveBody(PassiveBody)} instead.
 	 * 
 	 * @param agent
 	 *            : to add
@@ -221,32 +286,6 @@ public abstract class AbstractEnvironment extends Observable implements
 	@Override
 	public synchronized void updateAmbient(AbstractEnvironmentalAction action) {
 		ambient.filterAction(action);
-	}
-
-	// TODO shift functionality to AbstractPhysics, the checkPerceivable method
-	// should also be moved
-	public void notify(AbstractEnvironmentalAction action,
-			ActiveBodyAppearance toNotify,
-			Collection<AbstractPerception<?>> perceptions, Ambient context) {
-		@SuppressWarnings("rawtypes")
-		Map<Class<? extends AbstractPerception>, Set<AbstractSensor>> sensors = subscriber
-				.findSensors(toNotify, action);
-		for (AbstractPerception<?> perception : perceptions) {
-			Set<AbstractSensor> ss = sensors.get(perception.getClass());
-			if (ss != null) {
-				for (AbstractSensor s : ss) {
-					if (checkPerceivable(s, perception, context)) {
-						this.notifySensor(s, perception);
-					}
-				}
-			} else {
-				// TODO remove
-				System.err
-						.println("WARNING: No subscribed Sensor to receive perception type: "
-								+ perception);
-				Thread.dumpStack();
-			}
-		}
 	}
 
 	@Override
@@ -295,39 +334,6 @@ public abstract class AbstractEnvironment extends Observable implements
 
 	public synchronized AbstractSubscriber getSubscriber() {
 		return subscriber;
-	}
-
-	protected boolean checkPerceivable(AbstractSensor sensor,
-			AbstractPerception<?> perception, Ambient context) {
-		try {
-			return (boolean) this
-					.getPhysics()
-					.getClass()
-					.getMethod(ReflectiveMethodStore.PERCEIVABLE,
-							sensor.getClass(), AbstractPerception.class,
-							Ambient.class)
-					.invoke(this.getPhysics(), sensor, perception, context);
-		} catch (NoSuchMethodException | SecurityException
-				| IllegalAccessException | IllegalArgumentException e) {
-			System.err
-					.println("A Perceivable method must be defined in the class: "
-							+ this.getPhysics().getClass().getSimpleName()
-							+ " and be accessible to the class: "
-							+ this.getClass().getSimpleName()
-							+ System.lineSeparator()
-							+ "   It must have the signature: "
-							+ System.lineSeparator()
-							+ "   perceivable("
-							+ sensor.getClass().getSimpleName()
-							+ ","
-							+ AbstractPerception.class.getSimpleName()
-							+ ","
-							+ Ambient.class.getSimpleName() + ")");
-			e.printStackTrace();
-		} catch (InvocationTargetException e) {
-			e.getTargetException().printStackTrace();
-		}
-		return false;
 	}
 
 	@Override

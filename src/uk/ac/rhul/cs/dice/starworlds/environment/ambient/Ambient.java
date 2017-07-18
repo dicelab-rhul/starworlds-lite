@@ -2,6 +2,7 @@ package uk.ac.rhul.cs.dice.starworlds.environment.ambient;
 
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.Map;
 import java.util.Set;
 
 import uk.ac.rhul.cs.dice.starworlds.actions.environmental.AbstractEnvironmentalAction;
@@ -18,7 +19,6 @@ import uk.ac.rhul.cs.dice.starworlds.environment.ambient.filter.Filter;
 import uk.ac.rhul.cs.dice.starworlds.environment.interfaces.AbstractEnvironment;
 import uk.ac.rhul.cs.dice.starworlds.environment.interfaces.Environment;
 import uk.ac.rhul.cs.dice.starworlds.environment.physics.Physics;
-import uk.ac.rhul.cs.dice.starworlds.utils.Pair;
 
 /**
  * The interface for ambients.<br/>
@@ -38,20 +38,19 @@ public interface Ambient {
 	 * ask for environment variables. A {@link Physics} should first validate
 	 * the keys (i.e check for the agents permissions). Note that if an invalid
 	 * key is provided null will be given as the associated environment
-	 * variable. One may wish to create protected views of environment variables
-	 * returned, if an agent should not be able to modify them for example.
+	 * variable. One may wish to create protected views of returned environment
+	 * variables, if an agent should not be able to modify them for example.
 	 * 
 	 * @param keys
-	 *            an array of keys to environmental variables.
+	 *            : an array of keys to environmental variables and filters
 	 * @param action
-	 *            the {@link AbstractEnvironmentalAction} that began the call
-	 * @return a {@link Set} of {@link Pair}s consisting of < {@link String} ,
-	 *         {@link Object} > where the {@link String} is the key and the
-	 *         {@link Object} is its associated environment variable. The
-	 *         returned {@link Object} will be {@link Serializable} if it is to
-	 *         be sent overnetwork.
+	 *            : the {@link AbstractEnvironmentalAction} that began the call
+	 * @return A {@link Map} of {@link String}s (which are the keys) to
+	 *         {@link Object}s (resulting from the keys). The returned
+	 *         {@link Object} should be {@link Serializable} if it is to be sent
+	 *         over network.
 	 */
-	public Set<Pair<String, Object>> filterActivePerception(String[] keys,
+	public Map<String, Object> filterActivePerception(String[] keys,
 			AbstractEnvironmentalAction action);
 
 	/**

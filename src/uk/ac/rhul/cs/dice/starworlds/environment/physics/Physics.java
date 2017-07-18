@@ -1,16 +1,13 @@
 package uk.ac.rhul.cs.dice.starworlds.environment.physics;
 
 import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.Map;
 
+import uk.ac.rhul.cs.dice.starworlds.actions.Action;
 import uk.ac.rhul.cs.dice.starworlds.actions.environmental.CommunicationAction;
 import uk.ac.rhul.cs.dice.starworlds.actions.environmental.PhysicalAction;
 import uk.ac.rhul.cs.dice.starworlds.actions.environmental.SensingAction;
 import uk.ac.rhul.cs.dice.starworlds.appearances.ActiveBodyAppearance;
-import uk.ac.rhul.cs.dice.starworlds.entities.ActiveBody;
-import uk.ac.rhul.cs.dice.starworlds.entities.PassiveBody;
-import uk.ac.rhul.cs.dice.starworlds.entities.agent.AbstractAutonomousAgent;
 import uk.ac.rhul.cs.dice.starworlds.entities.agents.components.AbstractSensor;
 import uk.ac.rhul.cs.dice.starworlds.entities.agents.components.Sensor;
 import uk.ac.rhul.cs.dice.starworlds.entities.agents.components.concrete.ListeningSensor;
@@ -18,12 +15,9 @@ import uk.ac.rhul.cs.dice.starworlds.entities.agents.components.concrete.SeeingS
 import uk.ac.rhul.cs.dice.starworlds.environment.ambient.Ambient;
 import uk.ac.rhul.cs.dice.starworlds.environment.interfaces.AbstractEnvironment;
 import uk.ac.rhul.cs.dice.starworlds.environment.interfaces.Environment;
-import uk.ac.rhul.cs.dice.starworlds.experiment.physicalagents.MoveAction;
-import uk.ac.rhul.cs.dice.starworlds.experiment.physicalagents.MovePerception;
 import uk.ac.rhul.cs.dice.starworlds.perception.AbstractPerception;
 import uk.ac.rhul.cs.dice.starworlds.perception.Perception;
 import uk.ac.rhul.cs.dice.starworlds.utils.Identifiable;
-import uk.ac.rhul.cs.dice.starworlds.utils.Pair;
 
 /**
  * The general interface for all the physics.<br/>
@@ -38,6 +32,24 @@ import uk.ac.rhul.cs.dice.starworlds.utils.Pair;
  */
 public interface Physics extends Identifiable {
 
+	/**
+	 * This method should return the {@link Perception} that all agents will
+	 * receive regardless of their {@link Action}s. This {@link Perception}
+	 * defaults to null.
+	 * 
+	 * @param body
+	 *            : of the perceiving
+	 * @param action
+	 *            : that the body attempted this cycle
+	 * @param context
+	 *            : of the {@link Environment}
+	 * @returns the perception
+	 */
+	public default Collection<AbstractPerception<?>> activeBodyPerceive(
+			ActiveBodyAppearance body, Action action, Ambient context) {
+		return null;
+	}
+
 	public void runAgents();
 
 	public void executeActions();
@@ -46,11 +58,14 @@ public interface Physics extends Identifiable {
 
 	public boolean execute(PhysicalAction action, Ambient context);
 
-	public boolean perform(PhysicalAction action, Ambient context);
+	public boolean perform(PhysicalAction action, Ambient context)
+			throws Exception;
 
-	public boolean isPossible(PhysicalAction action, Ambient context);
+	public boolean isPossible(PhysicalAction action, Ambient context)
+			throws Exception;
 
-	public boolean verify(PhysicalAction action, Ambient context);
+	public boolean verify(PhysicalAction action, Ambient context)
+			throws Exception;
 
 	public default Collection<AbstractPerception<?>> getAgentPerceptions(
 			PhysicalAction action, Ambient context) {
@@ -76,7 +91,7 @@ public interface Physics extends Identifiable {
 
 	public void execute(SensingAction action, Ambient context);
 
-	public Set<Pair<String, Object>> perform(SensingAction action, Ambient context);
+	public Map<String, Object> perform(SensingAction action, Ambient context);
 
 	public boolean isPossible(SensingAction action, Ambient context);
 
@@ -90,8 +105,8 @@ public interface Physics extends Identifiable {
 	 * {@link AbstractSensor}. These methods define that any given
 	 * {@link Sensor} can perceive. They should check whether the given
 	 * {@link Perception} can be perceived by the {@link Sensor} given the
-	 * current {@link Ambient} of the {@link Environment}. (although in some cases
-	 * the ability to perceive may not depend on the {@link Ambient}). All
+	 * current {@link Ambient} of the {@link Environment}. (although in some
+	 * cases the ability to perceive may not depend on the {@link Ambient}). All
 	 * perceivable methods must be define as here but replacing the
 	 * {@link AbstractSensor} class with the given subclass. A simple example of
 	 * this is given

@@ -46,6 +46,20 @@ public class CommunicationAction<T extends Serializable> extends
 	 * @param payload
 	 *            : the {@link Payload} of the communication.
 	 */
+	public CommunicationAction(Payload<T> payload, List<String> recipientsIds) {
+		this.recipientsIds = (recipientsIds != null) ? recipientsIds
+				: new ArrayList<>();
+		this.payload = payload;
+	}
+
+	/**
+	 * Constructor.
+	 * 
+	 * @param recipientsIds
+	 *            : a {@link List} of IDs of the recipients.
+	 * @param payload
+	 *            : the {@link Payload} of the communication.
+	 */
 	public CommunicationAction(T payload, List<String> recipientsIds) {
 		this.recipientsIds = (recipientsIds != null) ? recipientsIds
 				: new ArrayList<>();

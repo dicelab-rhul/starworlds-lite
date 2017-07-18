@@ -3,7 +3,6 @@ package uk.ac.rhul.cs.dice.starworlds.environment.interfaces;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -11,7 +10,6 @@ import uk.ac.rhul.cs.dice.starworlds.actions.Action;
 import uk.ac.rhul.cs.dice.starworlds.actions.environmental.AbstractEnvironmentalAction;
 import uk.ac.rhul.cs.dice.starworlds.actions.environmental.CommunicationAction;
 import uk.ac.rhul.cs.dice.starworlds.actions.environmental.SensingAction;
-import uk.ac.rhul.cs.dice.starworlds.appearances.ActiveBodyAppearance;
 import uk.ac.rhul.cs.dice.starworlds.appearances.Appearance;
 import uk.ac.rhul.cs.dice.starworlds.appearances.EnvironmentAppearance;
 import uk.ac.rhul.cs.dice.starworlds.environment.ambient.AbstractAmbient;
@@ -218,39 +216,22 @@ public abstract class AbstractConnectedEnvironment extends AbstractEnvironment {
 				.clearAndUpdateActions();
 	}
 
-	@Override
-	public void notify(AbstractEnvironmentalAction action,
-			ActiveBodyAppearance toNotify,
-			Collection<AbstractPerception<?>> perceptions, Ambient context) {
-//		System.out.println("   " + this + ":NOTIFY ATTEMPT: " + toNotify
-//				+ " WITH: " + perceptions);
-		if (!this.appearance.equals(action.getLocalEnvironment())) {
-			System.out.println("     Perception(s): " + System.lineSeparator()
-					+ "        " + perceptions + System.lineSeparator()
-					+ "        are destined for another environment -> "
-					+ action.getLocalEnvironment());
-			// send it to another environment
-			sendPerception(actionProcessor.getSender(action), action,
-					perceptions);
-		} else {
-			super.notify(action, toNotify, perceptions, context);
+	public void sendPerception(AbstractEnvironmentalAction action,
+			AbstractPerception<?> perception) {
+		if (perception != null) {
+			this.envconManager.sendToEnvironment(actionProcessor
+					.getSender(action), new INetDefaultMessage(PERCEPTION,
+					new Pair<>(action, perception)));
 		}
 	}
 
-	public void notifyCommunication(AbstractEnvironmentalAction action,
-			ActiveBodyAppearance bodyappearance,
-			Collection<AbstractPerception<?>> perceptions, Ambient context) {
-		super.notify(action, bodyappearance, perceptions, context);
-	}
-
-	public void sendPerception(EnvironmentAppearance environment,
-			AbstractEnvironmentalAction action,
+	public void sendPerceptions(AbstractEnvironmentalAction action,
 			Collection<AbstractPerception<?>> perceptions) {
 		if (perceptions != null) {
 			if (!perceptions.isEmpty()) {
-				this.envconManager.sendToEnvironment(environment,
-						new INetDefaultMessage(PERCEPTION, new Pair<>(action,
-								perceptions)));
+				this.envconManager.sendToEnvironment(actionProcessor
+						.getSender(action), new INetDefaultMessage(PERCEPTION,
+						new Pair<>(action, perceptions)));
 			}
 		}
 	}
@@ -366,10 +347,17 @@ public abstract class AbstractConnectedEnvironment extends AbstractEnvironment {
 			Pair<?, ?> pair = (Pair<?, ?>) payload;
 			AbstractEnvironmentalAction action = (AbstractEnvironmentalAction) pair
 					.getFirst();
-			// TODO check type
-			AbstractConnectedEnvironment.this.notify(action, action.getActor(),
-					(Collection<AbstractPerception<?>>) pair.getSecond(),
-					ambient);
+			// TODO optimise, shouldn't really have an if here!
+			System.out.println("received perception: " + payload + " from "
+					+ appearance);
+			if (Collection.class.isAssignableFrom(pair.getSecond().getClass())) {
+				physics.notify(action, action.getActor(),
+						(Collection<AbstractPerception<?>>) pair.getSecond(),
+						ambient);
+			} else {
+				physics.notify(action, action.getActor(),
+						(AbstractPerception<?>) pair.getSecond(), ambient);
+			}
 		}
 	}
 

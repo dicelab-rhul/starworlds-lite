@@ -1,4 +1,4 @@
-package uk.ac.rhul.cs.dice.starworlds.experiment.communicatingagents;
+package uk.ac.rhul.cs.dice.starworlds.experiments.synchronisationexperiment;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -12,6 +12,42 @@ public class TestPhysics extends AbstractConnectedPhysics {
 
 	@Override
 	public void cycleAddition() {
+	}
+
+	@Override
+	public void executeActions() {
+		try {
+			Long sleep = (long) (Math.random() * 5000);
+			System.out.println(this.getId() + "SLEEP: " + sleep);
+			Thread.sleep(sleep);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		super.executeActions();
+	}
+
+	@Override
+	public void propagateActions() {
+		try {
+			Long sleep = (long) (Math.random() * 5000);
+			System.out.println(this.getId() + "SLEEP: " + sleep);
+			Thread.sleep(sleep);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		super.propagateActions();
+	}
+
+	@Override
+	public void runAgents() {
+		try {
+			Long sleep = (long) (Math.random() * 5000);
+			System.out.println(this.getId() + "SLEEP: " + sleep);
+			Thread.sleep(sleep);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		super.runAgents();
 	}
 
 	public boolean perform(TestAction action, Ambient context) {
