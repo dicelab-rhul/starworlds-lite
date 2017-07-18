@@ -99,6 +99,7 @@ public class CommunicationAction<T extends Serializable> extends
 
 	@Override
 	public String toString() {
-		return "MESSAGE: " + payload + " TO: " + recipientsIds;
+		return "Message: " + payload + " to: "
+				+ ((recipientsIds.size() != 0) ? recipientsIds : "Everyone");
 	}
 }

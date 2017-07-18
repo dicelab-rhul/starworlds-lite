@@ -1,4 +1,4 @@
-package uk.ac.rhul.cs.dice.starworlds.environment.ambient.filter;
+package uk.ac.rhul.cs.dice.starworlds.environment.ambient.query;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -9,7 +9,7 @@ import uk.ac.rhul.cs.dice.starworlds.appearances.Appearance;
 import uk.ac.rhul.cs.dice.starworlds.appearances.PhysicalBodyAppearance;
 import uk.ac.rhul.cs.dice.starworlds.entities.PhysicalBody;
 
-public class AppearanceFilter implements Filter {
+public class AppearanceQuery implements Query {
 	@Override
 	public Set<Appearance> get(AbstractEnvironmentalAction action,
 			Object... args) {
@@ -28,7 +28,7 @@ public class AppearanceFilter implements Filter {
 			appearances.add(((PhysicalBody) args[0]).getAppearance());
 			return appearances;
 		}
-		Filter.missuse(this);
+		Query.missuse(this);
 		return null;
 	}
 }

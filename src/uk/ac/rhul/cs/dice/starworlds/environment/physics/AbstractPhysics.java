@@ -101,12 +101,6 @@ public abstract class AbstractPhysics implements Physics, Simulator {
 				.flushCommunicationActions());
 	}
 
-	protected void doCommunicationActions(
-			Collection<CommunicationAction<?>> actions) {
-		actions.forEach((CommunicationAction<?> c) -> this.execute(c,
-				environment.getState()));
-	}
-
 	/**
 	 * The method used to notify {@link ActiveBody}s of their {@link Perception}
 	 * . It uses the
@@ -383,6 +377,12 @@ public abstract class AbstractPhysics implements Physics, Simulator {
 	// *************** COMMUNICATION ACTIONS *************** //
 	// ***************************************************** //
 
+	protected void doCommunicationActions(
+			Collection<CommunicationAction<?>> actions) {
+		actions.forEach((CommunicationAction<?> c) -> this.execute(c,
+				environment.getState()));
+	}
+
 	@Override
 	public void execute(CommunicationAction<?> action, Ambient context) {
 		if (isPossible(action, context)) {
@@ -395,28 +395,29 @@ public abstract class AbstractPhysics implements Physics, Simulator {
 
 	@Override
 	public boolean perform(CommunicationAction<?> action, Ambient context) {
-		CommunicationAction<?> localaction = new CommunicationAction<>(action);
-		localaction.setLocalEnvironment(this.environment.getAppearance());
-		if (localaction.getRecipientsIds().isEmpty()) {
-			// send to all agents except the sender.
+		if (action.getRecipientsIds().isEmpty()) {
+			// send to all agents except the sender in the local environment
 			Collection<AbstractAutonomousAgent> recipients = new HashSet<>(
 					state.getAgents());
-			recipients.remove(localaction.getActor());
+			recipients.remove(state.getAgent(action.getActor().getId()));
 			for (AbstractAutonomousAgent a : recipients) {
-				notify(localaction,
-						a.getAppearance(),
-						new CommunicationPerception<>(localaction.getPayload()),
+				notify(action, a.getAppearance(),
+						new CommunicationPerception<>(action.getPayload()),
 						context);
 			}
-		}
-		List<String> recipients = localaction.getRecipientsIds();
-		for (String recipient : recipients) {
-			AbstractAutonomousAgent agent;
-			if ((agent = state.getAgent(recipient)) != null) {
-				notify(localaction,
-						agent.getAppearance(),
-						new CommunicationPerception<>(localaction.getPayload()),
-						context);
+		} else {
+			CommunicationAction<?> localaction = new CommunicationAction<>(
+					action);
+			localaction.setLocalEnvironment(this.environment.getAppearance());
+			List<String> recipients = localaction.getRecipientsIds();
+			for (String recipient : recipients) {
+				AbstractAutonomousAgent agent;
+				if ((agent = state.getAgent(recipient)) != null) {
+					notify(localaction,
+							agent.getAppearance(),
+							new CommunicationPerception<>(localaction
+									.getPayload()), context);
+				}
 			}
 		}
 		return true;

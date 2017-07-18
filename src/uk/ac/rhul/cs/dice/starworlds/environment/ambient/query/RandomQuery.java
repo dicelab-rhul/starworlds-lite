@@ -1,11 +1,11 @@
-package uk.ac.rhul.cs.dice.starworlds.environment.ambient.filter;
+package uk.ac.rhul.cs.dice.starworlds.environment.ambient.query;
 
 import java.util.Collection;
 import java.util.Optional;
 
 import uk.ac.rhul.cs.dice.starworlds.actions.environmental.AbstractEnvironmentalAction;
 
-public class RandomFilter implements Filter {
+public class RandomQuery implements Query {
 
 	@Override
 	public Object get(AbstractEnvironmentalAction action, Object... args) {
@@ -22,7 +22,7 @@ public class RandomFilter implements Filter {
 				}
 			}
 		}
-		Filter.missuse(this);
+		Query.missuse(this);
 		return null;
 	}
 }

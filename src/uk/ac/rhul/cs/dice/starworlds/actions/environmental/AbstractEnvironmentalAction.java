@@ -1,7 +1,5 @@
 package uk.ac.rhul.cs.dice.starworlds.actions.environmental;
 
-import java.util.Arrays;
-
 import uk.ac.rhul.cs.dice.starworlds.appearances.ActiveBodyAppearance;
 import uk.ac.rhul.cs.dice.starworlds.appearances.EnvironmentAppearance;
 import uk.ac.rhul.cs.dice.starworlds.entities.Actor;

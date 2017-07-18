@@ -17,8 +17,8 @@ import uk.ac.rhul.cs.dice.starworlds.entities.PhysicalBody;
 import uk.ac.rhul.cs.dice.starworlds.entities.agent.AbstractAutonomousAgent;
 import uk.ac.rhul.cs.dice.starworlds.entities.avatar.AbstractAvatarAgent;
 import uk.ac.rhul.cs.dice.starworlds.environment.ambient.AbstractAmbient;
-import uk.ac.rhul.cs.dice.starworlds.environment.ambient.filter.AppearanceFilter;
-import uk.ac.rhul.cs.dice.starworlds.environment.ambient.filter.Filter;
+import uk.ac.rhul.cs.dice.starworlds.environment.ambient.query.AppearanceQuery;
+import uk.ac.rhul.cs.dice.starworlds.environment.ambient.query.Query;
 import uk.ac.rhul.cs.dice.starworlds.utils.Pair;
 
 public class PhysicalAmbient extends AbstractAmbient {
@@ -137,7 +137,7 @@ public class PhysicalAmbient extends AbstractAmbient {
 		return this.grid.get(appearance);
 	}
 
-	public class LocalAgentFilter extends AppearanceFilter {
+	public class LocalAgentFilter extends AppearanceQuery {
 		@Override
 		public Set<Appearance> get(AbstractEnvironmentalAction action,
 				Object... args) {
@@ -151,7 +151,7 @@ public class PhysicalAmbient extends AbstractAmbient {
 		}
 	}
 
-	public class LocalFilter implements Filter {
+	public class LocalFilter implements Query {
 
 		@Override
 		public Set<Pair<Integer, Integer>> get(

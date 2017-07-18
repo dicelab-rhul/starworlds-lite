@@ -21,10 +21,10 @@ import uk.ac.rhul.cs.dice.starworlds.entities.agent.AbstractAutonomousAgent;
 import uk.ac.rhul.cs.dice.starworlds.entities.agents.components.Actuator;
 import uk.ac.rhul.cs.dice.starworlds.entities.agents.components.Sensor;
 import uk.ac.rhul.cs.dice.starworlds.entities.avatar.AbstractAvatarAgent;
-import uk.ac.rhul.cs.dice.starworlds.environment.ambient.filter.AppearanceFilter;
-import uk.ac.rhul.cs.dice.starworlds.environment.ambient.filter.Filter;
-import uk.ac.rhul.cs.dice.starworlds.environment.ambient.filter.RandomFilter;
-import uk.ac.rhul.cs.dice.starworlds.environment.ambient.filter.SelfFilter;
+import uk.ac.rhul.cs.dice.starworlds.environment.ambient.query.AppearanceQuery;
+import uk.ac.rhul.cs.dice.starworlds.environment.ambient.query.Query;
+import uk.ac.rhul.cs.dice.starworlds.environment.ambient.query.RandomQuery;
+import uk.ac.rhul.cs.dice.starworlds.environment.ambient.query.SelfQuery;
 import uk.ac.rhul.cs.dice.starworlds.environment.physics.Physics;
 import uk.ac.rhul.cs.dice.starworlds.parser.DefaultConstructorStore.DefaultConstructor;
 
@@ -33,10 +33,10 @@ public abstract class AbstractAmbient implements Ambient {
 	private final static String AGENTSKEY = "AGENTS",
 			ACTIVEBODIESKEY = "ACTIVEBODIES",
 			PASSIVEBODIESKEY = "PASSIVEBODIES", RANDOM = "RANDOM",
-			SELF = "SELF", APPEARANCEFILTER = "APPEARANCE", NULL = "NULL";
+			SELF = "SELF", APPEARANCE = "APPEARANCE", NULL = "NULL";
 
 	private HashMap<String, Object> environmentVariables;
-	private HashMap<String, Filter> queries; // TODO name change
+	private HashMap<String, Query> queries; // TODO name change
 
 	private List<SensingAction> sensingActions;
 	private List<PhysicalAction> physicalActions;
@@ -83,9 +83,9 @@ public abstract class AbstractAmbient implements Ambient {
 		environmentVariables.put(ACTIVEBODIESKEY, activeBodies);
 		environmentVariables.put(PASSIVEBODIESKEY, passiveBodies);
 		environmentVariables.put(NULL, null);
-		queries.put(RANDOM, new RandomFilter());
-		queries.put(SELF, new SelfFilter());
-		queries.put(APPEARANCEFILTER, new AppearanceFilter());
+		queries.put(RANDOM, new RandomQuery());
+		queries.put(SELF, new SelfQuery());
+		queries.put(APPEARANCE, new AppearanceQuery());
 	}
 
 	public AbstractAutonomousAgent getAgent(String id) {
@@ -249,7 +249,7 @@ public abstract class AbstractAmbient implements Ambient {
 	}
 
 	@Override
-	public boolean addFilter(String key, Filter filter) {
+	public boolean addFilter(String key, Query filter) {
 		return this.queries.putIfAbsent(key, filter) == null;
 	}
 

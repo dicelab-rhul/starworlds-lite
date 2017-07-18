@@ -15,7 +15,7 @@ import uk.ac.rhul.cs.dice.starworlds.entities.PassiveBody;
 import uk.ac.rhul.cs.dice.starworlds.entities.agent.AbstractAutonomousAgent;
 import uk.ac.rhul.cs.dice.starworlds.entities.avatar.AbstractAvatarAgent;
 import uk.ac.rhul.cs.dice.starworlds.entities.avatar.Avatar;
-import uk.ac.rhul.cs.dice.starworlds.environment.ambient.filter.Filter;
+import uk.ac.rhul.cs.dice.starworlds.environment.ambient.query.Query;
 import uk.ac.rhul.cs.dice.starworlds.environment.interfaces.AbstractEnvironment;
 import uk.ac.rhul.cs.dice.starworlds.environment.interfaces.Environment;
 import uk.ac.rhul.cs.dice.starworlds.environment.physics.Physics;
@@ -123,7 +123,7 @@ public interface Ambient {
 
 	public String getFilterKeysAsString();
 
-	public boolean addFilter(String key, Filter filter);
+	public boolean addFilter(String key, Query filter);
 
 	public void filterAction(AbstractEnvironmentalAction action);
 

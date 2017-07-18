@@ -4,7 +4,6 @@ import java.util.Arrays;
 
 import uk.ac.rhul.cs.dice.starworlds.environment.subscriber.AbstractSubscriber.SensiblePerception;
 import uk.ac.rhul.cs.dice.starworlds.perception.ActivePerception;
-import uk.ac.rhul.cs.dice.starworlds.perception.DefaultPerception;
 
 /**
  * A subclass of {@link AbstractEnvironmentalAction} representing sensing
