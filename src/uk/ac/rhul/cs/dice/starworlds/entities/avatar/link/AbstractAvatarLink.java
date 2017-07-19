@@ -54,6 +54,7 @@ public abstract class AbstractAvatarLink<K, A extends Action, M extends Abstract
 	 */
 	public AbstractAvatarLink(M mind) {
 		this.setMind(mind);
+		mind.link();
 		this.actionclassmap = new HashMap<>();
 		this.actionconstructormap = new HashMap<>();
 		this.defaultargmap = new HashMap<>();
@@ -72,6 +73,9 @@ public abstract class AbstractAvatarLink<K, A extends Action, M extends Abstract
 	 *             if the key has no mapping
 	 */
 	public boolean decide(K key, Object... args) {
+		if (key == null) {
+			return mind.decide();
+		}
 		// create a new action
 		Constructor<? extends A> ac = this.actionconstructormap.get(key);
 		if (ac != null) {

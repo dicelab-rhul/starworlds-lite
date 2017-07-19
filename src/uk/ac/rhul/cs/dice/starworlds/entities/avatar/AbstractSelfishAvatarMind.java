@@ -5,8 +5,8 @@ import java.util.Collection;
 import uk.ac.rhul.cs.dice.starworlds.actions.Action;
 import uk.ac.rhul.cs.dice.starworlds.perception.Perception;
 
-public abstract class AbstractSelfishAvatarMind<D extends Action>
-		extends AbstractAvatarMind<D> {
+public abstract class AbstractSelfishAvatarMind<D extends Action> extends
+		AbstractAvatarMind<D> {
 
 	private volatile Boolean decided = false;
 
@@ -15,7 +15,7 @@ public abstract class AbstractSelfishAvatarMind<D extends Action>
 		this.decided = !actionsToExecute.isEmpty();
 		this.perceive(perceptions);
 		// wait for the decide method to be called.
-		while (!decided)
+		while (!(decided || !linked))
 			;
 		// the user has decide
 		return this.execute(actionsToExecute);

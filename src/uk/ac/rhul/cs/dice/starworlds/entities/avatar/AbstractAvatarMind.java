@@ -11,6 +11,7 @@ public abstract class AbstractAvatarMind<D extends Action> extends
 		AbstractMind<D, Stack<D>> {
 
 	protected Stack<D> actionsToExecute = new Stack<>();
+	protected volatile Boolean linked = false;
 
 	public AbstractAvatarMind() {
 	}
@@ -39,11 +40,24 @@ public abstract class AbstractAvatarMind<D extends Action> extends
 		return true;
 	}
 
+	public boolean decide() {
+		actionsToExecute.push(null);
+		return true;
+	}
+
 	@Override
 	public Action execute(Stack<D> actionstack) {
 		if (!actionstack.isEmpty()) {
 			return actionstack.pop();
 		}
 		return null;
+	}
+
+	public void link() {
+		linked = true;
+	}
+
+	public void destoryLink() {
+		linked = false;
 	}
 }

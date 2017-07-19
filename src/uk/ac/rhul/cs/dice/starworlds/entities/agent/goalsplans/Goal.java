@@ -24,4 +24,29 @@ public abstract class Goal<A extends Action> {
 	public A nextAction() {
 		return plan.nextAction();
 	}
+
+	public boolean hasSubGoals() {
+		return plan.hasSubGoals();
+	}
+
+	public Goal<A> popSubGoal() {
+		return plan.popSubGoal();
+	}
+
+	public Goal<A> peekSubGoal() {
+		return plan.peekSubGoal();
+	}
+
+	public void pushSubGoal(Goal<A> goal) {
+		plan.pushSubGoal(goal);
+	}
+
+	public GoalStack<? extends A> getSubgoals() {
+		return plan.getSubgoals();
+	}
+
+	public void setSubgoals(GoalStack<A> subgoals) {
+		this.plan.setSubgoals(subgoals);
+	}
+
 }

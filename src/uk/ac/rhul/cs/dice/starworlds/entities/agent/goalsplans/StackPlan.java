@@ -5,7 +5,7 @@ import java.util.List;
 
 import uk.ac.rhul.cs.dice.starworlds.actions.Action;
 
-public abstract class StackPlan<A extends Action> implements Plan<A> {
+public abstract class StackPlan<A extends Action> extends Plan<A> {
 
 	protected List<A> actions;
 
