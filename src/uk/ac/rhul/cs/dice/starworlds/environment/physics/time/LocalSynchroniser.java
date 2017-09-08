@@ -55,14 +55,14 @@ public class LocalSynchroniser implements Synchroniser {
 	 * the lower {@link LocalSynchroniser}s executing first.
 	 */
 	@Override
-	public void runagents() {
+	public void runActors() {
 		// TODO multithreaded
 		System.out.println(this + " RUNNINGAGENTS...");
 		for (Synchroniser s : synchronisers) {
-			s.runagents();
+			s.runActors();
 		}
 
-		physics.runAgents();
+		physics.runActors();
 		done(SyncPoint.RUNAGENTS);
 		wait(syncWithRemoteEnvironments(SyncPoint.RUNAGENTS));
 	}
@@ -93,11 +93,11 @@ public class LocalSynchroniser implements Synchroniser {
 	 * the hierarchy, with the lower {@link LocalSynchroniser}s executing first.
 	 */
 	@Override
-	public void executeactions() {
+	public void executeActions() {
 		// TODO multithreaded
 		System.out.println(this + " EXECUTING ACTIONS...");
 		for (Synchroniser s : synchronisers) {
-			s.executeactions();
+			s.executeActions();
 		}
 		physics.executeActions();
 		done(SyncPoint.EXECUTEACTIONS);

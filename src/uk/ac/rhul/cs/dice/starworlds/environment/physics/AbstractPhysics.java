@@ -81,7 +81,7 @@ public abstract class AbstractPhysics implements Physics, Simulator {
 	}
 
 	protected void cycle() {
-		this.runAgents();
+		this.runActors();
 		this.executeActions();
 		this.cycleAddition();
 	}
@@ -89,7 +89,7 @@ public abstract class AbstractPhysics implements Physics, Simulator {
 	public abstract void cycleAddition();
 
 	@Override
-	public void runAgents() {
+	public void runActors() {
 		timestate.simulate();
 	}
 
@@ -507,7 +507,7 @@ public abstract class AbstractPhysics implements Physics, Simulator {
 			getThreads(state.getAvatars());
 			getThreads(state.getAgents());
 			getThreads(state.getActiveBodies());
-			waitForAgents(threads);
+			waitForActors(threads);
 		}
 
 		private Collection<Thread> getThreads(
@@ -521,7 +521,7 @@ public abstract class AbstractPhysics implements Physics, Simulator {
 			return threads;
 		}
 
-		private void waitForAgents(Collection<Thread> threads) {
+		private void waitForActors(Collection<Thread> threads) {
 			try {
 				for (Thread t : threads)
 					t.join();

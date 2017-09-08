@@ -39,7 +39,7 @@ public class TestPhysics extends AbstractConnectedPhysics {
 	}
 
 	@Override
-	public void runAgents() {
+	public void runActors() {
 		try {
 			Long sleep = (long) (Math.random() * 5000);
 			System.out.println(this.getId() + "SLEEP: " + sleep);
@@ -47,7 +47,7 @@ public class TestPhysics extends AbstractConnectedPhysics {
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
-		super.runAgents();
+		super.runActors();
 	}
 
 	public boolean perform(TestAction action, Ambient context) {

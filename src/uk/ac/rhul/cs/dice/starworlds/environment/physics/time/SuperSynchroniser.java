@@ -18,9 +18,9 @@ public class SuperSynchroniser extends LocalSynchroniser implements Simulator {
 
 	/**
 	 * Starts an the system simulation. The order of execution is as follows:
-	 * {@link SuperSynchroniser#runagents() runagents()}, </br>
+	 * {@link SuperSynchroniser#runActors() runagents()}, </br>
 	 * {@link SuperSynchroniser#propagateActions() propagateActions()}, </br>
-	 * {@link SuperSynchroniser#executeactions() executeactions()},</br>
+	 * {@link SuperSynchroniser#executeActions() executeactions()},</br>
 	 * {@link SuperSynchroniser#cycleAddition() cycleAddition()}.</br>
 	 */
 	@Override
@@ -28,9 +28,9 @@ public class SuperSynchroniser extends LocalSynchroniser implements Simulator {
 		System.out.println(this + " SIMULATING...");
 		while (true) {
 			System.out.println("******************* CYCLE *******************");
-			this.runagents();
+			this.runActors();
 			this.propagateActions();
-			this.executeactions();
+			this.executeActions();
 			this.cycleAddition();
 			try {
 				Thread.sleep(framelength);

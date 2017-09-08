@@ -1,38 +1,53 @@
 package uk.ac.rhul.cs.dice.starworlds.entities.agent.goalsplans;
 
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.List;
+import java.util.function.Consumer;
 
 import uk.ac.rhul.cs.dice.starworlds.actions.Action;
-import uk.ac.rhul.cs.dice.starworlds.perception.Perception;
 
-public abstract class GoalStack<A extends Action> {
+public class GoalStack<G extends Goal<A>, A extends Action> implements
+		GoalCollection<G, A> {
 
-	protected ArrayList<Goal<A>> stack;
+	protected List<G> goals;
 
 	public GoalStack() {
-		stack = new ArrayList<>();
+		goals = new ArrayList<>();
 	}
 
-	public GoalStack(GoalStack<A> stack) {
-		this.stack = stack.stack;
+	@Override
+	public boolean hasGoals() {
+		return !(goals == null || goals.isEmpty());
 	}
 
-	public boolean isEmpty() {
-		return stack.isEmpty();
+	public boolean containsGoal(G action) {
+		return goals.contains(action);
 	}
 
-	public Goal<A> pop() {
-		return stack.remove(stack.size() - 1);
+	@Override
+	public void clearGoals() {
+		goals.clear();
 	}
 
-	public Goal<A> peek() {
-		return stack.get(stack.size() - 1);
+	@Override
+	public int size() {
+		return goals.size();
 	}
 
-	public void push(Goal<A> goal) {
-		stack.add(goal);
+	public G nextGoal() {
+		return goals.remove(goals.size() - 1);
 	}
 
-	public abstract GoalStack<A> validate(Collection<Perception<?>> perceptions);
+	public void pushGoal(G action) {
+		this.goals.add(action);
+	}
+
+	public G peekGoal() {
+		return goals.get(goals.size() - 1);
+	}
+
+	@Override
+	public void forEach(Consumer<? super G> con) {
+		goals.forEach(con);
+	}
 }

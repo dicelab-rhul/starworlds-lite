@@ -50,7 +50,7 @@ public interface Physics extends Identifiable {
 		return null;
 	}
 
-	public void runAgents();
+	public void runActors();
 
 	public void executeActions();
 

@@ -13,12 +13,9 @@ public abstract class StackPlan<A extends Action> extends Plan<A> {
 		this.actions = new ArrayList<>();
 	}
 
-	public void pushAction(A action) {
-		this.actions.add(action);
-	}
-
-	public A peekNextAction() {
-		return actions.get(actions.size() - 1);
+	@Override
+	public boolean hasActions() {
+		return !(actions == null || actions.isEmpty());
 	}
 
 	@Override
@@ -26,8 +23,15 @@ public abstract class StackPlan<A extends Action> extends Plan<A> {
 		return actions.remove(actions.size() - 1);
 	}
 
-	@Override
-	public boolean isComplete() {
-		return this.actions.isEmpty();
+	public boolean containsAction(A action) {
+		return actions.contains(action);
+	}
+
+	public void pushAction(A action) {
+		this.actions.add(action);
+	}
+
+	public A peekAction() {
+		return actions.get(actions.size() - 1);
 	}
 }
