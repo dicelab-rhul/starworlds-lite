@@ -5,7 +5,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -16,34 +15,30 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import uk.ac.rhul.cs.dice.starworlds.actions.Action;
 import uk.ac.rhul.cs.dice.starworlds.actions.environmental.PhysicalAction;
 import uk.ac.rhul.cs.dice.starworlds.appearances.Appearance;
 import uk.ac.rhul.cs.dice.starworlds.appearances.PhysicalBodyAppearance;
 import uk.ac.rhul.cs.dice.starworlds.entities.PassiveBody;
-import uk.ac.rhul.cs.dice.starworlds.entities.agent.AbstractAutonomousAgent;
 import uk.ac.rhul.cs.dice.starworlds.entities.agent.AbstractAgentMind;
+import uk.ac.rhul.cs.dice.starworlds.entities.agent.AbstractAutonomousAgent;
 import uk.ac.rhul.cs.dice.starworlds.entities.agents.components.Actuator;
 import uk.ac.rhul.cs.dice.starworlds.entities.agents.components.Sensor;
 import uk.ac.rhul.cs.dice.starworlds.environment.ambient.AbstractAmbient;
 import uk.ac.rhul.cs.dice.starworlds.environment.interfaces.AbstractConnectedEnvironment;
+import uk.ac.rhul.cs.dice.starworlds.environment.interfaces.AbstractConnectedEnvironment.AmbientRelation;
 import uk.ac.rhul.cs.dice.starworlds.environment.interfaces.AbstractEnvironment;
 import uk.ac.rhul.cs.dice.starworlds.environment.interfaces.Universe;
-import uk.ac.rhul.cs.dice.starworlds.environment.interfaces.AbstractConnectedEnvironment.AmbientRelation;
 import uk.ac.rhul.cs.dice.starworlds.environment.physics.AbstractConnectedPhysics;
 import uk.ac.rhul.cs.dice.starworlds.environment.physics.AbstractPhysics;
 import uk.ac.rhul.cs.dice.starworlds.environment.physics.Physics;
+import uk.ac.rhul.cs.dice.starworlds.initialisation.PostInitialisationVisitor;
 import uk.ac.rhul.cs.dice.starworlds.initialisation.ReflectiveMethodStore;
-import uk.ac.rhul.cs.dice.starworlds.utils.datastructure.tree.GraphTreeNode;
 import uk.ac.rhul.cs.dice.starworlds.utils.datastructure.tree.GraphTree;
+import uk.ac.rhul.cs.dice.starworlds.utils.datastructure.tree.GraphTreeNode;
 import uk.ac.rhul.cs.dice.starworlds.utils.datastructure.tree.Node;
-import uk.ac.rhul.cs.dice.starworlds.utils.datastructure.visitor.Acceptor;
-import uk.ac.rhul.cs.dice.starworlds.utils.datastructure.visitor.Visitor;
 
+/
 public class Parser {
 
 	public static final String[] CLASSKEYS = new String[] { "@agents",
