@@ -6,8 +6,8 @@ import java.util.Collections;
 
 import uk.ac.rhul.cs.dice.starworlds.entities.ActiveBody;
 import uk.ac.rhul.cs.dice.starworlds.entities.PhysicalBody;
-import uk.ac.rhul.cs.dice.starworlds.entities.agents.components.Actuator;
-import uk.ac.rhul.cs.dice.starworlds.entities.agents.components.Sensor;
+import uk.ac.rhul.cs.dice.starworlds.entities.agent.components.Actuator;
+import uk.ac.rhul.cs.dice.starworlds.entities.agent.components.Sensor;
 
 public class ActiveBodyAppearance extends PhysicalBodyAppearance {
 

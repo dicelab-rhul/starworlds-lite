@@ -1,9 +1,9 @@
 package uk.ac.rhul.cs.dice.starworlds.entities.agent;
 
 import uk.ac.rhul.cs.dice.starworlds.entities.Agent;
-import uk.ac.rhul.cs.dice.starworlds.entities.agents.components.AbstractSensor;
-import uk.ac.rhul.cs.dice.starworlds.entities.agents.components.concrete.PhysicalActuator;
-import uk.ac.rhul.cs.dice.starworlds.entities.agents.components.concrete.SpeechActuator;
+import uk.ac.rhul.cs.dice.starworlds.entities.agent.components.AbstractSensor;
+import uk.ac.rhul.cs.dice.starworlds.entities.agent.components.concrete.PhysicalActuator;
+import uk.ac.rhul.cs.dice.starworlds.entities.agent.components.concrete.SpeechActuator;
 
 public abstract class AbstractMind<D, E> implements Mind<D, E> {
 

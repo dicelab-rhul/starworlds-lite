@@ -1,18 +1,14 @@
 package uk.ac.rhul.cs.dice.starworlds.actions;
 
-import javax.swing.AbstractAction;
-
 import uk.ac.rhul.cs.dice.starworlds.actions.environmental.SensingAction;
 import uk.ac.rhul.cs.dice.starworlds.appearances.ActiveBodyAppearance;
 import uk.ac.rhul.cs.dice.starworlds.entities.Actor;
-import uk.ac.rhul.cs.dice.starworlds.entities.agents.components.Actuator;
-import uk.ac.rhul.cs.dice.starworlds.entities.agents.components.Sensor;
+import uk.ac.rhul.cs.dice.starworlds.entities.agent.components.Actuator;
+import uk.ac.rhul.cs.dice.starworlds.entities.agent.components.Sensor;
 
 /**
  * The interface for all the actions.<br/>
  * <br/>
- * 
- * Known implementations: {@link AbstractAction}.
  * 
  * @author cloudstrife9999 a.k.a. Emanuele Uliana
  * @author Ben Wilkins

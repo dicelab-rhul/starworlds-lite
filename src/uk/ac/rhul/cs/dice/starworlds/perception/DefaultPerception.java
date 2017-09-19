@@ -1,6 +1,6 @@
 package uk.ac.rhul.cs.dice.starworlds.perception;
 
-import uk.ac.rhul.cs.dice.starworlds.entities.agents.components.concrete.SeeingSensor;
+import uk.ac.rhul.cs.dice.starworlds.entities.agent.components.concrete.SeeingSensor;
 
 /**
  * The default concrete class for {@link Perception}s. This type of

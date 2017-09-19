@@ -1,32 +1,26 @@
 package uk.ac.rhul.cs.dice.starworlds.environment.interfaces;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 import java.util.Observable;
-import java.util.Set;
-import java.util.Stack;
 
 import uk.ac.rhul.cs.dice.starworlds.actions.Action;
 import uk.ac.rhul.cs.dice.starworlds.actions.environmental.AbstractEnvironmentalAction;
-import uk.ac.rhul.cs.dice.starworlds.appearances.ActiveBodyAppearance;
 import uk.ac.rhul.cs.dice.starworlds.appearances.Appearance;
 import uk.ac.rhul.cs.dice.starworlds.appearances.EnvironmentAppearance;
 import uk.ac.rhul.cs.dice.starworlds.entities.ActiveBody;
 import uk.ac.rhul.cs.dice.starworlds.entities.PassiveBody;
 import uk.ac.rhul.cs.dice.starworlds.entities.agent.AbstractAutonomousAgent;
-import uk.ac.rhul.cs.dice.starworlds.entities.agents.components.AbstractSensor;
-import uk.ac.rhul.cs.dice.starworlds.entities.agents.components.Sensor;
+import uk.ac.rhul.cs.dice.starworlds.entities.agent.components.AbstractSensor;
+import uk.ac.rhul.cs.dice.starworlds.entities.agent.components.Sensor;
 import uk.ac.rhul.cs.dice.starworlds.entities.avatar.AbstractAvatarAgent;
 import uk.ac.rhul.cs.dice.starworlds.environment.ambient.AbstractAmbient;
 import uk.ac.rhul.cs.dice.starworlds.environment.ambient.Ambient;
 import uk.ac.rhul.cs.dice.starworlds.environment.physics.AbstractPhysics;
 import uk.ac.rhul.cs.dice.starworlds.environment.physics.Physics;
-import uk.ac.rhul.cs.dice.starworlds.environment.subscriber.AbstractSubscriber;
-import uk.ac.rhul.cs.dice.starworlds.environment.subscriber.Subscriber;
+import uk.ac.rhul.cs.dice.starworlds.environment.subscription.AbstractSubscriptionHandler;
+import uk.ac.rhul.cs.dice.starworlds.environment.subscription.SensorSubscriptionHandler;
 import uk.ac.rhul.cs.dice.starworlds.initialisation.IDFactory;
-import uk.ac.rhul.cs.dice.starworlds.initialisation.ReflectiveMethodStore;
 import uk.ac.rhul.cs.dice.starworlds.perception.AbstractPerception;
 
 /**
@@ -45,12 +39,11 @@ public abstract class AbstractEnvironment extends Observable implements
 	protected AbstractPhysics physics;
 	protected Boolean bounded;
 	protected EnvironmentAppearance appearance;
-	protected AbstractSubscriber subscriber;
-//
-//	protected Stack<Entity> safeBodyBuffer;
-//	protected Stack<>
-	
-	
+	protected AbstractSubscriptionHandler subscriber;
+
+	//
+	// protected Stack<Entity> safeBodyBuffer;
+	// protected Stack<>
 
 	/**
 	 * Constructor. The {@link Appearance} of this {@link AbstractEnvironment}
@@ -70,7 +63,7 @@ public abstract class AbstractEnvironment extends Observable implements
 			AbstractAmbient ambient,
 			AbstractPhysics physics,
 			Collection<Class<? extends AbstractEnvironmentalAction>> possibleActions) {
-		init(new Subscriber(), ambient, physics, new EnvironmentAppearance(
+		init(new SensorSubscriptionHandler(), ambient, physics, new EnvironmentAppearance(
 				IDFactory.getInstance().getNewID(), false, true),
 				possibleActions, false);
 	}
@@ -93,7 +86,7 @@ public abstract class AbstractEnvironment extends Observable implements
 			AbstractPhysics physics,
 			EnvironmentAppearance appearance,
 			Collection<Class<? extends AbstractEnvironmentalAction>> possibleActions) {
-		init(new Subscriber(), ambient, physics, appearance, possibleActions,
+		init(new SensorSubscriptionHandler(), ambient, physics, appearance, possibleActions,
 				false);
 	}
 
@@ -104,6 +97,9 @@ public abstract class AbstractEnvironment extends Observable implements
 	 *            : a {@link Ambient} instance
 	 * @param physics
 	 *            : the {@link Physics} of the environment
+	 * @param subscriptionHandler
+	 *            : the {@link AbstractSubscriptionHandler} that will handle
+	 *            subscriptions in this {@link Environment}.
 	 * @param appearance
 	 *            : the {@link Appearance} of the environment
 	 * @param possibleActions
@@ -116,15 +112,16 @@ public abstract class AbstractEnvironment extends Observable implements
 	public AbstractEnvironment(
 			AbstractAmbient ambient,
 			AbstractPhysics physics,
+			AbstractSubscriptionHandler subscriptionHandler,
 			EnvironmentAppearance appearance,
 			Collection<Class<? extends AbstractEnvironmentalAction>> possibleActions,
 			Boolean bounded) {
-		init(new Subscriber(), ambient, physics, appearance, possibleActions,
-				bounded);
+		init(subscriptionHandler, ambient, physics, appearance,
+				possibleActions, bounded);
 	}
 
 	private void init(
-			AbstractSubscriber subscriber,
+			AbstractSubscriptionHandler subscriber,
 			AbstractAmbient ambient,
 			AbstractPhysics physics,
 			EnvironmentAppearance appearance,
@@ -332,7 +329,7 @@ public abstract class AbstractEnvironment extends Observable implements
 		subscriber.subscribe(body, sensors);
 	}
 
-	public synchronized AbstractSubscriber getSubscriber() {
+	public synchronized AbstractSubscriptionHandler getSubscriber() {
 		return subscriber;
 	}
 

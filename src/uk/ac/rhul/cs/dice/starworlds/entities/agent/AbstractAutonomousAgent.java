@@ -7,9 +7,8 @@ import uk.ac.rhul.cs.dice.starworlds.actions.Action;
 import uk.ac.rhul.cs.dice.starworlds.actions.MentalAction;
 import uk.ac.rhul.cs.dice.starworlds.actions.environmental.AbstractEnvironmentalAction;
 import uk.ac.rhul.cs.dice.starworlds.appearances.ActiveBodyAppearance;
-import uk.ac.rhul.cs.dice.starworlds.entities.agents.components.Actuator;
-import uk.ac.rhul.cs.dice.starworlds.entities.agents.components.Sensor;
-import uk.ac.rhul.cs.dice.starworlds.parser.DefaultConstructorStore.DefaultConstructor;
+import uk.ac.rhul.cs.dice.starworlds.entities.agent.components.Actuator;
+import uk.ac.rhul.cs.dice.starworlds.entities.agent.components.Sensor;
 import uk.ac.rhul.cs.dice.starworlds.perception.Perception;
 
 public abstract class AbstractAutonomousAgent extends
@@ -26,7 +25,6 @@ public abstract class AbstractAutonomousAgent extends
 	 *            : the {@link AbstractAgentMind}.
 	 * 
 	 */
-	@DefaultConstructor
 	public AbstractAutonomousAgent(List<Sensor> sensors,
 			List<Actuator> actuators, AbstractAgentMind mind) {
 		super(null, sensors, actuators, mind);

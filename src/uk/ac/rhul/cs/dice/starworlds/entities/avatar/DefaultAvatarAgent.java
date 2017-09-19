@@ -4,8 +4,8 @@ import java.util.List;
 
 import uk.ac.rhul.cs.dice.starworlds.actions.environmental.AbstractEnvironmentalAction;
 import uk.ac.rhul.cs.dice.starworlds.appearances.ActiveBodyAppearance;
-import uk.ac.rhul.cs.dice.starworlds.entities.agents.components.Actuator;
-import uk.ac.rhul.cs.dice.starworlds.entities.agents.components.Sensor;
+import uk.ac.rhul.cs.dice.starworlds.entities.agent.components.Actuator;
+import uk.ac.rhul.cs.dice.starworlds.entities.agent.components.Sensor;
 
 public class DefaultAvatarAgent extends
 		AbstractAvatarAgent<AbstractEnvironmentalAction> {

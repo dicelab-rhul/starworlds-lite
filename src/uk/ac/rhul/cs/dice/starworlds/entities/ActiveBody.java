@@ -12,15 +12,14 @@ import uk.ac.rhul.cs.dice.starworlds.appearances.ActiveBodyAppearance;
 import uk.ac.rhul.cs.dice.starworlds.appearances.Appearance;
 import uk.ac.rhul.cs.dice.starworlds.appearances.PhysicalBodyAppearance;
 import uk.ac.rhul.cs.dice.starworlds.entities.agent.AbstractAutonomousAgent;
-import uk.ac.rhul.cs.dice.starworlds.entities.agents.components.AbstractSensor;
-import uk.ac.rhul.cs.dice.starworlds.entities.agents.components.Actuator;
-import uk.ac.rhul.cs.dice.starworlds.entities.agents.components.Component;
-import uk.ac.rhul.cs.dice.starworlds.entities.agents.components.Sensor;
-import uk.ac.rhul.cs.dice.starworlds.entities.agents.components.concrete.PhysicalActuator;
-import uk.ac.rhul.cs.dice.starworlds.entities.agents.components.concrete.SpeechActuator;
+import uk.ac.rhul.cs.dice.starworlds.entities.agent.components.AbstractSensor;
+import uk.ac.rhul.cs.dice.starworlds.entities.agent.components.Actuator;
+import uk.ac.rhul.cs.dice.starworlds.entities.agent.components.Component;
+import uk.ac.rhul.cs.dice.starworlds.entities.agent.components.Sensor;
+import uk.ac.rhul.cs.dice.starworlds.entities.agent.components.concrete.PhysicalActuator;
+import uk.ac.rhul.cs.dice.starworlds.entities.agent.components.concrete.SpeechActuator;
 import uk.ac.rhul.cs.dice.starworlds.environment.interfaces.AbstractEnvironment;
 import uk.ac.rhul.cs.dice.starworlds.environment.physics.Physics;
-import uk.ac.rhul.cs.dice.starworlds.parser.DefaultConstructorStore.DefaultConstructor;
 import uk.ac.rhul.cs.dice.starworlds.perception.Perception;
 
 /**
@@ -61,7 +60,6 @@ public abstract class ActiveBody extends PhysicalBody implements Actor {
 	 * @param actuators
 	 *            : a {@link List} of {@link Actuator} instances.
 	 */
-	@DefaultConstructor
 	public ActiveBody(List<Sensor> sensors, List<Actuator> actuators) {
 		super(null);
 		init(sensors, actuators);

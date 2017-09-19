@@ -3,11 +3,10 @@ package uk.ac.rhul.cs.dice.starworlds.entities.agent;
 import java.util.Collection;
 
 import uk.ac.rhul.cs.dice.starworlds.actions.Action;
-import uk.ac.rhul.cs.dice.starworlds.entities.agents.components.AbstractSensor;
-import uk.ac.rhul.cs.dice.starworlds.entities.agents.components.concrete.PhysicalActuator;
-import uk.ac.rhul.cs.dice.starworlds.entities.agents.components.concrete.SpeechActuator;
-import uk.ac.rhul.cs.dice.starworlds.entities.agents.concrete.DefaultAgentMind;
-import uk.ac.rhul.cs.dice.starworlds.parser.DefaultConstructorStore.DefaultConstructor;
+import uk.ac.rhul.cs.dice.starworlds.entities.agent.components.AbstractSensor;
+import uk.ac.rhul.cs.dice.starworlds.entities.agent.components.concrete.PhysicalActuator;
+import uk.ac.rhul.cs.dice.starworlds.entities.agent.components.concrete.SpeechActuator;
+import uk.ac.rhul.cs.dice.starworlds.entities.agent.concrete.DefaultAgentMind;
 import uk.ac.rhul.cs.dice.starworlds.perception.Perception;
 
 /**
@@ -32,7 +31,6 @@ import uk.ac.rhul.cs.dice.starworlds.perception.Perception;
 public abstract class AbstractAgentMind extends
 		AbstractMind<Perception<?>, Action> {
 
-	@DefaultConstructor
 	public AbstractAgentMind() {
 	}
 

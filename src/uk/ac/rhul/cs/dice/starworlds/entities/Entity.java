@@ -14,5 +14,4 @@ import uk.ac.rhul.cs.dice.starworlds.utils.Identifiable;
  *
  */
 public interface Entity extends Identifiable {
-
 }

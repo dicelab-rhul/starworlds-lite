@@ -2,7 +2,7 @@ package uk.ac.rhul.cs.dice.starworlds.actions.environmental;
 
 import java.util.Arrays;
 
-import uk.ac.rhul.cs.dice.starworlds.environment.subscriber.AbstractSubscriber.SensiblePerception;
+import uk.ac.rhul.cs.dice.starworlds.environment.subscription.AbstractSubscriptionHandler.SensiblePerception;
 import uk.ac.rhul.cs.dice.starworlds.perception.ActivePerception;
 
 /**

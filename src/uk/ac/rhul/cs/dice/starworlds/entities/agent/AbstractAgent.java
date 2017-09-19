@@ -10,18 +10,17 @@ import uk.ac.rhul.cs.dice.starworlds.actions.environmental.SensingAction;
 import uk.ac.rhul.cs.dice.starworlds.appearances.ActiveBodyAppearance;
 import uk.ac.rhul.cs.dice.starworlds.entities.ActiveBody;
 import uk.ac.rhul.cs.dice.starworlds.entities.Agent;
-import uk.ac.rhul.cs.dice.starworlds.entities.agents.components.AbstractActuator;
-import uk.ac.rhul.cs.dice.starworlds.entities.agents.components.AbstractSensor;
-import uk.ac.rhul.cs.dice.starworlds.entities.agents.components.Actuator;
-import uk.ac.rhul.cs.dice.starworlds.entities.agents.components.Sensor;
-import uk.ac.rhul.cs.dice.starworlds.entities.agents.components.concrete.ListeningSensor;
-import uk.ac.rhul.cs.dice.starworlds.entities.agents.components.concrete.PhysicalActuator;
-import uk.ac.rhul.cs.dice.starworlds.entities.agents.components.concrete.SeeingSensor;
-import uk.ac.rhul.cs.dice.starworlds.entities.agents.components.concrete.SpeechActuator;
+import uk.ac.rhul.cs.dice.starworlds.entities.agent.components.AbstractActuator;
+import uk.ac.rhul.cs.dice.starworlds.entities.agent.components.AbstractSensor;
+import uk.ac.rhul.cs.dice.starworlds.entities.agent.components.Actuator;
+import uk.ac.rhul.cs.dice.starworlds.entities.agent.components.Sensor;
+import uk.ac.rhul.cs.dice.starworlds.entities.agent.components.concrete.ListeningSensor;
+import uk.ac.rhul.cs.dice.starworlds.entities.agent.components.concrete.PhysicalActuator;
+import uk.ac.rhul.cs.dice.starworlds.entities.agent.components.concrete.SeeingSensor;
+import uk.ac.rhul.cs.dice.starworlds.entities.agent.components.concrete.SpeechActuator;
 import uk.ac.rhul.cs.dice.starworlds.environment.ambient.Ambient;
 import uk.ac.rhul.cs.dice.starworlds.environment.interfaces.Environment;
 import uk.ac.rhul.cs.dice.starworlds.environment.physics.Physics;
-import uk.ac.rhul.cs.dice.starworlds.parser.DefaultConstructorStore.DefaultConstructor;
 import uk.ac.rhul.cs.dice.starworlds.perception.Perception;
 
 public abstract class AbstractAgent<D, E> extends ActiveBody implements
@@ -40,7 +39,6 @@ public abstract class AbstractAgent<D, E> extends ActiveBody implements
 	 *            : the {@link AbstractAgentMind}.
 	 * 
 	 */
-	@DefaultConstructor
 	public AbstractAgent(List<Sensor> sensors, List<Actuator> actuators,
 			AbstractMind<D, E> mind) {
 		super(null, sensors, actuators);
@@ -84,6 +82,7 @@ public abstract class AbstractAgent<D, E> extends ActiveBody implements
 		return doAct(action, null, null);
 	}
 
+	//re-factor all doAct methods, these seem inefficient and unnecessary. 
 	protected final Action doAct(AbstractEnvironmentalAction action,
 			Class<? extends AbstractSensor> sensor,
 			Class<? extends AbstractActuator> actuator) {

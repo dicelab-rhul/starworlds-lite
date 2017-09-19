@@ -1,14 +1,14 @@
 package uk.ac.rhul.cs.dice.starworlds.test;
 
 import uk.ac.rhul.cs.dice.starworlds.actions.environmental.CommunicationAction;
-import uk.ac.rhul.cs.dice.starworlds.entities.agents.components.concrete.ListeningSensor;
-import uk.ac.rhul.cs.dice.starworlds.environment.subscriber.AbstractSubscriber;
-import uk.ac.rhul.cs.dice.starworlds.environment.subscriber.Subscriber;
+import uk.ac.rhul.cs.dice.starworlds.entities.agent.components.concrete.ListeningSensor;
+import uk.ac.rhul.cs.dice.starworlds.environment.subscription.AbstractSubscriptionHandler;
+import uk.ac.rhul.cs.dice.starworlds.environment.subscription.SensorSubscriptionHandler;
 
 public class TestSensorSubscriber {
 
 	public static void main(String[] args) {
-		AbstractSubscriber ss = new Subscriber();
+		AbstractSubscriptionHandler ss = new SensorSubscriptionHandler();
 		ss.addPossibleAction(CommunicationAction.class);
 		ss.addNewSensorType(ListeningSensor.class);
 		System.out.println(ss);

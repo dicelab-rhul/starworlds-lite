@@ -9,8 +9,8 @@ import uk.ac.rhul.cs.dice.starworlds.actions.environmental.AbstractEnvironmental
 import uk.ac.rhul.cs.dice.starworlds.appearances.ActiveBodyAppearance;
 import uk.ac.rhul.cs.dice.starworlds.entities.agent.AbstractMind;
 import uk.ac.rhul.cs.dice.starworlds.entities.agent.AbstractAgent;
-import uk.ac.rhul.cs.dice.starworlds.entities.agents.components.Actuator;
-import uk.ac.rhul.cs.dice.starworlds.entities.agents.components.Sensor;
+import uk.ac.rhul.cs.dice.starworlds.entities.agent.components.Actuator;
+import uk.ac.rhul.cs.dice.starworlds.entities.agent.components.Sensor;
 import uk.ac.rhul.cs.dice.starworlds.perception.Perception;
 
 public abstract class AbstractAvatarAgent<D extends Action> extends

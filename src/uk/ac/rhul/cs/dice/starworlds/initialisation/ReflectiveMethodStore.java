@@ -10,7 +10,7 @@ import uk.ac.rhul.cs.dice.starworlds.actions.Action;
 import uk.ac.rhul.cs.dice.starworlds.actions.environmental.AbstractEnvironmentalAction;
 import uk.ac.rhul.cs.dice.starworlds.actions.environmental.PhysicalAction;
 import uk.ac.rhul.cs.dice.starworlds.entities.ActiveBody;
-import uk.ac.rhul.cs.dice.starworlds.entities.agents.components.Sensor;
+import uk.ac.rhul.cs.dice.starworlds.entities.agent.components.Sensor;
 import uk.ac.rhul.cs.dice.starworlds.environment.ambient.Ambient;
 import uk.ac.rhul.cs.dice.starworlds.environment.interfaces.AbstractEnvironment;
 import uk.ac.rhul.cs.dice.starworlds.environment.interfaces.Environment;
@@ -173,7 +173,6 @@ public final class ReflectiveMethodStore {
 	public static void validateReflectiveActions(
 			Class<? extends Physics> physics,
 			Collection<Class<? extends AbstractEnvironmentalAction>> actions) {
-		System.out.println("VALIDATING ACTIONS... ");
 		for (Class<? extends Action> a : actions) {
 			if (PhysicalAction.class.isAssignableFrom(a)) {
 				ACTIONPARAMS[0] = a;
@@ -189,10 +188,9 @@ public final class ReflectiveMethodStore {
 						COMPAREISPOSSIBLE, methodmap);
 				doActionMethod(physics, VERIFY, ACTIONPARAMS, COMPAREVERIFY,
 						methodmap);
-				System.out.println("     " + methodmap);
+				//System.out.println("     " + methodmap);
 			}
 		}
-		System.out.println("DONE");
 	}
 
 	private static void doActionMethod(Class<?> physics, String name,

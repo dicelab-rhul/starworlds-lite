@@ -9,6 +9,7 @@ import uk.ac.rhul.cs.dice.starworlds.environment.interfaces.AbstractEnvironment;
 import uk.ac.rhul.cs.dice.starworlds.environment.interfaces.Environment;
 import uk.ac.rhul.cs.dice.starworlds.environment.interfaces.Universe;
 import uk.ac.rhul.cs.dice.starworlds.environment.physics.AbstractPhysics;
+import uk.ac.rhul.cs.dice.starworlds.environment.subscription.SensorSubscriptionHandler;
 import uk.ac.rhul.cs.dice.starworlds.initialisation.ReflectiveMethodStore;
 
 /**
@@ -27,7 +28,8 @@ public class DefaultSimpleUniverse extends AbstractEnvironment implements
 			EnvironmentAppearance appearance,
 			Collection<Class<? extends AbstractEnvironmentalAction>> possibleActions,
 			Boolean bounded) {
-		super(ambient, physics, appearance, possibleActions, bounded);
+		super(ambient, physics, new SensorSubscriptionHandler(), appearance,
+				possibleActions, bounded);
 		validatePhysics();
 	}
 

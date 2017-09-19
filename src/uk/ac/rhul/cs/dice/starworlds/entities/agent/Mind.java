@@ -4,7 +4,7 @@ import java.util.Collection;
 
 import uk.ac.rhul.cs.dice.starworlds.actions.Action;
 import uk.ac.rhul.cs.dice.starworlds.entities.Agent;
-import uk.ac.rhul.cs.dice.starworlds.entities.agents.components.Sensor;
+import uk.ac.rhul.cs.dice.starworlds.entities.agent.components.Sensor;
 import uk.ac.rhul.cs.dice.starworlds.perception.Perception;
 
 /**

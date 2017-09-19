@@ -18,15 +18,14 @@ import uk.ac.rhul.cs.dice.starworlds.entities.Agent;
 import uk.ac.rhul.cs.dice.starworlds.entities.Entity;
 import uk.ac.rhul.cs.dice.starworlds.entities.PassiveBody;
 import uk.ac.rhul.cs.dice.starworlds.entities.agent.AbstractAutonomousAgent;
-import uk.ac.rhul.cs.dice.starworlds.entities.agents.components.Actuator;
-import uk.ac.rhul.cs.dice.starworlds.entities.agents.components.Sensor;
+import uk.ac.rhul.cs.dice.starworlds.entities.agent.components.Actuator;
+import uk.ac.rhul.cs.dice.starworlds.entities.agent.components.Sensor;
 import uk.ac.rhul.cs.dice.starworlds.entities.avatar.AbstractAvatarAgent;
 import uk.ac.rhul.cs.dice.starworlds.environment.ambient.query.AppearanceQuery;
 import uk.ac.rhul.cs.dice.starworlds.environment.ambient.query.Query;
 import uk.ac.rhul.cs.dice.starworlds.environment.ambient.query.RandomQuery;
 import uk.ac.rhul.cs.dice.starworlds.environment.ambient.query.SelfQuery;
 import uk.ac.rhul.cs.dice.starworlds.environment.physics.Physics;
-import uk.ac.rhul.cs.dice.starworlds.parser.DefaultConstructorStore.DefaultConstructor;
 
 public abstract class AbstractAmbient implements Ambient {
 
@@ -51,7 +50,6 @@ public abstract class AbstractAmbient implements Ambient {
 	protected Map<String, ActiveBody> activeBodies;
 	protected Map<String, PassiveBody> passiveBodies;
 
-	@DefaultConstructor
 	public AbstractAmbient(Set<AbstractAutonomousAgent> agents,
 			Set<ActiveBody> activeBodies, Set<PassiveBody> passiveBodies,
 			Set<AbstractAvatarAgent<?>> avatars) {

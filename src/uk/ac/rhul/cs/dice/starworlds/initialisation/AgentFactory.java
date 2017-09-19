@@ -10,13 +10,13 @@ import uk.ac.rhul.cs.dice.starworlds.actions.environmental.AbstractEnvironmental
 import uk.ac.rhul.cs.dice.starworlds.entities.Agent;
 import uk.ac.rhul.cs.dice.starworlds.entities.agent.AbstractAgentMind;
 import uk.ac.rhul.cs.dice.starworlds.entities.agent.AbstractAutonomousAgent;
-import uk.ac.rhul.cs.dice.starworlds.entities.agents.components.Actuator;
-import uk.ac.rhul.cs.dice.starworlds.entities.agents.components.Sensor;
-import uk.ac.rhul.cs.dice.starworlds.entities.agents.components.concrete.ListeningSensor;
-import uk.ac.rhul.cs.dice.starworlds.entities.agents.components.concrete.PhysicalActuator;
-import uk.ac.rhul.cs.dice.starworlds.entities.agents.components.concrete.SeeingSensor;
-import uk.ac.rhul.cs.dice.starworlds.entities.agents.components.concrete.SpeechActuator;
-import uk.ac.rhul.cs.dice.starworlds.entities.agents.concrete.DefaultAgent;
+import uk.ac.rhul.cs.dice.starworlds.entities.agent.components.Actuator;
+import uk.ac.rhul.cs.dice.starworlds.entities.agent.components.Sensor;
+import uk.ac.rhul.cs.dice.starworlds.entities.agent.components.concrete.ListeningSensor;
+import uk.ac.rhul.cs.dice.starworlds.entities.agent.components.concrete.PhysicalActuator;
+import uk.ac.rhul.cs.dice.starworlds.entities.agent.components.concrete.SeeingSensor;
+import uk.ac.rhul.cs.dice.starworlds.entities.agent.components.concrete.SpeechActuator;
+import uk.ac.rhul.cs.dice.starworlds.entities.agent.concrete.DefaultAgent;
 import uk.ac.rhul.cs.dice.starworlds.entities.avatar.AbstractAvatarMind;
 import uk.ac.rhul.cs.dice.starworlds.entities.avatar.DefaultAvatarAgent;
 

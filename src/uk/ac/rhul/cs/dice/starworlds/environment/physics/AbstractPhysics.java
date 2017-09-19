@@ -17,9 +17,9 @@ import uk.ac.rhul.cs.dice.starworlds.appearances.ActiveBodyAppearance;
 import uk.ac.rhul.cs.dice.starworlds.entities.ActiveBody;
 import uk.ac.rhul.cs.dice.starworlds.entities.Agent;
 import uk.ac.rhul.cs.dice.starworlds.entities.agent.AbstractAutonomousAgent;
-import uk.ac.rhul.cs.dice.starworlds.entities.agents.components.AbstractSensor;
-import uk.ac.rhul.cs.dice.starworlds.entities.agents.components.concrete.ListeningSensor;
-import uk.ac.rhul.cs.dice.starworlds.entities.agents.components.concrete.SeeingSensor;
+import uk.ac.rhul.cs.dice.starworlds.entities.agent.components.AbstractSensor;
+import uk.ac.rhul.cs.dice.starworlds.entities.agent.components.concrete.ListeningSensor;
+import uk.ac.rhul.cs.dice.starworlds.entities.agent.components.concrete.SeeingSensor;
 import uk.ac.rhul.cs.dice.starworlds.entities.avatar.AbstractAvatarAgent;
 import uk.ac.rhul.cs.dice.starworlds.environment.ambient.AbstractAmbient;
 import uk.ac.rhul.cs.dice.starworlds.environment.ambient.Ambient;
@@ -28,7 +28,6 @@ import uk.ac.rhul.cs.dice.starworlds.environment.interfaces.AbstractEnvironment;
 import uk.ac.rhul.cs.dice.starworlds.environment.interfaces.Environment;
 import uk.ac.rhul.cs.dice.starworlds.environment.interfaces.Simulator;
 import uk.ac.rhul.cs.dice.starworlds.initialisation.ReflectiveMethodStore;
-import uk.ac.rhul.cs.dice.starworlds.parser.DefaultConstructorStore.DefaultConstructor;
 import uk.ac.rhul.cs.dice.starworlds.perception.AbstractPerception;
 import uk.ac.rhul.cs.dice.starworlds.perception.ActivePerception;
 import uk.ac.rhul.cs.dice.starworlds.perception.CommunicationPerception;
@@ -61,7 +60,6 @@ public abstract class AbstractPhysics implements Physics, Simulator {
 	// TODO change to not default
 	private TimeState timestate = new TimeStateSerial();
 
-	@DefaultConstructor
 	public AbstractPhysics() {
 	}
 
@@ -586,6 +584,10 @@ public abstract class AbstractPhysics implements Physics, Simulator {
 
 	public void setFramelength(long framelength) {
 		this.framelength = framelength;
+	}
+	
+	public long getFramelength() {
+		return framelength;
 	}
 
 	@Override

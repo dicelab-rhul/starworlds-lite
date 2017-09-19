@@ -1,6 +1,10 @@
 package uk.ac.rhul.cs.dice.starworlds.initialisation;
 
-
+/**
+ * TODO
+ * @author Ben
+ *
+ */
 public class EnvironmentFactory {
 
 	private static EnvironmentFactory instance = new EnvironmentFactory();
@@ -8,9 +12,6 @@ public class EnvironmentFactory {
 
 	private EnvironmentFactory() {
 	}
-	
-	
-	
 
 	public static EnvironmentFactory getInstance() {
 		return instance;

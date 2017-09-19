@@ -4,6 +4,8 @@ import java.io.Serializable;
 
 public class DefaultPayload<T extends Serializable> implements Payload<T> {
 
+	private static final long serialVersionUID = -2348821514838661744L;
+	
 	private T payload;
 
 	public DefaultPayload(T payload) {

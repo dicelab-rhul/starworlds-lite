@@ -2,12 +2,11 @@ package uk.ac.rhul.cs.dice.starworlds.appearances;
 
 import uk.ac.rhul.cs.dice.starworlds.entities.Body;
 import uk.ac.rhul.cs.dice.starworlds.entities.Entity;
-import uk.ac.rhul.cs.dice.starworlds.parser.DefaultConstructorStore.DefaultConstructor;
+import uk.ac.rhul.cs.dice.starworlds.environment.interfaces.Environment;
 import uk.ac.rhul.cs.dice.starworlds.utils.Identifiable;
 
 /**
- * The {@link Appearance} of some {@link Entity}. Contains only the id.
- * 
+ * The {@link Appearance} of some {@link Entity} or {@link Environment}.
  * 
  * @author cloudstrife9999 a.k.a. Emanuele Uliana
  * @author Ben Wilkins
@@ -17,7 +16,6 @@ import uk.ac.rhul.cs.dice.starworlds.utils.Identifiable;
 public abstract class AbstractAppearance implements Appearance {
 
 	private static final long serialVersionUID = 3285622766204723013L;
-
 	protected static final String REPSEP = " ";
 
 	private String id;
@@ -25,7 +23,6 @@ public abstract class AbstractAppearance implements Appearance {
 	/**
 	 * Constructor.
 	 */
-	@DefaultConstructor
 	public AbstractAppearance() {
 	}
 

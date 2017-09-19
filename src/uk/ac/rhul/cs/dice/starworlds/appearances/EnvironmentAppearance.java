@@ -1,5 +1,7 @@
 package uk.ac.rhul.cs.dice.starworlds.appearances;
 
+import uk.ac.rhul.cs.dice.starworlds.environment.interfaces.Environment;
+
 public class EnvironmentAppearance extends AbstractAppearance {
 
 	private static final long serialVersionUID = -8438158765085176583L;
@@ -17,5 +19,10 @@ public class EnvironmentAppearance extends AbstractAppearance {
 
 	public boolean isRemote() {
 		return isRemote;
+	}
+
+	@Override
+	public String toString() {
+		return Environment.class.getSimpleName() + ":" + this.getId();
 	}
 }
