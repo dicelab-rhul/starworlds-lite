@@ -15,11 +15,9 @@ import java.util.Set;
 import uk.ac.rhul.cs.dice.starworlds.actions.Action;
 import uk.ac.rhul.cs.dice.starworlds.actions.environmental.AbstractEnvironmentalAction;
 import uk.ac.rhul.cs.dice.starworlds.appearances.ActiveBodyAppearance;
-import uk.ac.rhul.cs.dice.starworlds.appearances.EnvironmentAppearance;
 import uk.ac.rhul.cs.dice.starworlds.entities.ActiveBody;
 import uk.ac.rhul.cs.dice.starworlds.entities.agent.components.AbstractSensor;
 import uk.ac.rhul.cs.dice.starworlds.entities.agent.components.Sensor;
-import uk.ac.rhul.cs.dice.starworlds.environment.interfaces.Environment;
 import uk.ac.rhul.cs.dice.starworlds.initialisation.InvalidConfigurationException;
 import uk.ac.rhul.cs.dice.starworlds.perception.AbstractPerception;
 import uk.ac.rhul.cs.dice.starworlds.perception.Perception;
@@ -47,22 +45,12 @@ public abstract class AbstractSubscriptionHandler {
 	protected Set<Class<? extends AbstractSensor>> sensors;
 	protected Set<Class<? extends AbstractEnvironmentalAction>> actions;
 
-	/*
-	 * Environments should subscribe to actions that they with the be informed
-	 * about. environments can only subscribe to environments who are - their
-	 * neighbour, one of their sub environment, their super environment
-	 */
-	protected Map<EnvironmentAppearance, Collection<Class<? extends AbstractEnvironmentalAction>>> environmentSubscriptions;
-	protected Map<Class<? extends AbstractEnvironmentalAction>, Collection<EnvironmentAppearance>> inverseEnvironmentSubscriptions;
-
 	public AbstractSubscriptionHandler() {
 		perceptionSensors = new HashMap<>();
 		subscribedSensors = new HashMap<>();
 		actionPerceptions = new HashMap<>();
 		sensors = new HashSet<>();
 		actions = new HashSet<>();
-		environmentSubscriptions = new HashMap<>();
-		inverseEnvironmentSubscriptions = new HashMap<>();
 	}
 
 	/**
@@ -72,48 +60,6 @@ public abstract class AbstractSubscriptionHandler {
 	 */
 	public void clearSensorSubscriptions() {
 		subscribedSensors.clear();
-	}
-
-	/**
-	 * Clear all {@link Environment} subscriptions.
-	 */
-	public void clearEnvironmentSubscriptions() {
-		environmentSubscriptions.clear();
-		inverseEnvironmentSubscriptions.clear();
-	}
-
-	public Collection<EnvironmentAppearance> getEnvironmentsFromSubscribedAction(
-			Class<? extends AbstractEnvironmentalAction> action) {
-		Collection<EnvironmentAppearance> col = inverseEnvironmentSubscriptions
-				.get(action);
-		return (col != null) ? new HashSet<>(
-				inverseEnvironmentSubscriptions.get(action)) : null;
-	}
-
-	public boolean isEnvironmentSubscribed(EnvironmentAppearance environment,
-			Class<? extends Action> action) {
-		// TODO if the environment has not subscribed
-		return environmentSubscriptions.get(environment).contains(action);
-	}
-
-	public void subscribeEnvironment(EnvironmentAppearance environment,
-			Collection<Class<? extends AbstractEnvironmentalAction>> actions) {
-		Collection<Class<? extends AbstractEnvironmentalAction>> col;
-		if ((col = this.environmentSubscriptions.get(environment)) == null) {
-			this.environmentSubscriptions.put(environment, actions);
-			actions.forEach((Class<? extends AbstractEnvironmentalAction> a) -> {
-				Collection<EnvironmentAppearance> ecol;
-				if ((ecol = this.inverseEnvironmentSubscriptions.get(a)) != null) {
-					ecol.add(environment);
-				} else {
-					ecol = new HashSet<>();
-					ecol.add(environment);
-					this.inverseEnvironmentSubscriptions.put(a, ecol);
-				}
-			});
-		} else {
-			col.addAll(actions);
-		}
 	}
 
 	public void setPossibleActions(

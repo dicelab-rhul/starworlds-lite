@@ -9,10 +9,14 @@ public final class IDFactory {
 
 	private IDFactory() {
 	}
+	
+	public String getNewUUID() {
+		return String.valueOf(UUID.randomUUID());
+	}
 
 	public String getNewID() {
 		return String.valueOf(count++);
-		// return String.valueOf(UUID.randomUUID());
+		
 	}
 
 	public static IDFactory getInstance() {
