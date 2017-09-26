@@ -18,29 +18,29 @@ import uk.ac.rhul.cs.dice.starworlds.utils.Identifiable;
  *
  */
 public interface Appearance extends Serializable, Identifiable {
-	/**
-	 * Returns a {@link String} representation of the {@link Appearance}.
-	 * 
-	 * @return a {@link String} representation of the {@link Appearance}.
-	 */
-	public String represent();
+    /**
+     * Returns a {@link String} representation of the {@link Appearance}.
+     * 
+     * @return a {@link String} representation of the {@link Appearance}.
+     */
+    public abstract String represent();
 
-	/**
-	 * Returns the {@link String} id of the {@link Entity} the
-	 * {@link Appearance} refers to.
-	 * 
-	 * @return the {@link String} id of the {@link Entity} the
-	 *         {@link Appearance} refers to.
-	 */
-	public String getId();
+    /**
+     * Returns the {@link String} id of the {@link Entity} the {@link Appearance}
+     * refers to.
+     * 
+     * @return the {@link String} id of the {@link Entity} the {@link Appearance}
+     *         refers to.
+     */
+    public abstract String getId();
 
-	/**
-	 * Sets the {@link String} id of the {@link Entity} the {@link Appearance}
-	 * refers to.
-	 * 
-	 * @param id
-	 *            : the {@link String} id of the {@link Entity} the
-	 *            {@link Appearance} refers to.
-	 */
-	public void setId(String id);
+    /**
+     * Sets the {@link String} id of the {@link Entity} the {@link Appearance}
+     * refers to.
+     * 
+     * @param id
+     *            : the {@link String} id of the {@link Entity} the
+     *            {@link Appearance} refers to.
+     */
+    public abstract void setId(String id);
 }

@@ -18,24 +18,23 @@ import uk.ac.rhul.cs.dice.starworlds.perception.ActivePerception;
  *
  */
 public class SensingAction extends AbstractEnvironmentalAction {
+    private static final long serialVersionUID = 4695622233320564044L;
 
-	private static final long serialVersionUID = 4695622233320564044L;
+    @SensiblePerception
+    public static final Class<?> POSSIBLEPERCEPTION = ActivePerception.class;
 
-	@SensiblePerception
-	public static final Class<?> POSSIBLEPERCEPTION = ActivePerception.class;
+    private String[] keys;
 
-	private String[] keys;
+    public SensingAction(String... keys) {
+	this.keys = (keys != null) ? keys : new String[] {};
+    }
 
-	public SensingAction(String... keys) {
-		this.keys = (keys != null) ? keys : new String[] {};
-	}
+    public String[] getKeys() {
+	return this.keys;
+    }
 
-	public String[] getKeys() {
-		return keys;
-	}
-
-	@Override
-	public String toString() {
-		return super.toString() + " : " + Arrays.toString(this.keys);
-	}
+    @Override
+    public String toString() {
+	return super.toString() + " : " + Arrays.toString(this.keys);
+    }
 }

@@ -3,6 +3,7 @@ package uk.ac.rhul.cs.dice.starworlds.entities.avatar;
 import java.util.Collection;
 import java.util.List;
 import java.util.Stack;
+import java.util.stream.Collectors;
 
 import uk.ac.rhul.cs.dice.starworlds.actions.Action;
 import uk.ac.rhul.cs.dice.starworlds.actions.environmental.AbstractEnvironmentalAction;
@@ -35,7 +36,8 @@ public abstract class AbstractAvatarAgent<D extends Action> extends
 	@Override
 	public void run() {
 		// get perceptions from sensors
-		Collection<Perception<?>> sensoryPerceptions = this.perceive();
+		 Collection<Object> temp = this.perceive();
+		 Collection<Perception<?>> sensoryPerceptions = temp.stream().filter(elm -> elm instanceof Perception<?>).map(elm -> (Perception<?>) elm).collect(Collectors.toList());
 		// call mind cycle
 		Action actionToExecute = this.getMind().cycle(sensoryPerceptions);
 		// activate actuators

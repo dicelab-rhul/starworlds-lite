@@ -20,15 +20,17 @@ import uk.ac.rhul.cs.dice.starworlds.entities.agent.components.concrete.Physical
 import uk.ac.rhul.cs.dice.starworlds.entities.agent.components.concrete.SpeechActuator;
 import uk.ac.rhul.cs.dice.starworlds.environment.interfaces.AbstractEnvironment;
 import uk.ac.rhul.cs.dice.starworlds.environment.physics.Physics;
-import uk.ac.rhul.cs.dice.starworlds.perception.Perception;
+import uk.ac.rhul.cs.dice.starworlds.utils.Utils;
 
 /**
  * A subclass of {@link PhysicalBody} capable to perform an
  * {@link EnvironmentalAction}, thus implementing {@link Actor} It has a
- * {@link List} of {@link Sensor} elements and one of {@link Actuator} elements.<br/>
+ * {@link List} of {@link Sensor} elements and one of {@link Actuator}
+ * elements.<br/>
  * <br/>
  * 
- * Known direct subclasses: {@link AbstractAutonomousAgent}, {@link DependentBody}.
+ * Known direct subclasses: {@link AbstractAutonomousAgent},
+ * {@link DependentBody}.
  * 
  * @author cloudstrife9999 a.k.a. Emanuele Uliana
  * @author Ben Wilkins
@@ -36,241 +38,341 @@ import uk.ac.rhul.cs.dice.starworlds.perception.Perception;
  *
  */
 public abstract class ActiveBody extends PhysicalBody implements Actor {
+    private AbstractSensor defaultSensor;
+    private SpeechActuator defaultSpeechActuator;
+    private PhysicalActuator defaultPhysicalActuator;
+    private Set<Sensor> activatedSensors;
+    private Set<Component> activatedActuators;
+    private List<Sensor> sensors;
+    private List<Actuator> actuators;
+    private AbstractEnvironment environment;
 
-	private AbstractSensor defaultSensor;
-	private SpeechActuator defaultSpeechActuator;
-	private PhysicalActuator defaultPhysicalActuator;
+    /**
+     * Constructor. The default {@link Appearance} for an {@link ActiveBody} is
+     * created automatically.
+     * 
+     * @param sensors
+     *            : a {@link List} of {@link Sensor} instances.
+     * @param actuators
+     *            : a {@link List} of {@link Actuator} instances.
+     */
+    public ActiveBody(List<Sensor> sensors, List<Actuator> actuators) {
+	super(null); //TODO are we sure it is not just super() ?
+	init(sensors, actuators);
+	
+	this.setAppearance(new ActiveBodyAppearance(this));
+    }
 
-	// When a sensor receives some input, it should tell the body it has
-	// received something.
-	private Set<Sensor> activatedSensors;
-	// When an action is about to be performed by an actuator, let the body know
-	private Set<Component> activatedActuators;
+    /**
+     * Constructor.
+     * 
+     * @param appearance
+     *            : the {@link Appearance} of the {@link ActiveBody}.
+     * @param sensors
+     *            : a {@link List} of {@link Sensor} instances.
+     * @param actuators
+     *            : a {@link List} of {@link Actuator} instances.
+     */
+    public ActiveBody(ActiveBodyAppearance appearance, List<Sensor> sensors, List<Actuator> actuators) {
+	super(appearance);
+	
+	init(sensors, actuators);
+    }
 
-	private List<Sensor> sensors;
-	private List<Actuator> actuators;
-	private AbstractEnvironment environment;
+    private void init(List<Sensor> sensors, List<Actuator> actuators) {
+	this.sensors = new ArrayList<>();
+	this.actuators = new ArrayList<>();
+	this.activatedActuators = new HashSet<>();
+	this.activatedSensors = new HashSet<>();
 
-	/**
-	 * Constructor. The default {@link Appearance} for an {@link ActiveBody} is
-	 * created automatically.
-	 * 
-	 * @param sensors
-	 *            : a {@link List} of {@link Sensor} instances.
-	 * @param actuators
-	 *            : a {@link List} of {@link Actuator} instances.
-	 */
-	public ActiveBody(List<Sensor> sensors, List<Actuator> actuators) {
-		super(null);
-		init(sensors, actuators);
-		this.setAppearance(new ActiveBodyAppearance(this));
+	if(actuators != null) {
+	    actuators.forEach(this::addActuator);
+	}
+	
+	if(sensors != null) {
+	    sensors.forEach(this::addSensor);
 	}
 
-	/**
-	 * Constructor.
-	 * 
-	 * @param appearance
-	 *            : the {@link Appearance} of the {@link ActiveBody}.
-	 * @param sensors
-	 *            : a {@link List} of {@link Sensor} instances.
-	 * @param actuators
-	 *            : a {@link List} of {@link Actuator} instances.
-	 */
-	public ActiveBody(ActiveBodyAppearance appearance, List<Sensor> sensors,
-			List<Actuator> actuators) {
-		super(appearance);
-		init(sensors, actuators);
+	this.setDefaultSensor((AbstractSensor) findSensorByClass(AbstractSensor.class));
+	this.setDefaultSpeechActuator((SpeechActuator) findActuatorByClass(SpeechActuator.class));
+	this.setDefaultPhysicalActuator((PhysicalActuator) findActuatorByClass(PhysicalActuator.class));
+    }
+
+    public Sensor findSensorByClass(Class<?> c) {
+	return (Sensor) findComponentByClass(c, this.sensors);
+    }
+
+    public Actuator findActuatorByClass(Class<?> c) {
+	return (Actuator) findComponentByClass(c, this.actuators);
+    }
+
+    private <T> T findComponentByClass(Class<T> c, List<?> list) {
+	for (Object o : list) {
+	    if (c.isAssignableFrom(o.getClass())) {
+		return c.cast(o);
+	    }
 	}
+	
+	return null;
+    }
 
-	private void init(List<Sensor> sensors, List<Actuator> actuators) {
-		sensors = sensors != null ? sensors : new ArrayList<>();
-		actuators = actuators != null ? actuators : new ArrayList<>();
-		this.sensors = new ArrayList<>();
-		this.actuators = new ArrayList<>();
-		this.activatedActuators = new HashSet<>();
-		this.activatedSensors = new HashSet<>();
-		for (Actuator a : actuators) {
-			this.addActuator(a);
-		}
+    /**
+     * Returns a {@link List} of {@link Sensor} instances.
+     * 
+     * @return the {@link List} of {@link Sensor} instances.
+     */
+    public List<Sensor> getSensors() {
+	return this.sensors;
+    }
 
-		for (Sensor s : sensors) {
-			this.addSensor(s);
-		}
+    /**
+     * Returns a {@link List} of {@link Actuator} instances.
+     * 
+     * @return the {@link List} of {@link Actuator} instances.
+     */
+    public List<Actuator> getActuators() {
+	return this.actuators;
+    }
 
-		this.setDefaultSensor((AbstractSensor) findSensorByClass(AbstractSensor.class));
-		this.setDefaultSpeechActuator((SpeechActuator) findActuatorByClass(SpeechActuator.class));
-		this.setDefaultPhysicalActuator((PhysicalActuator) findActuatorByClass(PhysicalActuator.class));
+    /**
+     * Adds a {@link Sensor} to the {@link List}.
+     * 
+     * @param sensor
+     *            : the {@link Sensor} to be added to the {@link List}.
+     */
+    public void addSensor(Sensor sensor) {
+	sensor.setBody(this);
+	this.sensors.add(sensor);
+    }
+
+    /**
+     * Adds an {@link Actuator} to the {@link List}.
+     * 
+     * @param sensor
+     *            : the {@link Actuator} to be added to the {@link List}.
+     */
+    public void addActuator(Actuator actuator) {
+	actuator.setBody(this);
+	this.actuators.add(actuator);
+    }
+
+    public Collection<Object> perceive() {
+	Set<Object> perceptions = new HashSet<>();
+	this.activatedSensors.forEach(s -> s.getPerceptions().forEach(perceptions::add));	
+	this.activatedSensors.clear();
+	
+	return perceptions;
+    }
+
+    public void execute(AbstractEnvironmentalAction action) {
+	this.activatedActuators.forEach(c -> c.attempt(action));
+	this.activatedActuators.clear();
+    }
+
+    @Override
+    public void setId(String id) {
+	super.setId(id);
+	
+	for (int i = 0; i < this.sensors.size(); i++) {
+	    this.sensors.get(i).setId(this.getId() + ":" + i);
 	}
-
-	public Sensor findSensorByClass(Class<?> c) {
-		return (Sensor) findComponentByClass(c, sensors);
+	
+	for (int i = 0; i < this.actuators.size(); i++) {
+	    this.actuators.get(i).setId(this.getId() + ":" + i);
 	}
+    }
 
-	public Actuator findActuatorByClass(Class<?> c) {
-		return (Actuator) findComponentByClass(c, actuators);
+    public void sensorActive(Sensor sensor) {
+	this.activatedSensors.add(sensor);
+    }
+
+    public void actuatorActive(Component component) {
+	this.activatedActuators.add(component);
+    }
+
+    /**
+     * Getter for the {@link AbstractEnvironment} that this {@link ActiveBody}
+     * resides in.
+     * 
+     * @return the {@link AbstractEnvironment}
+     */
+    public AbstractEnvironment getEnvironment() {
+	return environment;
+    }
+
+    /**
+     * Setter for the {@link AbstractEnvironment} that this {@link ActiveBody}
+     * resides in. Use with caution - only a {@link Physics} should change this!
+     * 
+     * @param environment
+     *            to set
+     */
+    public void setEnvironment(AbstractEnvironment environment) {
+	this.environment = environment;
+    }
+
+    /**
+     * Getter for the default {@link SpeechActuator}.
+     * 
+     * @return the default {@link SpeechActuator}
+     */
+    public SpeechActuator getDefaultSpeechActuator() {
+	return defaultSpeechActuator;
+    }
+
+    /**
+     * Setter for the default {@link SpeechActuator}.
+     * 
+     * @param defaultSpeechActuator
+     */
+    public void setDefaultSpeechActuator(SpeechActuator defaultSpeechActuator) {
+	this.defaultSpeechActuator = defaultSpeechActuator;
+    }
+
+    /**
+     * Getter for the default {@link Sensor}. This may be Look, Smell, Touch,
+     * Listen, or other.
+     * 
+     * @return the default {@link AbstractSensor}
+     */
+    public AbstractSensor getDefaultSensor() {
+	return defaultSensor;
+    }
+
+    /**
+     * Setter for the default {@link Sensor}.
+     * 
+     * @param defaultSensor
+     */
+    public void setDefaultSensor(AbstractSensor defaultSensor) {
+	this.defaultSensor = defaultSensor;
+    }
+
+    public PhysicalActuator getDefaultPhysicalActuator() {
+	return defaultPhysicalActuator;
+    }
+
+    public void setDefaultPhysicalActuator(PhysicalActuator defaultPhysicalActuator) {
+	this.defaultPhysicalActuator = defaultPhysicalActuator;
+    }
+
+    @Override
+    public ActiveBodyAppearance getAppearance() {
+	return (ActiveBodyAppearance) super.getAppearance();
+    }
+
+    @Override
+    public void setAppearance(PhysicalBodyAppearance appearance) {
+	super.setAppearance((ActiveBodyAppearance) appearance);
+    }
+
+    @Override
+    public int hashCode() {
+	final int prime = 31;
+	int result = super.hashCode();
+	result = prime * result + ((this.activatedActuators == null) ? 0 : this.activatedActuators.hashCode());
+	result = prime * result + ((this.activatedSensors == null) ? 0 : this.activatedSensors.hashCode());
+	result = prime * result + ((this.actuators == null) ? 0 : this.actuators.hashCode());
+	result = prime * result + ((this.defaultPhysicalActuator == null) ? 0 : this.defaultPhysicalActuator.hashCode());
+	result = prime * result + ((this.defaultSensor == null) ? 0 : this.defaultSensor.hashCode());
+	result = prime * result + ((this.defaultSpeechActuator == null) ? 0 : this.defaultSpeechActuator.hashCode());
+	result = prime * result + ((this.environment == null) ? 0 : this.environment.hashCode());
+	result = prime * result + ((this.sensors == null) ? 0 : this.sensors.hashCode());
+	
+	return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+	if(Utils.equalsHelper(this, obj)) {
+	    return true;
 	}
-
-	private <T> T findComponentByClass(Class<T> c, List<?> list) {
-		for (Object o : list) {
-			if (c.isAssignableFrom(o.getClass())) {
-				return c.cast(o);
-			}
-		}
-		return null;
+	
+	ActiveBody other = (ActiveBody) obj;
+	
+	if(other == null) {
+	    return false;
 	}
+	
+	return checkAttributes(other);
+    }
 
-	/**
-	 * Returns a {@link List} of {@link Sensor} instances.
-	 * 
-	 * @return the {@link List} of {@link Sensor} instances.
-	 */
-	public List<Sensor> getSensors() {
-		return this.sensors;
+    private boolean checkAttributes(ActiveBody other) {
+	return checkSensors(other) && checkActuators(other);
+    }
+
+    private boolean checkSensors(ActiveBody other) {
+	if (this.activatedSensors == null) {
+	    if (other.activatedSensors != null) {
+		return false;
+	    }
 	}
-
-	/**
-	 * Returns a {@link List} of {@link Actuator} instances.
-	 * 
-	 * @return the {@link List} of {@link Actuator} instances.
-	 */
-	public List<Actuator> getActuators() {
-		return this.actuators;
+	else if (!this.activatedSensors.equals(other.activatedSensors)) {
+	    return false;
 	}
-
-	/**
-	 * Adds a {@link Sensor} to the {@link List}.
-	 * 
-	 * @param sensor
-	 *            : the {@link Sensor} to be added to the {@link List}.
-	 */
-	public void addSensor(Sensor sensor) {
-		sensor.setBody(this);
-		this.sensors.add(sensor);
+	
+	if (this.defaultSensor == null) {
+	    if (other.defaultSensor != null) {
+		return false;
+	    }
 	}
-
-	/**
-	 * Adds an {@link Actuator} to the {@link List}.
-	 * 
-	 * @param sensor
-	 *            : the {@link Actuator} to be added to the {@link List}.
-	 */
-	public void addActuator(Actuator actuator) {
-		actuator.setBody(this);
-		this.actuators.add(actuator);
+	else if (!this.defaultSensor.equals(other.defaultSensor)) {
+	    return false;
+	}   
+	
+	if (this.sensors == null) {
+	    if (other.sensors != null) {
+		return false;
+	    }
 	}
-
-	public Collection<Perception<?>> perceive() {
-		// System.out.println("BODY PERCEIVE: " + activatedSensors);
-		Set<Perception<?>> perceptions = new HashSet<>();
-		activatedSensors
-				.forEach((Sensor s) -> {
-					s.getPerceptions().forEach(
-							(Perception<?> p) -> perceptions.add(p));
-				});
-		activatedSensors.clear();
-		return perceptions;
+	else if (!this.sensors.equals(other.sensors)) {
+	    return false;
 	}
+	
+	return true;
+    }
 
-	public void execute(AbstractEnvironmentalAction action) {
-		// System.out.println("BODY EXECUTE: " + action);
-		activatedActuators.forEach((Component c) -> c.attempt(action));
-		activatedActuators.clear();
+    private boolean checkActuators(ActiveBody other) {
+	if (this.activatedActuators == null) {
+	    if (other.activatedActuators != null) {
+		return false;
+	    }
 	}
-
-	@Override
-	public void setId(String id) {
-		super.setId(id);
-		for (int i = 0; i < sensors.size(); i++) {
-			sensors.get(i).setId(this.getId() + ":" + i);
-		}
-		for (int i = 0; i < actuators.size(); i++) {
-			actuators.get(i).setId(this.getId() + ":" + i);
-		}
+	else if (!this.activatedActuators.equals(other.activatedActuators)) {
+	    return false;
 	}
-
-	public void sensorActive(Sensor sensor) {
-		this.activatedSensors.add(sensor);
+	
+	if (this.actuators == null) {
+	    if (other.actuators != null) {
+		return false;
+	    }	
 	}
+	else if (!this.actuators.equals(other.actuators)) {
+	    return false;
+	}	    
+	
+	return checkDefaultActuators(other);
+    }
 
-	public void actuatorActive(Component component) {
-		this.activatedActuators.add(component);
+    private boolean checkDefaultActuators(ActiveBody other) {
+	if (this.defaultPhysicalActuator == null) {
+	    if (other.defaultPhysicalActuator != null) {
+		return false;
+	    }		
 	}
-
-	/**
-	 * Getter for the {@link AbstractEnvironment} that this {@link ActiveBody}
-	 * resides in.
-	 * 
-	 * @return the {@link AbstractEnvironment}
-	 */
-	public AbstractEnvironment getEnvironment() {
-		return environment;
+	else if (!this.defaultPhysicalActuator.equals(other.defaultPhysicalActuator)) {
+	    return false;
+	}	    
+	
+	if (this.defaultSpeechActuator == null) {
+	    if (other.defaultSpeechActuator != null) {
+		return false;
+	    }		
 	}
-
-	/**
-	 * Setter for the {@link AbstractEnvironment} that this {@link ActiveBody}
-	 * resides in. Use with caution - only a {@link Physics} should change this!
-	 * 
-	 * @param environment
-	 *            to set
-	 */
-	public void setEnvironment(AbstractEnvironment environment) {
-		this.environment = environment;
-	}
-
-	/**
-	 * Getter for the default {@link SpeechActuator}.
-	 * 
-	 * @return the default {@link SpeechActuator}
-	 */
-	public SpeechActuator getDefaultSpeechActuator() {
-		return defaultSpeechActuator;
-	}
-
-	/**
-	 * Setter for the default {@link SpeechActuator}.
-	 * 
-	 * @param defaultSpeechActuator
-	 */
-	public void setDefaultSpeechActuator(SpeechActuator defaultSpeechActuator) {
-		this.defaultSpeechActuator = defaultSpeechActuator;
-	}
-
-	/**
-	 * Getter for the default {@link Sensor}. This may be Look, Smell, Touch,
-	 * Listen, or other.
-	 * 
-	 * @return the default {@link AbstractSensor}
-	 */
-	public AbstractSensor getDefaultSensor() {
-		return defaultSensor;
-	}
-
-	/**
-	 * Setter for the default {@link Sensor}.
-	 * 
-	 * @param defaultSensor
-	 */
-	public void setDefaultSensor(AbstractSensor defaultSensor) {
-		this.defaultSensor = defaultSensor;
-	}
-
-	public PhysicalActuator getDefaultPhysicalActuator() {
-		return defaultPhysicalActuator;
-	}
-
-	public void setDefaultPhysicalActuator(
-			PhysicalActuator defaultPhysicalActuator) {
-		this.defaultPhysicalActuator = defaultPhysicalActuator;
-	}
-
-	@Override
-	public ActiveBodyAppearance getAppearance() {
-		return (ActiveBodyAppearance) super.getAppearance();
-	}
-
-	@Override
-	public void setAppearance(PhysicalBodyAppearance appearance) {
-		super.setAppearance((ActiveBodyAppearance) appearance);
-	}
-
+	else if (!this.defaultSpeechActuator.equals(other.defaultSpeechActuator)) {
+	    return false;
+	}  
+	
+	return true;
+    }
 }

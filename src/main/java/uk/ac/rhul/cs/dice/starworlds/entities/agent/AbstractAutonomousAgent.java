@@ -2,6 +2,7 @@ package uk.ac.rhul.cs.dice.starworlds.entities.agent;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import uk.ac.rhul.cs.dice.starworlds.actions.Action;
 import uk.ac.rhul.cs.dice.starworlds.actions.MentalAction;
@@ -69,7 +70,8 @@ public abstract class AbstractAutonomousAgent extends
 	@Override
 	public void run() {
 		// get perceptions from sensors
-		Collection<Perception<?>> sensoryPerceptions = this.perceive();
+	    Collection<Object> temp = this.perceive();
+	    Collection<Perception<?>> sensoryPerceptions = temp.stream().filter(elm -> elm instanceof Perception<?>).map(elm -> (Perception<?>) elm).collect(Collectors.toList());
 		// call mind cycle
 		Action actionToExecute = this.getMind().cycle(sensoryPerceptions);
 		this.doAct((AbstractEnvironmentalAction) actionToExecute);

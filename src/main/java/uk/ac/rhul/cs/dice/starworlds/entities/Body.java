@@ -1,7 +1,8 @@
 package uk.ac.rhul.cs.dice.starworlds.entities;
 
 /**
- * The interface for body types. It extends {@link Entity}.<br/><br/>
+ * The interface for body types. It extends {@link Entity}.<br/>
+ * <br/>
  * 
  * Known implementations: {@link PhysicalBody}.
  * 

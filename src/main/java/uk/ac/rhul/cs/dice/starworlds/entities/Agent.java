@@ -15,7 +15,5 @@ import uk.ac.rhul.cs.dice.starworlds.entities.agent.AbstractMind;
  *
  */
 public interface Agent<D, E> extends Actor {
-
-	public AbstractMind<D, E> getMind();
-
+    public abstract AbstractMind<D, E> getMind();
 }

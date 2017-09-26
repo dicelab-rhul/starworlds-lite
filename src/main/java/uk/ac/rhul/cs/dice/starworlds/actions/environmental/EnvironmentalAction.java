@@ -9,8 +9,8 @@ import uk.ac.rhul.cs.dice.starworlds.utils.Identifiable;
  * The interface for all the actions that should be performed in some
  * environment by some physics.<br/>
  * <br/>
- * Implements: {@link EnvironmentalAction}. </br> Known implementations:
- * {@link AbstractEnvironmentalAction}.
+ * Implements: {@link EnvironmentalAction}. </br>
+ * Known implementations: {@link AbstractEnvironmentalAction}.
  * 
  * @author cloudstrife9999 a.k.a. Emanuele Uliana
  * @author Ben Wilkins

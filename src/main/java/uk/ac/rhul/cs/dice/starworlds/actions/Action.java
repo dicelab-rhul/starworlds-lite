@@ -17,38 +17,38 @@ import uk.ac.rhul.cs.dice.starworlds.entities.agent.components.Sensor;
  */
 public interface Action {
 
-	/**
-	 * Sets the {@link Actuator} that will perform this action. Note that this
-	 * may also be a {@link Sensor} in the case of a {@link SensingAction}.
-	 * 
-	 * @param actuator
-	 *            that will perform this {@link Action}
-	 */
-	public void setActuator(Class<?> actuator);
+    /**
+     * Sets the {@link Actuator} that will perform this action. Note that this may
+     * also be a {@link Sensor} in the case of a {@link SensingAction}.
+     * 
+     * @param actuator
+     *            that will perform this {@link Action}
+     */
+    public abstract void setActuator(Class<?> actuator);
 
-	/**
-	 * Gets the {@link Class} of {@link Actuator} that will be performing this
-	 * action. Note this may be a {@link Sensor} {@link Class} if the action is
-	 * a {@link SensingAction}.
-	 * 
-	 * @return the {@link Actuator} {@link Class}
-	 */
-	public Class<?> getActuator();
+    /**
+     * Gets the {@link Class} of {@link Actuator} that will be performing this
+     * action. Note this may be a {@link Sensor} {@link Class} if the action is a
+     * {@link SensingAction}.
+     * 
+     * @return the {@link Actuator} {@link Class}
+     */
+    public abstract Class<?> getActuator();
 
-	/**
-	 * Returns the {@link ActiveBodyAppearance} of the {@link Actor} that
-	 * performed this {@link Action}
-	 * 
-	 * @return the {@link ActiveBodyAppearance}.
-	 */
-	public ActiveBodyAppearance getActor();
+    /**
+     * Returns the {@link ActiveBodyAppearance} of the {@link Actor} that performed
+     * this {@link Action}
+     * 
+     * @return the {@link ActiveBodyAppearance}.
+     */
+    public abstract ActiveBodyAppearance getActor();
 
-	/**
-	 * Sets the {@link ActiveBodyAppearance} of the {@link Actor} that performed
-	 * this {@link Action}.
-	 * 
-	 * @param actor
-	 *            : the {@link ActiveBodyAppearance} to be set.
-	 */
-	public void setActor(ActiveBodyAppearance actor);
+    /**
+     * Sets the {@link ActiveBodyAppearance} of the {@link Actor} that performed
+     * this {@link Action}.
+     * 
+     * @param actor
+     *            : the {@link ActiveBodyAppearance} to be set.
+     */
+    public abstract void setActor(ActiveBodyAppearance actor);
 }
