@@ -125,8 +125,7 @@ public abstract class AbstractAvatarLink<K, A extends Action, M extends Abstract
 	 * @throws SecurityException
 	 */
 	public boolean addMapping(K key, Class<? extends A> action,
-			Class<?>... constructorArgs) throws NoSuchMethodException,
-			SecurityException {
+			Class<?>... constructorArgs) throws NoSuchMethodException {
 		if (constructorArgs == null || constructorArgs.length == 0) {
 			this.actionconstructormap.put(key, action.getConstructor());
 		} else {
