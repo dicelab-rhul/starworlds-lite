@@ -284,8 +284,8 @@ public abstract class ActiveBody extends PhysicalBody implements Actor {
 
     @Override
     public boolean equals(Object obj) {
-	if(Utils.equalsHelper(this, obj)) {
-	    return true;
+	if (!Utils.equalsHelper(this, obj)) {
+	    return false;
 	}
 	
 	ActiveBody other = (ActiveBody) obj;

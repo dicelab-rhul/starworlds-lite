@@ -82,8 +82,8 @@ public abstract class PhysicalBody implements Body {
 
     @Override
     public boolean equals(Object obj) {
-	if(Utils.equalsHelper(this, obj)) {
-	    return true;
+	if (!Utils.equalsHelper(this, obj)) {
+	    return false;
 	}
 	
 	PhysicalBody other = (PhysicalBody) obj;

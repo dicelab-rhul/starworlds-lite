@@ -1,5 +1,6 @@
 package uk.ac.rhul.cs.dice.starworlds.actions.environmental;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.stream.Collectors;
 
@@ -31,7 +32,7 @@ public abstract class PhysicalAction extends AbstractEnvironmentalAction {
 		return ((Collection<?>) temp).stream().filter(elm -> AbstractPerception.class.isAssignableFrom(elm.getClass())).map(elm -> (AbstractPerception<?>) elm).collect(Collectors.toList());
 	    }
 	    else {
-		throw new StarWorldsException("Bad returned collection!");
+		return new ArrayList<>();
 	    }
 	}
 	catch(Exception e) {
@@ -47,7 +48,7 @@ public abstract class PhysicalAction extends AbstractEnvironmentalAction {
 		return ((Collection<?>) temp).stream().filter(elm -> AbstractPerception.class.isAssignableFrom(elm.getClass())).map(elm -> (AbstractPerception<?>) elm).collect(Collectors.toList());
 	    }
 	    else {
-		throw new StarWorldsException("Bad returned collection!");
+		return new ArrayList<>();
 	    }
 	}
 	catch(Exception e) {
