@@ -2,7 +2,6 @@ package uk.ac.rhul.cs.dice.starworlds.appearances;
 
 import uk.ac.rhul.cs.dice.starworlds.entities.PhysicalBody;
 import uk.ac.rhul.cs.dice.starworlds.initialisation.IDFactory;
-import uk.ac.rhul.cs.dice.starworlds.utils.Utils;
 
 public class PhysicalBodyAppearance extends AbstractAppearance {
     private static final long serialVersionUID = -6276811265235520867L;
@@ -36,31 +35,24 @@ public class PhysicalBodyAppearance extends AbstractAppearance {
     public int hashCode() {
 	final int prime = 31;
 	int result = super.hashCode();
-	result = prime * result + ((this.body == null) ? 0 : this.body.hashCode());
-	
+	result = prime * result + ((body == null) ? 0 : body.hashCode());
 	return result;
     }
 
     @Override
     public boolean equals(Object obj) {
-	if (!Utils.equalsHelper(this, obj)) {
-	    return false;
-	}
-	
-	PhysicalBodyAppearance other = (PhysicalBodyAppearance) obj;
-	
-	if(other == null) {
-	    return false;
-	}
-	
-	if(Utils.checkBothNull(this.body, other.body)) {
+	if (this == obj)
 	    return true;
-	}
-	else if(Utils.checkBothNonNull(this.body, other.body)){
-	    return this.body.isAssignableFrom(other.body) && other.body.isAssignableFrom(this.body);
-	}
-	else {
+	if (!super.equals(obj))
 	    return false;
-	}
+	if (getClass() != obj.getClass())
+	    return false;
+	PhysicalBodyAppearance other = (PhysicalBodyAppearance) obj;
+	if (body == null) {
+	    if (other.body != null)
+		return false;
+	} else if (!body.equals(other.body))
+	    return false;
+	return true;
     }
 }
