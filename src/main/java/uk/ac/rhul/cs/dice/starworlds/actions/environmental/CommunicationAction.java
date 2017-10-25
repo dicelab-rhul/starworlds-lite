@@ -4,7 +4,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import uk.ac.rhul.cs.dice.starworlds.actions.speech.DefaultPayload;
 import uk.ac.rhul.cs.dice.starworlds.actions.speech.Payload;
 import uk.ac.rhul.cs.dice.starworlds.environment.subscription.AbstractSubscriptionHandler.SensiblePerception;
 import uk.ac.rhul.cs.dice.starworlds.perception.CommunicationPerception;
@@ -50,19 +49,6 @@ public class CommunicationAction<T extends Serializable> extends AbstractEnviron
     }
 
     /**
-     * Constructor.
-     * 
-     * @param recipientsIds
-     *            : a {@link List} of IDs of the recipients.
-     * @param payload
-     *            : the {@link Payload} of the communication.
-     */
-    public CommunicationAction(T payload, List<String> recipientsIds) {
-	this.recipientsIds = (recipientsIds != null) ? recipientsIds : new ArrayList<>();
-	this.payload = new DefaultPayload<>(payload);
-    }
-
-    /**
      * Constructor. Clones the action given. The payload of the action is NOT
      * cloned.
      * 
@@ -71,7 +57,7 @@ public class CommunicationAction<T extends Serializable> extends AbstractEnviron
      */
     public CommunicationAction(CommunicationAction<T> action) {
 	this.recipientsIds = new ArrayList<>(action.getRecipientsIds());
-	this.payload = new DefaultPayload<>(action.getPayload().getPayload());
+	this.payload = action.getPayload();
 	this.setLocalEnvironment(action.getLocalEnvironment());
     }
 

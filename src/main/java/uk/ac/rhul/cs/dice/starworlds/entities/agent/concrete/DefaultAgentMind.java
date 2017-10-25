@@ -6,6 +6,7 @@ import java.util.List;
 
 import uk.ac.rhul.cs.dice.starworlds.actions.Action;
 import uk.ac.rhul.cs.dice.starworlds.actions.environmental.CommunicationAction;
+import uk.ac.rhul.cs.dice.starworlds.actions.speech.DefaultPayload;
 import uk.ac.rhul.cs.dice.starworlds.entities.agent.AbstractAgentMind;
 import uk.ac.rhul.cs.dice.starworlds.perception.Perception;
 
@@ -30,7 +31,7 @@ public class DefaultAgentMind extends AbstractAgentMind {
 
 	@Override
 	public Action decide(Perception<?> perception) {
-		return new CommunicationAction<>("hello", this.recipients);
+		return new CommunicationAction<>(new DefaultPayload<String>("hello"), this.recipients);
 	}
 
 	@Override
