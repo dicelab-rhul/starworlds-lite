@@ -76,11 +76,8 @@ public abstract class AbstractAutonomousAgent extends
 		Action actionToExecute = this.getMind().cycle(sensoryPerceptions);
 		this.doAct((AbstractEnvironmentalAction) actionToExecute);
 		// execute any actions to perform in actuators
-		if (actionToExecute != null) {
-			if (!MentalAction.class
-					.isAssignableFrom(actionToExecute.getClass())) {
-				this.execute((AbstractEnvironmentalAction) actionToExecute);
-			}
+		if (actionToExecute != null && !MentalAction.class.isAssignableFrom(actionToExecute.getClass())) {
+		    this.execute((AbstractEnvironmentalAction) actionToExecute);
 		}
 	}
 }

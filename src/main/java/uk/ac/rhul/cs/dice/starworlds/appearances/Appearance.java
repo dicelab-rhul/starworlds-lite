@@ -32,6 +32,7 @@ public interface Appearance extends Serializable, Identifiable {
      * @return the {@link String} id of the {@link Entity} the {@link Appearance}
      *         refers to.
      */
+    @Override
     public abstract String getId();
 
     /**
@@ -42,5 +43,6 @@ public interface Appearance extends Serializable, Identifiable {
      *            : the {@link String} id of the {@link Entity} the
      *            {@link Appearance} refers to.
      */
+    @Override
     public abstract void setId(String id);
 }

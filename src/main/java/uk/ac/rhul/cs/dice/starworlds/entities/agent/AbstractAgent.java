@@ -74,6 +74,7 @@ public abstract class AbstractAgent<D, E> extends ActiveBody implements
 	 * 
 	 * @return the {@link AbstractMind} of the {@link AbstractAgent} .
 	 */
+	@Override
 	public AbstractMind<D, E> getMind() {
 		return this.mind;
 	}
@@ -93,8 +94,7 @@ public abstract class AbstractAgent<D, E> extends ActiveBody implements
 					physicalActuator = actuator
 							.asSubclass(PhysicalActuator.class);
 				}
-				return doPhysicalAct((PhysicalAction) action, physicalActuator,
-						sensor);
+				return doPhysicalAct((PhysicalAction) action, physicalActuator);
 			} else if (SensingAction.class.isAssignableFrom(action.getClass())) {
 				return doSenseAct((SensingAction) action, sensor);
 			} else if (CommunicationAction.class.isAssignableFrom(action
@@ -194,8 +194,7 @@ public abstract class AbstractAgent<D, E> extends ActiveBody implements
 	 *            to receive any resulting {@link Perception}s
 	 */
 	protected final PhysicalAction doPhysicalAct(PhysicalAction action,
-			Class<? extends PhysicalActuator> actuator,
-			Class<? extends AbstractSensor> sensor) {
+			Class<? extends PhysicalActuator> actuator) {
 		if (action == null) {
 			return null;
 		}
@@ -220,7 +219,7 @@ public abstract class AbstractAgent<D, E> extends ActiveBody implements
 	 *            to attempt
 	 */
 	protected final PhysicalAction doPhysicalAct(PhysicalAction action) {
-		return doPhysicalAct(action, null, null);
+		return doPhysicalAct(action, null);
 	}
 
 	protected Class<? extends SpeechActuator> getDefaultSpeechActuatorClass() {
